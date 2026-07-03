@@ -11,20 +11,30 @@
       <nav class="topbar" aria-label="Main navigation">
         <a class="brand" href="index.html">Liquindo</a>
         <div class="nav-links">
-          <a href="index.html#home">Introduction</a>
-          <a href="index.html#history">History</a>
-          <a href="index.html#ideology">Ideology</a>
-          <a href="index.html#factions">Factions</a>
-          <a href="index.html#members">Members</a>
-          <a href="gallery.html">Gallery</a>
-          <a href="index.html#contact">Contact</a>
-          <a href="index.html#finance">Finance</a>
+          <a href="index.html#home" data-i18n="nav.introduction">Introduction</a>
+          <a href="index.html#history" data-i18n="nav.history">History</a>
+          <a href="index.html#ideology" data-i18n="nav.ideology">Ideology</a>
+          <a href="index.html#members" data-i18n="nav.members">Members</a>
+          <a href="gallery.html" data-i18n="nav.gallery">Gallery</a>
+          <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+          <a href="index.html#finance" data-i18n="nav.finance">Finance</a>
         </div>
+        <select id="language-switcher" class="language-switcher" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="ru">Русский</option>
+          <option value="pt">Português</option>
+          <option value="pl">Polski</option>
+          <option value="it">Italiano</option>
+          <option value="zh">中文</option>
+        </select>
       </nav>
       <div class="page-title">
-        <p class="eyebrow">Members</p>
-        <h1>Publicly identified members</h1>
-        <p>Add the full list of publicly identified Liquindo members here.</p>
+        <p class="eyebrow" data-i18n="page.members">Members</p>
+        <h1 data-i18n="page.members.title">Publicly identified members</h1>
+        <p data-i18n="page.members.description">Add the full list of publicly identified Liquindo members here.</p>
       </div>
     </header>
 
@@ -32,24 +42,28 @@
       <section class="full-page-section">
         <div class="info-grid wide-grid">
           <article>
-            <strong>Diego Liquin</strong>
-            <p>The founder of Liquindo, and its main ideologue.</p>
+            <strong data-i18n="member.diego">Diego Liquin</strong>
+            <p data-i18n="member.diego.desc">The founder of Liquindo, and its main ideologue.</p>
           </article>
           <article>
-            <strong>Doctor Fullwood</strong>
-            <p>Liquin's main advisor and trustee.</p>
+            <strong data-i18n="member.fullwood">Doctor Fullwood</strong>
+            <p data-i18n="member.fullwood.desc">Liquin's main advisor and trustee.</p>
           </article>
           <article>
-            <strong>Edison the Mentor</strong>
-            <p>Liquin's political and philosophical mentor.</p>
+            <strong data-i18n="member.edison">Edison the Mentor</strong>
+            <p data-i18n="member.edison.desc">Liquin's political and philosophical mentor.</p>
           </article>
         </div>
       </section>
     </main>
 
     <footer>
-      <p>Contact: liquindohq@yahoo.com</p>
-      <a href="index.html">Back to main page</a>
+      <div class="footer-content">
+        <p data-i18n="footer.contact">Contact: liquindohq@yahoo.com</p>
+        <a href="index.html" data-i18n="gallery.main">Back to main page</a>
+      </div>
+      <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo" data-i18n="footer.repo">View on GitHub</a>
     </footer>
+    <script src="i18n.js"></script>
   </body>
 </html>
