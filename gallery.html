@@ -278,73 +278,38 @@
       const selectedTitle = document.getElementById("selected-title");
       const selectedText = document.getElementById("selected-text");
       const selectedPanel = document.querySelector(".selected-gallery");
-      const imageDescriptions = {
-        "Image 1": "A digital composition of Liquindian wojaks, showing different permitted characteristics of the nation.",
-        "Image 2": "A propaganda poster of Doctor Fullwood, without text.",
-        "Image 3": "A selfie of Liquin with one of the first produced flags of his nation.",
-        "Image 4": "An image of a doomer wojak in Liquindo's recession.",
-        "Image 5": "An image of a Liquindian wojak that cannot remember when he last felt joy.",
-        "Image 6": "The second piece of Liquindian merchandise ever created: a pin.",
-        "Image 7": "An edited portrait of Liquin.",
-        "Image 8": "A redder edited photo of Liquin.",
-        "Image 9": "A Liquindian soldier in the dark, bearing his helmet and his flag.",
-        "Image 10": "An artistic representation of a Liquindian soldier's silhouette.",
-        "Image 11": "A picture of a Liquindian soldier.",
-        "Image 12": "A Liquindian soldier facing an angle, with good music playing in the background.",
-        "Image 13": "An image of a Liquindian soldier facing the wrong way.",
-        "Image 14": "An image of the Liquindian flag paired with the South Yorkshire flag and the England flag.",
-        "Image 15": "Liquin taking a suspicious selfie with his newly-acquired helmet.",
-        "Image 16": "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him.",
-        "Image 17": "Doctor Fullwood taking a selfie at night with the Liquindian flag draped behind him.",
-        "Image 18": "The Liquintop, also known as the Liquindian Laptop.",
-        "Image 19": "Petrov with his new flag shipped directly by Liquin himself.",
-        "Image 20": "Petrov's setup.",
-        "Image 21": "The Liquindian Sports Association flag (A).",
-        "Image 22": "The Based Liquindian Soldier Wojak.",
-        "Image 23": "The Liquindian Sports Association flag (B).",
-        "Image 24": "The proposed cover for the Book of Liquin.",
-        "Image 25": "An artistic portrayal of a selfie of Liquin with a flag.",
-        "Image 26": "The Vaughtown flag.",
-        "Image 27": "The Liquindo flag and the Latvia flag, together.",
-        "Image 28": "A portrait of Edison the Mentor.",
-        "Image 29": "A picture of Liquin, Doctor Fullwood and Edison the Mentor, conceiving plans about their conflict with Vaughtonologists.",
-        "Image 30": "A picture of a garage which may or may not be Liquindian.",
-        "Image 31": "The flag of Edwardia.",
-        "Image 32": "The flag of Liquindo.",
-        "Image 33": "The second version of the Liquindian flag.",
-        "Image 34": "The first ever version of the Liquindian flag.",
-        "Image 35": "The flag of Liquin's Plan of Action (L'Pa).",
-        "Image 36": "The flag of the Liquindo Nationalist Front.",
-        "Image 37": "A portrait of Liquin circa 2025.",
-        "Image 38": "The flag of Caput.",
-        "Image 39": "Liquin striking a pose.",
-        "Image 40": "Liquin striking another pose.",
-        "Image 41": "The banner for the based.LNF.supporter TikTok account.",
-        "Image 42": "The Liquindian wave.",
-        "Image 43": "The flag of Vaughtonology.",
-        "Image 44": "A picture of a group of Liquindians.",
-        "Image 45": "Another picture of Liquin.",
-        "Image 46": "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him, in the morning.",
-        "Image 47": "A Liquindian reunion.",
-        "Image 48": "Early players belonging to the Liquindo Sports Association.",
-        "Image 49": "A portrait of a thinker.",
-        "Image 50": "Another portrait of Liquin.",
-        "Image 51": "A goofy picture of Doctor Fullwood.",
-        "Image 52": "The flag of the Liquindian Army."
-      };
+      const languageSwitcher = document.getElementById("language-switcher");
+
+      function getImageDescription(imageNumber) {
+        const key = `image.${imageNumber}`;
+        const currentLang = languageSwitcher.value || 'en';
+        
+        if (translations[currentLang] && translations[currentLang][key]) {
+          return translations[currentLang][key];
+        }
+        
+        // Fallback to default language or "no description" message
+        const fallbackKey = translations[currentLang] ? 'image.nodesc' : 'No description has been added for this image yet.';
+        return translations[currentLang] && translations[currentLang][fallbackKey] 
+          ? translations[currentLang][fallbackKey]
+          : 'No description has been added for this image yet.';
+      }
 
       galleryFigures.forEach((figure) => {
         figure.tabIndex = 0;
 
         function selectImage() {
           const image = figure.querySelector("img");
-          const caption = figure.querySelector("figcaption").textContent;
+          const figcaption = figure.querySelector("figcaption").textContent;
+          
+          // Extract image number from "Image X" caption
+          const imageNumber = figcaption.replace('Image ', '');
 
           selectedPanel.hidden = false;
           selectedImage.src = image.src;
           selectedImage.alt = image.alt;
-          selectedTitle.textContent = caption;
-          selectedText.textContent = imageDescriptions[caption] || "No description has been added for this image yet.";
+          selectedTitle.textContent = figcaption;
+          selectedText.textContent = getImageDescription(imageNumber);
 
           galleryFigures.forEach((item) => item.classList.remove("is-selected"));
           figure.classList.add("is-selected");
@@ -358,6 +323,16 @@
             selectImage();
           }
         });
+      });
+
+      // Update image descriptions when language changes
+      languageSwitcher.addEventListener("change", () => {
+        const selectedFigure = document.querySelector(".gallery-page-grid figure.is-selected");
+        if (selectedFigure) {
+          const figcaption = selectedFigure.querySelector("figcaption").textContent;
+          const imageNumber = figcaption.replace('Image ', '');
+          selectedText.textContent = getImageDescription(imageNumber);
+        }
       });
     </script>
   </body>
