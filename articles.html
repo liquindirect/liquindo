@@ -3,120 +3,170 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Liquindo - Articles</title>
+    <title>Liquindo - Encyclopedia</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      .articles-container {
-        max-width: 900px;
+      .article-container {
+        max-width: 1000px;
         margin: 0 auto;
         padding: 40px 20px;
+        line-height: 1.6;
+        color: #333;
       }
 
-      .articles-header {
-        margin-bottom: 40px;
-        text-align: center;
+      .article-header {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 20px;
       }
 
-      .articles-header h1 {
+      .article-title {
         font-size: 2.5em;
-        margin-bottom: 10px;
-        color: #1a1a1a;
+        font-weight: bold;
+        margin: 0 0 10px 0;
       }
 
-      .articles-header p {
+      .article-subtitle {
+        font-size: 1.2em;
+        color: #666;
+        font-style: italic;
+        margin: 0;
+      }
+
+      .infobox {
+        float: right;
+        width: 300px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 0 0 20px 20px;
+        border-radius: 5px;
+      }
+
+      .infobox-title {
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
         font-size: 1.1em;
+      }
+
+      .infobox-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+        font-size: 0.9em;
+      }
+
+      .infobox-label {
+        font-weight: bold;
         color: #555;
       }
 
-      .articles-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 40px;
+      .infobox-value {
+        text-align: right;
       }
 
-      .article-card {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
+      .infobox-full {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 10px 0;
       }
 
-      .article-card:hover {
-        border-color: #333;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
-      }
-
-      .article-card h3 {
-        margin-top: 0;
+      .infobox-flag {
+        text-align: center;
         margin-bottom: 10px;
-        color: #1a1a1a;
-        font-size: 1.3em;
-      }
-
-      .article-card p {
-        margin: 0;
-        color: #666;
-        font-size: 0.95em;
-        line-height: 1.5;
-      }
-
-      .article-meta {
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid #ddd;
         font-size: 0.85em;
-        color: #999;
       }
 
-      .category-label {
-        display: inline-block;
-        background: #e8e8e8;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.8em;
-        margin-right: 8px;
+      .section {
+        margin: 30px 0;
       }
 
-      .article-list {
-        margin-bottom: 50px;
-      }
-
-      .article-list h2 {
-        border-bottom: 2px solid #333;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-      }
-
-      .coming-soon {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      .coming-soon:hover {
-        transform: none;
-        box-shadow: none;
-      }
-
-      .badge {
-        display: inline-block;
-        background: #ff9800;
-        color: white;
-        padding: 2px 6px;
-        border-radius: 3px;
-        font-size: 0.75em;
+      .section-title {
+        font-size: 1.8em;
         font-weight: bold;
-        margin-left: 8px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+      }
+
+      .subsection-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      .color-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+      }
+
+      .color-table th,
+      .color-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .color-table th {
+        background: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .faction-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 0.9em;
+      }
+
+      .faction-table th,
+      .faction-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .faction-table th {
+        background: #f0f0f0;
+        font-weight: bold;
+      }
+
+      .holiday-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+      }
+
+      .holiday-table th,
+      .holiday-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .holiday-table th {
+        background: #f0f0f0;
+        font-weight: bold;
+      }
+
+      a {
+        color: #0645ad;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
       }
 
       .back-link {
         display: inline-block;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         padding: 10px 15px;
         background: #f0f0f0;
         border-radius: 4px;
@@ -127,6 +177,26 @@
 
       .back-link:hover {
         background: #e0e0e0;
+        text-decoration: none;
+      }
+
+      .image-caption {
+        font-size: 0.9em;
+        color: #666;
+        text-align: center;
+        margin-top: 5px;
+      }
+
+      @media (max-width: 768px) {
+        .infobox {
+          float: none;
+          width: 100%;
+          margin: 0 0 20px 0;
+        }
+
+        .article-title {
+          font-size: 1.8em;
+        }
       }
     </style>
   </head>
@@ -159,200 +229,452 @@
     </header>
 
     <main>
-      <div class="articles-container">
+      <div class="article-container">
         <a href="index.html#home" class="back-link">← Back to Main Site</a>
 
-        <div class="articles-header">
-          <h1 data-i18n="articles.title">Liquindo Articles</h1>
-          <p data-i18n="articles.description">
-            A comprehensive collection of articles exploring Liquindo's
-            ideology, history, and vision.
+        <div class="article-header">
+          <h1 class="article-title">Liquindo</h1>
+          <p class="article-subtitle">The Federal Republic of Liquindo</p>
+        </div>
+
+        <!-- Infobox -->
+        <div class="infobox">
+          <div class="infobox-title">Liquindo</div>
+          <div class="infobox-flag">
+            <strong>Flag</strong><br>
+            🟨🟦⚪
+          </div>
+          
+          <div class="infobox-row">
+            <span class="infobox-label">Official name</span>
+            <span class="infobox-value">Federal Republic of Liquindo</span>
+          </div>
+          
+          <div class="infobox-row">
+            <span class="infobox-label">Motto</span>
+            <span class="infobox-value">Liquindo regit undas</span>
+          </div>
+          
+          <div class="infobox-row">
+            <span class="infobox-label">(English)</span>
+            <span class="infobox-value">Liquindo rules the waves</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Government</span>
+            <span class="infobox-value">Anocratic Proto-state</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Director</span>
+            <span class="infobox-value">Diego Liquin</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Co-Director</span>
+            <span class="infobox-value">Edward Fullwood</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Capital</span>
+            <span class="infobox-value">Caput</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Largest suburb</span>
+            <span class="infobox-value">Edwardia</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Official language</span>
+            <span class="infobox-value">Liquindian</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Other languages</span>
+            <span class="infobox-value">English, Latin</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Demonym</span>
+            <span class="infobox-value">Liquindian</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Legislature</span>
+            <span class="infobox-value">Council of 15</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">Currency</span>
+            <span class="infobox-value">Liquindian laiko</span>
+          </div>
+
+          <div class="infobox-row">
+            <span class="infobox-label">HDI</span>
+            <span class="infobox-value">0.191 (low)</span>
+          </div>
+        </div>
+
+        <!-- Introduction -->
+        <div class="section">
+          <p>
+            <strong>Liquindo</strong>, officially the <strong>Federal Republic of Liquindo</strong>, is envisioned as a 
+            crowdfunded island nation; a refuge from global instability, an experimental society blending modern 
+            innovation, traditional values, and self-sufficiency.
           </p>
         </div>
 
-        <!-- Ideology Section -->
-        <div class="article-list">
-          <h2 data-i18n="articles.section.ideology">Ideology</h2>
-          <div class="articles-grid">
-            <a href="#" class="article-card coming-soon">
-              <h3>The Liquindian Manifesto</h3>
-              <p>
-                A comprehensive overview of Liquindo's ideological foundation
-                and core principles.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Philosophy</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>Third Position Economics</h3>
-              <p>
-                Understanding Liquindo's corporatist economic model and how it
-                differs from capitalism and socialism.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Economics</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>Guild-Based Society</h3>
-              <p>
-                Exploring Liquindo's vision of organizing society into guilds
-                rather than corporate structures.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Society</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>Anti-Liberalism and Political Philosophy</h3>
-              <p>
-                An examination of Liquindo's rejection of liberal politics and
-                the limitations of traditional left-right spectrum analysis.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Politics</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-          </div>
+        <!-- Etymology -->
+        <div class="section">
+          <h2 class="section-title">Etymology</h2>
+          <p>
+            Liquindo is a play on the Portuguese words "Lindo" and "Liquido" translating to "Beautiful" and "Liquid", 
+            the latter referring to Water.
+          </p>
         </div>
 
-        <!-- History Section -->
-        <div class="article-list">
-          <h2 data-i18n="articles.section.history">History</h2>
-          <div class="articles-grid">
-            <a href="#" class="article-card coming-soon">
-              <h3>Origins of Liquindo: 2021</h3>
-              <p>
-                The genesis of Liquindo's concept, inspired by the Rose Island
-                documentary and early ideological development.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Timeline</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>Liquindo Revivals: 2023-2025</h3>
-              <p>
-                The journey through multiple revivals led by Finn Vaughton and
-                Edward Fullwood, bringing renewed momentum.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Timeline</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>The Creation of the First Flag</h3>
-              <p>
-                The symbolic significance of the first physical Liquindo flag
-                (July 3, 2025) and its merchandise expansion.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Milestones</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-          </div>
+        <!-- History -->
+        <div class="section">
+          <h2 class="section-title">History</h2>
+          <p>
+            Liquindo's primary conception was thought of in 2021 when Diego Liquin was still in secondary school. 
+            The idea was inspired by the Netflix documentary film <a href="https://en.wikipedia.org/wiki/Rose%20Island%20(film)">Rose Island</a>.
+          </p>
+          <p>
+            Since 2021, there have been multiple revivals of Liquindo, most notably from Finn Vaughton (2023) and 
+            Edward Fullwood (2025). The latter which is ongoing. The first physical Liquindo flag ever created was 
+            made on the 3rd of July 2025, and other merchandise has been created such as pin-badges and stickers.
+          </p>
+          <p>
+            Development of the Liquindian language started on the 16th of November 2025. It currently has 200+ words.
+          </p>
         </div>
 
-        <!-- Leadership Section -->
-        <div class="article-list">
-          <h2 data-i18n="articles.section.leadership">Leadership</h2>
-          <div class="articles-grid">
-            <a href="#" class="article-card coming-soon">
-              <h3>Diego Liquin: The Founder</h3>
-              <p>
-                The visionary founder of Liquindo and primary architect of its
-                ideological framework.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">People</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-
-            <a href="#" class="article-card coming-soon">
-              <h3>Key Figures and Contributors</h3>
-              <p>
-                Profiles of Doctor Fullwood, Edison the Mentor, and other key
-                individuals shaping Liquindo's direction.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">People</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-          </div>
+        <!-- Vexillology -->
+        <div class="section">
+          <h2 class="section-title">Vexillology</h2>
+          <p>
+            Liquindo has undergone three flag changes since its establishment in 2021 but maintains its current flag: 
+            a yellow, navy, and white tricolor with a yin-yang charge rotated 90 degrees counter-clockwise, recolored to 
+            navy and yellow. It also hosts a star in the upper-middle of the yin-yang. The star signifies authority, the navy 
+            being integrity, mustard being the people and the white being faith.
+          </p>
+          <table class="color-table">
+            <tr>
+              <th>Color</th>
+              <th>HEX Code</th>
+              <th>Meaning</th>
+            </tr>
+            <tr>
+              <td>Navy</td>
+              <td>#000032</td>
+              <td>Integrity</td>
+            </tr>
+            <tr>
+              <td>Mustard</td>
+              <td>#FDBE00</td>
+              <td>The People</td>
+            </tr>
+            <tr>
+              <td>White</td>
+              <td>#FFFFFF</td>
+              <td>Faith</td>
+            </tr>
+          </table>
         </div>
 
-        <!-- Projects Section -->
-        <div class="article-list">
-          <h2 data-i18n="articles.section.projects">Projects & Goals</h2>
-          <div class="articles-grid">
-            <a href="#" class="article-card coming-soon">
-              <h3>The 2028 Operational Launch</h3>
-              <p>
-                Liquindo's timeline and strategic plan for transitioning from a
-                conceptual project to operational reality.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Future</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
+        <!-- Government -->
+        <div class="section">
+          <h2 class="section-title">Government</h2>
+          <p><em>As Liquindo's development has not started, such as buying the island, the following information is theoretical.</em></p>
+          
+          <p>
+            Liquindo would operate as a junta, led by Diego Liquin and below him his investors who would sway and 
+            appeal decisions.
+          </p>
 
-            <a href="#" class="article-card coming-soon">
-              <h3>Island Acquisition Strategy</h3>
-              <p>
-                The collective purchasing initiative and territorial objectives
-                for establishing Liquindo as a sovereign nation.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Goals</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
+          <h3 class="subsection-title">Pre-Democratization</h3>
+          <p>
+            In a time pre-democratization, Liquindo would operate as an elective autocracy. The first dictator (Diego Liquin) 
+            would appoint 5 political advisors. After his death, these advisors would elect a new dictator. The new dictator 
+            would then appoint 5 new advisors, allowing the cycle to repeat itself. The dictator's powers would be bound by 
+            his advisors, and since he appointed them himself, there would be no political struggle unless the advisors truly 
+            doubt the dictator's ability to rule.
+          </p>
 
-            <a href="#" class="article-card coming-soon">
-              <h3>Creating the Liquindian Race</h3>
-              <p>
-                Liquindo's vision for cultivating a unified national identity
-                and cultural legacy for its future citizens.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">Culture</span>
-                <span class="badge">Coming Soon</span>
-              </div>
-            </a>
-          </div>
+          <h3 class="subsection-title">Permanent Structure</h3>
+          <p>
+            Liquindo would be an autocratic regime ruled under the administration of Liquin's Plan. The director would serve 
+            as head of state. Instead of democracy, parties would be assimilated into the administration, under the approval 
+            of Liquin and those already accepted, and converted into factions, which the public can join. This would avoid 
+            any severe political interference in contrast to the administration's ideologies.
+          </p>
         </div>
 
-        <!-- FAQ Section -->
-        <div class="article-list">
-          <h2 data-i18n="articles.section.faq">Frequently Asked Questions</h2>
-          <div class="articles-grid">
-            <a href="index.html#ideology" class="article-card">
-              <h3>Common Questions</h3>
-              <p>
-                Explore answers to frequently asked questions about Liquindo's
-                ideology, structure, and long-term vision.
-              </p>
-              <div class="article-meta">
-                <span class="category-label">FAQ</span>
-              </div>
-            </a>
-          </div>
+        <!-- Political Factions -->
+        <div class="section">
+          <h2 class="section-title">Political Factions</h2>
+          <p>
+            Factions are represented by the populace, and hence Liquindo is a one-party state. Political parties are replaced 
+            by factions. However, only selected factions are accepted if they align with Liquindo's current ideology. So factions 
+            can be rejected more often than parties in other nations.
+          </p>
+          <table class="faction-table">
+            <tr>
+              <th>Faction</th>
+              <th>Leader</th>
+              <th>Ideology</th>
+              <th>Slogan</th>
+              <th>Members</th>
+            </tr>
+            <tr>
+              <td>Liquindo Nationalist Front</td>
+              <td>Edward Fullwood</td>
+              <td>Nationalist Populism</td>
+              <td>"Liquindo first, Liquindo forever"</td>
+              <td>60</td>
+            </tr>
+            <tr>
+              <td>Liquindian Integralist Front</td>
+              <td>Vacant</td>
+              <td>Integralism</td>
+              <td>"God, Family, Liquindo"</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>National Development Faction</td>
+              <td>Vacant</td>
+              <td>National Developmentalism</td>
+              <td>"Infrastructure before Intention"</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Nuclear Proliferation Faction</td>
+              <td>Vacant</td>
+              <td>Nuclear Proliferation</td>
+              <td>"No bomb, no sovereignty"</td>
+              <td>1</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Foreign Policy -->
+        <div class="section">
+          <h2 class="section-title">Foreign Policy</h2>
+          <p>
+            Liquindo maintains a mainly isolationist, non-interventionist foreign policy, in hopes of achieving autarky.
+          </p>
+        </div>
+
+        <!-- Vaughtonology -->
+        <div class="section">
+          <h2 class="section-title">Vaughtonology</h2>
+          <p>
+            Vaughtonology is a practice of ideals taught by Finn Vaughton that glories ultra-nationalism, anti-immigration, 
+            and military extension of power. In addition to this, Vaughton stresses that Vaughtonology advocates for pure democracy 
+            and only would convert the nation into a military dictatorship under fear of decreasing cultural significance. It is 
+            said in Vaughtonology that foreigners are the modern roots of all problems in society.
+          </p>
+          <p>
+            On a micronational scale, it is debated whether ethnic racism can exist, although some contingencies can occur. 
+            The ideology is condemned by Liquindo national law, due to its inherently controversial nature. If true Vaughtonology 
+            were to be unleashed, the military slogan would be "Tod den Ausländern"/"외국인의 죽음" translating to "Death to the Foreigner". 
+            He also says that he follows everything in Liquindo apart from the dictatorship—this includes the Liquindo super-race.
+          </p>
+        </div>
+
+        <!-- Geography and Urban Planning -->
+        <div class="section">
+          <h2 class="section-title">Geography and Urban Planning</h2>
+          <p>
+            There have been plans made to create geographically distinct towns on the island:
+          </p>
+          <ul>
+            <li>
+              <strong>Caput</strong> would be the designated capital, holding legislative, judicial and executive bodies, 
+              and would be the central government hub like Washington D.C or Brasilia. Brutalist architecture resembling 
+              authoritarianism, but walled off as a last resort against an invasion, inspired by Osaka Castle.
+            </li>
+            <li>
+              <strong>Edwardia</strong> (named after Edward Fullwood) would be the designated residential centre with 
+              the densest population and highest economic activity.
+            </li>
+            <li>
+              <strong>Vaughtown</strong> (named after Finn Vaughton—whose reputation remains at stake due to infighting 
+              between him and Liquin) would be the designated military hub, storing ammunition and logistics supplies.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Culture and Society -->
+        <div class="section">
+          <h2 class="section-title">Culture and Society</h2>
+          <p>
+            Despite its authoritarian structure, Liquindo maintains a sense of community life through nightly meetings, 
+            shared meals, and open-air gatherings in its amphitheatre and plaza. Islanders typically travel by golf buggy 
+            to different towns, which each contribute distinct cultural characteristics. Edwardia is known for its middle-class 
+            identity and the strong presence of the Liquindo Nationalist Front, whose supporters—nicknamed "steakandeggocrats"—popularise 
+            the local dish of steak and eggs.
+          </p>
+          <p>
+            Daily life is structured but not rigid, with an emphasis on collective contribution, routine rituals, and shared 
+            public spaces. The Work-Based Housing Allocation System (WBHAS) influences social organization, as residents typically 
+            live close to their designated labour sectors and rotate tasks depending on the island's needs.
+          </p>
+        </div>
+
+        <!-- National Holidays -->
+        <div class="section">
+          <h2 class="section-title">National Holidays</h2>
+          <table class="holiday-table">
+            <tr>
+              <th>Holiday</th>
+              <th>Date</th>
+            </tr>
+            <tr>
+              <td>Christmas</td>
+              <td>25 December</td>
+            </tr>
+            <tr>
+              <td>Founding Day</td>
+              <td>Unknown</td>
+            </tr>
+            <tr>
+              <td>Steak and Eggs Day</td>
+              <td>28 April</td>
+            </tr>
+            <tr>
+              <td>Liquin Day</td>
+              <td>1 July</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Military -->
+        <div class="section">
+          <h2 class="section-title">Military</h2>
+          <p>
+            The military in Liquindo is not a separate warrior caste or professional standing army, but a permanent national 
+            militia integrated directly into society. Every citizen is expected to participate in national defense through regular 
+            training, discipline, and readiness, making military service part of ordinary civic life rather than a specialized career. 
+            The nation is therefore understood as an armed community capable of collective defense at all times. Citizens retrain 
+            periodically throughout their lives, creating a society where preparedness, endurance, and sacrifice become normal cultural 
+            expectations rather than exceptional wartime measures.
+          </p>
+          
+          <h3 class="subsection-title">Military Philosophy</h3>
+          <p>
+            The military exists primarily for defense and deterrence rather than conquest or ideological expansion. War is viewed as 
+            a tragic necessity rather than a glorious pursuit, and the ideal outcome is preventing invasion or collapse through overwhelming 
+            readiness and national unity. Because of this defensive philosophy, the armed forces are designed around resilience, mobilization, 
+            territorial familiarity, and social cohesion instead of permanent foreign deployment. The state seeks to create a population that 
+            is difficult to intimidate, occupy, or destabilize because the military structure is inseparable from the civilian population itself.
+          </p>
+
+          <h3 class="subsection-title">Military Culture</h3>
+          <p>
+            Military culture is intentionally spartan and anti-decadent. Rank and authority are earned through merit, sacrifice, and combat 
+            performance rather than wealth or aristocratic inheritance. Officers are expected to embody discipline, calmness, and personal 
+            endurance, and leadership positions throughout the state require military experience to ensure that political authority is 
+            connected to service and sacrifice. The ideal soldier is not fanatical or reckless but composed, loyal, spiritually grounded, 
+            and prepared to suffer for the survival of the nation if necessary.
+          </p>
+
+          <h3 class="subsection-title">Intelligence and Special Operations</h3>
+          <p>
+            Although there is no massive professional standing army, elite guard formations and intelligence institutions can still exist 
+            to protect the leadership, monitor threats, and coordinate national security. Intelligence and special operations are considered 
+            important because the state sees modern instability, foreign influence, and internal decay as ongoing dangers even during peacetime. 
+            However, these institutions remain subordinate to the national militia structure rather than replacing it.
+          </p>
+
+          <h3 class="subsection-title">Civilian Functions</h3>
+          <p>
+            The military also performs major civilian functions. During disasters, infrastructure crises, or national emergencies, militia 
+            units assist with relief, logistics, reconstruction, and public order. This reinforces the idea that the military is not merely 
+            an instrument of violence but a guardian of national continuity and survival. Environmental protection, self-sufficiency, and 
+            civil defense all become part of military planning, with strategic reserves and domestic production treated as essential to 
+            long-term resilience.
+          </p>
+
+          <h3 class="subsection-title">Aesthetic and Cultural Aspects</h3>
+          <p>
+            Aesthetically and culturally, the military favors traditionalism over futuristic spectacle. Uniforms, ceremonies, and symbols 
+            emphasize continuity, simplicity, and collective identity rather than individual expression. Weapons ownership is regulated and 
+            tied directly to militia participation, meaning arms are viewed as instruments of duty rather than personal freedom. Overall, 
+            the military functions as the disciplined backbone of society: calm, defensive, sacrificial, and permanently intertwined with 
+            the nation itself.
+          </p>
+        </div>
+
+        <!-- Economy -->
+        <div class="section">
+          <h2 class="section-title">Economy</h2>
+          <p>
+            Liquindo's economy is built around the idea that economic life should serve the nation, the family, and social stability rather 
+            than individual profit or consumerism. Heavy industry, infrastructure, banking, energy, and other strategic sectors are owned and 
+            directed by the state, which uses them to maintain national self-sufficiency, military preparedness, and long-term prosperity. 
+            Industrial production is planned according to national needs rather than market competition, and large private corporations do not exist. 
+            The economy is therefore highly centralized in industry, with the state acting as the organizer and coordinator of production.
+          </p>
+
+          <h3 class="subsection-title">Agriculture</h3>
+          <p>
+            At the same time, agriculture is decentralized and hereditary. Farms are owned by families and remain within family dynasties across 
+            generations. Land cannot be freely expanded, traded, or accumulated into large estates, preventing the rise of landlords or agrarian 
+            monopolies. Rural life is treated not only as an economic necessity but also as the cultural and spiritual foundation of the nation. 
+            The countryside preserves continuity, tradition, and social cohesion, while also guaranteeing food security and limiting dependence 
+            on foreign imports.
+          </p>
+
+          <h3 class="subsection-title">Markets and Trade</h3>
+          <p>
+            Markets exist only in a very limited form. The economy does not prioritize free competition, speculative finance, luxury consumption, 
+            or constant growth for its own sake. Prices and production are largely directed by the state according to perceived social usefulness 
+            and national priorities. Innovation and entrepreneurship are allowed only when approved by the state and when they benefit the collective 
+            good rather than private accumulation. Foreign corporations and excessive international trade are rejected in favor of near-total autarky, 
+            with the nation attempting to produce as much as possible domestically.
+          </p>
+
+          <h3 class="subsection-title">Labor and Wealth</h3>
+          <p>
+            Work is viewed primarily as a duty and necessity rather than a path to personal enrichment. Citizens are expected to contribute productively 
+            to society, either through agriculture, industry, military service, or other forms of labor. Strikes are illegal because labor conflict is 
+            considered harmful to national unity, and the state coordinates labor relations directly. Wealth inequality is minimized by preventing large 
+            concentrations of private capital, although exceptional service and merit can still be rewarded by the state.
+          </p>
+
+          <h3 class="subsection-title">Economic Vision</h3>
+          <p>
+            The ideal economy is therefore disciplined, productive, self-sufficient, environmentally conscious, and socially unified, rejecting both 
+            global capitalism and fully collectivized communism in favor of a nationally directed communitarian system.
+          </p>
+        </div>
+
+        <!-- External Links -->
+        <div class="section">
+          <h2 class="section-title">External Links</h2>
+          <ul>
+            <li><a href="https://discord.gg/pMBuqkTfVF" target="_blank">Discord</a></li>
+            <li><a href="https://www.patreon.com/liquindiego?utm_source=search" target="_blank">Patreon</a></li>
+            <li><a href="https://www.tiktok.com/@based.lnf.supporter" target="_blank">Unofficial TikTok</a></li>
+          </ul>
+        </div>
+
+        <!-- See Also -->
+        <div class="section">
+          <h2 class="section-title">See Also</h2>
+          <ul>
+            <li>Vaughtonology</li>
+            <li>Liquindo Nationalist Front</li>
+            <li>Liquindian Integralist Front</li>
+            <li>National Development Faction</li>
+            <li>Nuclear Proliferation Faction</li>
+            <li>Liquin's Plan</li>
+            <li>Diego Liquin</li>
+            <li>Edward Fullwood</li>
+          </ul>
         </div>
       </div>
     </main>
