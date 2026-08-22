@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liquindo - Articles</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .articles-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .articles-header {
+        margin-bottom: 40px;
+        text-align: center;
+      }
+
+      .articles-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        color: #1a1a1a;
+      }
+
+      .articles-header p {
+        font-size: 1.1em;
+        color: #555;
+      }
+
+      .articles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .article-card {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .article-card:hover {
+        border-color: #333;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .article-card h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #1a1a1a;
+        font-size: 1.3em;
+      }
+
+      .article-card p {
+        margin: 0;
+        color: #666;
+        font-size: 0.95em;
+        line-height: 1.5;
+      }
+
+      .article-meta {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #ddd;
+        font-size: 0.85em;
+        color: #999;
+      }
+
+      .category-label {
+        display: inline-block;
+        background: #e8e8e8;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        margin-right: 8px;
+      }
+
+      .article-list {
+        margin-bottom: 50px;
+      }
+
+      .article-list h2 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .coming-soon {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .coming-soon:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .badge {
+        display: inline-block;
+        background: #ff9800;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 0.75em;
+        font-weight: bold;
+        margin-left: 8px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-bottom: 30px;
+        padding: 10px 15px;
+        background: #f0f0f0;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+        transition: background 0.3s;
+      }
+
+      .back-link:hover {
+        background: #e0e0e0;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="index.html#home">Liquindo</a>
+        <div class="nav-links">
+          <a href="index.html#home" data-i18n="nav.introduction">Introduction</a>
+          <a href="index.html#history" data-i18n="nav.history">History</a>
+          <a href="index.html#ideology" data-i18n="nav.ideology">Ideology</a>
+          <a href="index.html#members" data-i18n="nav.members">Members</a>
+          <a href="index.html#gallery" data-i18n="nav.gallery">Gallery</a>
+          <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+          <a href="index.html#finance" data-i18n="nav.finance">Finance</a>
+          <a href="articles.html" class="active">Articles</a>
+        </div>
+        <select id="language-switcher" class="language-switcher" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="ru">Русский</option>
+          <option value="pt">Português</option>
+          <option value="pl">Polski</option>
+          <option value="it">Italiano</option>
+          <option value="zh">中文</option>
+        </select>
+      </nav>
+    </header>
+
+    <main>
+      <div class="articles-container">
+        <a href="index.html#home" class="back-link">← Back to Main Site</a>
+
+        <div class="articles-header">
+          <h1 data-i18n="articles.title">Liquindo Articles</h1>
+          <p data-i18n="articles.description">
+            A comprehensive collection of articles exploring Liquindo's
+            ideology, history, and vision.
+          </p>
+        </div>
+
+        <!-- Ideology Section -->
+        <div class="article-list">
+          <h2 data-i18n="articles.section.ideology">Ideology</h2>
+          <div class="articles-grid">
+            <a href="#" class="article-card coming-soon">
+              <h3>The Liquindian Manifesto</h3>
+              <p>
+                A comprehensive overview of Liquindo's ideological foundation
+                and core principles.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Philosophy</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Third Position Economics</h3>
+              <p>
+                Understanding Liquindo's corporatist economic model and how it
+                differs from capitalism and socialism.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Economics</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Guild-Based Society</h3>
+              <p>
+                Exploring Liquindo's vision of organizing society into guilds
+                rather than corporate structures.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Society</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Anti-Liberalism and Political Philosophy</h3>
+              <p>
+                An examination of Liquindo's rejection of liberal politics and
+                the limitations of traditional left-right spectrum analysis.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Politics</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="article-list">
+          <h2 data-i18n="articles.section.history">History</h2>
+          <div class="articles-grid">
+            <a href="#" class="article-card coming-soon">
+              <h3>Origins of Liquindo: 2021</h3>
+              <p>
+                The genesis of Liquindo's concept, inspired by the Rose Island
+                documentary and early ideological development.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Timeline</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Liquindo Revivals: 2023-2025</h3>
+              <p>
+                The journey through multiple revivals led by Finn Vaughton and
+                Edward Fullwood, bringing renewed momentum.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Timeline</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>The Creation of the First Flag</h3>
+              <p>
+                The symbolic significance of the first physical Liquindo flag
+                (July 3, 2025) and its merchandise expansion.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Milestones</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Leadership Section -->
+        <div class="article-list">
+          <h2 data-i18n="articles.section.leadership">Leadership</h2>
+          <div class="articles-grid">
+            <a href="#" class="article-card coming-soon">
+              <h3>Diego Liquin: The Founder</h3>
+              <p>
+                The visionary founder of Liquindo and primary architect of its
+                ideological framework.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">People</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Key Figures and Contributors</h3>
+              <p>
+                Profiles of Doctor Fullwood, Edison the Mentor, and other key
+                individuals shaping Liquindo's direction.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">People</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="article-list">
+          <h2 data-i18n="articles.section.projects">Projects & Goals</h2>
+          <div class="articles-grid">
+            <a href="#" class="article-card coming-soon">
+              <h3>The 2028 Operational Launch</h3>
+              <p>
+                Liquindo's timeline and strategic plan for transitioning from a
+                conceptual project to operational reality.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Future</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Island Acquisition Strategy</h3>
+              <p>
+                The collective purchasing initiative and territorial objectives
+                for establishing Liquindo as a sovereign nation.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Goals</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+
+            <a href="#" class="article-card coming-soon">
+              <h3>Creating the Liquindian Race</h3>
+              <p>
+                Liquindo's vision for cultivating a unified national identity
+                and cultural legacy for its future citizens.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">Culture</span>
+                <span class="badge">Coming Soon</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="article-list">
+          <h2 data-i18n="articles.section.faq">Frequently Asked Questions</h2>
+          <div class="articles-grid">
+            <a href="index.html#ideology" class="article-card">
+              <h3>Common Questions</h3>
+              <p>
+                Explore answers to frequently asked questions about Liquindo's
+                ideology, structure, and long-term vision.
+              </p>
+              <div class="article-meta">
+                <span class="category-label">FAQ</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p data-i18n="footer.contact">Contact: liquindohq@yahoo.com</p>
+        <a href="index.html#home" data-i18n="footer.top">Back to top</a>
+      </div>
+      <a
+        href="https://github.com/liquindirect/liquindo"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-repo"
+        data-i18n="footer.repo"
+        >View on GitHub</a
+      >
+    </footer>
+    <script src="i18n.js"></script>
+  </body>
+</html>
