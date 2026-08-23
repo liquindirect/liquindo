@@ -14,22 +14,6 @@
         color: #333;
       }
 
-      .back-link {
-        display: inline-block;
-        margin-bottom: 30px;
-        padding: 10px 15px;
-        background: #f0f0f0;
-        border-radius: 4px;
-        text-decoration: none;
-        color: #333;
-        transition: background 0.3s;
-      }
-
-      .back-link:hover {
-        background: #e0e0e0;
-        text-decoration: none;
-      }
-
       .articles-list {
         list-style: none;
         padding: 0;
@@ -99,37 +83,8 @@
     </style>
   </head>
   <body>
-    <header class="site-header">
-      <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="index.html#home">Liquindo</a>
-        <div class="nav-links">
-          <a href="index.html#home" data-i18n="nav.introduction">Introduction</a>
-          <a href="index.html#history" data-i18n="nav.history">History</a>
-          <a href="index.html#ideology" data-i18n="nav.ideology">Ideology</a>
-          <a href="index.html#members" data-i18n="nav.members">Members</a>
-          <a href="index.html#gallery" data-i18n="nav.gallery">Gallery</a>
-          <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
-          <a href="index.html#finance" data-i18n="nav.finance">Finance</a>
-          <a href="articles.html" class="active">Articles</a>
-        </div>
-        <select id="language-switcher" class="language-switcher" aria-label="Select language">
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="ru">Русский</option>
-          <option value="pt">Português</option>
-          <option value="pl">Polski</option>
-          <option value="it">Italiano</option>
-          <option value="zh">中文</option>
-        </select>
-      </nav>
-    </header>
-
     <main>
       <div class="wiki-container">
-        <a href="index.html#home" class="back-link">← Back to Main Site</a>
-
         <h1 class="wiki-title">Liquinwiki</h1>
         <p class="wiki-subtitle">Encyclopedia of Liquindo</p>
 
@@ -154,21 +109,5 @@
         </ul>
       </div>
     </main>
-
-    <footer>
-      <div class="footer-content">
-        <p data-i18n="footer.contact">Contact: liquindohq@yahoo.com</p>
-        <a href="index.html#home" data-i18n="footer.top">Back to top</a>
-      </div>
-      <a
-        href="https://github.com/liquindirect/liquindo"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="footer-repo"
-        data-i18n="footer.repo"
-        >View on GitHub</a
-      >
-    </footer>
-    <script src="i18n.js"></script>
   </body>
 </html>
