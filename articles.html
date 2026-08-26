@@ -23,6 +23,12 @@
       border-radius: 4px;
       text-decoration: none;
       color: #333;
+      transition: background 0.3s;
+    }
+
+    .back-link:hover {
+      background: #e0e0e0;
+      text-decoration: none;
     }
 
     .articles-list {
@@ -37,6 +43,7 @@
       background: #f9f9f9;
       border: 1px solid #ddd;
       border-radius: 5px;
+      transition: all 0.3s ease;
     }
 
     .articles-list li:hover {
@@ -57,6 +64,10 @@
       color: #0645ad;
     }
 
+    .articles-list a:hover h3 {
+      text-decoration: underline;
+    }
+
     .article-description {
       margin: 0;
       color: #666;
@@ -67,88 +78,5 @@
     .wiki-title {
       text-align: center;
       font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    .wiki-subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 40px;
-    }
-  </style>
-</head>
-
-<body>
-  <main>
-    <div class="wiki-container">
-
-      <a href="index.html#home" class="back-link">
-        ← Back to Main Site
-      </a>
-
-      <h1 class="wiki-title">Liquinwiki</h1>
-      <p class="wiki-subtitle">Encyclopedia of Liquindo</p>
-
-      <ul class="articles-list">
-
-        <li>
-          <a href="wiki-liquindo.html">
-            <h3>Liquindo</h3>
-            <p class="article-description">
-              Liquindo, officially the Federal Republic of Liquindo, is
-              envisioned as a crowdfunded island nation; a refuge from global
-              instability, an experimental society blending modern innovation,
-              traditional values, and self-sufficiency.
-            </p>
-          </a>
-        </li>
-
-        <li>
-          <a href="wiki-liquin-plan.html">
-            <h3>Liquin's Plan</h3>
-            <p class="article-description">
-              Liquin's Plan (of Action), abbreviated L'PA, is the founding and
-              current ruling administration of Liquindo.
-            </p>
-          </a>
-        </li>
-
-        <li>
-          <a href="wiki-lnf.html">
-            <h3>Liquindo Nationalist Front</h3>
-            <p class="article-description">
-              The Liquindo Nationalist Front (LNF) is a political faction of
-              Liquindo focused on nationalism, national identity, social
-              discipline, hierarchy, and demographic policy.
-            </p>
-          </a>
-        </li>
-
-        <li>
-          <a href="wiki-integralist-front.html">
-            <h3>Liquindian Integralist Front</h3>
-            <p class="article-description">
-              The Liquindian Integralist Front is a political faction in
-              Liquindo associated with Catholic integralism, distributism,
-              and the proposed union of Church and state.
-            </p>
-          </a>
-        </li>
-
-        <li>
-          <a href="wiki-npf.html">
-            <h3>Nuclear Proliferation Faction</h3>
-            <p class="article-description">
-              The Nuclear Proliferation Faction (NPF) is a political faction
-              in Liquindo associated with nuclear deterrence and containing
-              both a standard nationalist and fringe accelerationist current.
-            </p>
-          </a>
-        </li>
-
-      </ul>
-
-    </div>
-  </main>
-</body>
-</html>
+      font-weight: bold;
+      margin-bottom
