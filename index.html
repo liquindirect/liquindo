@@ -12,77 +12,43 @@
     <title>Liquindo</title>
 
     <link rel="stylesheet" href="style.css" />
-
-    <style>
-      /* Liquinwiki strip */
-      .liquinwiki-strip {
-        background: white;
-        padding: 20px 0;
-        text-align: center;
-        border-top: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        margin: 30px 0;
-      }
-
-      .liquinwiki-link {
-        font-size: 1.4rem;
-        font-weight: bold;
-        color: #333;
-        text-decoration: none;
-        letter-spacing: 2px;
-      }
-
-      .liquinwiki-link:hover,
-      .liquinwiki-link:focus-visible {
-        text-decoration: underline;
-      }
-
-      /* Operational countdown */
-      .countdown-vertical {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 24px;
-      }
-
-      .countdown-row {
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-      }
-
-      .countdown-row strong {
-        min-width: 7ch;
-        font-size: 2rem;
-        font-weight: 700;
-        font-variant-numeric: tabular-nums;
-      }
-
-      .countdown-row span {
-        font-size: 1rem;
-      }
-
-      @media (max-width: 600px) {
-        .countdown-row strong {
-          font-size: 1.6rem;
-        }
-      }
-    </style>
   </head>
 
   <body>
     <header class="site-header">
       <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="#home">Liquindo</a>
+        <a class="brand" href="#home">
+          Liquindo
+        </a>
 
         <div class="nav-links">
-          <a href="#home" data-i18n="nav.introduction">Introduction</a>
-          <a href="#history" data-i18n="nav.history">History</a>
-          <a href="#ideology" data-i18n="nav.ideology">Ideology</a>
-          <a href="#members" data-i18n="nav.members">Members</a>
-          <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
-          <a href="#contact" data-i18n="nav.contact">Contact</a>
-          <a href="#finance" data-i18n="nav.finance">Finance</a>
+          <a href="#home" data-i18n="nav.introduction">
+            Introduction
+          </a>
+
+          <a href="#history" data-i18n="nav.history">
+            History
+          </a>
+
+          <a href="#ideology" data-i18n="nav.ideology">
+            Ideology
+          </a>
+
+          <a href="members.html" data-i18n="nav.members">
+            Members
+          </a>
+
+          <a href="gallery.html" data-i18n="nav.gallery">
+            Gallery
+          </a>
+
+          <a href="#contact" data-i18n="nav.contact">
+            Contact
+          </a>
+
+          <a href="#finance" data-i18n="nav.finance">
+            Finance
+          </a>
         </div>
 
         <select
@@ -91,19 +57,17 @@
           aria-label="Select language"
         >
           <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="ru">Русский</option>
           <option value="pt">Português</option>
           <option value="pl">Polski</option>
-          <option value="it">Italiano</option>
+          <option value="ru">Русский</option>
           <option value="zh">中文</option>
         </select>
       </nav>
 
       <aside class="liquin-message">
-        <strong data-i18n="message.title">Message from Liquin</strong>
+        <strong data-i18n="message.title">
+          Message from Liquin
+        </strong>
 
         <span data-i18n="message.text">
           Welcome to the Liquindo website. The site is being updated and
@@ -122,11 +86,9 @@
           </h1>
 
           <p data-i18n="hero.description">
-            Liquindo is an idealistic project about the collective purchase of
-            an island or sovereign territory where we can establish a new
-            nation-state that is not under the influence of the global elite
-            and its liberal world order. It will be controlled by an economy
-            and a class of the Third Position.
+            Liquindo is a political and nation-building project centered on the
+            idea of collectively establishing a new community with its own
+            institutions, identity, economy, and political system.
           </p>
         </div>
       </section>
@@ -154,31 +116,37 @@
 
         <div class="timeline">
           <article>
-            <span>2021</span>
+            <span data-i18n="history.year1">
+              2021
+            </span>
 
-            <p>
-              Liquindo's primary conception was thought of in 2021, when Diego
-              Liquin was still in secondary school. The idea was inspired by
-              the Netflix docufilm <em>Rose Island</em>.
+            <p data-i18n="history.text1">
+              Liquindo's primary conception was developed in 2021 while its
+              founder was still in secondary school. The project was partly
+              inspired by the film Rose Island.
             </p>
           </article>
 
           <article>
-            <span>2023–2025</span>
+            <span data-i18n="history.year2">
+              2023–2025
+            </span>
 
-            <p>
-              Since 2021, there have been multiple revivals of Liquindo, most
-              notably from Finn Vaughton in 2023 and Edward Fullwood in 2025,
-              the latter of which is ongoing.
+            <p data-i18n="history.text2">
+              The project went through several revivals and periods of renewed
+              activity, with additional people becoming involved in its
+              political and organisational development.
             </p>
           </article>
 
           <article>
-            <span>3 July 2025</span>
+            <span data-i18n="history.year3">
+              3 July 2025
+            </span>
 
-            <p>
+            <p data-i18n="history.text3">
               The first physical Liquindo flag was created on 3 July 2025.
-              Other merchandise has since been produced, including pin badges
+              Other project materials were later produced, including pin badges
               and stickers.
             </p>
           </article>
@@ -198,8 +166,8 @@
         </div>
 
         <p data-i18n="section.ideology.description">
-          This section will explain Liquindo's beliefs, principles, and vision
-          once the manifesto is ready.
+          This section explains Liquindo's developing political principles,
+          institutional ideas, and long-term vision.
         </p>
 
         <div class="faq-section">
@@ -214,8 +182,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a1">
-                A project to collectively purchase an island to found a new
-                nation.
+                Liquindo is a project focused on establishing a new political
+                community with its own institutions, identity, and long-term
+                development goals.
               </p>
             </div>
 
@@ -225,7 +194,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a2">
-                The creation of the Liquindian race and welfare for our people.
+                Its long-term goals include establishing a stable community,
+                developing independent institutions, and improving the welfare
+                of its citizens.
               </p>
             </div>
 
@@ -235,8 +206,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a3">
-                Neither. Liquindo is above petty liberal politics and rejects
-                the use of the spectrum to disable political action.
+                Liquindo does not describe itself solely through the
+                conventional left-right political spectrum and instead combines
+                ideas from several political traditions.
               </p>
             </div>
 
@@ -246,8 +218,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a4">
-                We are corporatist, meaning society will be organised
-                economically into guilds, not ruled by corporations.
+                Liquindo has historically supported corporatist economic ideas,
+                including economic organisation through professional and
+                occupational groups.
               </p>
             </div>
 
@@ -257,7 +230,8 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a5">
-                The state is absolute and speaks for the nation and its people.
+                Liquindo favors a strong central state responsible for
+                coordinating institutions, development, and national policy.
               </p>
             </div>
 
@@ -267,8 +241,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a6">
-                Democracy is inefficient and allows the weak to be ruled by
-                the loud.
+                Liquindo is critical of some forms of liberal representative
+                democracy and places greater emphasis on political continuity,
+                administration, and long-term planning.
               </p>
             </div>
 
@@ -278,8 +253,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a7">
-                Liquindo has taxes, but not in a way that prevents a person
-                from living a content and successful life.
+                Liquindo supports taxation as a means of funding public
+                institutions while seeking to avoid excessive burdens on
+                ordinary citizens.
               </p>
             </div>
 
@@ -289,9 +265,9 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a8">
-                We support the right to revolt against the government. That is
-                why our people will be a militia, so that if Liquindo somehow
-                becomes corrupt, its people retain the ability to resist it.
+                Liquindo places greater emphasis on collective institutions,
+                state authority, public responsibility, and organised civic
+                participation than libertarian political traditions.
               </p>
             </div>
 
@@ -301,8 +277,10 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a9">
-                Liquindo was inspired by several concepts, including the
-                Republic of Rose Island and anti-liberalism.
+                Liquindo has been influenced by several political and historical
+                ideas, including micronational projects, corporatist thought,
+                anti-liberal political theory, and various forms of
+                nationalism.
               </p>
             </div>
 
@@ -312,9 +290,8 @@
               </h4>
 
               <p data-i18n="section.ideology.faq.a10">
-                Yes. Our ideology can be influenced and adapted to accommodate
-                the needs of potential citizens while retaining its core
-                principles.
+                Yes. The project continues to develop and its institutions and
+                policies may change as its political ideas are refined.
               </p>
             </div>
           </div>
@@ -394,7 +371,7 @@
               loading="lazy"
             />
 
-            <figcaption>
+            <figcaption data-i18n="gallery.main">
               Liquindo gallery
             </figcaption>
           </figure>
@@ -406,7 +383,7 @@
               loading="lazy"
             />
 
-            <figcaption>
+            <figcaption data-i18n="gallery.main">
               Liquindo gallery
             </figcaption>
           </figure>
@@ -418,7 +395,7 @@
               loading="lazy"
             />
 
-            <figcaption>
+            <figcaption data-i18n="gallery.main">
               Liquindo gallery
             </figcaption>
           </figure>
@@ -503,7 +480,9 @@
             aria-live="off"
           >
             <div class="countdown-row">
-              <strong id="seconds">0</strong>
+              <strong id="seconds">
+                0
+              </strong>
 
               <span data-i18n="countdown.seconds">
                 Seconds
@@ -511,7 +490,9 @@
             </div>
 
             <div class="countdown-row">
-              <strong id="minutes">0</strong>
+              <strong id="minutes">
+                0
+              </strong>
 
               <span data-i18n="countdown.minutes">
                 Minutes
@@ -519,7 +500,9 @@
             </div>
 
             <div class="countdown-row">
-              <strong id="days">0</strong>
+              <strong id="days">
+                0
+              </strong>
 
               <span data-i18n="countdown.days">
                 Days
@@ -527,7 +510,9 @@
             </div>
 
             <div class="countdown-row">
-              <strong id="weeks">0</strong>
+              <strong id="weeks">
+                0
+              </strong>
 
               <span data-i18n="countdown.weeks">
                 Weeks
@@ -562,12 +547,7 @@
 
     <script src="i18n.js"></script>
 
-    <!-- Operational countdown -->
     <script>
-      /*
-       * 1 January 2028 at midnight in São Paulo.
-       * São Paulo uses UTC-03:00.
-       */
       const launchDate = new Date(
         "2028-01-01T00:00:00-03:00"
       );
@@ -604,10 +584,13 @@
       }
 
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+
+      setInterval(
+        updateCountdown,
+        1000
+      );
     </script>
 
-    <!-- Tawk settings -->
     <script>
       var Tawk_API = Tawk_API || {};
 
@@ -617,6 +600,7 @@
             xOffset: 0,
             yOffset: 80
           },
+
           mobile: {
             xOffset: 0,
             yOffset: 80
@@ -625,22 +609,27 @@
       };
     </script>
 
-    <!-- Tawk.to -->
     <script>
       var Tawk_API = Tawk_API || {};
       var Tawk_LoadStart = new Date();
 
       (function () {
         var script = document.createElement("script");
+
         var firstScript =
           document.getElementsByTagName("script")[0];
 
         script.async = true;
+
         script.src =
           "https://embed.tawk.to/6a3427374873f71d454a1cc0/1jrdrickt";
 
         script.charset = "UTF-8";
-        script.setAttribute("crossorigin", "*");
+
+        script.setAttribute(
+          "crossorigin",
+          "*"
+        );
 
         firstScript.parentNode.insertBefore(
           script,
@@ -649,4 +638,4 @@
       })();
     </script>
   </body>
-  </html>
+            </html>
