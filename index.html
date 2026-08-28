@@ -5,11 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Liquindo</title>
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+      .countdown-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .countdown-row {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .countdown-row strong {
+        font-size: 2rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .countdown-row span {
+        font-size: 1rem;
+      }
+    </style>
   </head>
+
   <body>
     <header class="site-header">
       <nav class="topbar" aria-label="Main navigation">
         <a class="brand" href="#home">Liquindo</a>
+
         <div class="nav-links">
           <a href="#home" data-i18n="nav.introduction">Introduction</a>
           <a href="#history" data-i18n="nav.history">History</a>
@@ -19,7 +46,12 @@
           <a href="#contact" data-i18n="nav.contact">Contact</a>
           <a href="#finance" data-i18n="nav.finance">Finance</a>
         </div>
-        <select id="language-switcher" class="language-switcher" aria-label="Select language">
+
+        <select
+          id="language-switcher"
+          class="language-switcher"
+          aria-label="Select language"
+        >
           <option value="en">English</option>
           <option value="es">Español</option>
           <option value="fr">Français</option>
@@ -31,33 +63,42 @@
           <option value="zh">中文</option>
         </select>
       </nav>
+
       <aside class="liquin-message">
         <strong data-i18n="message.title">Message from Liquin: Week 2</strong>
-        <span data-i18n="message.text">Hello, welcome to the Liquindo website! Improvements are slow, they will ramp up temporarily after the 17th of July.</span>
+        <span data-i18n="message.text">
+          Hello, welcome to the Liquindo website! Improvements are slow, they
+          will ramp up temporarily after the 17th of July.
+        </span>
       </aside>
-      
-      <!-- Tawk settings -->
-<script>
-var Tawk_API = Tawk_API || {};
 
-Tawk_API.customStyle = {
-  visibility: {
-    desktop: {
-      xOffset: 0,
-      yOffset: 80
-    },
-    mobile: {
-      xOffset: 0,
-      yOffset: 80
-    }
-  }
-};
-</script>
-      <!--Start of Tawk.to Script-->
+      <!-- Tawk settings -->
+      <script>
+        var Tawk_API = Tawk_API || {};
+
+        Tawk_API.customStyle = {
+          visibility: {
+            desktop: {
+              xOffset: 0,
+              yOffset: 80
+            },
+            mobile: {
+              xOffset: 0,
+              yOffset: 80
+            }
+          }
+        };
+      </script>
+
+      <!-- Start of Tawk.to Script -->
       <script type="text/javascript">
-        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        var Tawk_API = Tawk_API || {},
+          Tawk_LoadStart = new Date();
+
         (function () {
-          var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+          var s1 = document.createElement("script"),
+            s0 = document.getElementsByTagName("script")[0];
+
           s1.async = true;
           s1.src = "https://embed.tawk.to/6a3427374873f71d454a1cc0/1jrdrickt";
           s1.charset = "UTF-8";
@@ -65,12 +106,14 @@ Tawk_API.customStyle = {
           s0.parentNode.insertBefore(s1, s0);
         })();
       </script>
-      <!--End of Tawk.to Script-->
+      <!-- End of Tawk.to Script -->
 
       <section class="hero" id="home">
         <div class="hero-content">
           <p class="eyebrow" data-i18n="hero.eyebrow">Introduction</p>
+
           <h1 data-i18n="hero.title">Welcome to Liquindo.</h1>
+
           <p data-i18n="hero.description">
             Liquindo is an idealistic project about the collective purchase of
             an island, or sovereign territory where we can impose a new
@@ -84,243 +127,398 @@ Tawk_API.customStyle = {
 
     <main>
       <!-- Liquinwiki Strip -->
-      <div style="background: white; padding: 20px 0; text-align: center; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin: 30px 0;">
-        <a href="articles.html" style="font-size: 1.4em; font-weight: bold; color: #333; text-decoration: none; letter-spacing: 2px;">
+      <div
+        style="
+          background: white;
+          padding: 20px 0;
+          text-align: center;
+          border-top: 1px solid #ddd;
+          border-bottom: 1px solid #ddd;
+          margin: 30px 0;
+        "
+      >
+        <a
+          href="articles.html"
+          style="
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            letter-spacing: 2px;
+          "
+        >
           &gt;Liquinwiki&lt;
         </a>
       </div>
 
-<section class="content-section" id="history">
-  <div>
-    <p class="section-label" data-i18n="section.history">History</p>
-    <h2 data-i18n="section.history.title">Background and important moments</h2>
-  </div>
+      <!-- HISTORY -->
+      <section class="content-section" id="history">
+        <div>
+          <p class="section-label" data-i18n="section.history">History</p>
 
-  <div class="timeline">
-    <article>
-      <span>2021</span>
-      <p>
-        Liquindo's primary conception was thought of in 2021 when Diego Liquin
-        was still in secondary school. The idea was inspired by the Netflix
-        docufilm <em>Rose Island</em>.
-      </p>
-    </article>
+          <h2 data-i18n="section.history.title">
+            Background and important moments
+          </h2>
+        </div>
 
-    <article>
-      <span>2023–2025</span>
-      <p>
-        Since 2021, there have been multiple revivals of Liquindo, most notably
-        from Finn Vaughton (2023) and Edward Fullwood (2025), the latter of
-        which is ongoing.
-      </p>
-    </article>
+        <div class="timeline">
+          <article>
+            <span>2021</span>
+            <p>
+              Liquindo's primary conception was thought of in 2021 when Diego
+              Liquin was still in secondary school. The idea was inspired by
+              the Netflix docufilm <em>Rose Island</em>.
+            </p>
+          </article>
 
-    <article>
-      <span>3 July 2025</span>
-      <p>
-        The first physical Liquindo flag was created on 3 July 2025. Other
-        merchandise has since been produced, including pin badges and stickers.
-      </p>
-    </article>
-  </div>
-</section>
+          <article>
+            <span>2023–2025</span>
+            <p>
+              Since 2021, there have been multiple revivals of Liquindo, most
+              notably from Finn Vaughton (2023) and Edward Fullwood (2025), the
+              latter of which is ongoing.
+            </p>
+          </article>
+
+          <article>
+            <span>3 July 2025</span>
+            <p>
+              The first physical Liquindo flag was created on 3 July 2025.
+              Other merchandise has since been produced, including pin badges
+              and stickers.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- IDEOLOGY -->
       <section class="content-section" id="ideology">
         <div>
           <p class="section-label" data-i18n="section.ideology">Ideology</p>
-          <h2 data-i18n="section.ideology.title">The Liquindian manifesto is being written!</h2>
+
+          <h2 data-i18n="section.ideology.title">
+            The Liquindian manifesto is being written!
+          </h2>
         </div>
+
         <p data-i18n="section.ideology.description">
           This section will explain Liquindo's beliefs, principles, and vision
           once the manifesto is ready.
         </p>
-        
+
         <div class="faq-section">
-          <h3 data-i18n="section.ideology.faq.title">Frequently Asked Questions</h3>
+          <h3 data-i18n="section.ideology.faq.title">
+            Frequently Asked Questions
+          </h3>
+
           <div class="faq-items">
             <div class="faq-item">
               <h4 data-i18n="section.ideology.faq.q1">What is Liquindo?</h4>
-              <p data-i18n="section.ideology.faq.a1">A project to collectively purchase an island to found a new nation.</p>
+              <p data-i18n="section.ideology.faq.a1">
+                A project to collectively purchase an island to found a new
+                nation.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q2">What are Liquindo's long-term goals?</h4>
-              <p data-i18n="section.ideology.faq.a2">The creation of the Liquindian race and a welfare for our people</p>
+              <h4 data-i18n="section.ideology.faq.q2">
+                What are Liquindo's long-term goals?
+              </h4>
+              <p data-i18n="section.ideology.faq.a2">
+                The creation of the Liquindian race and a welfare for our people
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q3">Is Liquindo a left-wing or right-wing ideology?</h4>
-              <p data-i18n="section.ideology.faq.a3">Neither, Liquindo is above petty liberal politics and rejects the use of the spectrum to disable political action.</p>
+              <h4 data-i18n="section.ideology.faq.q3">
+                Is Liquindo a left-wing or right-wing ideology?
+              </h4>
+              <p data-i18n="section.ideology.faq.a3">
+                Neither, Liquindo is above petty liberal politics and rejects
+                the use of the spectrum to disable political action.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q4">Is Liquindo capitalist, socialist, or something else?</h4>
-              <p data-i18n="section.ideology.faq.a4">We are corporatist,meaning society will be organised economically into guilds, not ruled by corporations.</p>
+              <h4 data-i18n="section.ideology.faq.q4">
+                Is Liquindo capitalist, socialist, or something else?
+              </h4>
+              <p data-i18n="section.ideology.faq.a4">
+                We are corporatist, meaning society will be organised
+                economically into guilds, not ruled by corporations.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q5">What role should government play?</h4>
-              <p data-i18n="section.ideology.faq.a5">The state is absolute and speaks for the nation and its people.</p>
+              <h4 data-i18n="section.ideology.faq.q5">
+                What role should government play?
+              </h4>
+              <p data-i18n="section.ideology.faq.a5">
+                The state is absolute and speaks for the nation and its people.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q6">How does Liquindo view democracy?</h4>
-              <p data-i18n="section.ideology.faq.a6">Democracy is inefficient and allows the weak to be ruled by the loud.</p>
+              <h4 data-i18n="section.ideology.faq.q6">
+                How does Liquindo view democracy?
+              </h4>
+              <p data-i18n="section.ideology.faq.a6">
+                Democracy is inefficient and allows the weak to be ruled by the
+                loud.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q7">How does Liquindo approach taxation?</h4>
-              <p data-i18n="section.ideology.faq.a7">Liquindo has taxes, but not in the way that they forbid a man to live a content successful life.</p>
+              <h4 data-i18n="section.ideology.faq.q7">
+                How does Liquindo approach taxation?
+              </h4>
+              <p data-i18n="section.ideology.faq.a7">
+                Liquindo has taxes, but not in the way that they forbid a man
+                to live a content successful life.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q8">How does Liquindo differ from libertarianism?</h4>
-              <p data-i18n="section.ideology.faq.a8">We support the right to revolt against the government, that is why our people will be a militia, so if Liquindo, somehow does become corrupt, [...]
+              <h4 data-i18n="section.ideology.faq.q8">
+                How does Liquindo differ from libertarianism?
+              </h4>
+              <p data-i18n="section.ideology.faq.a8">
+                We support the right to revolt against the government, that is
+                why our people will be a militia, so if Liquindo somehow does
+                become corrupt, [...]
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q9">Is Liquindo based on existing political theories?</h4>
-              <p data-i18n="section.ideology.faq.a9">Liquindo was inspired by several concepts such as the Republic of Rosa Island and anti-liberalism.</p>
+              <h4 data-i18n="section.ideology.faq.q9">
+                Is Liquindo based on existing political theories?
+              </h4>
+              <p data-i18n="section.ideology.faq.a9">
+                Liquindo was inspired by several concepts such as the Republic
+                of Rosa Island and anti-liberalism.
+              </p>
             </div>
+
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q10">Is Liquindo still evolving?</h4>
-              <p data-i18n="section.ideology.faq.a10">Yes, our ideology can be influenced to accustom the needs of potential citizens, but the state lays in an aristocratic, intellectual hand tha[...]
+              <h4 data-i18n="section.ideology.faq.q10">
+                Is Liquindo still evolving?
+              </h4>
+              <p data-i18n="section.ideology.faq.a10">
+                Yes, our ideology can be influenced to accustom the needs of
+                potential citizens, but the state lays in an aristocratic,
+                intellectual hand tha[...]
+              </p>
             </div>
           </div>
         </div>
       </section>
-      
+
+      <!-- MEMBERS -->
       <section class="content-section" id="members">
         <div>
           <p class="section-label" data-i18n="section.members">Members</p>
           <h2 data-i18n="section.members.title">People involved</h2>
         </div>
+
         <div class="info-grid">
           <article>
             <strong data-i18n="member.diego">Diego Liquin</strong>
-            <p data-i18n="member.diego.desc">The founder of Liquindo, and its main ideologue.</p>
+            <p data-i18n="member.diego.desc">
+              The founder of Liquindo, and its main ideologue.
+            </p>
           </article>
+
           <article>
             <strong data-i18n="member.fullwood">Doctor Fullwood</strong>
-            <p data-i18n="member.fullwood.desc">Liquin's main advisor and trustee.</p>
+            <p data-i18n="member.fullwood.desc">
+              Liquin's main advisor and trustee.
+            </p>
           </article>
+
           <article>
             <strong data-i18n="member.edison">Edison the Mentor</strong>
-            <p data-i18n="member.edison.desc">Liquin's political and philosophical mentor.</p>
+            <p data-i18n="member.edison.desc">
+              Liquin's political and philosophical mentor.
+            </p>
           </article>
-          <a class="section-link" href="members.html" data-i18n="link.members">View all our publicly identified members.</a>
+
+          <a
+            class="section-link"
+            href="members.html"
+            data-i18n="link.members"
+          >
+            View all our publicly identified members.
+          </a>
         </div>
       </section>
 
+      <!-- GALLERY -->
       <section class="content-section" id="gallery">
         <div>
           <p class="section-label" data-i18n="section.gallery">Gallery</p>
           <h2 data-i18n="section.gallery.title">Images and highlights</h2>
         </div>
+
         <div class="gallery-grid">
           <figure>
-            <img
-              src="images/20251125_223954.jpg"
-              alt="Image 10"
-            />
+            <img src="images/20251125_223954.jpg" alt="Image 10" />
             <figcaption>Image 10</figcaption>
           </figure>
+
           <figure>
-            <img
-              src="images/20251102_162413.jpg"
-              alt="Image 6"
-            />
+            <img src="images/20251102_162413.jpg" alt="Image 6" />
             <figcaption>Image 6</figcaption>
           </figure>
+
           <figure>
-            <img
-              src="images/20251125_170954.jpg"
-              alt="Image 9"
-            />
+            <img src="images/20251125_170954.jpg" alt="Image 9" />
             <figcaption>Image 9</figcaption>
           </figure>
-          <a class="section-link" href="gallery.html" data-i18n="link.gallery">View all images.</a>
+
+          <a
+            class="section-link"
+            href="gallery.html"
+            data-i18n="link.gallery"
+          >
+            View all images.
+          </a>
         </div>
       </section>
 
+      <!-- CONTACT -->
       <section class="content-section" id="contact">
         <div>
           <p class="section-label" data-i18n="section.contact">Contact</p>
           <h2 data-i18n="section.contact.title">Get in touch</h2>
         </div>
+
         <div class="contact-card">
-          <p data-i18n="section.contact.message">Send Liquindo a message directly by email.</p>
-          <a class="email-button" href="mailto:liquindohq@yahoo.com" data-i18n="link.email">
+          <p data-i18n="section.contact.message">
+            Send Liquindo a message directly by email.
+          </p>
+
+          <a
+            class="email-button"
+            href="mailto:liquindohq@yahoo.com"
+            data-i18n="link.email"
+          >
             Email liquindohq@yahoo.com
           </a>
+
           <p data-i18n="section.contact.discord">Join us on Discord:</p>
-          <a class="email-button" href="https://discord.gg/pMBuqkTfVF" target="_blank" rel="noopener noreferrer" data-i18n="link.discord">
+
+          <a
+            class="email-button"
+            href="https://discord.gg/pMBuqkTfVF"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="link.discord"
+          >
             Discord Server
           </a>
         </div>
       </section>
 
+      <!-- FINANCE / OPERATIONAL COUNTDOWN -->
       <section class="content-section finance-section" id="finance">
         <div>
           <p class="section-label" data-i18n="section.finance">Finance</p>
           <h2 data-i18n="section.finance.title">Operational countdown</h2>
         </div>
+
         <div class="countdown-panel">
-          <p data-i18n="section.finance.description">Liquindo as a project will not be operational until 2028.</p>
-          <div class="countdown" aria-label="Countdown until 2028">
-            <span>
-              <strong id="days">000</strong>
-              <span data-i18n="countdown.days">Days</span>
-            </span>
-            <span>
-              <strong id="hours">00</strong>
-              <span data-i18n="countdown.hours">Hours</span>
-            </span>
-            <span>
-              <strong id="minutes">00</strong>
-              <span data-i18n="countdown.minutes">Minutes</span>
-            </span>
-            <span>
-              <strong id="seconds">00</strong>
-              <span data-i18n="countdown.seconds">Seconds</span>
-            </span>
+          <p data-i18n="section.finance.description">
+            Liquindo as a project will not be operational until 2028.
+          </p>
+
+          <div
+            class="countdown-vertical"
+            aria-label="Time remaining until Liquindo is operational"
+          >
+            <div class="countdown-row">
+              <strong id="seconds">0</strong>
+              <span>Seconds</span>
+            </div>
+
+            <div class="countdown-row">
+              <strong id="minutes">0</strong>
+              <span>Minutes</span>
+            </div>
+
+            <div class="countdown-row">
+              <strong id="days">0</strong>
+              <span>Days</span>
+            </div>
+
+            <div class="countdown-row">
+              <strong id="weeks">0</strong>
+              <span>Weeks</span>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
+    <!-- FOOTER -->
     <footer>
       <div class="footer-content">
-        <p data-i18n="footer.contact">Contact: liquindohq@yahoo.com</p>
+        <p data-i18n="footer.contact">
+          Contact: liquindohq@yahoo.com
+        </p>
+
         <a href="#home" data-i18n="footer.top">Back to top</a>
       </div>
-      <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo" data-i18n="footer.repo">View on GitHub</a>
+
+      <a
+        href="https://github.com/liquindirect/liquindo"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-repo"
+        data-i18n="footer.repo"
+      >
+        View on GitHub
+      </a>
     </footer>
+
     <script src="i18n.js"></script>
+
+    <!-- Operational Countdown -->
     <script>
       const launchDate = new Date("2028-01-01T00:00:00");
-      const units = {
-        days: document.getElementById("days"),
-        hours: document.getElementById("hours"),
-        minutes: document.getElementById("minutes"),
+
+      const countdownUnits = {
         seconds: document.getElementById("seconds"),
+        minutes: document.getElementById("minutes"),
+        days: document.getElementById("days"),
+        weeks: document.getElementById("weeks")
       };
 
       function updateCountdown() {
-        const distance = launchDate - new Date();
+        const distance = Math.max(0, launchDate.getTime() - Date.now());
 
-        if (distance <= 0) {
-          units.days.textContent = "000";
-          units.hours.textContent = "00";
-          units.minutes.textContent = "00";
-          units.seconds.textContent = "00";
-          return;
-        }
+        const seconds = Math.ceil(distance / 1000);
+        const minutes = Math.ceil(distance / (1000 * 60));
+        const days = Math.ceil(distance / (1000 * 60 * 60 * 24));
+        const weeks = Math.ceil(
+          distance / (1000 * 60 * 60 * 24 * 7)
+        );
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((distance / (1000 * 60)) % 60);
-        const seconds = Math.floor((distance / 1000) % 60);
+        countdownUnits.seconds.textContent =
+          seconds.toLocaleString();
 
-        units.days.textContent = String(days).padStart(3, "0");
-        units.hours.textContent = String(hours).padStart(2, "0");
-        units.minutes.textContent = String(minutes).padStart(2, "0");
-        units.seconds.textContent = String(seconds).padStart(2, "0");
+        countdownUnits.minutes.textContent =
+          minutes.toLocaleString();
+
+        countdownUnits.days.textContent =
+          days.toLocaleString();
+
+        countdownUnits.weeks.textContent =
+          weeks.toLocaleString();
       }
 
       updateCountdown();
+
       setInterval(updateCountdown, 1000);
     </script>
   </body>
-</html>
+  </html>
