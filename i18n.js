@@ -1,4 +1,3 @@
-// Language data
 const translations = {
   en: {
     "nav.introduction": "Introduction",
@@ -8,133 +7,133 @@ const translations = {
     "nav.gallery": "Gallery",
     "nav.contact": "Contact",
     "nav.finance": "Finance",
+
     "hero.eyebrow": "Introduction",
     "hero.title": "Welcome to Liquindo.",
-    "hero.description": "Liquindo is an idealistic project about the collective purchase of an island, or sovereign territory where we can impose a new nationstate that is not under the influence of the global elite and its liberal world order. It will be controlled by an economy and a class of the Third Position.",
+    "hero.description":
+      "Liquindo is an idealistic project about the collective purchase of an island or sovereign territory where we can establish a new nation-state that is not under the influence of the global elite and its liberal world order. It will be controlled by an economy and a class of the Third Position.",
+
     "section.history": "History",
     "section.history.title": "Background and important moments",
+
     "section.ideology": "Ideology",
     "section.ideology.title": "The Liquindian manifesto is being written!",
-    "section.ideology.description": "This section will explain Liquindo's beliefs, principles, and vision once the manifesto is ready.",
+    "section.ideology.description":
+      "This section will explain Liquindo's beliefs, principles, and vision once the manifesto is ready.",
+
     "section.ideology.faq.title": "Frequently Asked Questions",
     "section.ideology.faq.q1": "What is Liquindo?",
-    "section.ideology.faq.a1": "A project to collectively purchase an island to found a new nation.",
+    "section.ideology.faq.a1":
+      "A project to collectively purchase an island to found a new nation.",
     "section.ideology.faq.q2": "What are Liquindo's long-term goals?",
-    "section.ideology.faq.a2": "The creation of the Liquindian race and a welfare for our people",
-    "section.ideology.faq.q3": "Is Liquindo a left-wing or right-wing ideology?",
-    "section.ideology.faq.a3": "Neither, Liquindo is above petty liberal politics and rejects the use of the spectrum to disable political action.",
-    "section.ideology.faq.q4": "Is Liquindo capitalist, socialist, or something else?",
-    "section.ideology.faq.a4": "We are corporatist,meaning society will be organised economically into guilds, not ruled by corporations.",
-    "section.ideology.faq.q5": "What role should government play?",
-    "section.ideology.faq.a5": "The state is absolute and speaks for the nation and its people.",
-    "section.ideology.faq.q6": "How does Liquindo view democracy?",
-    "section.ideology.faq.a6": "Democracy is inefficient and allows the weak to be ruled by the loud.",
-    "section.ideology.faq.q7": "How does Liquindo approach taxation?",
-    "section.ideology.faq.a7": "Liquindo has taxes, but not in the way that they forbid a man to live a content successful life.",
-    "section.ideology.faq.q8": "How does Liquindo differ from libertarianism?",
-    "section.ideology.faq.a8": "We support the right to revolt against the government, that is why our people will be a militia, so if Liquindo, somehow does become corrupt, the original idea of our leader can be restored. We also support the right to live away from society, it is virtuous.",
-    "section.ideology.faq.q9": "Is Liquindo based on existing political theories?",
-    "section.ideology.faq.a9": "Liquindo was inspired by several concepts such as the Republic of Rosa Island and anti-liberalism.",
-    "section.ideology.faq.q10": "Is Liquindo still evolving?",
-    "section.ideology.faq.a10": "Yes, our ideology can be influenced to accustom the needs of potential citizens, but the state lays in an aristocratic, intellectual hand that does not bow to any will.",
+    "section.ideology.faq.a2":
+      "The creation of the Liquindian race and welfare for our people.",
+    "section.ideology.faq.q3":
+      "Is Liquindo a left-wing or right-wing ideology?",
+    "section.ideology.faq.a3":
+      "Neither. Liquindo is above petty liberal politics and rejects the use of the spectrum to disable political action.",
+    "section.ideology.faq.q4":
+      "Is Liquindo capitalist, socialist, or something else?",
+    "section.ideology.faq.a4":
+      "We are corporatist, meaning society will be organised economically into guilds, not ruled by corporations.",
+    "section.ideology.faq.q5":
+      "What role should government play?",
+    "section.ideology.faq.a5":
+      "The state is absolute and speaks for the nation and its people.",
+    "section.ideology.faq.q6":
+      "How does Liquindo view democracy?",
+    "section.ideology.faq.a6":
+      "Democracy is inefficient and allows the weak to be ruled by the loud.",
+    "section.ideology.faq.q7":
+      "How does Liquindo approach taxation?",
+    "section.ideology.faq.a7":
+      "Liquindo has taxes, but not in a way that prevents a person from living a content and successful life.",
+    "section.ideology.faq.q8":
+      "How does Liquindo differ from libertarianism?",
+    "section.ideology.faq.a8":
+      "We support the right to revolt against the government. That is why our people will be a militia, so that if Liquindo somehow becomes corrupt, its people retain the ability to resist it. We also support the right to live away from society.",
+    "section.ideology.faq.q9":
+      "Is Liquindo based on existing political theories?",
+    "section.ideology.faq.a9":
+      "Liquindo was inspired by several concepts, including the Republic of Rose Island and anti-liberalism.",
+    "section.ideology.faq.q10":
+      "Is Liquindo still evolving?",
+    "section.ideology.faq.a10":
+      "Yes. Our ideology can be influenced and adapted to accommodate the needs of potential citizens while retaining its core principles.",
+
     "section.members": "Members",
     "section.members.title": "People involved",
+
     "section.contact": "Contact",
     "section.contact.title": "Get in touch",
-    "section.contact.message": "Send Liquindo a message directly by email.",
+    "section.contact.message":
+      "Send Liquindo a message directly by email.",
     "section.contact.discord": "Join us on Discord:",
+
     "section.gallery": "Gallery",
     "section.gallery.title": "Images and highlights",
+
     "section.finance": "Finance",
     "section.finance.title": "Operational countdown",
-    "section.finance.description": "Liquindo as a project will not be operational until 2028.",
+    "section.finance.description":
+      "Liquindo's target operational date is 1 January 2028.",
+
     "footer.contact": "Contact: liquindohq@yahoo.com",
     "footer.top": "Back to top",
     "footer.repo": "View on GitHub",
+
     "member.diego": "Diego Liquin",
-    "member.diego.desc": "The founder of Liquindo, and its main ideologue.",
+    "member.diego.desc":
+      "The founder of Liquindo and its main ideologue.",
     "member.fullwood": "Doctor Fullwood",
-    "member.fullwood.desc": "Liquin's main advisor and trustee.",
+    "member.fullwood.desc":
+      "Liquin's main advisor and trustee.",
     "member.edison": "Edison the Mentor",
-    "member.edison.desc": "Liquin's political and philosophical mentor.",
-    "link.members": "View all our publicly identified members.",
+    "member.edison.desc":
+      "Liquin's political and philosophical mentor.",
+
+    "link.members":
+      "View all our publicly identified members.",
     "link.gallery": "View all images.",
     "link.email": "Email liquindohq@yahoo.com",
     "link.discord": "Discord Server",
-    "countdown.days": "Days",
-    "countdown.hours": "Hours",
-    "countdown.minutes": "Minutes",
+
     "countdown.seconds": "Seconds",
-    "message.title": "Message from Liquin: Week 2",
-    "message.text": "Hello, welcome to the Liquindo website! Improvements are slow, they will ramp up temporarily after the 17th of July.",
+    "countdown.minutes": "Minutes",
+    "countdown.days": "Days",
+    "countdown.weeks": "Weeks",
+
+    "message.title": "Message from Liquin",
+    "message.text":
+      "Welcome to the Liquindo website. The site is being updated and expanded as the project develops.",
+
     "history.year1": "2021",
-    "history.text1": "Liquindo's primary conception was thought of in 2021 when Diego Liquin was still in secondary school. The idea was inspired by the Netflix docufilm Rose Island.",
+    "history.text1":
+      "Liquindo's primary conception was thought of in 2021 when Diego Liquin was still in secondary school. The idea was inspired by the Netflix docufilm Rose Island.",
     "history.year2": "2023–2025",
-    "history.text2": "Since 2021, there have been multiple revivals of Liquindo, most notably from Finn Vaughton (2023) and Edward Fullwood (2025), the latter of which is ongoing.",
+    "history.text2":
+      "Since 2021, there have been multiple revivals of Liquindo, most notably from Finn Vaughton (2023) and Edward Fullwood (2025), the latter of which is ongoing.",
     "history.year3": "3 July 2025",
-    "history.text3": "The first physical Liquindo flag was created on 3 July 2025. Other merchandise has since been produced, including pin badges and stickers.",
+    "history.text3":
+      "The first physical Liquindo flag was created on 3 July 2025. Other merchandise has since been produced, including pin badges and stickers.",
+
     "page.members": "Members",
     "page.members.title": "Publicly identified members",
-    "page.members.description": "Add the full list of publicly identified Liquindo members here.",
+    "page.members.description":
+      "Add the full list of publicly identified Liquindo members here.",
+
     "page.gallery": "Gallery",
     "page.gallery.title": "All images",
-    "page.gallery.description": "A numbered archive of Liquindo images.",
+    "page.gallery.description":
+      "A numbered archive of Liquindo images.",
+
     "gallery.selected": "Selected Image",
     "gallery.main": "Back to main page",
-    "image.1": "A digital composition of Liquindian wojaks, showing different permitted characteristics of the nation.",
-    "image.2": "A propaganda poster of Doctor Fullwood, without text.",
-    "image.3": "A selfie of Liquin with one of the first produced flags of his nation.",
-    "image.4": "An image of a doomer wojak in Liquindo's recession.",
-    "image.5": "An image of a Liquindian wojak that cannot remember when he last felt joy.",
-    "image.6": "The second piece of Liquindian merchandise ever created: a pin.",
-    "image.7": "An edited portrait of Liquin.",
-    "image.8": "A redder edited photo of Liquin.",
-    "image.9": "A Liquindian soldier in the dark, bearing his helmet and his flag.",
-    "image.10": "An artistic representation of a Liquindian soldier's silhouette.",
-    "image.11": "A picture of a Liquindian soldier.",
-    "image.12": "A Liquindian soldier facing an angle, with good music playing in the background.",
-    "image.13": "An image of a Liquindian soldier facing the wrong way.",
-    "image.14": "An image of the Liquindian flag paired with the South Yorkshire flag and the England flag.",
-    "image.15": "Liquin taking a suspicious selfie with his newly-acquired helmet.",
-    "image.16": "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him.",
-    "image.17": "Doctor Fullwood taking a selfie at night with the Liquindian flag draped behind him.",
-    "image.18": "The Liquintop, also known as the Liquindian Laptop.",
-    "image.19": "Petrov with his new flag shipped directly by Liquin himself.",
-    "image.20": "Petrov's setup.",
-    "image.21": "The Liquindian Sports Association flag (A).",
-    "image.22": "The Based Liquindian Soldier Wojak.",
-    "image.23": "The Liquindian Sports Association flag (B).",
-    "image.24": "The proposed cover for the Book of Liquin.",
-    "image.25": "An artistic portrayal of a selfie of Liquin with a flag.",
-    "image.26": "The Vaughtown flag.",
-    "image.27": "The Liquindo flag and the Latvia flag, together.",
-    "image.28": "A portrait of Edison the Mentor.",
-    "image.29": "A picture of Liquin, Doctor Fullwood and Edison the Mentor, conceiving plans about their conflict with Vaughtonologists.",
-    "image.30": "A picture of a garage which may or may not be Liquindian.",
-    "image.31": "The flag of Edwardia.",
-    "image.32": "The flag of Liquindo.",
-    "image.33": "The second version of the Liquindian flag.",
-    "image.34": "The first ever version of the Liquindian flag.",
-    "image.35": "The flag of Liquin's Plan of Action (L'Pa).",
-    "image.36": "The flag of the Liquindo Nationalist Front.",
-    "image.37": "A portrait of Liquin circa 2025.",
-    "image.38": "The flag of Caput.",
-    "image.39": "Liquin striking a pose.",
-    "image.40": "Liquin striking another pose.",
-    "image.41": "The banner for the based.LNF.supporter TikTok account.",
-    "image.42": "The Liquindian wave.",
-    "image.43": "The flag of Vaughtonology.",
-    "image.44": "A picture of a group of Liquindians.",
-    "image.45": "Another picture of Liquin.",
-    "image.46": "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him, in the morning.",
-    "image.47": "A Liquindian reunion.",
-    "image.48": "Early players belonging to the Liquindo Sports Association.",
-    "image.49": "A portrait of a thinker.",
-    "image.50": "Another portrait of Liquin.",
-    "image.51": "A goofy picture of Doctor Fullwood.",
-    "image.52": "The flag of the Liquindian Army.",
-    "image.nodesc": "No description has been added for this image yet."
+
+    "image.nodesc":
+      "No description has been added for this image yet."
   },
+
   pt: {
     "nav.introduction": "Introdução",
     "nav.history": "História",
@@ -143,133 +142,141 @@ const translations = {
     "nav.gallery": "Galeria",
     "nav.contact": "Contato",
     "nav.finance": "Finanças",
+
     "hero.eyebrow": "Introdução",
     "hero.title": "Bem-vindo à Liquindo.",
-    "hero.description": "Liquindo é um projeto idealista sobre a compra coletiva de uma ilha ou território soberano onde podemos impor um novo Estado-nação que não está sob a influência da élite global e sua ordem mundial liberal. Será controlado por uma economia e uma classe da Terceira Posição.",
+    "hero.description":
+      "Liquindo é um projeto idealista sobre a compra coletiva de uma ilha ou território soberano onde podemos estabelecer um novo Estado-nação que não esteja sob a influência da elite global e de sua ordem mundial liberal. Será controlado por uma economia e uma classe da Terceira Posição.",
+
     "section.history": "História",
-    "section.history.title": "Antecedentes e momentos importantes",
+    "section.history.title":
+      "Antecedentes e momentos importantes",
+
     "section.ideology": "Ideologia",
-    "section.ideology.title": "O manifesto liquindiano está sendo escrito!",
-    "section.ideology.description": "Esta seção explicará as crenças, princípios e visão de Liquindo assim que o manifesto estiver pronto.",
+    "section.ideology.title":
+      "O manifesto liquindiano está sendo escrito!",
+    "section.ideology.description":
+      "Esta seção explicará as crenças, princípios e visão de Liquindo assim que o manifesto estiver pronto.",
+
     "section.ideology.faq.title": "Perguntas frequentes",
     "section.ideology.faq.q1": "O que é Liquindo?",
-    "section.ideology.faq.a1": "Um projeto para comprar coletivamente uma ilha e fundar uma nova nação.",
-    "section.ideology.faq.q2": "Quais são os objetivos de longo prazo de Liquindo?",
-    "section.ideology.faq.a2": "A criação da raça liquindiana e um bem-estar para nosso povo",
-    "section.ideology.faq.q3": "Liquindo é uma ideologia de esquerda ou direita?",
-    "section.ideology.faq.a3": "Nenhuma das duas, Liquindo está acima da política liberal trivial e rejeita o uso do espectro para desabilitar a ação política.",
-    "section.ideology.faq.q4": "Liquindo é capitalista, socialista ou algo mais?",
-    "section.ideology.faq.a4": "Somos corporativistas, o que significa que a sociedade será organizada economicamente em corporações, não governada por empresas.",
-    "section.ideology.faq.q5": "Qual papel o governo deveria desempenhar?",
-    "section.ideology.faq.a5": "O estado é absoluto e fala em nome da nação e seu povo.",
-    "section.ideology.faq.q6": "Como Liquindo vê a democracia?",
-    "section.ideology.faq.a6": "A democracia é ineficiente e permite que os fracos sejam governados pelos barulhentos.",
-    "section.ideology.faq.q7": "Como Liquindo aborda a tributação?",
-    "section.ideology.faq.a7": "Liquindo tem impostos, mas não de forma que proíbam um homem de viver uma vida bem-sucedida e satisfeita.",
-    "section.ideology.faq.q8": "Como Liquindo difere do libertarianismo?",
-    "section.ideology.faq.a8": "Apoiamos o direito de se revoltar contra o governo, é por isso que nosso povo será uma milícia, para que se Liquindo, de alguma forma, se corromper, a ideia original de nosso líder possa ser restaurada. Também apoiamos o direito de viver longe da sociedade, é virtuoso.",
-    "section.ideology.faq.q9": "Liquindo é baseado em teorias políticas existentes?",
-    "section.ideology.faq.a9": "Liquindo foi inspirado por vários conceitos como a República da Ilha da Rosa e o antiliberalismo.",
-    "section.ideology.faq.q10": "Liquindo continua evoluindo?",
-    "section.ideology.faq.a10": "Sim, nossa ideologia pode ser influenciada para se adaptar às necessidades dos potenciais cidadãos, mas o estado repousa em mãos aristocráticas e intelectuais que não se curvam a nenhuma vontade.",
+    "section.ideology.faq.a1":
+      "Um projeto para comprar coletivamente uma ilha e fundar uma nova nação.",
+    "section.ideology.faq.q2":
+      "Quais são os objetivos de longo prazo de Liquindo?",
+    "section.ideology.faq.a2":
+      "A criação da raça liquindiana e de bem-estar para nosso povo.",
+    "section.ideology.faq.q3":
+      "Liquindo é uma ideologia de esquerda ou direita?",
+    "section.ideology.faq.a3":
+      "Nenhuma das duas. Liquindo está acima da política liberal trivial e rejeita o uso do espectro para limitar a ação política.",
+    "section.ideology.faq.q4":
+      "Liquindo é capitalista, socialista ou algo mais?",
+    "section.ideology.faq.a4":
+      "Somos corporativistas, o que significa que a sociedade será organizada economicamente em corporações e associações, e não governada por empresas.",
+    "section.ideology.faq.q5":
+      "Qual papel o governo deveria desempenhar?",
+    "section.ideology.faq.a5":
+      "O Estado é absoluto e fala em nome da nação e de seu povo.",
+    "section.ideology.faq.q6":
+      "Como Liquindo vê a democracia?",
+    "section.ideology.faq.a6":
+      "A democracia é ineficiente e permite que os fracos sejam governados pelos mais barulhentos.",
+    "section.ideology.faq.q7":
+      "Como Liquindo aborda a tributação?",
+    "section.ideology.faq.a7":
+      "Liquindo tem impostos, mas não de uma forma que impeça uma pessoa de viver uma vida satisfeita e bem-sucedida.",
+    "section.ideology.faq.q8":
+      "Como Liquindo difere do libertarianismo?",
+    "section.ideology.faq.a8":
+      "Apoiamos o direito de se revoltar contra o governo. É por isso que nosso povo será uma milícia, para que, se Liquindo de alguma forma se tornar corrupta, o povo mantenha a capacidade de resistir. Também apoiamos o direito de viver afastado da sociedade.",
+    "section.ideology.faq.q9":
+      "Liquindo é baseado em teorias políticas existentes?",
+    "section.ideology.faq.a9":
+      "Liquindo foi inspirado por vários conceitos, incluindo a República da Ilha das Rosas e o antiliberalismo.",
+    "section.ideology.faq.q10":
+      "Liquindo continua evoluindo?",
+    "section.ideology.faq.a10":
+      "Sim. Nossa ideologia pode ser influenciada e adaptada para acomodar as necessidades de potenciais cidadãos, mantendo seus princípios centrais.",
+
     "section.members": "Membros",
     "section.members.title": "Pessoas envolvidas",
+
     "section.contact": "Contato",
     "section.contact.title": "Entre em contato",
-    "section.contact.message": "Envie uma mensagem para Liquindo diretamente por e-mail.",
-    "section.contact.discord": "Junte-se a nós no Discord:",
+    "section.contact.message":
+      "Envie uma mensagem para Liquindo diretamente por e-mail.",
+    "section.contact.discord":
+      "Junte-se a nós no Discord:",
+
     "section.gallery": "Galeria",
     "section.gallery.title": "Imagens e destaques",
+
     "section.finance": "Finanças",
-    "section.finance.title": "Contagem regressiva operacional",
-    "section.finance.description": "Liquindo como projeto não será operacional até 2028.",
-    "footer.contact": "Contato: liquindohq@yahoo.com",
+    "section.finance.title":
+      "Contagem regressiva operacional",
+    "section.finance.description":
+      "A data operacional prevista de Liquindo é 1º de janeiro de 2028.",
+
+    "footer.contact":
+      "Contato: liquindohq@yahoo.com",
     "footer.top": "Voltar ao topo",
     "footer.repo": "Visualizar no GitHub",
+
     "member.diego": "Diego Liquin",
-    "member.diego.desc": "O fundador de Liquindo e seu principal ideólogo.",
+    "member.diego.desc":
+      "O fundador de Liquindo e seu principal ideólogo.",
     "member.fullwood": "Doutor Fullwood",
-    "member.fullwood.desc": "Principal conselheiro e fiduciário de Liquin.",
+    "member.fullwood.desc":
+      "Principal conselheiro e fiduciário de Liquin.",
     "member.edison": "Edison o Mentor",
-    "member.edison.desc": "Mentor político e filosófico de Liquin.",
-    "link.members": "Visualize todos os nossos membros identificados publicamente.",
-    "link.gallery": "Visualize todas as imagens.",
-    "link.email": "Enviar e-mail para liquindohq@yahoo.com",
+    "member.edison.desc":
+      "Mentor político e filosófico de Liquin.",
+
+    "link.members":
+      "Ver todos os nossos membros identificados publicamente.",
+    "link.gallery": "Ver todas as imagens.",
+    "link.email":
+      "Enviar e-mail para liquindohq@yahoo.com",
     "link.discord": "Servidor Discord",
-    "countdown.days": "Dias",
-    "countdown.hours": "Horas",
-    "countdown.minutes": "Minutos",
+
     "countdown.seconds": "Segundos",
-    "message.title": "Mensagem de Liquin: Semana 2",
-    "message.text": "Olá, bem-vindo ao site de Liquindo! As melhorias são lentas, elas aumentarão temporariamente após 17 de julho.",
+    "countdown.minutes": "Minutos",
+    "countdown.days": "Dias",
+    "countdown.weeks": "Semanas",
+
+    "message.title": "Mensagem de Liquin",
+    "message.text":
+      "Bem-vindo ao site de Liquindo. O site está sendo atualizado e ampliado à medida que o projeto se desenvolve.",
+
     "history.year1": "2021",
-    "history.text1": "A concepção primária de Liquindo foi pensada em 2021 quando Diego Liquin ainda estava no ensino médio. A ideia foi inspirada pelo documentário da Netflix Rose Island.",
+    "history.text1":
+      "A concepção inicial de Liquindo foi pensada em 2021, quando Diego Liquin ainda estava no ensino médio. A ideia foi inspirada pelo docufilme da Netflix Rose Island.",
     "history.year2": "2023–2025",
-    "history.text2": "Desde 2021, houve vários ressurgimentos de Liquindo, mais notavelmente de Finn Vaughton (2023) e Edward Fullwood (2025), sendo este último em andamento.",
+    "history.text2":
+      "Desde 2021, houve vários ressurgimentos de Liquindo, principalmente por Finn Vaughton (2023) e Edward Fullwood (2025), sendo este último ainda em andamento.",
     "history.year3": "3 de julho de 2025",
-    "history.text3": "A primeira bandeira física de Liquindo foi criada em 3 de julho de 2025. Outras mercadorias foram produzidas desde então, incluindo pinos e adesivos.",
+    "history.text3":
+      "A primeira bandeira física de Liquindo foi criada em 3 de julho de 2025. Outros produtos foram produzidos desde então, incluindo broches e adesivos.",
+
     "page.members": "Membros",
-    "page.members.title": "Membros identificados publicamente",
-    "page.members.description": "Adicione a lista completa de membros publicamente identificados de Liquindo aqui.",
+    "page.members.title":
+      "Membros identificados publicamente",
+    "page.members.description":
+      "Lista de membros de Liquindo identificados publicamente.",
+
     "page.gallery": "Galeria",
     "page.gallery.title": "Todas as imagens",
-    "page.gallery.description": "Um arquivo numerado de imagens de Liquindo.",
+    "page.gallery.description":
+      "Um arquivo numerado de imagens de Liquindo.",
+
     "gallery.selected": "Imagem selecionada",
     "gallery.main": "Voltar à página principal",
-    "image.1": "Uma composição digital de wojaks liquindianos, mostrando diferentes características permitidas da nação.",
-    "image.2": "Um pôster de propaganda do Doutor Fullwood, sem texto.",
-    "image.3": "Uma selfie de Liquin com uma das primeiras bandeiras produzidas de sua nação.",
-    "image.4": "Uma imagem de um wojak desanimado na recessão de Liquindo.",
-    "image.5": "Uma imagem de um wojak liquindiano que não consegue se lembrar quando sentiu alegria pela última vez.",
-    "image.6": "A segunda mercadoria liquindiana já criada: um pino.",
-    "image.7": "Um retrato editado de Liquin.",
-    "image.8": "Uma foto editada mais vermelha de Liquin.",
-    "image.9": "Um soldado liquindiano no escuro, portando seu capacete e sua bandeira.",
-    "image.10": "Uma representação artística da silhueta de um soldado liquindiano.",
-    "image.11": "Uma foto de um soldado liquindiano.",
-    "image.12": "Um soldado liquindiano enfrentando um ângulo, com boa música tocando ao fundo.",
-    "image.13": "Uma imagem de um soldado liquindiano enfrentando o caminho errado.",
-    "image.14": "Uma imagem da bandeira liquindiana emparelhada com a bandeira de South Yorkshire e a bandeira da Inglaterra.",
-    "image.15": "Liquin tirando uma selfie suspeita com seu capacete recém-adquirido.",
-    "image.16": "Doutor Fullwood tirando uma selfie com a bandeira liquindiana pendurada atrás dele.",
-    "image.17": "Doutor Fullwood tirando uma selfie à noite com a bandeira liquindiana pendurada atrás dele.",
-    "image.18": "O Liquintop, também conhecido como o Laptop Liquindiano.",
-    "image.19": "Petrov com sua nova bandeira enviada diretamente por Liquin.",
-    "image.20": "A configuração de Petrov.",
-    "image.21": "A bandeira da Associação Esportiva Liquindiana (A).",
-    "image.22": "O Wojak do Soldado Liquindiano Baseado.",
-    "image.23": "A bandeira da Associação Esportiva Liquindiana (B).",
-    "image.24": "A capa proposta para o Livro de Liquin.",
-    "image.25": "Um retrato artístico de uma selfie de Liquin com uma bandeira.",
-    "image.26": "A bandeira de Vaughtown.",
-    "image.27": "A bandeira de Liquindo e a bandeira da Letônia, juntas.",
-    "image.28": "Um retrato de Edison o Mentor.",
-    "image.29": "Uma foto de Liquin, Doutor Fullwood e Edison o Mentor, concebendo planos sobre seu conflito com Vaughtonologistas.",
-    "image.30": "Uma foto de uma garagem que pode ou não ser liquindiana.",
-    "image.31": "A bandeira de Edwardia.",
-    "image.32": "A bandeira de Liquindo.",
-    "image.33": "A segunda versão da bandeira liquindiana.",
-    "image.34": "A primeira versão da bandeira liquindiana.",
-    "image.35": "A bandeira do Plano de Ação de Liquin (L'Pa).",
-    "image.36": "A bandeira da Frente Nacionalista Liquindiana.",
-    "image.37": "Um retrato de Liquin circa 2025.",
-    "image.38": "A bandeira de Caput.",
-    "image.39": "Liquin assumindo uma pose.",
-    "image.40": "Liquin assumindo outra pose.",
-    "image.41": "O banner para a conta TikTok based.LNF.supporter.",
-    "image.42": "A onda liquindiana.",
-    "image.43": "A bandeira de Vaughtonologia.",
-    "image.44": "Uma foto de um grupo de liquindianos.",
-    "image.45": "Outra foto de Liquin.",
-    "image.46": "Doutor Fullwood tirando uma selfie com a bandeira liquindiana pendurada atrás dele, pela manhã.",
-    "image.47": "Um encontro liquindiano.",
-    "image.48": "Os primeiros jogadores pertencentes à Associação Esportiva Liquindiana.",
-    "image.49": "Um retrato de um pensador.",
-    "image.50": "Outro retrato de Liquin.",
-    "image.51": "Uma foto boba do Doutor Fullwood.",
-    "image.52": "A bandeira do Exército Liquindiano.",
-    "image.nodesc": "Nenhuma descrição foi adicionada para esta imagem ainda."
+
+    "image.nodesc":
+      "Nenhuma descrição foi adicionada para esta imagem ainda."
   },
+
   pl: {
     "nav.introduction": "Wprowadzenie",
     "nav.history": "Historia",
@@ -278,324 +285,649 @@ const translations = {
     "nav.gallery": "Galeria",
     "nav.contact": "Kontakt",
     "nav.finance": "Finanse",
+
     "hero.eyebrow": "Wprowadzenie",
     "hero.title": "Witaj w Liquindo.",
-    "hero.description": "Liquindo to idealistyczny projekt dotyczący wspólnego zakupu wyspy lub terytorium suwerennego, gdzie możemy narzucić nowe państwo, które nie będzie pod wpływem światowej elity i jej liberalnego porządku światowego. Będzie kontrolowany przez gospodarkę i klasę Trzeciej Pozycji.",
+    "hero.description":
+      "Liquindo to idealistyczny projekt wspólnego zakupu wyspy lub suwerennego terytorium, na którym można ustanowić nowe państwo narodowe niezależne od wpływu globalnych elit i liberalnego porządku światowego. Będzie ono oparte na gospodarce i klasie Trzeciej Pozycji.",
+
     "section.history": "Historia",
-    "section.history.title": "Tło i ważne momenty",
+    "section.history.title":
+      "Tło i ważne wydarzenia",
+
     "section.ideology": "Ideologia",
-    "section.ideology.title": "Manifest liquindyjski jest pisany!",
-    "section.ideology.description": "Ta sekcja wyjaśni przekonania, zasady i wizję Liquindo po zakończeniu manifestu.",
-    "section.ideology.faq.title": "Często zadawane pytania",
-    "section.ideology.faq.q1": "Co to jest Liquindo?",
-    "section.ideology.faq.a1": "Projekt wspólnego zakupu wyspy w celu założenia nowego narodu.",
-    "section.ideology.faq.q2": "Jakie są długoterminowe cele Liquindo?",
-    "section.ideology.faq.a2": "Stworzenie rasy liquindyjskiej i dobrobytu dla naszego narodu",
-    "section.ideology.faq.q3": "Czy Liquindo jest ideologią lewicową czy prawicową?",
-    "section.ideology.faq.a3": "Ani jedno, ani drugie, Liquindo jest powyżej banalnej polityki liberalnej i odrzuca wykorzystywanie spektrum do wyłączenia działań politycznych.",
-    "section.ideology.faq.q4": "Czy Liquindo jest kapitalistyczne, socjalistyczne czy coś innego?",
-    "section.ideology.faq.a4": "Jesteśmy korporatystami, co oznacza, że społeczeństwo będzie zorganizowane ekonomicznie w cechy, a nie rządzone przez korporacje.",
-    "section.ideology.faq.q5": "Jaką rolę powinien pełniać rząd?",
-    "section.ideology.faq.a5": "Państwo jest bezwzględne i mówi w imieniu narodu i jego narodu.",
-    "section.ideology.faq.q6": "Jak Liquindo postrzega demokrację?",
-    "section.ideology.faq.a6": "Demokracja jest nieefektywna i pozwala słabym być rządzonymi przez głośnych.",
-    "section.ideology.faq.q7": "Jak Liquindo podchodzi do podatków?",
-    "section.ideology.faq.a7": "Liquindo ma podatki, ale nie w taki sposób, aby zakazywały człowiekowi życia udanym i zadowalającym życiem.",
-    "section.ideology.faq.q8": "Czym Liquindo różni się od libertarianizmu?",
-    "section.ideology.faq.a8": "Wspieramy prawo do buntu przeciwko rządowi, dlatego nasz naród będzie milicją, aby jeśli Liquindo w jakiś sposób się zepsuje, oryginalna idea naszego lidera mogła zostać przywrócona. Wspieramy również prawo do życia z dala od społeczeństwa, jest to cnotliwe.",
-    "section.ideology.faq.q9": "Czy Liquindo opiera się na istniejących teoriach politycznych?",
-    "section.ideology.faq.a9": "Liquindo zainspirował się kilkoma koncepcjami, takimi jak Republika Wyspy Rosa i antyliberalizm.",
-    "section.ideology.faq.q10": "Czy Liquindo nadal się rozwija?",
-    "section.ideology.faq.a10": "Tak, nasza ideologia może być wpłynięta na dostosowanie się do potrzeb potencjalnych obywateli, ale państwo leży w arystokratycznych, intelektualnych rękach, które nie ugniają się przed żadną wolą.",
+    "section.ideology.title":
+      "Manifest liquindiański jest w trakcie pisania!",
+    "section.ideology.description":
+      "Ta sekcja wyjaśni przekonania, zasady i wizję Liquindo, gdy manifest będzie gotowy.",
+
+    "section.ideology.faq.title":
+      "Często zadawane pytania",
+    "section.ideology.faq.q1":
+      "Czym jest Liquindo?",
+    "section.ideology.faq.a1":
+      "Projektem zbiorowego zakupu wyspy w celu założenia nowego państwa.",
+    "section.ideology.faq.q2":
+      "Jakie są długoterminowe cele Liquindo?",
+    "section.ideology.faq.a2":
+      "Stworzenie narodu liquindiańskiego i zapewnienie dobrobytu naszym ludziom.",
+    "section.ideology.faq.q3":
+      "Czy Liquindo jest ideologią lewicową czy prawicową?",
+    "section.ideology.faq.a3":
+      "Ani jedną, ani drugą. Liquindo odrzuca tradycyjny liberalny podział polityczny i jego ograniczenia.",
+    "section.ideology.faq.q4":
+      "Czy Liquindo jest kapitalistyczne, socjalistyczne czy inne?",
+    "section.ideology.faq.a4":
+      "Jesteśmy korporatystami, co oznacza, że społeczeństwo będzie gospodarczo organizowane w cechy, a nie rządzone przez przedsiębiorstwa.",
+    "section.ideology.faq.q5":
+      "Jaką rolę powinno odgrywać państwo?",
+    "section.ideology.faq.a5":
+      "Państwo jest najwyższą władzą i przemawia w imieniu narodu oraz jego obywateli.",
+    "section.ideology.faq.q6":
+      "Jak Liquindo postrzega demokrację?",
+    "section.ideology.faq.a6":
+      "Liquindo uważa demokrację za nieefektywną formę organizacji politycznej.",
+    "section.ideology.faq.q7":
+      "Jak Liquindo podchodzi do podatków?",
+    "section.ideology.faq.a7":
+      "Liquindo przewiduje podatki, ale nie takie, które uniemożliwiałyby ludziom prowadzenie satysfakcjonującego i udanego życia.",
+    "section.ideology.faq.q8":
+      "Czym Liquindo różni się od libertarianizmu?",
+    "section.ideology.faq.a8":
+      "Liquindo podkreśla prawo obywateli do przeciwstawienia się skorumpowanemu rządowi oraz możliwość życia poza głównym nurtem społeczeństwa.",
+    "section.ideology.faq.q9":
+      "Czy Liquindo opiera się na istniejących teoriach politycznych?",
+    "section.ideology.faq.a9":
+      "Liquindo zostało zainspirowane kilkoma koncepcjami, w tym Republiką Wyspy Róż i antyliberalizmem.",
+    "section.ideology.faq.q10":
+      "Czy Liquindo nadal się rozwija?",
+    "section.ideology.faq.a10":
+      "Tak. Ideologia może być dostosowywana do potrzeb potencjalnych obywateli, zachowując jednocześnie swoje podstawowe zasady.",
+
     "section.members": "Członkowie",
-    "section.members.title": "Zaangażowani ludzie",
+    "section.members.title": "Zaangażowane osoby",
+
     "section.contact": "Kontakt",
-    "section.contact.title": "Skontaktuj się z nami",
-    "section.contact.message": "Wyślij wiadomość do Liquindo bezpośrednio na e-mail.",
-    "section.contact.discord": "Dołącz do nas na Discord:",
+    "section.contact.title":
+      "Skontaktuj się z nami",
+    "section.contact.message":
+      "Wyślij wiadomość do Liquindo bezpośrednio przez e-mail.",
+    "section.contact.discord":
+      "Dołącz do nas na Discordzie:",
+
     "section.gallery": "Galeria",
-    "section.gallery.title": "Obrazy i ważne chwile",
+    "section.gallery.title":
+      "Zdjęcia i najważniejsze materiały",
+
     "section.finance": "Finanse",
-    "section.finance.title": "Odliczanie operacyjne",
-    "section.finance.description": "Liquindo jako projekt nie będzie operacyjne do 2028 roku.",
-    "footer.contact": "Kontakt: liquindohq@yahoo.com",
+    "section.finance.title":
+      "Odliczanie operacyjne",
+    "section.finance.description":
+      "Planowana data rozpoczęcia działalności Liquindo to 1 stycznia 2028 roku.",
+
+    "footer.contact":
+      "Kontakt: liquindohq@yahoo.com",
     "footer.top": "Powrót na górę",
-    "footer.repo": "Wyświetl na GitHub",
+    "footer.repo": "Zobacz na GitHubie",
+
     "member.diego": "Diego Liquin",
-    "member.diego.desc": "Założyciel Liquindo i jego główny ideolog.",
-    "member.fullwood": "Doktor Fullwood",
-    "member.fullwood.desc": "Główny doradca i powiernicy Liquina.",
-    "member.edison": "Edison Mentor",
-    "member.edison.desc": "Polityczny i filozoficzny mentor Liquina.",
-    "link.members": "Wyświetl wszystkich naszych publicznie zidentyfikowanych członków.",
-    "link.gallery": "Wyświetl wszystkie obrazy.",
-    "link.email": "Wyślij e-mail do liquindohq@yahoo.com",
+    "member.diego.desc":
+      "Założyciel Liquindo i jego główny ideolog.",
+    "member.fullwood": "Doctor Fullwood",
+    "member.fullwood.desc":
+      "Główny doradca i powiernik Liquina.",
+    "member.edison": "Edison the Mentor",
+    "member.edison.desc":
+      "Polityczny i filozoficzny mentor Liquina.",
+
+    "link.members":
+      "Zobacz wszystkich publicznie zidentyfikowanych członków.",
+    "link.gallery": "Zobacz wszystkie obrazy.",
+    "link.email":
+      "Wyślij e-mail na liquindohq@yahoo.com",
     "link.discord": "Serwer Discord",
-    "countdown.days": "Dni",
-    "countdown.hours": "Godziny",
-    "countdown.minutes": "Minuty",
+
     "countdown.seconds": "Sekundy",
-    "message.title": "Wiadomość od Liquina: Tydzień 2",
-    "message.text": "Cześć, witamy na stronie Liquindo! Ulepszenia są powolne, tymczasowo przyspieszą się po 17 lipca.",
+    "countdown.minutes": "Minuty",
+    "countdown.days": "Dni",
+    "countdown.weeks": "Tygodnie",
+
+    "message.title": "Wiadomość od Liquina",
+    "message.text":
+      "Witamy na stronie Liquindo. Strona jest aktualizowana i rozwijana wraz z rozwojem projektu.",
+
     "history.year1": "2021",
-    "history.text1": "Pierwotna koncepcja Liquindo została pomyślana w 2021 roku, gdy Diego Liquin wciąż uczęszczał do szkoły średniej. Ideę zainspirował film dokumentalny Netflix Rose Island.",
+    "history.text1":
+      "Pierwotna koncepcja Liquindo powstała w 2021 roku, kiedy Diego Liquin nadal uczęszczał do szkoły średniej. Pomysł został zainspirowany filmem Netflixa Rose Island.",
     "history.year2": "2023–2025",
-    "history.text2": "Od 2021 roku było kilka odrodzin Liquindo, szczególnie godne uwagi od Finna Vaughtona (2023) i Edwarda Fullwooda (2025), przy czym ten ostatni jest w toku.",
+    "history.text2":
+      "Od 2021 roku miało miejsce kilka odrodzeń Liquindo, szczególnie za sprawą Finna Vaughtona w 2023 roku i Edwarda Fullwooda w 2025 roku. To ostatnie nadal trwa.",
     "history.year3": "3 lipca 2025",
-    "history.text3": "Pierwsza fizyczna flaga Liquindo została stworzona 3 lipca 2025 roku. Od tego czasu wyprodukowano inne towary, w tym przypinki i naklejki.",
+    "history.text3":
+      "Pierwsza fizyczna flaga Liquindo została wykonana 3 lipca 2025 roku. Od tego czasu powstały także inne przedmioty, w tym przypinki i naklejki.",
+
     "page.members": "Członkowie",
-    "page.members.title": "Publicznie zidentyfikowani członkowie",
-    "page.members.description": "Dodaj tutaj pełną listę publicznie zidentyfikowanych członków Liquindo.",
+    "page.members.title":
+      "Publicznie zidentyfikowani członkowie",
+    "page.members.description":
+      "Lista publicznie zidentyfikowanych członków Liquindo.",
+
     "page.gallery": "Galeria",
     "page.gallery.title": "Wszystkie obrazy",
-    "page.gallery.description": "Numerowana archiwum obrazów Liquindo.",
-    "gallery.selected": "Wybrane zdjęcie",
+    "page.gallery.description":
+      "Numerowane archiwum obrazów Liquindo.",
+
+    "gallery.selected": "Wybrany obraz",
     "gallery.main": "Powrót do strony głównej",
-    "image.1": "Cyfrowy skład Liquindian wojaks, pokazujący różne dozwolone cechy narodu.",
-    "image.2": "Plakat propagandowy Doktora Fullwooda, bez tekstu.",
-    "image.3": "Selfie Liquina z jedną z pierwszych wyprodukowanych flag jego narodu.",
-    "image.4": "Obraz doomer wojak w recesji Liquindo.",
-    "image.5": "Obraz Liquindian wojak, który nie może sobie przypomnieć, kiedy po raz ostatni czuł radość.",
-    "image.6": "Drugi kawałek liquindianskiego towaru kiedykolwiek stworzony: szpilka.",
-    "image.7": "Edytowany portret Liquina.",
-    "image.8": "Bardziej czerwona edytowana zdjęcie Liquina.",
-    "image.9": "Żołnierz Liquindian w ciemności, niosący swój kask i swoją flagę.",
-    "image.10": "Artystyczna reprezentacja sylwetki żołnierza Liquindian.",
-    "image.11": "Zdjęcie żołnierza Liquindian.",
-    "image.12": "Żołnierz Liquindian stojący pod kątem, z dobrą muzyką grającą w tle.",
-    "image.13": "Obraz żołnierza Liquindian stojącego w złą stronę.",
-    "image.14": "Obraz flagi Liquindian połączonej z flagą South Yorkshire i flagą Anglii.",
-    "image.15": "Liquin robiący podejrzliwe selfie z nowo nabytym hełmem.",
-    "image.16": "Doktor Fullwood robiący selfie z flagą Liquindian przerzuconą za nim.",
-    "image.17": "Doktor Fullwood robiący selfie w nocy z flagą Liquindian przerzuconą za nim.",
-    "image.18": "Liquintop, znany również jako Liquindian Laptop.",
-    "image.19": "Petrov z nową flagą wysłaną bezpośrednio przez Liquina.",
-    "image.20": "Setup Petrowa.",
-    "image.21": "Flaga Liquindian Sports Association (A).",
-    "image.22": "Oparty Liquindian Soldier Wojak.",
-    "image.23": "Flaga Liquindian Sports Association (B).",
-    "image.24": "Proponowana okładka Book of Liquin.",
-    "image.25": "Artystyczne przedstawienie selfie Liquina z flagą.",
-    "image.26": "Flaga Vaughtown.",
-    "image.27": "Flaga Liquindo i flaga Łotwy razem.",
-    "image.28": "Portret Edisona Mentora.",
-    "image.29": "Zdjęcie Liquina, Doktora Fullwooda i Edisona Mentora, planujących konflikt z Vaughtonologami.",
-    "image.30": "Zdjęcie garażu, który może, ale nie musi być liquindiański.",
-    "image.31": "Flaga Edwardii.",
-    "image.32": "Flaga Liquindo.",
-    "image.33": "Druga wersja flagi Liquindian.",
-    "image.34": "Pierwsza kiedykolwiek wersja flagi Liquindian.",
-    "image.35": "Flaga Planu Działania Liquina (L'Pa).",
-    "image.36": "Flaga Liquindian Nationalist Front.",
-    "image.37": "Portret Liquina około 2025.",
-    "image.38": "Flaga Caput.",
-    "image.39": "Liquin przybierający pozę.",
-    "image.40": "Liquin przybierający inną pozę.",
-    "image.41": "Baner do konta TikTok based.LNF.supporter.",
-    "image.42": "Fala Liquindian.",
-    "image.43": "Flaga Vaughtonologii.",
-    "image.44": "Zdjęcie grupy liquindan.",
-    "image.45": "Kolejne zdjęcie Liquina.",
-    "image.46": "Doktor Fullwood robiący selfie z flagą Liquindian przerzuconą za nim, rano.",
-    "image.47": "Zjazd Liquindian.",
-    "image.48": "Pierwsi gracze należący do Liquindian Sports Association.",
-    "image.49": "Portret myśliciela.",
-    "image.50": "Kolejny portret Liquina.",
-    "image.51": "Głupia zdjęcie Doktora Fullwooda.",
-    "image.52": "Flaga Liquindian Army.",
-    "image.nodesc": "Dla tego obrazu nie dodano jeszcze żadnego opisu."
+
+    "image.nodesc":
+      "Nie dodano jeszcze opisu tego obrazu."
   },
-  hr: {
-    "nav.introduction": "Uvod",
-    "nav.history": "povijest",
-    "nav.ideology": "Ideologija",
-    "nav.members": "Članovi",
-    "nav.gallery": "Galerija",
-    "nav.contact": "Kontakt",
-    "nav.finance": "Financije",
-    "hero.eyebrow": "Uvod",
-    "hero.title": "Dobrodošli u Liquindo.",
-    "hero.description": "Liquindo je idealistički projekt o kolektivnoj kupnji otoka ili suverenoj teritoriji gdje možemo nametnuti novo nacionalno državno uređenje koje nije pod utjecajem globalne elite i njezina liberalnog svjetskog poretka. Kontrolirat će ga ekonomija i klasa Treće pozicije.",
-    "section.history": "povijest",
-    "section.history.title": "Pozadina i važni momenti",
-    "section.ideology": "Ideologija",
-    "section.ideology.title": "Liquindijski manifest se piše!",
-    "section.ideology.description": "Ovaj odjeljak će objasniti Liquindove vjerovanja, principe i viziju kad bude manifest spreman.",
-    "section.ideology.faq.title": "Često postavljana pitanja",
-    "section.ideology.faq.q1": "Što je Liquindo?",
-    "section.ideology.faq.a1": "Projekt za kolektivnu kupnju otoka kako bi se osnovala nova nacija.",
-    "section.ideology.faq.q2": "Koji su dugoročni ciljevi Liquinda?",
-    "section.ideology.faq.a2": "Stvaranje liquindijske rase i blagostanja za naš narod",
-    "section.ideology.faq.q3": "Je li Liquindo ljevičarska ili desničarska ideologija?",
-    "section.ideology.faq.a3": "Niti jedno niti drugo, Liquindo je iznad trivijalne liberalne politike i odbija upotrebu spektra kako bi se onemogućila politička djelatnost.",
-    "section.ideology.faq.q4": "Je li Liquindo kapitalistički, socijalistički ili nešto treće?",
-    "section.ideology.faq.a4": "Korporativisti smo, što znači da će društvo biti ekonomski organizirano u cehove, a ne vladano od strane korporacija.",
-    "section.ideology.faq.q5": "Koju ulogu trebala bi igrati vlada?",
-    "section.ideology.faq.a5": "Država je apsolutna i govori u ime naroda i njegova naroda.",
-    "section.ideology.faq.q6": "Kako Liquindo vidi demokraciju?",
-    "section.ideology.faq.a6": "Demokracija je neučinkovita i omogućava slabima da budu vođeni glasnima.",
-    "section.ideology.faq.q7": "Kako se Liquindo odnosi prema oporezivanju?",
-    "section.ideology.faq.a7": "Liquindo ima poreze, ali ne na način koji brani čovjeku da živi zadovoljan uspješan život.",
-    "section.ideology.faq.q8": "Kako se Liquindo razlikuje od libertarijanizma?",
-    "section.ideology.faq.a8": "Podržavamo pravo na ustanak protiv vlade, zbog toga će naš narod biti vojska, tako da ako Liquindo nekako postane korumpiran, originalna ideja našeg lidera može biti obnovljena. Također podržavamo pravo na život dalje od društva, to je vrlina.",
-    "section.ideology.faq.q9": "Temelji se li Liquindo na postojećim političkim teorijama?",
-    "section.ideology.faq.a9": "Liquindo je inspiriran nekoliko koncepata kao što su Republika Otok ružičaste boje i antiliberalizam.",
-    "section.ideology.faq.q10": "Jesu li Liquindo još uvijek razvijajući se?",
-    "section.ideology.faq.a10": "Da, našu ideologiju mogu utjecati kako bi se prilagodila potrebama potencijalnih građana, ali država leži u aristokratskim, intelektualnim rukama koje se ne klanjaju nikojoj volji.",
-    "section.members": "Članovi",
-    "section.members.title": "Uključeni ljudi",
-    "section.contact": "Kontakt",
-    "section.contact.title": "Kontaktirajte nas",
-    "section.contact.message": "Pošalji poruku Liquindu izravno na e-mail.",
-    "section.contact.discord": "Pridružite se nam na Discordu:",
-    "section.gallery": "Galerija",
-    "section.gallery.title": "Slike i značajne točke",
-    "section.finance": "Financije",
-    "section.finance.title": "Operativni odbrojavač",
-    "section.finance.description": "Liquindo kao projekt neće biti operativan do 2028. godine.",
-    "footer.contact": "Kontakt: liquindohq@yahoo.com",
-    "footer.top": "Nazad na vrh",
-    "footer.repo": "Pogledaj na GitHubu",
+
+  ru: {
+    "nav.introduction": "Введение",
+    "nav.history": "История",
+    "nav.ideology": "Идеология",
+    "nav.members": "Участники",
+    "nav.gallery": "Галерея",
+    "nav.contact": "Контакты",
+    "nav.finance": "Финансы",
+
+    "hero.eyebrow": "Введение",
+    "hero.title": "Добро пожаловать в Liquindo.",
+    "hero.description":
+      "Liquindo — это идеалистический проект коллективной покупки острова или суверенной территории, где может быть создано новое национальное государство, независимое от влияния глобальной элиты и либерального мирового порядка. Его устройство будет основано на экономике и классе Третьей позиции.",
+
+    "section.history": "История",
+    "section.history.title":
+      "Предыстория и важные события",
+
+    "section.ideology": "Идеология",
+    "section.ideology.title":
+      "Манифест Liquindo находится в процессе написания!",
+    "section.ideology.description":
+      "В этом разделе будут изложены убеждения, принципы и видение Liquindo после завершения манифеста.",
+
+    "section.ideology.faq.title":
+      "Часто задаваемые вопросы",
+    "section.ideology.faq.q1":
+      "Что такое Liquindo?",
+    "section.ideology.faq.a1":
+      "Проект коллективной покупки острова для основания нового государства.",
+    "section.ideology.faq.q2":
+      "Каковы долгосрочные цели Liquindo?",
+    "section.ideology.faq.a2":
+      "Формирование народа Liquindo и обеспечение благополучия его жителей.",
+    "section.ideology.faq.q3":
+      "Liquindo относится к левым или правым идеологиям?",
+    "section.ideology.faq.a3":
+      "Ни к одной из них. Liquindo отвергает традиционный либеральный политический спектр и его ограничения.",
+    "section.ideology.faq.q4":
+      "Liquindo является капиталистическим, социалистическим или чем-то другим?",
+    "section.ideology.faq.a4":
+      "Мы придерживаемся корпоративизма, при котором экономика общества организована через профессиональные объединения и гильдии, а не управляется корпорациями.",
+    "section.ideology.faq.q5":
+      "Какую роль должно играть государство?",
+    "section.ideology.faq.a5":
+      "Государство является высшей политической властью и представляет нацию и её народ.",
+    "section.ideology.faq.q6":
+      "Как Liquindo относится к демократии?",
+    "section.ideology.faq.a6":
+      "Liquindo считает демократию неэффективной формой политической организации.",
+    "section.ideology.faq.q7":
+      "Как Liquindo относится к налогообложению?",
+    "section.ideology.faq.a7":
+      "В Liquindo существуют налоги, однако они не должны мешать человеку вести полноценную и успешную жизнь.",
+    "section.ideology.faq.q8":
+      "Чем Liquindo отличается от либертарианства?",
+    "section.ideology.faq.a8":
+      "Liquindo подчёркивает право граждан противостоять коррумпированному правительству и возможность жить отдельно от основного общества.",
+    "section.ideology.faq.q9":
+      "Основано ли Liquindo на существующих политических теориях?",
+    "section.ideology.faq.a9":
+      "Liquindo было вдохновлено несколькими концепциями, включая Республику Острова Роз и антилиберализм.",
+    "section.ideology.faq.q10":
+      "Продолжает ли Liquindo развиваться?",
+    "section.ideology.faq.a10":
+      "Да. Идеология может адаптироваться к потребностям потенциальных граждан, сохраняя при этом свои основные принципы.",
+
+    "section.members": "Участники",
+    "section.members.title":
+      "Люди, участвующие в проекте",
+
+    "section.contact": "Контакты",
+    "section.contact.title": "Связаться",
+    "section.contact.message":
+      "Отправьте Liquindo сообщение по электронной почте.",
+    "section.contact.discord":
+      "Присоединяйтесь к нам в Discord:",
+
+    "section.gallery": "Галерея",
+    "section.gallery.title":
+      "Изображения и материалы",
+
+    "section.finance": "Финансы",
+    "section.finance.title":
+      "Операционный отсчёт",
+    "section.finance.description":
+      "Планируемая дата начала работы Liquindo — 1 января 2028 года.",
+
+    "footer.contact":
+      "Контакт: liquindohq@yahoo.com",
+    "footer.top": "Наверх",
+    "footer.repo": "Посмотреть на GitHub",
+
     "member.diego": "Diego Liquin",
-    "member.diego.desc": "Osnivač Liquinda i njegov glavni ideolog.",
-    "member.fullwood": "Doktor Fullwood",
-    "member.fullwood.desc": "Liquinov glavni savjetnik i povjerenik.",
-    "member.edison": "Edison Mentor",
-    "member.edison.desc": "Liquinov politički i filozofski mentor.",
-    "link.members": "Pogledajte sve naše javno identificirane članove.",
-    "link.gallery": "Pogledajte sve slike.",
-    "link.email": "Pošalji e-mail na liquindohq@yahoo.com",
-    "link.discord": "Discord server",
-    "countdown.days": "Dana",
-    "countdown.hours": "Sati",
-    "countdown.minutes": "Minuta",
-    "countdown.seconds": "Sekundi",
-    "message.title": "Poruka od Liquina: Tjedan 2",
-    "message.text": "Bok, dobrodošli na Liquindovu web stranicu! Poboljšanja su spora, bit će privremeno ubrzana nakon 17. srpnja.",
+    "member.diego.desc":
+      "Основатель Liquindo и его главный идеолог.",
+    "member.fullwood": "Doctor Fullwood",
+    "member.fullwood.desc":
+      "Главный советник и доверенное лицо Liquin.",
+    "member.edison": "Edison the Mentor",
+    "member.edison.desc":
+      "Политический и философский наставник Liquin.",
+
+    "link.members":
+      "Посмотреть всех публично известных участников.",
+    "link.gallery": "Посмотреть все изображения.",
+    "link.email":
+      "Написать на liquindohq@yahoo.com",
+    "link.discord": "Сервер Discord",
+
+    "countdown.seconds": "Секунды",
+    "countdown.minutes": "Минуты",
+    "countdown.days": "Дни",
+    "countdown.weeks": "Недели",
+
+    "message.title": "Сообщение от Liquin",
+    "message.text":
+      "Добро пожаловать на сайт Liquindo. Сайт обновляется и расширяется по мере развития проекта.",
+
     "history.year1": "2021",
-    "history.text1": "Liquindova primarna koncepcija je bila osmišljena 2021. godine kada je Diego Liquin još bio u srednjoj školi. Ideju je inspirirao Netflix dokumentarac Rose Island.",
+    "history.text1":
+      "Первоначальная концепция Liquindo возникла в 2021 году, когда Diego Liquin ещё учился в школе. Идея была вдохновлена фильмом Netflix Rose Island.",
     "history.year2": "2023–2025",
-    "history.text2": "Od 2021. godine bilo je više oživljavanja Liquinda, posebno od Finna Vaughtona (2023) i Edwarda Fullwooda (2025), od kojih je potonje u tijeku.",
-    "history.year3": "3. srpnja 2025.",
-    "history.text3": "Prva fizička Liquindova zastava nastala je 3. srpnja 2025. godine. Od tada je proizvedena druga roba, uključujući značke i naljepnice.",
-    "page.members": "Članovi",
-    "page.members.title": "Javno identificirani članovi",
-    "page.members.description": "Dodajte potpuni popis javno identificiranih članova Liquinda ovdje.",
-    "page.gallery": "Galerija",
-    "page.gallery.title": "Sve slike",
-    "page.gallery.description": "Numerirani arhiv Liquindovih slika.",
-    "gallery.selected": "Odabrana slika",
-    "gallery.main": "Nazad na glavnu stranicu",
-    "image.1": "Digitalni sastav Liquindian vojaka, prikazujući različita dozvljena obilježja naroda.",
-    "image.2": "Propagandni plakat Doktora Fullwooda, bez teksta.",
-    "image.3": "Selfie Liquina s jednom od prvih proizvedenih zastava njegovog naroda.",
-    "image.4": "Slika doomer vojaka u recesiji Liquinda.",
-    "image.5": "Slika Liquindian vojaka koji se ne može sjetiti kada je zadnji put osjećao radost.",
-    "image.6": "Drugi komad Liquindian robe ikada stvorene: pribadača.",
-    "image.7": "Uređeni portret Liquina.",
-    "image.8": "Crvenije uređena fotografija Liquina.",
-    "image.9": "Liquindian vojnik u tami, noseći svoj šlem i svoju zastavu.",
-    "image.10": "Umjetničko predstavljanje siluete Liquindian vojnika.",
-    "image.11": "Slika Liquindian vojnika.",
-    "image.12": "Liquindian vojnik okrenuo se pod kutom, s dobrom glazbom koja svira u pozadini.",
-    "image.13": "Slika Liquindian vojnika koji gleda u krivom smjeru.",
-    "image.14": "Slika Liquindian zastave uparene s South Yorkshire zastavom i Engleskom zastavom.",
-    "image.15": "Liquin radi sumnjivog selfija sa svojim novoizvedenim helmom.",
-    "image.16": "Doktor Fullwood radi selfija sa Liquindian zastavom prevučenom iza njega.",
-    "image.17": "Doktor Fullwood radi selfija noću sa Liquindian zastavom prevučenom iza njega.",
-    "image.18": "Liquintop, poznat i kao Liquindian prijenosno računalo.",
-    "image.19": "Petrov sa svojom novom zastavom poslanu izravno od strane Liquina.",
-    "image.20": "Petrov postavka.",
-    "image.21": "Liquindian Sports Association zastava (A).",
-    "image.22": "Obnavljajući Liquindian Soldier Wojak.",
-    "image.23": "Liquindian Sports Association zastava (B).",
-    "image.24": "Predložena naslovnica za Book of Liquin.",
-    "image.25": "Umjetnički prikaz selfija Liquina sa zastavom.",
-    "image.26": "Vaughtown zastava.",
-    "image.27": "Liquindo zastava i Latvija zastava zajedno.",
-    "image.28": "Portret Edisona Mentora.",
-    "image.29": "Slika Liquina, Doktora Fullwooda i Edisona Mentora, smišljanja planova o svom sukobu s Vaughtonolozima.",
-    "image.30": "Slika garaže koja može ili ne mora biti liquindianska.",
-    "image.31": "Zastava Edwardie.",
-    "image.32": "Zastava Liquinda.",
-    "image.33": "Druga verzija Liquindian zastave.",
-    "image.34": "Prva ikad verzija Liquindian zastave.",
-    "image.35": "Zastava Liquinova plana djelovanja (L'Pa).",
-    "image.36": "Zastava Liquindian nacionalnog fronta.",
-    "image.37": "Portret Liquina circa 2025.",
-    "image.38": "Zastava Caput-a.",
-    "image.39": "Liquin usvajajući pozu.",
-    "image.40": "Liquin usvajajući drugu pozu.",
-    "image.41": "Natpis za Based.LNF.supporter TikTok račun.",
-    "image.42": "Liquindian val.",
-    "image.43": "Zastava Vaughtonologije.",
-    "image.44": "Slika grupe Liquindiansa.",
-    "image.45": "Druga slika Liquina.",
-    "image.46": "Doktor Fullwood radi selfija sa Liquindian zastavom prevučenom iza njega, ujutro.",
-    "image.47": "Liquindian sastanak.",
-    "image.48": "Rani igrači pripadajući Liquindian Sports Association.",
-    "image.49": "Portret mislitelja.",
-    "image.50": "Drugi portret Liquina.",
-    "image.51": "Smiješna slika Doktora Fullwooda.",
-    "image.52": "Zastava Liquindian vojske.",
-    "image.nodesc": "Za ovu sliku još nije dodan opis."
+    "history.text2":
+      "С 2021 года проект Liquindo пережил несколько возрождений, наиболее заметные из которых были связаны с Finn Vaughton в 2023 году и Edward Fullwood в 2025 году. Последнее продолжается до сих пор.",
+    "history.year3": "3 июля 2025",
+    "history.text3":
+      "Первый физический флаг Liquindo был создан 3 июля 2025 года. Позднее появились и другие предметы, включая значки и наклейки.",
+
+    "page.members": "Участники",
+    "page.members.title":
+      "Публично известные участники",
+    "page.members.description":
+      "Список публично известных участников Liquindo.",
+
+    "page.gallery": "Галерея",
+    "page.gallery.title": "Все изображения",
+    "page.gallery.description":
+      "Нумерованный архив изображений Liquindo.",
+
+    "gallery.selected": "Выбранное изображение",
+    "gallery.main": "На главную страницу",
+
+    "image.nodesc":
+      "Описание для этого изображения ещё не добавлено."
+  },
+
+  zh: {
+    "nav.introduction": "简介",
+    "nav.history": "历史",
+    "nav.ideology": "理念",
+    "nav.members": "成员",
+    "nav.gallery": "图库",
+    "nav.contact": "联系",
+    "nav.finance": "财务",
+
+    "hero.eyebrow": "简介",
+    "hero.title": "欢迎来到 Liquindo。",
+    "hero.description":
+      "Liquindo 是一个理想主义项目，目标是通过集体购买岛屿或主权领土来建立一个新的民族国家，使其不受全球精英及自由主义世界秩序的影响。其制度将以第三立场的经济和社会理念为基础。",
+
+    "section.history": "历史",
+    "section.history.title": "背景与重要事件",
+
+    "section.ideology": "理念",
+    "section.ideology.title":
+      "Liquindo 宣言正在撰写中！",
+    "section.ideology.description":
+      "宣言完成后，本部分将介绍 Liquindo 的信念、原则和愿景。",
+
+    "section.ideology.faq.title": "常见问题",
+    "section.ideology.faq.q1":
+      "Liquindo 是什么？",
+    "section.ideology.faq.a1":
+      "一个通过集体购买岛屿来建立新国家的项目。",
+    "section.ideology.faq.q2":
+      "Liquindo 的长期目标是什么？",
+    "section.ideology.faq.a2":
+      "建立 Liquindo 的民族共同体，并促进其人民的福祉。",
+    "section.ideology.faq.q3":
+      "Liquindo 属于左翼还是右翼思想？",
+    "section.ideology.faq.a3":
+      "都不是。Liquindo 拒绝传统自由主义政治光谱及其限制。",
+    "section.ideology.faq.q4":
+      "Liquindo 是资本主义、社会主义还是其他制度？",
+    "section.ideology.faq.a4":
+      "我们主张社团主义，即社会经济通过行业组织和行会来协调，而不是由公司统治。",
+    "section.ideology.faq.q5":
+      "政府应该发挥什么作用？",
+    "section.ideology.faq.a5":
+      "国家是最高政治权威，并代表国家及其人民。",
+    "section.ideology.faq.q6":
+      "Liquindo 如何看待民主？",
+    "section.ideology.faq.a6":
+      "Liquindo 认为民主是一种效率有限的政治组织形式。",
+    "section.ideology.faq.q7":
+      "Liquindo 如何看待税收？",
+    "section.ideology.faq.a7":
+      "Liquindo 会征税，但税制不应阻碍个人过上充实而成功的生活。",
+    "section.ideology.faq.q8":
+      "Liquindo 与自由意志主义有什么不同？",
+    "section.ideology.faq.a8":
+      "Liquindo 强调公民反对腐败政府的权利，同时也支持个人选择远离主流社会生活的自由。",
+    "section.ideology.faq.q9":
+      "Liquindo 是否受到现有政治理论的影响？",
+    "section.ideology.faq.a9":
+      "Liquindo 受到多个概念的启发，包括玫瑰岛共和国和反自由主义。",
+    "section.ideology.faq.q10":
+      "Liquindo 是否仍在发展？",
+    "section.ideology.faq.a10":
+      "是的。其理念可以根据潜在公民的需要进行调整，同时保留核心原则。",
+
+    "section.members": "成员",
+    "section.members.title": "参与人员",
+
+    "section.contact": "联系",
+    "section.contact.title": "联系我们",
+    "section.contact.message":
+      "通过电子邮件直接向 Liquindo 发送消息。",
+    "section.contact.discord":
+      "加入我们的 Discord：",
+
+    "section.gallery": "图库",
+    "section.gallery.title": "图片与精选内容",
+
+    "section.finance": "财务",
+    "section.finance.title": "运营倒计时",
+    "section.finance.description":
+      "Liquindo 的目标运营日期为 2028 年 1 月 1 日。",
+
+    "footer.contact":
+      "联系方式：liquindohq@yahoo.com",
+    "footer.top": "返回顶部",
+    "footer.repo": "在 GitHub 上查看",
+
+    "member.diego": "Diego Liquin",
+    "member.diego.desc":
+      "Liquindo 的创始人和主要思想提出者。",
+    "member.fullwood": "Doctor Fullwood",
+    "member.fullwood.desc":
+      "Liquin 的主要顾问和受托人。",
+    "member.edison": "Edison the Mentor",
+    "member.edison.desc":
+      "Liquin 的政治和哲学导师。",
+
+    "link.members": "查看所有公开成员。",
+    "link.gallery": "查看所有图片。",
+    "link.email":
+      "发送邮件至 liquindohq@yahoo.com",
+    "link.discord": "Discord 服务器",
+
+    "countdown.seconds": "秒",
+    "countdown.minutes": "分钟",
+    "countdown.days": "天",
+    "countdown.weeks": "周",
+
+    "message.title": "Liquin 的消息",
+    "message.text":
+      "欢迎来到 Liquindo 网站。随着项目的发展，网站也在不断更新和扩展。",
+
+    "history.year1": "2021",
+    "history.text1":
+      "Liquindo 的最初构想产生于 2021 年，当时 Diego Liquin 仍在中学就读。这个想法受到 Netflix 影片《Rose Island》的启发。",
+    "history.year2": "2023–2025",
+    "history.text2":
+      "自 2021 年以来，Liquindo 经历了多次复兴，其中较为重要的是 Finn Vaughton 于 2023 年推动的一次，以及 Edward Fullwood 于 2025 年推动的一次，后者仍在继续。",
+    "history.year3": "2025年7月3日",
+    "history.text3":
+      "Liquindo 的第一面实体旗帜于 2025 年 7 月 3 日制作完成。此后还制作了徽章和贴纸等其他物品。",
+
+    "page.members": "成员",
+    "page.members.title": "公开成员",
+    "page.members.description":
+      "Liquindo 公开成员名单。",
+
+    "page.gallery": "图库",
+    "page.gallery.title": "所有图片",
+    "page.gallery.description":
+      "Liquindo 图片的编号档案。",
+
+    "gallery.selected": "所选图片",
+    "gallery.main": "返回主页",
+
+    "image.nodesc":
+      "此图片尚未添加说明。"
   }
 };
 
+/*
+ * Add gallery descriptions shared across languages.
+ * Languages without a translated image description fall back
+ * to the English version below.
+ */
+
+const englishImageDescriptions = {
+  "image.1":
+    "A digital composition of Liquindian wojaks, showing different permitted characteristics of the nation.",
+  "image.2":
+    "A propaganda poster of Doctor Fullwood, without text.",
+  "image.3":
+    "A selfie of Liquin with one of the first produced flags of his nation.",
+  "image.4":
+    "An image of a doomer wojak in Liquindo's recession.",
+  "image.5":
+    "An image of a Liquindian wojak that cannot remember when he last felt joy.",
+  "image.6":
+    "The second piece of Liquindian merchandise ever created: a pin.",
+  "image.7":
+    "An edited portrait of Liquin.",
+  "image.8":
+    "A redder edited photo of Liquin.",
+  "image.9":
+    "A Liquindian soldier in the dark, bearing his helmet and his flag.",
+  "image.10":
+    "An artistic representation of a Liquindian soldier's silhouette.",
+  "image.11":
+    "A picture of a Liquindian soldier.",
+  "image.12":
+    "A Liquindian soldier facing an angle, with good music playing in the background.",
+  "image.13":
+    "An image of a Liquindian soldier facing the wrong way.",
+  "image.14":
+    "An image of the Liquindian flag paired with the South Yorkshire flag and the England flag.",
+  "image.15":
+    "Liquin taking a suspicious selfie with his newly-acquired helmet.",
+  "image.16":
+    "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him.",
+  "image.17":
+    "Doctor Fullwood taking a selfie at night with the Liquindian flag draped behind him.",
+  "image.18":
+    "The Liquintop, also known as the Liquindian Laptop.",
+  "image.19":
+    "Petrov with his new flag shipped directly by Liquin himself.",
+  "image.20":
+    "Petrov's setup.",
+  "image.21":
+    "The Liquindian Sports Association flag (A).",
+  "image.22":
+    "The Based Liquindian Soldier Wojak.",
+  "image.23":
+    "The Liquindian Sports Association flag (B).",
+  "image.24":
+    "The proposed cover for the Book of Liquin.",
+  "image.25":
+    "An artistic portrayal of a selfie of Liquin with a flag.",
+  "image.26":
+    "The Vaughtown flag.",
+  "image.27":
+    "The Liquindo flag and the Latvia flag, together.",
+  "image.28":
+    "A portrait of Edison the Mentor.",
+  "image.29":
+    "A picture of Liquin, Doctor Fullwood and Edison the Mentor.",
+  "image.30":
+    "A picture of a garage which may or may not be Liquindian.",
+  "image.31":
+    "The flag of Edwardia.",
+  "image.32":
+    "The flag of Liquindo.",
+  "image.33":
+    "The second version of the Liquindian flag.",
+  "image.34":
+    "The first ever version of the Liquindian flag.",
+  "image.35":
+    "The flag of Liquin's Plan of Action (L'Pa).",
+  "image.36":
+    "The flag of the Liquindo Nationalist Front.",
+  "image.37":
+    "A portrait of Liquin circa 2025.",
+  "image.38":
+    "The flag of Caput.",
+  "image.39":
+    "Liquin striking a pose.",
+  "image.40":
+    "Liquin striking another pose.",
+  "image.41":
+    "The banner for the based.LNF.supporter TikTok account.",
+  "image.42":
+    "The Liquindian wave.",
+  "image.43":
+    "The flag of Vaughtonology.",
+  "image.44":
+    "A picture of a group of Liquindians.",
+  "image.45":
+    "Another picture of Liquin.",
+  "image.46":
+    "Doctor Fullwood taking a selfie with the Liquindian flag draped behind him in the morning.",
+  "image.47":
+    "A Liquindian reunion.",
+  "image.48":
+    "Early players belonging to the Liquindo Sports Association.",
+  "image.49":
+    "A portrait of a thinker.",
+  "image.50":
+    "Another portrait of Liquin.",
+  "image.51":
+    "A goofy picture of Doctor Fullwood.",
+  "image.52":
+    "The flag of the Liquindian Army."
+};
+
+Object.assign(
+  translations.en,
+  englishImageDescriptions
+);
+
 class LanguageManager {
   constructor() {
-    this.currentLanguage = this.getStoredLanguage() || 'en';
+    this.currentLanguage =
+      this.getStoredLanguage() || "en";
+
+    if (!translations[this.currentLanguage]) {
+      this.currentLanguage = "en";
+    }
+
     this.init();
   }
 
   getStoredLanguage() {
-    return localStorage.getItem('liquindo-language');
+    try {
+      return localStorage.getItem(
+        "liquindo-language"
+      );
+    } catch {
+      return null;
+    }
   }
 
   setLanguage(lang) {
-    if (translations[lang]) {
-      this.currentLanguage = lang;
-      localStorage.setItem('liquindo-language', lang);
-      this.updatePageLanguage();
+    if (!translations[lang]) {
+      return;
     }
+
+    this.currentLanguage = lang;
+
+    try {
+      localStorage.setItem(
+        "liquindo-language",
+        lang
+      );
+    } catch {
+      // The site still works without localStorage.
+    }
+
+    this.updatePageLanguage();
   }
 
   get(key) {
-    const lang = this.currentLanguage;
-    return translations[lang][key] || translations['en'][key] || key;
+    return (
+      translations[this.currentLanguage]?.[key] ??
+      translations.en[key] ??
+      key
+    );
   }
 
   updatePageLanguage() {
-    // Update all elements with data-i18n attribute
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      el.textContent = this.get(key);
-    });
+    document
+      .querySelectorAll("[data-i18n]")
+      .forEach((element) => {
+        const key =
+          element.getAttribute("data-i18n");
 
-    // Update language switcher
-    const langSwitcher = document.getElementById('language-switcher');
-    if (langSwitcher) {
-      langSwitcher.value = this.currentLanguage;
+        element.textContent = this.get(key);
+      });
+
+    const languageSwitcher =
+      document.getElementById(
+        "language-switcher"
+      );
+
+    if (languageSwitcher) {
+      languageSwitcher.value =
+        this.currentLanguage;
     }
 
-    // Update document language
-    document.documentElement.lang = this.currentLanguage;
+    document.documentElement.lang =
+      this.currentLanguage;
   }
 
   init() {
     this.updatePageLanguage();
 
-    // Setup language switcher event listener
-    const langSwitcher = document.getElementById('language-switcher');
-    if (langSwitcher) {
-      langSwitcher.addEventListener('change', (e) => {
-        this.setLanguage(e.target.value);
-      });
+    const languageSwitcher =
+      document.getElementById(
+        "language-switcher"
+      );
+
+    if (languageSwitcher) {
+      languageSwitcher.addEventListener(
+        "change",
+        (event) => {
+          this.setLanguage(
+            event.target.value
+          );
+        }
+      );
     }
   }
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-  window.languageManager = new LanguageManager();
-});
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    window.languageManager =
+      new LanguageManager();
+  }
+);
