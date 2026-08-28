@@ -6,19 +6,15 @@
 
   <meta
     name="description"
-    content="Liquinwiki encyclopedia articles about Liquindo and its political factions."
+    content="Liquinwiki, the encyclopedia of Liquindo."
   />
 
-  <title>Liquinwiki</title>
+  <title>Liquinwiki - Encyclopedia of Liquindo</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body id="top">
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
 
   <header class="page-header">
     <nav class="topbar" aria-label="Main navigation">
@@ -89,17 +85,138 @@
   </header>
 
 
-  <!-- =====================================================
-       MAIN
-       ===================================================== -->
+  <main class="wiki-container">
 
-  <main>
+    <!-- DIRECTORY -->
 
-    <div class="article-container">
+    <section
+      id="wiki-directory"
+      aria-labelledby="articles-heading"
+    >
 
       <div class="wiki-toolbar">
         <a
-          href="articles.html"
+          href="index.html"
+          class="back-link"
+          data-i18n="wiki.main"
+        >
+          ← Back to main site
+        </a>
+      </div>
+
+      <h2
+        id="articles-heading"
+        class="wiki-section-title"
+        data-i18n="wiki.articles"
+      >
+        Articles
+      </h2>
+
+      <div class="articles-list">
+
+        <article class="article-card">
+          <h3>
+            <a href="wiki.html#liquindo">
+              Liquindo
+            </a>
+          </h3>
+
+          <p class="article-description">
+            An overview of the Federal Republic of Liquindo, including its
+            history, proposed government, economy, national symbols, and
+            political system.
+          </p>
+
+          <a href="wiki.html#liquindo" class="section-link">
+            Read article →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <h3>
+            <a href="wiki.html#liquin-plan">
+              Liquin's Plan
+            </a>
+          </h3>
+
+          <p class="article-description">
+            The proposed governing administration of Liquindo and the
+            institutional framework through which its political factions
+            operate.
+          </p>
+
+          <a href="wiki.html#liquin-plan" class="section-link">
+            Read article →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <h3>
+            <a href="wiki.html#lnf">
+              Liquindo Nationalist Front
+            </a>
+          </h3>
+
+          <p class="article-description">
+            A political faction associated with Liquindo whose program
+            emphasizes nationalism, national identity, hierarchy,
+            demographic policy, and social discipline.
+          </p>
+
+          <a href="wiki.html#lnf" class="section-link">
+            Read article →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <h3>
+            <a href="wiki.html#integralist-front">
+              Liquindian Integralist Front
+            </a>
+          </h3>
+
+          <p class="article-description">
+            A Catholic integralist faction focused on religion,
+            Church-state relations, social conservatism, and distributist
+            economic thought.
+          </p>
+
+          <a href="wiki.html#integralist-front" class="section-link">
+            Read article →
+          </a>
+        </article>
+
+        <article class="article-card">
+          <h3>
+            <a href="wiki.html#npf">
+              Nuclear Proliferation Faction
+            </a>
+          </h3>
+
+          <p class="article-description">
+            A political faction associated with debates over nuclear policy,
+            deterrence, strategic independence, and national security.
+          </p>
+
+          <a href="wiki.html#npf" class="section-link">
+            Read article →
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+
+    <!-- ARTICLE VIEW -->
+
+    <section
+      id="wiki-article-view"
+      hidden
+    >
+
+      <div class="wiki-toolbar">
+        <a
+          href="wiki.html"
           class="back-link"
           data-i18n="wiki.back"
         >
@@ -116,6 +233,7 @@
         id="liquindo"
         class="wiki-article"
         data-wiki-article
+        hidden
       >
 
         <header class="article-header">
@@ -123,21 +241,14 @@
             Liquinwiki
           </p>
 
-          <h1
-            class="article-title"
-            data-i18n="wiki.liquindo.title"
-          >
+          <h1 class="article-title">
             Liquindo
           </h1>
 
-          <p
-            class="article-subtitle"
-            data-i18n="wiki.liquindo.subtitle"
-          >
+          <p class="article-subtitle">
             The Federal Republic of Liquindo
           </p>
         </header>
-
 
         <aside class="infobox" aria-label="Liquindo information">
 
@@ -146,147 +257,76 @@
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Official name
-            </span>
-
-            <span class="infobox-value">
-              Federal Republic of Liquindo
-            </span>
+            <span class="infobox-label">Official name</span>
+            <span class="infobox-value">Federal Republic of Liquindo</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Motto
-            </span>
-
-            <span class="infobox-value">
-              <i>Liquindo regit undas</i>
-            </span>
+            <span class="infobox-label">Motto</span>
+            <span class="infobox-value"><i>Liquindo regit undas</i></span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              English motto
-            </span>
-
-            <span class="infobox-value">
-              Liquindo rules the waves
-            </span>
+            <span class="infobox-label">English motto</span>
+            <span class="infobox-value">Liquindo rules the waves</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Government
-            </span>
-
-            <span class="infobox-value">
-              Anocratic proto-state
-            </span>
+            <span class="infobox-label">Government</span>
+            <span class="infobox-value">Anocratic proto-state</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Director
-            </span>
-
-            <span class="infobox-value">
-              Diego Liquin
-            </span>
+            <span class="infobox-label">Director</span>
+            <span class="infobox-value">Diego Liquin</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Co-Director
-            </span>
-
-            <span class="infobox-value">
-              Edward Fullwood
-            </span>
+            <span class="infobox-label">Co-Director</span>
+            <span class="infobox-value">Edward Fullwood</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Capital
-            </span>
-
-            <span class="infobox-value">
-              Caput
-            </span>
+            <span class="infobox-label">Capital</span>
+            <span class="infobox-value">Caput</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Largest suburb
-            </span>
-
-            <span class="infobox-value">
-              Edwardia
-            </span>
+            <span class="infobox-label">Largest suburb</span>
+            <span class="infobox-value">Edwardia</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Official language
-            </span>
-
-            <span class="infobox-value">
-              Liquindian
-            </span>
+            <span class="infobox-label">Official language</span>
+            <span class="infobox-value">Liquindian</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Other languages
-            </span>
-
-            <span class="infobox-value">
-              English, Latin
-            </span>
+            <span class="infobox-label">Other languages</span>
+            <span class="infobox-value">English, Latin</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Demonym
-            </span>
-
-            <span class="infobox-value">
-              Liquindian
-            </span>
+            <span class="infobox-label">Demonym</span>
+            <span class="infobox-value">Liquindian</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Legislature
-            </span>
-
-            <span class="infobox-value">
-              Council of 15
-            </span>
+            <span class="infobox-label">Legislature</span>
+            <span class="infobox-value">Council of 15</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              Currency
-            </span>
-
-            <span class="infobox-value">
-              Liquindian laiko
-            </span>
+            <span class="infobox-label">Currency</span>
+            <span class="infobox-value">Liquindian laiko</span>
           </div>
 
           <div class="infobox-row">
-            <span class="infobox-label">
-              HDI
-            </span>
-
-            <span class="infobox-value">
-              0.191 (low)
-            </span>
+            <span class="infobox-label">HDI</span>
+            <span class="infobox-value">0.191 (low)</span>
           </div>
 
         </aside>
-
 
         <section class="article-section">
           <p>
@@ -296,7 +336,6 @@
             self-sufficiency, traditional values, and modern development.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -309,7 +348,6 @@
             “liquid” respectively. The latter refers to water.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -346,7 +384,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Vexillology
@@ -365,7 +402,6 @@
             and white represents faith.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -400,10 +436,10 @@
 
           <p>
             Later proposals describe Liquindo as being administered through
-            Liquin's Plan, with the director serving as head of state.
-            Political organizations would operate as factions within the
-            administrative system rather than as conventional competing
-            political parties.
+            <a href="wiki.html#liquin-plan">Liquin's Plan</a>, with the
+            director serving as head of state. Political organizations would
+            operate as factions within the administrative system rather than
+            as conventional competing political parties.
           </p>
 
           <h3 class="subsection-title">
@@ -428,7 +464,6 @@
             institutional responsibility, and defensive readiness.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -472,7 +507,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Political Factions
@@ -490,7 +524,6 @@
             administration.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -564,7 +597,6 @@
           </p>
         </header>
 
-
         <aside
           class="infobox"
           aria-label="Liquin's Plan information"
@@ -616,7 +648,6 @@
 
         </aside>
 
-
         <section class="article-section">
           <p>
             <strong>Liquin's Plan</strong> (of Action), abbreviated
@@ -631,7 +662,6 @@
             of government.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -656,7 +686,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Vexillology
@@ -672,7 +701,6 @@
             yin-yang are replaced by additional yin-yang designs.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -718,7 +746,6 @@
             ethical, and human-rights concerns.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -778,7 +805,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Economic Objectives
@@ -813,7 +839,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Factions
@@ -846,6 +871,7 @@
               </thead>
 
               <tbody>
+
                 <tr>
                   <td>
                     <a href="wiki.html#lnf">
@@ -899,11 +925,11 @@
 
                   <td>1</td>
                 </tr>
+
               </tbody>
             </table>
           </div>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -911,6 +937,7 @@
           </h2>
 
           <ul class="wiki-links">
+
             <li>
               <a href="wiki.html#liquindo">
                 Federal Republic of Liquindo
@@ -946,6 +973,7 @@
             <li>
               Edward Fullwood
             </li>
+
           </ul>
         </section>
 
@@ -976,7 +1004,6 @@
             Political faction of Liquindo
           </p>
         </header>
-
 
         <aside
           class="infobox"
@@ -1024,8 +1051,8 @@
 
         </aside>
 
-
         <section class="article-section">
+
           <p>
             The <strong>Liquindo Nationalist Front</strong>
             (<strong>LNF</strong>) is a political faction associated with
@@ -1048,8 +1075,8 @@
             and reproduction. This article describes those positions rather
             than endorsing them.
           </p>
-        </section>
 
+        </section>
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1079,7 +1106,6 @@
             faction.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1121,7 +1147,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Immigration and Demography
@@ -1157,7 +1182,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Liquindo Youth
@@ -1189,7 +1213,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Child and Reproductive Policy
@@ -1218,7 +1241,6 @@
             human-rights concerns.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1288,7 +1310,6 @@
           </p>
         </header>
 
-
         <aside
           class="infobox"
           aria-label="Liquindian Integralist Front information"
@@ -1330,8 +1351,8 @@
 
         </aside>
 
-
         <section class="article-section">
+
           <p>
             The <strong>Liquindian Integralist Front</strong>, commonly
             referred to as the <strong>Liquindian Integralists</strong>,
@@ -1344,8 +1365,8 @@
             national identity and political institutions and supports a
             closer relationship between religious authority and the state.
           </p>
-        </section>
 
+        </section>
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1371,7 +1392,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Ideology
@@ -1391,7 +1411,6 @@
             and an emphasis on family and community institutions.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1432,7 +1451,6 @@
             religious institutions.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1510,8 +1528,8 @@
             liberty, pluralism, and the rights of citizens who follow
             different moral or religious traditions.
           </p>
-        </section>
 
+        </section>
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1539,7 +1557,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Relationship with Liquin's Plan
@@ -1557,7 +1574,6 @@
             economic policy.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1619,7 +1635,6 @@
           </p>
         </header>
 
-
         <aside
           class="infobox"
           aria-label="Nuclear Proliferation Faction information"
@@ -1656,8 +1671,8 @@
 
         </aside>
 
-
         <section class="article-section">
+
           <p>
             The <strong>Nuclear Proliferation Faction</strong>,
             commonly abbreviated as the <strong>NPF</strong>, is a political
@@ -1684,8 +1699,8 @@
             destruction carry severe humanitarian, environmental, and
             international security risks.
           </p>
-        </section>
 
+        </section>
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1711,7 +1726,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Political Doctrine
@@ -1736,7 +1750,6 @@
             humanitarian consequences.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1797,7 +1810,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Nuclear Proliferation
@@ -1822,7 +1834,6 @@
           </p>
         </section>
 
-
         <section class="article-section">
           <h2 class="section-title">
             Relationship with Liquin's Plan
@@ -1840,7 +1851,6 @@
             strategic independence, and deterrence.
           </p>
         </section>
-
 
         <section class="article-section">
           <h2 class="section-title">
@@ -1880,23 +1890,20 @@
 
       </article>
 
-    </div>
+    </section>
+
   </main>
 
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
 
   <footer>
 
     <div class="footer-content">
-      <p data-i18n="footer.contact">
+      <p>
         Contact: liquindohq@yahoo.com
       </p>
 
-      <a href="articles.html" data-i18n="wiki.back">
-        ← Back to Liquinwiki
+      <a href="#top" data-i18n="footer.top">
+        Back to top
       </a>
     </div>
 
@@ -1905,7 +1912,6 @@
       target="_blank"
       rel="noopener noreferrer"
       class="footer-repo"
-      data-i18n="footer.repo"
     >
       View on GitHub
     </a>
@@ -1913,60 +1919,114 @@
   </footer>
 
 
-  <!-- =====================================================
-       SCRIPTS
-       ===================================================== -->
-
   <script src="i18n.js"></script>
 
   <script>
-    function showWikiArticle() {
+    function updateWikiPage() {
+      const directory =
+        document.getElementById("wiki-directory");
+
+      const articleView =
+        document.getElementById("wiki-article-view");
+
       const articles =
         document.querySelectorAll("[data-wiki-article]");
 
-      let articleId =
+      const articleId =
         window.location.hash.slice(1);
 
+
+      // No hash: show directory
+
       if (!articleId) {
-        articleId = "liquindo";
+        directory.hidden = false;
+        articleView.hidden = true;
+
+        articles.forEach((article) => {
+          article.hidden = true;
+        });
+
+        document.title =
+          "Liquinwiki - Encyclopedia of Liquindo";
+
+        window.scrollTo(0, 0);
+
+        return;
       }
 
-      let selectedArticle =
+
+      // Find requested article
+
+      const selectedArticle =
         document.getElementById(articleId);
+
+
+      // Invalid hash: return to directory
 
       if (
         !selectedArticle ||
         !selectedArticle.hasAttribute("data-wiki-article")
       ) {
-        articleId = "liquindo";
-        selectedArticle =
-          document.getElementById("liquindo");
+        history.replaceState(
+          null,
+          "",
+          window.location.pathname
+        );
+
+        directory.hidden = false;
+        articleView.hidden = true;
+
+        articles.forEach((article) => {
+          article.hidden = true;
+        });
+
+        document.title =
+          "Liquinwiki - Encyclopedia of Liquindo";
+
+        window.scrollTo(0, 0);
+
+        return;
       }
+
+
+      // Show requested article
+
+      directory.hidden = true;
+      articleView.hidden = false;
 
       articles.forEach((article) => {
         article.hidden =
           article.id !== articleId;
       });
 
-      document.title =
-        selectedArticle.querySelector(".article-title")?.textContent.trim()
-          + " - Liquinwiki";
 
-      window.scrollTo({
-        top: 0,
-        behavior: "auto"
-      });
+      // Change browser tab title
+
+      const articleTitle =
+        selectedArticle.querySelector(".article-title");
+
+      if (articleTitle) {
+        document.title =
+          articleTitle.textContent.trim()
+          + " - Liquinwiki";
+      }
+
+      window.scrollTo(0, 0);
     }
+
 
     document.addEventListener(
       "DOMContentLoaded",
-      showWikiArticle
+      updateWikiPage
     );
 
     window.addEventListener(
       "hashchange",
-      showWikiArticle
+      updateWikiPage
     );
+
+
+    // Fix clicking a link to the article already being viewed
 
     document.addEventListener(
       "click",
@@ -1979,23 +2039,21 @@
         }
 
         const url =
-          new URL(link.href);
+          new URL(
+            link.href,
+            window.location.href
+          );
 
         if (
           url.pathname === window.location.pathname &&
-          url.hash
+          url.hash === window.location.hash
         ) {
           event.preventDefault();
-
-          if (window.location.hash === url.hash) {
-            showWikiArticle();
-          } else {
-            window.location.hash = url.hash;
-          }
+          updateWikiPage();
         }
       }
     );
   </script>
 
 </body>
-  </html>
+            </html>
