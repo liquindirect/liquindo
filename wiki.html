@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Liquinwiki</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="page-header">
+    <div class="topbar">
+      <a class="brand" href="index.html">Liquindo</a>
+
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html#home" data-i18n="nav.introduction">Introduction</a>
+        <a href="index.html#history" data-i18n="nav.history">History</a>
+        <a href="index.html#ideology" data-i18n="nav.ideology">Ideology</a>
+        <a href="members.html" data-i18n="nav.members">Members</a>
+        <a href="gallery.html" data-i18n="nav.gallery">Gallery</a>
+        <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+        <a href="index.html#finance" data-i18n="nav.finance">Finance</a>
+      </nav>
+
+      <select
+        id="language-switcher"
+        class="language-switcher"
+        aria-label="Select language"
+      >
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+        <option value="pl">Polski</option>
+        <option value="ru">Русский</option>
+        <option value="zh">中文</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+        <option value="it">Italiano</option>
+        <option value="hr">Hrvatski</option>
+        <option value="el">Ελληνικά</option>
+      </select>
+    </div>
+
+    <div class="page-title wiki-page-title">
+      <p class="section-label">Liquinwiki</p>
+
+      <h1 data-i18n="wiki.encyclopedia">
+        Encyclopedia of Liquindo
+      </h1>
+    </div>
+  </header>
+
+  <main class="article-container">
+
+    <div class="wiki-toolbar">
+      <a
+        class="back-link"
+        href="articles.html"
+        data-i18n="wiki.back"
+      >
+        ← Back to Liquinwiki
+      </a>
+    </div>
+
+
+    <!-- =====================================================
+         LIQUINDO
+         ===================================================== -->
+
+    <article
+      id="liquindo"
+      class="wiki-article"
+      data-wiki-article
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.liquindo.title"
+        >
+          Liquindo
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.liquindo.subtitle"
+        >
+          Federal Republic of Liquindo
+        </p>
+      </header>
+
+      <aside class="infobox">
+        <div
+          class="infobox-title"
+          data-i18n="wiki.liquindo.infobox.title"
+        >
+          Federal Republic of Liquindo
+        </div>
+
+        <div class="infobox-row">
+          <span
+            class="infobox-label"
+            data-i18n="wiki.label.officialname"
+          >
+            Official name
+          </span>
+
+          <span
+            class="infobox-value"
+            data-i18n="wiki.liquindo.officialname"
+          >
+            Federal Republic of Liquindo
+          </span>
+        </div>
+
+        <div class="infobox-row">
+          <span
+            class="infobox-label"
+            data-i18n="wiki.label.government"
+          >
+            Government
+          </span>
+
+          <span
+            class="infobox-value"
+            data-i18n="wiki.liquindo.government"
+          >
+            Anocratic proto-state
+          </span>
+        </div>
+
+        <div class="infobox-row">
+          <span
+            class="infobox-label"
+            data-i18n="wiki.label.director"
+          >
+            Director
+          </span>
+
+          <span class="infobox-value">
+            Diego Liquin
+          </span>
+        </div>
+      </aside>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.history"
+        >
+          History
+        </h2>
+
+        <p data-i18n="wiki.liquindo.history">
+          Liquindo developed as a political and nation-building project
+          with its own institutions, identity and internal political
+          traditions.
+        </p>
+      </section>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.government"
+        >
+          Government
+        </h2>
+
+        <p data-i18n="wiki.liquindo.governmentText">
+          Liquindo's political structure has changed over time and has
+          generally emphasized centralized administration and long-term
+          institutional planning.
+        </p>
+      </section>
+    </article>
+
+
+    <!-- =====================================================
+         LIQUIN'S PLAN
+         ===================================================== -->
+
+    <article
+      id="liquin-plan"
+      class="wiki-article"
+      data-wiki-article
+      hidden
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.liquinplan.title"
+        >
+          Liquin's Plan
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.liquinplan.subtitle"
+        >
+          Governing administration of Liquindo
+        </p>
+      </header>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.overview"
+        >
+          Overview
+        </h2>
+
+        <p data-i18n="wiki.liquinplan.overview">
+          Liquin's Plan is the governing administration associated with
+          the political organization and long-term objectives of Liquindo.
+        </p>
+      </section>
+    </article>
+
+
+    <!-- =====================================================
+         LIQUINDO NATIONALIST FRONT
+         ===================================================== -->
+
+    <article
+      id="lnf"
+      class="wiki-article"
+      data-wiki-article
+      hidden
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.lnf.title"
+        >
+          Liquindo Nationalist Front
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.lnf.subtitle"
+        >
+          Political faction in Liquindo
+        </p>
+      </header>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.overview"
+        >
+          Overview
+        </h2>
+
+        <p data-i18n="wiki.lnf.overview">
+          The Liquindo Nationalist Front is a political faction associated
+          with Liquindian nationalism and national identity.
+        </p>
+      </section>
+    </article>
+
+
+    <!-- =====================================================
+         LIQUINDIAN INTEGRALIST FRONT
+         ===================================================== -->
+
+    <article
+      id="integralist-front"
+      class="wiki-article"
+      data-wiki-article
+      hidden
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.integralist.title"
+        >
+          Liquindian Integralist Front
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.integralist.subtitle"
+        >
+          Political faction in Liquindo
+        </p>
+      </header>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.overview"
+        >
+          Overview
+        </h2>
+
+        <p data-i18n="wiki.integralist.overview">
+          The Liquindian Integralist Front is associated with Catholic
+          integralist political thought and related social ideas.
+        </p>
+      </section>
+    </article>
+
+
+    <!-- =====================================================
+         NUCLEAR PROLIFERATION FACTION
+         ===================================================== -->
+
+    <article
+      id="npf"
+      class="wiki-article"
+      data-wiki-article
+      hidden
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.npf.title"
+        >
+          Nuclear Proliferation Faction
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.npf.subtitle"
+        >
+          Political faction in Liquindo
+        </p>
+      </header>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.overview"
+        >
+          Overview
+        </h2>
+
+        <p data-i18n="wiki.npf.overview">
+          The Nuclear Proliferation Faction is a political faction whose
+          stated interests concern nuclear policy, sovereignty and
+          deterrence.
+        </p>
+      </section>
+    </article>
+
+
+    <!-- =====================================================
+         VAUGHTONOLOGY
+         ===================================================== -->
+
+    <article
+      id="vaughtonology"
+      class="wiki-article"
+      data-wiki-article
+      hidden
+    >
+      <header class="article-header">
+        <h1
+          class="article-title"
+          data-i18n="wiki.vaughtonology.title"
+        >
+          Vaughtonology
+        </h1>
+
+        <p
+          class="article-subtitle"
+          data-i18n="wiki.vaughtonology.subtitle"
+        >
+          Political current associated with Liquindo
+        </p>
+      </header>
+
+      <section class="article-section">
+        <h2
+          class="section-title"
+          data-i18n="wiki.section.overview"
+        >
+          Overview
+        </h2>
+
+        <p data-i18n="wiki.vaughtonology.overview">
+          Vaughtonology developed as a political current associated with
+          debates over decentralization, identity and the political
+          structure of Liquindo.
+        </p>
+      </section>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>Liquindo</p>
+
+      <a href="#top" data-i18n="footer.top">
+        Back to top
+      </a>
+    </div>
+
+    <a
+      class="footer-repo"
+      href="https://github.com/liquindirect/liquindo"
+    >
+      GitHub
+    </a>
+  </footer>
+
+  <script src="i18n.js"></script>
+
+  <script>
+    function showWikiArticle() {
+      const articles =
+        document.querySelectorAll("[data-wiki-article]");
+
+      let articleId =
+        window.location.hash.slice(1);
+
+      if (!articleId) {
+        articleId = "liquindo";
+      }
+
+      let matched = false;
+
+      articles.forEach((article) => {
+        if (article.id === articleId) {
+          article.hidden = false;
+          matched = true;
+        } else {
+          article.hidden = true;
+        }
+      });
+
+      if (!matched) {
+        const defaultArticle =
+          document.getElementById("liquindo");
+
+        if (defaultArticle) {
+          defaultArticle.hidden = false;
+        }
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "instant"
+      });
+    }
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      showWikiArticle
+    );
+
+    window.addEventListener(
+      "hashchange",
+      showWikiArticle
+    );
+  </script>
+</body>
+</html>
