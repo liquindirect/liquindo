@@ -1,194 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liquinwiki</title>
-  <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    .wiki-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      line-height: 1.6;
-      color: #333;
-    }
+    <meta
+      name="description"
+      content="Liquinwiki, the encyclopedia of Liquindo and its political factions, institutions, and ideology."
+    />
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: 30px;
-      padding: 10px 15px;
-      background: #f0f0f0;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #333;
-      transition: background 0.3s;
-    }
+    <title>Liquinwiki</title>
 
-    .back-link:hover {
-      background: #e0e0e0;
-      text-decoration: none;
-    }
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-    .articles-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+  <body>
+    <header class="page-header">
+      <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="index.html">
+          Liquindo
+        </a>
 
-    .articles-list li {
-      margin-bottom: 20px;
-      padding: 20px;
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      transition: all 0.3s ease;
-    }
+        <div class="nav-links">
+          <a
+            href="index.html#home"
+            data-i18n="nav.introduction"
+          >
+            Introduction
+          </a>
 
-    .articles-list li:hover {
-      border-color: #333;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transform: translateY(-2px);
-    }
+          <a
+            href="index.html#history"
+            data-i18n="nav.history"
+          >
+            History
+          </a>
 
-    .articles-list a {
-      display: block;
-      color: inherit;
-      text-decoration: none;
-    }
+          <a
+            href="index.html#ideology"
+            data-i18n="nav.ideology"
+          >
+            Ideology
+          </a>
 
-    .articles-list h3 {
-      margin: 0 0 10px;
-      font-size: 1.3em;
-      color: #0645ad;
-    }
+          <a
+            href="members.html"
+            data-i18n="nav.members"
+          >
+            Members
+          </a>
 
-    .articles-list a:hover h3 {
-      text-decoration: underline;
-    }
+          <a
+            href="gallery.html"
+            data-i18n="nav.gallery"
+          >
+            Gallery
+          </a>
 
-    .article-description {
-      margin: 0;
-      color: #666;
-      font-size: 0.95em;
-      line-height: 1.5;
-    }
+          <a
+            href="index.html#contact"
+            data-i18n="nav.contact"
+          >
+            Contact
+          </a>
 
-    .wiki-title {
-      text-align: center;
-      font-size: 2.5em;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
+          <a
+            href="index.html#finance"
+            data-i18n="nav.finance"
+          >
+            Finance
+          </a>
+        </div>
 
-    .wiki-subtitle {
-      text-align: center;
-      font-size: 1.1em;
-      color: #666;
-      margin-bottom: 40px;
-    }
+        <select
+          id="language-switcher"
+          class="language-switcher"
+          aria-label="Select language"
+        >
+          <option value="en">English</option>
+          <option value="pt">Português</option>
+          <option value="pl">Polski</option>
+          <option value="ru">Русский</option>
+          <option value="zh">中文</option>
+        </select>
+      </nav>
 
-    a {
-      color: #0645ad;
-      text-decoration: none;
-    }
+      <div class="page-title wiki-page-title">
+        <p class="eyebrow">Encyclopedia</p>
 
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
+        <h1>Liquinwiki</h1>
 
-<body>
-  <main>
-    <div class="wiki-container">
+        <p>
+          Encyclopedia of Liquindo
+        </p>
+      </div>
+    </header>
 
-      <a href="index.html#home" class="back-link">
-        ← Back to Main Site
+    <main>
+      <section
+        class="wiki-container"
+        aria-labelledby="wiki-articles-title"
+      >
+        <div class="wiki-toolbar">
+          <a
+            href="index.html"
+            class="back-link"
+          >
+            ← Back to Main Site
+          </a>
+        </div>
+
+        <h2
+          id="wiki-articles-title"
+          class="wiki-section-title"
+        >
+          Articles
+        </h2>
+
+        <ul class="articles-list">
+          <li>
+            <a href="wiki-liquindo.html">
+              <h3>Liquindo</h3>
+
+              <p class="article-description">
+                Liquindo, officially the Federal Republic of Liquindo, is
+                envisioned as a crowdfunded island nation; a refuge from global
+                instability, an experimental society blending modern
+                innovation, traditional values, and self-sufficiency.
+              </p>
+            </a>
+          </li>
+
+          <li>
+            <a href="wiki-liquin-plan.html">
+              <h3>Liquin's Plan</h3>
+
+              <p class="article-description">
+                Liquin's Plan (of Action), abbreviated L'PA, is the founding
+                and current ruling administration of Liquindo.
+              </p>
+            </a>
+          </li>
+
+          <li>
+            <a href="wiki-lnf.html">
+              <h3>Liquindo Nationalist Front</h3>
+
+              <p class="article-description">
+                The Liquindo Nationalist Front (LNF) is a political faction of
+                Liquindo focused on nationalism, national identity, social
+                discipline, hierarchy, and demographic policy.
+              </p>
+            </a>
+          </li>
+
+          <li>
+            <a href="wiki-integralist-front.html">
+              <h3>Liquindian Integralist Front</h3>
+
+              <p class="article-description">
+                The Liquindian Integralist Front is a political faction in
+                Liquindo associated with Catholic integralism, distributism,
+                and the proposed union of Church and state.
+              </p>
+            </a>
+          </li>
+
+          <li>
+            <a href="wiki-npf.html">
+              <h3>Nuclear Proliferation Faction</h3>
+
+              <p class="article-description">
+                The Nuclear Proliferation Faction (NPF) is a political faction
+                in Liquindo associated with nuclear deterrence and containing
+                both a standard nationalist and fringe accelerationist current.
+              </p>
+            </a>
+          </li>
+
+          <li>
+            <a href="wiki-vaughtonology.html">
+              <h3>Vaughtonology</h3>
+
+              <p class="article-description">
+                Vaughtonology is a political ideology associated with Liquindo,
+                characterized by nationalism, Protestant religious influence,
+                restrictive views on immigration, and a distinctive history of
+                political and religious symbolism.
+              </p>
+            </a>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p data-i18n="footer.contact">
+          Contact: liquindohq@yahoo.com
+        </p>
+
+        <a
+          href="index.html"
+          data-i18n="gallery.main"
+        >
+          Back to main page
+        </a>
+      </div>
+
+      <a
+        href="https://github.com/liquindirect/liquindo"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-repo"
+        data-i18n="footer.repo"
+      >
+        View on GitHub
       </a>
+    </footer>
 
-      <h1 class="wiki-title">Liquinwiki</h1>
-      <p class="wiki-subtitle">Encyclopedia of Liquindo</p>
-
-      <ul class="articles-list">
-
-        <!-- Liquindo -->
-        <li>
-          <a href="wiki-liquindo.html">
-            <h3>Liquindo</h3>
-            <p class="article-description">
-              Liquindo, officially the Federal Republic of Liquindo, is
-              envisioned as a crowdfunded island nation; a refuge from global
-              instability, an experimental society blending modern innovation,
-              traditional values, and self-sufficiency.
-            </p>
-          </a>
-        </li>
-
-        <!-- Liquin's Plan -->
-        <li>
-          <a href="wiki-liquin-plan.html">
-            <h3>Liquin's Plan</h3>
-            <p class="article-description">
-              Liquin's Plan (of Action), abbreviated L'PA, is the founding and
-              current ruling administration of Liquindo.
-            </p>
-          </a>
-        </li>
-
-        <!-- Liquindo Nationalist Front -->
-        <li>
-          <a href="wiki-lnf.html">
-            <h3>Liquindo Nationalist Front</h3>
-            <p class="article-description">
-              The Liquindo Nationalist Front (LNF) is a political faction of
-              Liquindo focused on nationalism, national identity, social
-              discipline, hierarchy, and demographic policy.
-            </p>
-          </a>
-        </li>
-
-        <!-- Liquindian Integralist Front -->
-        <li>
-          <a href="wiki-integralist-front.html">
-            <h3>Liquindian Integralist Front</h3>
-            <p class="article-description">
-              The Liquindian Integralist Front is a political faction in
-              Liquindo associated with Catholic integralism, distributism,
-              and the proposed union of Church and state.
-            </p>
-          </a>
-        </li>
-
-        <!-- Nuclear Proliferation Faction -->
-        <li>
-          <a href="wiki-npf.html">
-            <h3>Nuclear Proliferation Faction</h3>
-            <p class="article-description">
-              The Nuclear Proliferation Faction (NPF) is a political faction
-              in Liquindo associated with nuclear deterrence and containing
-              both a standard nationalist and fringe accelerationist current.
-            </p>
-          </a>
-        </li>
-
-        <!-- Vaughtonology -->
-        <li>
-          <a href="wiki-vaughtonology.html">
-            <h3>Vaughtonology</h3>
-            <p class="article-description">
-              Vaughtonology is a political ideology associated with Liquindo,
-              characterized by nationalism, Protestant religious influence,
-              restrictive views on immigration, and a distinctive history of
-              political and religious symbolism.
-            </p>
-          </a>
-        </li>
-
-      </ul>
-
-    </div>
-  </main>
-</body>
-</html>
+    <script src="i18n.js"></script>
+  </body>
+  </html>
