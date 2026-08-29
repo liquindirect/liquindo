@@ -51,17 +51,28 @@
           </a>
         </div>
 
-        <select
-          id="language-switcher"
-          class="language-switcher"
-          aria-label="Select language"
-        >
-          <option value="en">English</option>
-          <option value="pt">Português</option>
-          <option value="pl">Polski</option>
-          <option value="ru">Русский</option>
-          <option value="zh">中文</option>
-        </select>
+        <div class="language-control">
+          <label
+            class="language-icon"
+            for="language-switcher"
+            aria-label="Change language"
+            title="Change language"
+          >
+            🌐
+          </label>
+
+          <select
+            id="language-switcher"
+            class="language-switcher"
+            aria-label="Select language"
+          >
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="pl">Polski</option>
+            <option value="ru">Русский</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
       </nav>
 
       <aside class="liquin-message">
@@ -370,10 +381,6 @@
               alt="Liquindo gallery photograph"
               loading="lazy"
             />
-
-            <figcaption data-i18n="gallery.main">
-              Liquindo gallery
-            </figcaption>
           </figure>
 
           <figure>
@@ -382,10 +389,6 @@
               alt="Liquindo gallery photograph"
               loading="lazy"
             />
-
-            <figcaption data-i18n="gallery.main">
-              Liquindo gallery
-            </figcaption>
           </figure>
 
           <figure>
@@ -394,10 +397,6 @@
               alt="Liquindo gallery photograph"
               loading="lazy"
             />
-
-            <figcaption data-i18n="gallery.main">
-              Liquindo gallery
-            </figcaption>
           </figure>
 
           <a
@@ -638,4 +637,4 @@
       })();
     </script>
   </body>
-            </html>
+  </html>
