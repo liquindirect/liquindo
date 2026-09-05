@@ -15,7 +15,6 @@ const translations = {
 
     "section.history": "Our story",
     "section.history.title": "History",
-
     "section.ideology": "Political ideas",
     "section.ideology.title": "Ideology",
 
@@ -65,10 +64,8 @@ const translations = {
 
     "member.diego.name": "Diego Liquin",
     "member.diego.role": "Founder and Director",
-
     "member.fullwood.name": "Doctor Fullwood",
     "member.fullwood.role": "Co-Director",
-
     "member.edison.name": "Edison the Mentor",
     "member.edison.role": "Member",
 
@@ -1034,28 +1031,393 @@ const translations = {
     "footer.text": "Liquindo"
   },
 
-  pl: {},
-  ru: {},
-  zh: {}
+  pl: {
+    "nav.introduction": "Wprowadzenie",
+    "nav.history": "Historia",
+    "nav.ideology": "Ideologia",
+    "nav.members": "Członkowie",
+    "nav.gallery": "Galeria",
+    "nav.contact": "Kontakt",
+    "nav.finance": "Finanse",
+
+    "hero.eyebrow": "Federalna Republika Liquindo",
+    "hero.title": "Liquindo",
+    "hero.description":
+      "Liquindo jest projektem politycznym i państwowotwórczym opartym na idei wspólnego tworzenia nowej społeczności z własnymi instytucjami, tożsamością, gospodarką i systemem politycznym.",
+
+    "section.history": "Nasza historia",
+    "section.history.title": "Historia",
+    "section.ideology": "Idee polityczne",
+    "section.ideology.title": "Ideologia",
+
+    "ideology.q1": "Czym jest Liquindo?",
+    "ideology.a1":
+      "Liquindo jest projektem skupionym na rozwoju nowej wspólnoty politycznej, jej instytucji, tożsamości i długoterminowej organizacji.",
+
+    "ideology.q2": "Co Liquindo chce osiągnąć?",
+    "ideology.a2":
+      "Deklarowanym celem jest rozwój stabilnej społeczności z funkcjonującymi instytucjami, długoterminowym rozwojem i dobrobytem jej obywateli.",
+
+    "ideology.q3": "Czy Liquindo jest lewicowe czy prawicowe?",
+    "ideology.a3":
+      "Liquindo nie opisuje się wyłącznie za pomocą tradycyjnego podziału na lewicę i prawicę oraz czerpie idee z kilku tradycji politycznych.",
+
+    "ideology.q4": "Jakie są idee gospodarcze Liquindo?",
+    "ideology.a4":
+      "Niektóre idee liquindiańskie czerpią z historycznych korporacjonistycznych teorii gospodarczych, w których grupy zawodowe i gospodarcze uczestniczą w zorganizowanych instytucjach.",
+
+    "ideology.q5": "Jaka jest rola państwa?",
+    "ideology.a5":
+      "Liquindiańska myśl polityczna zasadniczo opowiada się za silnym państwem centralnym zdolnym do koordynowania instytucji, rozwoju i polityki krajowej.",
+
+    "ideology.q6": "Jakie jest stanowisko wobec demokracji?",
+    "ideology.a6":
+      "Liquindiańska myśl krytycznie odnosi się do niektórych form liberalnej demokracji przedstawicielskiej i kładzie większy nacisk na ciągłość administracyjną oraz długoterminowe planowanie.",
+
+    "ideology.q7": "Jakie jest stanowisko wobec podatków?",
+    "ideology.a7":
+      "Podatki są postrzegane jako sposób wspierania instytucji publicznych przy jednoczesnym unikaniu niepotrzebnie nadmiernych obciążeń obywateli i działalności gospodarczej.",
+
+    "ideology.q8": "Jaka jest rola obywateli?",
+    "ideology.a8":
+      "Obywatelstwo podkreśla udział w instytucjach zbiorowych, odpowiedzialność publiczną, organizację obywatelską oraz uznanie władzy państwowej.",
+
+    "ideology.q9": "Co wpłynęło na ideologię liquindiańską?",
+    "ideology.a9":
+      "Wpływy obejmują projekty mikronacyjne, korporacjonistyczną myśl polityczną, antyliberalną teorię polityczną oraz różne formy nacjonalizmu.",
+
+    "ideology.q10": "Czy ideologia jest niezmienna?",
+    "ideology.a10":
+      "Nie. Idee polityczne i instytucje Liquindo nadal zmieniają się wraz z rozwojem projektu.",
+
+    "members.eyebrow": "Społeczność",
+    "members.title": "Członkowie",
+    "members.more": "Zobacz wszystkich członków",
+
+    "member.diego.name": "Diego Liquin",
+    "member.diego.role": "Założyciel i Dyrektor",
+    "member.fullwood.name": "Doctor Fullwood",
+    "member.fullwood.role": "Współdyrektor",
+    "member.edison.name": "Edison the Mentor",
+    "member.edison.role": "Członek",
+
+    "gallery.eyebrow": "Archiwum",
+    "gallery.title": "Galeria",
+    "gallery.preview": "Galeria Liquindo",
+    "gallery.main": "Powrót do strony głównej",
+    "gallery.more": "Zobacz pełną galerię",
+    "gallery.selected": "Wybrany obraz",
+    "gallery.nodesc": "Brak dostępnego opisu.",
+
+    "contact.eyebrow": "Skontaktuj się",
+    "contact.title": "Kontakt",
+    "contact.description":
+      "Skontaktuj się z Liquindo przez e-mail lub społecznościowy serwer Discord.",
+    "contact.email": "Wyślij e-mail",
+    "contact.discord": "Dołącz do Discorda",
+
+    "finance.eyebrow": "Planowanie",
+    "finance.title": "Finanse",
+    "finance.description":
+      "Poniższe odliczanie pokazuje czas pozostały do 1 stycznia 2028 roku.",
+
+    "countdown.weeks": "Tygodnie",
+    "countdown.days": "Dni",
+    "countdown.minutes": "Minuty",
+    "countdown.seconds": "Sekundy",
+
+    "message.title": "Wiadomość od Liquina",
+    "message.text":
+      "Liquindo nadal rozwija swoją stronę internetową, instytucje i społeczność.",
+
+    "history.year1": "2021",
+    "history.text1":
+      "Najwcześniejsza forma projektu Liquindo zaczęła nabierać kształtu.",
+
+    "history.year2": "2023–2025",
+    "history.text2":
+      "Projekt przeszedł kilka okresów odrodzenia i stopniowo angażował kolejne osoby.",
+
+    "history.year3": "3 lipca 2025",
+    "history.text3":
+      "Powstała pierwsza fizyczna flaga Liquindo oraz inne materiały projektu.",
+
+    "page.members.title": "Członkowie",
+    "page.members.description":
+      "Osoby, które uczestniczyły w projekcie Liquindo.",
+
+    "page.gallery.title": "Galeria",
+    "page.gallery.description":
+      "Archiwum obrazów związanych z historią i rozwojem Liquindo.",
+
+    "wiki.back": "← Powrót do Liquinwiki",
+    "wiki.main": "← Powrót do strony głównej",
+    "wiki.encyclopedia": "Encyklopedia Liquindo",
+    "wiki.articles": "Artykuły",
+
+    "footer.top": "Powrót na górę",
+    "footer.github": "GitHub",
+    "footer.text": "Liquindo"
+  },
+
+  ru: {
+    "nav.introduction": "Введение",
+    "nav.history": "История",
+    "nav.ideology": "Идеология",
+    "nav.members": "Участники",
+    "nav.gallery": "Галерея",
+    "nav.contact": "Контакты",
+    "nav.finance": "Финансы",
+
+    "hero.eyebrow": "Федеративная Республика Ликвиндо",
+    "hero.title": "Liquindo",
+    "hero.description":
+      "Liquindo — политический и государственно-строительный проект, основанный на идее коллективного создания нового сообщества с собственными институтами, идентичностью, экономикой и политической системой.",
+
+    "section.history": "Наша история",
+    "section.history.title": "История",
+    "section.ideology": "Политические идеи",
+    "section.ideology.title": "Идеология",
+
+    "ideology.q1": "Что такое Liquindo?",
+    "ideology.a1":
+      "Liquindo — проект, направленный на развитие нового политического сообщества, его институтов, идентичности и долгосрочной организации.",
+
+    "ideology.q2": "Чего стремится достичь Liquindo?",
+    "ideology.a2":
+      "Заявленная цель проекта — развитие стабильного сообщества с функционирующими институтами, долгосрочным развитием и благополучием его граждан.",
+
+    "ideology.q3": "Liquindo относится к левым или правым?",
+    "ideology.a3":
+      "Liquindo не определяет себя исключительно в рамках традиционного политического спектра «левые — правые» и включает идеи из нескольких политических традиций.",
+
+    "ideology.q4": "Каковы экономические идеи Liquindo?",
+    "ideology.a4":
+      "Некоторые идеи Liquindo опираются на исторические корпоративистские экономические теории, в которых профессиональные и экономические группы участвуют в организованных институтах.",
+
+    "ideology.q5": "Какова роль государства?",
+    "ideology.a5":
+      "Политическая мысль Liquindo в целом выступает за сильное центральное государство, способное координировать институты, развитие и национальную политику.",
+
+    "ideology.q6": "Какова позиция в отношении демократии?",
+    "ideology.a6":
+      "Политическая мысль Liquindo критически относится к некоторым формам либеральной представительной демократии и уделяет больше внимания административной преемственности и долгосрочному планированию.",
+
+    "ideology.q7": "Какова позиция в отношении налогообложения?",
+    "ideology.a7":
+      "Налогообложение рассматривается как средство поддержки общественных институтов при одновременном недопущении неоправданно чрезмерной нагрузки на граждан и экономическую деятельность.",
+
+    "ideology.q8": "Какова роль граждан?",
+    "ideology.a8":
+      "Гражданство предполагает участие в коллективных институтах, общественную ответственность, гражданскую организацию и признание государственной власти.",
+
+    "ideology.q9": "Что повлияло на идеологию Liquindo?",
+    "ideology.a9":
+      "Среди источников влияния — микрогосударственные проекты, корпоративистская политическая мысль, антилиберальная политическая теория и различные формы национализма.",
+
+    "ideology.q10": "Является ли идеология неизменной?",
+    "ideology.a10":
+      "Нет. Политические идеи и институты Liquindo продолжают меняться по мере развития проекта.",
+
+    "members.eyebrow": "Сообщество",
+    "members.title": "Участники",
+    "members.more": "Посмотреть всех участников",
+
+    "member.diego.name": "Diego Liquin",
+    "member.diego.role": "Основатель и директор",
+    "member.fullwood.name": "Doctor Fullwood",
+    "member.fullwood.role": "Содиректор",
+    "member.edison.name": "Edison the Mentor",
+    "member.edison.role": "Участник",
+
+    "gallery.eyebrow": "Архив",
+    "gallery.title": "Галерея",
+    "gallery.preview": "Галерея Liquindo",
+    "gallery.main": "Вернуться на главную страницу",
+    "gallery.more": "Посмотреть всю галерею",
+    "gallery.selected": "Выбранное изображение",
+    "gallery.nodesc": "Описание отсутствует.",
+
+    "contact.eyebrow": "Связаться с нами",
+    "contact.title": "Контакты",
+    "contact.description":
+      "Свяжитесь с Liquindo по электронной почте или через сервер сообщества в Discord.",
+    "contact.email": "Отправить письмо",
+    "contact.discord": "Присоединиться к Discord",
+
+    "finance.eyebrow": "Планирование",
+    "finance.title": "Финансы",
+    "finance.description":
+      "Обратный отсчёт показывает время, оставшееся до 1 января 2028 года.",
+
+    "countdown.weeks": "Недели",
+    "countdown.days": "Дни",
+    "countdown.minutes": "Минуты",
+    "countdown.seconds": "Секунды",
+
+    "message.title": "Сообщение от Liquin",
+    "message.text":
+      "Liquindo продолжает развивать свой сайт, институты и сообщество.",
+
+    "history.year1": "2021",
+    "history.text1":
+      "Начала формироваться самая ранняя версия проекта Liquindo.",
+
+    "history.year2": "2023–2025",
+    "history.text2":
+      "Проект пережил несколько возрождений и постепенно привлёк дополнительных участников.",
+
+    "history.year3": "3 июля 2025",
+    "history.text3":
+      "Были изготовлены первый физический флаг Liquindo и другие материалы проекта.",
+
+    "page.members.title": "Участники",
+    "page.members.description":
+      "Люди, принимавшие участие в проекте Liquindo.",
+
+    "page.gallery.title": "Галерея",
+    "page.gallery.description":
+      "Архив изображений, связанных с историей и развитием Liquindo.",
+
+    "wiki.back": "← Назад к Liquinwiki",
+    "wiki.main": "← Назад на главный сайт",
+    "wiki.encyclopedia": "Энциклопедия Liquindo",
+    "wiki.articles": "Статьи",
+
+    "footer.top": "Наверх",
+    "footer.github": "GitHub",
+    "footer.text": "Liquindo"
+  },
+
+  zh: {
+    "nav.introduction": "简介",
+    "nav.history": "历史",
+    "nav.ideology": "意识形态",
+    "nav.members": "成员",
+    "nav.gallery": "图库",
+    "nav.contact": "联系",
+    "nav.finance": "财政",
+
+    "hero.eyebrow": "利昆多联邦共和国",
+    "hero.title": "Liquindo",
+    "hero.description":
+      "Liquindo 是一个政治与国家建设项目，其核心理念是共同建立一个拥有自身制度、身份认同、经济体系和政治制度的新社区。",
+
+    "section.history": "我们的故事",
+    "section.history.title": "历史",
+    "section.ideology": "政治理念",
+    "section.ideology.title": "意识形态",
+
+    "ideology.q1": "什么是 Liquindo？",
+    "ideology.a1":
+      "Liquindo 是一个致力于发展新的政治共同体及其制度、身份认同和长期组织形式的项目。",
+
+    "ideology.q2": "Liquindo 希望实现什么？",
+    "ideology.a2":
+      "其公开目标是发展一个拥有正常运作的制度、长期发展能力并重视公民福祉的稳定社区。",
+
+    "ideology.q3": "Liquindo 属于左翼还是右翼？",
+    "ideology.a3":
+      "Liquindo 并不完全以传统的左右政治光谱定义自身，而是吸收了多种政治传统中的理念。",
+
+    "ideology.q4": "Liquindo 有哪些经济理念？",
+    "ideology.a4":
+      "部分 Liquindo 理念借鉴了历史上的社团主义经济理论，其中职业和经济群体通过有组织的制度参与公共事务。",
+
+    "ideology.q5": "国家扮演什么角色？",
+    "ideology.a5":
+      "Liquindo 的政治思想总体上支持一个强有力的中央国家，以协调制度、发展和国家政策。",
+
+    "ideology.q6": "Liquindo 对民主的立场是什么？",
+    "ideology.a6":
+      "Liquindo 思想对某些形式的自由代议制民主持批评态度，并更加重视行政连续性和长期规划。",
+
+    "ideology.q7": "Liquindo 对税收的立场是什么？",
+    "ideology.a7":
+      "税收被视为支持公共机构的一种方式，同时应避免给公民和经济活动带来不必要的过重负担。",
+
+    "ideology.q8": "公民的角色是什么？",
+    "ideology.a8":
+      "公民身份强调参与集体制度、承担公共责任、参与公民组织以及承认国家权威。",
+
+    "ideology.q9": "哪些思想影响了 Liquindo 的意识形态？",
+    "ideology.a9":
+      "其影响来源包括微型国家项目、社团主义政治思想、反自由主义政治理论以及各种形式的民族主义。",
+
+    "ideology.q10": "这种意识形态是固定不变的吗？",
+    "ideology.a10":
+      "不是。随着项目的发展，Liquindo 的政治理念和制度也在不断变化。",
+
+    "members.eyebrow": "社区",
+    "members.title": "成员",
+    "members.more": "查看所有成员",
+
+    "member.diego.name": "Diego Liquin",
+    "member.diego.role": "创始人兼主任",
+    "member.fullwood.name": "Doctor Fullwood",
+    "member.fullwood.role": "联合主任",
+    "member.edison.name": "Edison the Mentor",
+    "member.edison.role": "成员",
+
+    "gallery.eyebrow": "档案",
+    "gallery.title": "图库",
+    "gallery.preview": "Liquindo 图库",
+    "gallery.main": "返回主页",
+    "gallery.more": "查看完整图库",
+    "gallery.selected": "所选图片",
+    "gallery.nodesc": "暂无说明。",
+
+    "contact.eyebrow": "联系我们",
+    "contact.title": "联系",
+    "contact.description":
+      "通过电子邮件或社区 Discord 服务器联系 Liquindo。",
+    "contact.email": "发送电子邮件",
+    "contact.discord": "加入 Discord",
+
+    "finance.eyebrow": "规划",
+    "finance.title": "财政",
+    "finance.description":
+      "以下倒计时显示距离 2028 年 1 月 1 日的剩余时间。",
+
+    "countdown.weeks": "周",
+    "countdown.days": "天",
+    "countdown.minutes": "分钟",
+    "countdown.seconds": "秒",
+
+    "message.title": "Liquin 的消息",
+    "message.text":
+      "Liquindo 正在继续发展其网站、制度和社区。",
+
+    "history.year1": "2021",
+    "history.text1":
+      "Liquindo 项目的最早形式开始逐渐成形。",
+
+    "history.year2": "2023–2025",
+    "history.text2":
+      "该项目经历了数次重新启动，并逐渐吸引更多人参与。",
+
+    "history.year3": "2025年7月3日",
+    "history.text3":
+      "Liquindo 的第一面实体旗帜以及其他项目材料制作完成。",
+
+    "page.members.title": "成员",
+    "page.members.description":
+      "曾参与 Liquindo 项目的人。",
+
+    "page.gallery.title": "图库",
+    "page.gallery.description":
+      "与 Liquindo 历史和发展相关的图片档案。",
+
+    "wiki.back": "← 返回 Liquinwiki",
+    "wiki.main": "← 返回主网站",
+    "wiki.encyclopedia": "Liquindo 百科全书",
+    "wiki.articles": "文章",
+
+    "footer.top": "返回顶部",
+    "footer.github": "GitHub",
+    "footer.text": "Liquindo"
+  }
 };
-
-
-/* =========================================================
-   PRESERVE YOUR EXISTING POLISH / RUSSIAN / CHINESE
-   ========================================================= */
-
-/*
-  Paste your existing full pl, ru and zh objects above in place of:
-
-  pl: {},
-  ru: {},
-  zh: {}
-
-  OR use the versions already present in your current i18n.js.
-
-  The important new languages added here are:
-  es, fr, de, it, hr and el.
-*/
 
 
 /* =========================================================
