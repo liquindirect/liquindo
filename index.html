@@ -12,6 +12,258 @@
     <title>Liquindo</title>
 
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+      /* =========================================================
+         FRONT PAGE OVERRIDES
+         ========================================================= */
+
+      /*
+        Keep the introduction/background image visible.
+        Removes large opaque panels from the hero.
+      */
+
+      .hero {
+        background-color: transparent !important;
+      }
+
+      .hero::before,
+      .hero::after {
+        background: transparent !important;
+      }
+
+      .hero-content {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+
+        max-width: 760px;
+      }
+
+      /*
+        Small transparent bubbles behind the actual text instead
+        of one large box covering the photograph.
+      */
+
+      .hero-content .eyebrow,
+      .hero-content h1,
+      .hero-content > p:not(.eyebrow) {
+        width: fit-content;
+        max-width: 100%;
+
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.32);
+
+        border-radius: 18px;
+
+        padding: 8px 14px;
+
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+
+        box-shadow:
+          0 4px 18px rgba(0, 0, 0, 0.12);
+      }
+
+      .hero-content h1 {
+        padding: 10px 18px;
+      }
+
+      /*
+        Navigation links become light transparent bubbles.
+      */
+
+      .nav-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 7px 12px;
+
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.24);
+        transform: translateY(-1px);
+      }
+
+      /*
+        Message from Liquin becomes a transparent bubble.
+      */
+
+      .liquin-message {
+        background: rgba(255, 255, 255, 0.14) !important;
+
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+
+        border-radius: 18px !important;
+
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+
+        box-shadow:
+          0 8px 26px rgba(0, 0, 0, 0.13) !important;
+      }
+
+      /*
+        Wikipedia/Wikimedia-style language symbol.
+      */
+
+      .language-control {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        padding: 5px 8px;
+
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, 0.12);
+
+        border: 1px solid rgba(255, 255, 255, 0.26);
+
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+
+      .language-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: 32px;
+        height: 32px;
+
+        padding: 0 6px;
+
+        border-radius: 999px;
+
+        font-weight: 700;
+        font-size: 0.9rem;
+
+        cursor: pointer;
+
+        background: rgba(255, 255, 255, 0.14);
+
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+
+      .language-switcher {
+        background: rgba(255, 255, 255, 0.12) !important;
+
+        border: 1px solid rgba(255, 255, 255, 0.24) !important;
+
+        border-radius: 999px !important;
+
+        padding: 7px 12px !important;
+
+        cursor: pointer;
+      }
+
+      /*
+        Disabled Members and Gallery sections.
+      */
+
+      .temporarily-unavailable {
+        text-align: center;
+      }
+
+      .unavailable-panel {
+        max-width: 720px;
+
+        margin: 30px auto 0;
+
+        padding: 34px 24px;
+
+        border-radius: 24px;
+
+        border: 1px solid rgba(23, 33, 38, 0.15);
+
+        background: rgba(255, 255, 255, 0.38);
+
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+
+        box-shadow:
+          0 10px 30px rgba(23, 33, 38, 0.08);
+      }
+
+      .unavailable-panel h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+
+        font-size: 1.5rem;
+      }
+
+      .unavailable-panel p {
+        margin: 0;
+      }
+
+      .status-badge {
+        display: inline-block;
+
+        margin-bottom: 15px;
+
+        padding: 6px 12px;
+
+        border-radius: 999px;
+
+        background: rgba(255, 255, 255, 0.48);
+
+        border: 1px solid rgba(23, 33, 38, 0.12);
+
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      /*
+        Other link-style buttons also use transparent bubbles.
+      */
+
+      .section-link,
+      .email-button,
+      .liquinwiki-link {
+        border-radius: 999px !important;
+
+        background: rgba(255, 255, 255, 0.22) !important;
+
+        border: 1px solid rgba(23, 33, 38, 0.16) !important;
+
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+
+        box-shadow: none !important;
+      }
+
+      /*
+        Responsive adjustments.
+      */
+
+      @media (max-width: 900px) {
+        .language-control {
+          width: fit-content;
+        }
+
+        .hero-content {
+          max-width: 100%;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -34,11 +286,11 @@
             Ideology
           </a>
 
-          <a href="members.html" data-i18n="nav.members">
+          <a href="#members" data-i18n="nav.members">
             Members
           </a>
 
-          <a href="gallery.html" data-i18n="nav.gallery">
+          <a href="#gallery" data-i18n="nav.gallery">
             Gallery
           </a>
 
@@ -58,7 +310,7 @@
             aria-label="Change language"
             title="Change language"
           >
-            🌐
+            文A
           </label>
 
           <select
@@ -68,6 +320,12 @@
           >
             <option value="en">English</option>
             <option value="pt">Português</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="hr">Hrvatski</option>
+            <option value="el">Ελληνικά</option>
             <option value="pl">Polski</option>
             <option value="ru">Русский</option>
             <option value="zh">中文</option>
@@ -81,19 +339,18 @@
         </strong>
 
         <span data-i18n="message.text">
-          Welcome to the Liquindo website. The site is being updated and
-          expanded as the project develops.
+          Liquindo continues to develop its website, institutions and community.
         </span>
       </aside>
 
       <section class="hero" id="home">
         <div class="hero-content">
           <p class="eyebrow" data-i18n="hero.eyebrow">
-            Introduction
+            Federal Republic of Liquindo
           </p>
 
           <h1 data-i18n="hero.title">
-            Welcome to Liquindo.
+            Liquindo
           </h1>
 
           <p data-i18n="hero.description">
@@ -176,150 +433,172 @@
           </h2>
         </div>
 
-        <p data-i18n="section.ideology.description">
+        <p>
           This section explains Liquindo's developing political principles,
           institutional ideas, and long-term vision.
         </p>
 
         <div class="faq-section">
-          <h3 data-i18n="section.ideology.faq.title">
+          <h3>
             Frequently Asked Questions
           </h3>
 
           <div class="faq-items">
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q1">
+              <h4 data-i18n="ideology.q1">
                 What is Liquindo?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a1">
-                Liquindo is a project focused on establishing a new political
-                community with its own institutions, identity, and long-term
-                development goals.
+              <p data-i18n="ideology.a1">
+                Liquindo is a project focused on developing a new political
+                community, its institutions, identity and long-term
+                organization.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q2">
-                What are Liquindo's long-term goals?
+              <h4 data-i18n="ideology.q2">
+                What is Liquindo trying to achieve?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a2">
-                Its long-term goals include establishing a stable community,
-                developing independent institutions, and improving the welfare
+              <p data-i18n="ideology.a2">
+                Its stated objective is to develop a stable community with
+                functioning institutions, long-term development and the welfare
                 of its citizens.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q3">
-                Is Liquindo a left-wing or right-wing ideology?
+              <h4 data-i18n="ideology.q3">
+                Is Liquindo left-wing or right-wing?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a3">
+              <p data-i18n="ideology.a3">
                 Liquindo does not describe itself solely through the
-                conventional left-right political spectrum and instead combines
+                conventional left-right political spectrum and incorporates
                 ideas from several political traditions.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q4">
-                Is Liquindo capitalist, socialist, or something else?
+              <h4 data-i18n="ideology.q4">
+                What are Liquindo's economic ideas?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a4">
-                Liquindo has historically supported corporatist economic ideas,
-                including economic organisation through professional and
-                occupational groups.
+              <p data-i18n="ideology.a4">
+                Some Liquindian ideas draw on historical corporatist economic
+                theories in which professional and economic groups participate
+                in organized institutions.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q5">
-                What role should government play?
+              <h4 data-i18n="ideology.q5">
+                What role does the state have?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a5">
-                Liquindo favors a strong central state responsible for
-                coordinating institutions, development, and national policy.
+              <p data-i18n="ideology.a5">
+                Liquindian political thought generally favors a strong central
+                state capable of coordinating institutions, development and
+                national policy.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q6">
-                How does Liquindo view democracy?
+              <h4 data-i18n="ideology.q6">
+                What is its position on democracy?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a6">
-                Liquindo is critical of some forms of liberal representative
-                democracy and places greater emphasis on political continuity,
-                administration, and long-term planning.
+              <p data-i18n="ideology.a6">
+                Liquindian thought has been critical of some forms of liberal
+                representative democracy and places greater emphasis on
+                administrative continuity and long-term planning.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q7">
-                How does Liquindo approach taxation?
+              <h4 data-i18n="ideology.q7">
+                What is its position on taxation?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a7">
-                Liquindo supports taxation as a means of funding public
-                institutions while seeking to avoid excessive burdens on
-                ordinary citizens.
+              <p data-i18n="ideology.a7">
+                Taxation is regarded as a means of supporting public
+                institutions while avoiding unnecessarily excessive burdens on
+                citizens and economic activity.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q8">
-                How does Liquindo differ from libertarianism?
+              <h4 data-i18n="ideology.q8">
+                What is the role of citizens?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a8">
-                Liquindo places greater emphasis on collective institutions,
-                state authority, public responsibility, and organised civic
-                participation than libertarian political traditions.
+              <p data-i18n="ideology.a8">
+                Citizenship emphasizes participation in collective
+                institutions, public responsibility, civic organization and
+                recognition of state authority.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q9">
-                Is Liquindo based on existing political theories?
+              <h4 data-i18n="ideology.q9">
+                What influenced Liquindian ideology?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a9">
-                Liquindo has been influenced by several political and historical
-                ideas, including micronational projects, corporatist thought,
-                anti-liberal political theory, and various forms of
+              <p data-i18n="ideology.a9">
+                Influences have included micronational projects, corporatist
+                political thought, anti-liberal political theory and forms of
                 nationalism.
               </p>
             </div>
 
             <div class="faq-item">
-              <h4 data-i18n="section.ideology.faq.q10">
-                Is Liquindo still evolving?
+              <h4 data-i18n="ideology.q10">
+                Is the ideology fixed?
               </h4>
 
-              <p data-i18n="section.ideology.faq.a10">
-                Yes. The project continues to develop and its institutions and
-                policies may change as its political ideas are refined.
+              <p data-i18n="ideology.a10">
+                No. Liquindian political ideas and institutions have continued
+                to change as the project has developed.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Members -->
-      <section class="content-section" id="members">
+      <!-- Members — temporarily disabled -->
+      <section
+        class="content-section temporarily-unavailable"
+        id="members"
+      >
         <div>
-          <p class="section-label" data-i18n="section.members">
-            Members
+          <p class="section-label" data-i18n="members.eyebrow">
+            The community
           </p>
 
-          <h2 data-i18n="section.members.title">
-            People involved
+          <h2 data-i18n="members.title">
+            Members
           </h2>
         </div>
+
+        <div class="unavailable-panel">
+          <span class="status-badge">
+            Temporarily unavailable
+          </span>
+
+          <h3>
+            Members will be back soon.
+          </h3>
+
+          <p>
+            This section is temporarily unavailable while it is being updated.
+          </p>
+        </div>
+
+        <!--
+        =========================================================
+        ORIGINAL MEMBERS CONTENT PRESERVED
+        =========================================================
 
         <div class="info-grid">
           <article>
@@ -360,19 +639,42 @@
             View all our publicly identified members.
           </a>
         </div>
+        -->
       </section>
 
-      <!-- Gallery -->
-      <section class="content-section" id="gallery">
+      <!-- Gallery — temporarily disabled -->
+      <section
+        class="content-section temporarily-unavailable"
+        id="gallery"
+      >
         <div>
-          <p class="section-label" data-i18n="section.gallery">
-            Gallery
+          <p class="section-label" data-i18n="gallery.eyebrow">
+            Archive
           </p>
 
-          <h2 data-i18n="section.gallery.title">
-            Images and highlights
+          <h2 data-i18n="gallery.title">
+            Gallery
           </h2>
         </div>
+
+        <div class="unavailable-panel">
+          <span class="status-badge">
+            Temporarily unavailable
+          </span>
+
+          <h3>
+            Gallery will be back soon.
+          </h3>
+
+          <p>
+            The gallery is temporarily unavailable while it is being updated.
+          </p>
+        </div>
+
+        <!--
+        =========================================================
+        ORIGINAL GALLERY CONTENT PRESERVED
+        =========================================================
 
         <div class="gallery-grid">
           <figure>
@@ -407,34 +709,34 @@
             View all images.
           </a>
         </div>
+        -->
       </section>
 
       <!-- Contact -->
       <section class="content-section" id="contact">
         <div>
-          <p class="section-label" data-i18n="section.contact">
+          <p class="section-label">
             Contact
           </p>
 
-          <h2 data-i18n="section.contact.title">
+          <h2>
             Get in touch
           </h2>
         </div>
 
         <div class="contact-card">
-          <p data-i18n="section.contact.message">
+          <p>
             Send Liquindo a message directly by email.
           </p>
 
           <a
             class="email-button"
             href="mailto:liquindohq@yahoo.com"
-            data-i18n="link.email"
           >
             Email liquindohq@yahoo.com
           </a>
 
-          <p data-i18n="section.contact.discord">
+          <p>
             Join us on Discord:
           </p>
 
@@ -443,7 +745,6 @@
             href="https://discord.gg/pMBuqkTfVF"
             target="_blank"
             rel="noopener noreferrer"
-            data-i18n="link.discord"
           >
             Discord Server
           </a>
@@ -458,19 +759,19 @@
         <div>
           <p
             class="section-label"
-            data-i18n="section.finance"
+            data-i18n="finance.eyebrow"
           >
-            Finance
+            Planning
           </p>
 
-          <h2 data-i18n="section.finance.title">
-            Operational countdown
+          <h2 data-i18n="finance.title">
+            Finance
           </h2>
         </div>
 
         <div class="countdown-panel">
-          <p data-i18n="section.finance.description">
-            Liquindo's target operational date is 1 January 2028.
+          <p data-i18n="finance.description">
+            The countdown below tracks the time remaining until 1 January 2028.
           </p>
 
           <div
@@ -524,7 +825,7 @@
 
     <footer>
       <div class="footer-content">
-        <p data-i18n="footer.contact">
+        <p>
           Contact: liquindohq@yahoo.com
         </p>
 
@@ -538,7 +839,6 @@
         target="_blank"
         rel="noopener noreferrer"
         class="footer-repo"
-        data-i18n="footer.repo"
       >
         View on GitHub
       </a>
@@ -637,4 +937,4 @@
       })();
     </script>
   </body>
-  </html>
+            </html>
