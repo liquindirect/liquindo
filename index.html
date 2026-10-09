@@ -51,7 +51,7 @@
             Finance
           </a>
 
-          <a href="login.html">
+          <a href="login.html" id="account-nav-link" aria-live="polite">
             Log in
           </a>
         </div>
@@ -602,6 +602,34 @@
           firstScript
         );
       })();
+    </script>
+
+    <script type="module">
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+      const supabase = createClient(
+        "https://uivjovkvpskvvazznlyr.supabase.co",
+        "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
+      );
+      const accountLink = document.getElementById("account-nav-link");
+
+      function updateAccountLink(session) {
+        if (session?.user) {
+          accountLink.textContent = "Logged in ✓";
+          accountLink.title = "Signed in as " + (session.user.email || "your account");
+          accountLink.setAttribute("aria-label", "Logged in. Open your account");
+        } else {
+          accountLink.textContent = "Log in";
+          accountLink.title = "Log in to your account";
+          accountLink.setAttribute("aria-label", "Log in");
+        }
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      updateAccountLink(session);
+      supabase.auth.onAuthStateChange((_event, nextSession) => {
+        updateAccountLink(nextSession);
+      });
     </script>
   </body>
   </html>
