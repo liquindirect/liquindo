@@ -1,0 +1,81 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://uivjovkvpskvvazznlyr.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const form = document.querySelector("#auth-form");
+const emailInput = document.querySelector("#email");
+const passwordInput = document.querySelector("#password");
+const submitButton = document.querySelector("#submit-button");
+const message = document.querySelector("#auth-message");
+const loginTab = document.querySelector("#login-tab");
+const signupTab = document.querySelector("#signup-tab");
+const formPanel = document.querySelector("#auth-form-panel");
+const accountPanel = document.querySelector("#auth-account-panel");
+const accountEmail = document.querySelector("#account-email");
+const accountMessage = document.querySelector("#account-message");
+const logoutButton = document.querySelector("#logout-button");
+let mode = "login";
+
+function setMessage(text, error = false) {
+  message.textContent = text;
+  message.style.color = error ? "#b42318" : "var(--teal)";
+}
+function setMode(next) {
+  mode = next;
+  const signup = mode === "signup";
+  loginTab.setAttribute("aria-pressed", String(!signup));
+  signupTab.setAttribute("aria-pressed", String(signup));
+  submitButton.textContent = signup ? "Create account" : "Log in";
+  passwordInput.autocomplete = signup ? "new-password" : "current-password";
+  document.querySelector("#auth-heading").textContent = signup ? "Create your account" : "Welcome back";
+  setMessage("");
+}
+function showSession(session) {
+  const signedIn = Boolean(session?.user);
+  formPanel.classList.toggle("auth-hidden", signedIn);
+  accountPanel.classList.toggle("auth-hidden", !signedIn);
+  if (signedIn) accountEmail.textContent = session.user.email || "Signed-in user";
+}
+loginTab.addEventListener("click", () => setMode("login"));
+signupTab.addEventListener("click", () => setMode("signup"));
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  submitButton.disabled = true;
+  setMessage(mode === "signup" ? "Creating your account…" : "Signing in…");
+  try {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    if (mode === "signup") {
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { emailRedirectTo: new URL("login.html", window.location.href).href }
+      });
+      if (error) throw error;
+      setMessage(data.session
+        ? "Account created and signed in."
+        : "Account created. Check your email for a confirmation link before logging in.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      setMessage("Signed in successfully.");
+    }
+  } catch (error) {
+    setMessage(error.message || "Something went wrong. Please try again.", true);
+  } finally {
+    submitButton.disabled = false;
+  }
+});
+logoutButton.addEventListener("click", async () => {
+  logoutButton.disabled = true;
+  accountMessage.textContent = "";
+  const { error } = await supabase.auth.signOut();
+  accountMessage.textContent = error ? error.message : "You have been logged out.";
+  logoutButton.disabled = false;
+});
+supabase.auth.onAuthStateChange((_event, session) => showSession(session));
+const { data: { session }, error } = await supabase.auth.getSession();
+if (error) setMessage(error.message, true);
+showSession(session);
