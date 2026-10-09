@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="Sign in or create a Liquindo account." />
+    <title>Liquindo Account</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .auth-wrap { width: min(520px, calc(100% - 32px)); margin: 56px auto 80px; }
+      .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: clamp(22px, 5vw, 36px); box-shadow: var(--shadow); }
+      .auth-card h1 { margin-top: 0; margin-bottom: 8px; }
+      .auth-intro { color: var(--muted); margin-top: 0; }
+      .auth-tabs { display: flex; gap: 8px; margin: 22px 0; }
+      .auth-tabs button, .auth-submit, .auth-secondary { border: 0; border-radius: 999px; padding: 11px 18px; font-weight: 700; cursor: pointer; }
+      .auth-tabs button { flex: 1; background: #ece8df; color: var(--ink); }
+      .auth-tabs button[aria-pressed="true"], .auth-submit { background: var(--teal); color: white; }
+      .auth-field { display: block; margin: 16px 0; font-weight: 700; }
+      .auth-field input { display: block; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--ink); }
+      .auth-submit { width: 100%; margin-top: 8px; }
+      .auth-secondary { background: #ece8df; color: var(--ink); }
+      .auth-message { min-height: 1.5em; margin: 16px 0 0; overflow-wrap: anywhere; }
+      .auth-account { padding: 16px; background: #f0f5f2; border-radius: 12px; overflow-wrap: anywhere; }
+      .auth-hidden { display: none !important; }
+      .auth-back { display: inline-block; margin-top: 24px; color: var(--teal); font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <header class="page-header">
+      <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="index.html">Liquindo</a>
+        <div class="nav-links">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#history">History</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </nav>
+      <div class="page-title">
+        <p class="eyebrow">Liquindo account</p>
+        <h1>Account access</h1>
+        <p>Sign in or create an account for Liquindo services.</p>
+      </div>
+    </header>
+
+    <main class="auth-wrap">
+      <section class="auth-card" aria-labelledby="auth-heading">
+        <div id="auth-form-panel">
+          <h1 id="auth-heading">Welcome</h1>
+          <p class="auth-intro">Use your email address and a password to continue.</p>
+          <div class="auth-tabs" aria-label="Account action">
+            <button type="button" id="login-tab" aria-pressed="true">Log in</button>
+            <button type="button" id="signup-tab" aria-pressed="false">Create account</button>
+          </div>
+          <form id="auth-form">
+            <label class="auth-field" for="email">Email address
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </label>
+            <label class="auth-field" for="password">Password
+              <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+            </label>
+            <button class="auth-submit" id="submit-button" type="submit">Log in</button>
+          </form>
+          <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+        </div>
+        <div id="auth-account-panel" class="auth-hidden">
+          <h1 id="account-heading">You're signed in</h1>
+          <p class="auth-intro">Current account</p>
+          <p class="auth-account" id="account-email"></p>
+          <button class="auth-submit" id="logout-button" type="button">Log out</button>
+          <p id="account-message" class="auth-message" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+      <a class="auth-back" href="index.html">← Back to Liquindo</a>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <p>Contact: liquindohq@yahoo.com</p>
+        <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      </div>
+    </footer>
+    <script type="module" src="auth.js"></script>
+  </body>
+</html>
