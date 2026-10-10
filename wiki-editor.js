@@ -155,7 +155,7 @@ async function renderRevisions() {
   }
   try {
     const revisions = await fetchRevisions();
-    const names = await profileNames(revisions.flatMap(r => [r.submitted_by, r.reviewed_by]));
+    const names = await profileNames(revisions.flatMap(r => [r.edited_by, r.reviewed_by]));
     historyContainer.replaceChildren();
     if (!revisions.length) historyContainer.append(element("p", "", "No revisions have been submitted yet."));
     for (const revision of revisions) addRevisionCard(historyContainer, revision, names, false);
