@@ -17,7 +17,11 @@
       .auth-tabs button { flex: 1; background: #ece8df; color: var(--ink); }
       .auth-tabs button[aria-pressed="true"], .auth-submit { background: var(--teal); color: white; }
       .auth-field { display: block; margin: 16px 0; font-weight: 700; }
-      .auth-field input { display: block; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--ink); }
+      .auth-field input { display: block; box-sizing: border-box; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--ink); }
+      .password-wrap { position: relative; margin-top: 6px; }
+      .auth-field .password-wrap input { margin-top: 0; padding-right: 82px; }
+      .password-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); border: 0; border-radius: 7px; padding: 6px 8px; background: transparent; color: var(--teal); font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+      .password-toggle:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
       .auth-submit { width: 100%; margin-top: 8px; }
       .auth-secondary { background: #ece8df; color: var(--ink); }
       .auth-message { min-height: 1.5em; margin: 16px 0 0; overflow-wrap: anywhere; }
@@ -58,7 +62,10 @@
               <input id="email" name="email" type="email" autocomplete="email" required />
             </label>
             <label class="auth-field" for="password">Password
-              <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+              <div class="password-wrap">
+                <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+                <button class="password-toggle" id="password-toggle" type="button" aria-controls="password" aria-pressed="false">Show</button>
+              </div>
             </label>
             <button class="auth-submit" id="submit-button" type="submit">Log in</button>
           </form>
@@ -82,5 +89,16 @@
       </div>
     </footer>
     <script type="module" src="auth.js"></script>
+    <script>
+      const passwordField = document.querySelector("#password");
+      const passwordToggle = document.querySelector("#password-toggle");
+      passwordToggle.addEventListener("click", () => {
+        const showPassword = passwordField.type === "password";
+        passwordField.type = showPassword ? "text" : "password";
+        passwordToggle.textContent = showPassword ? "Hide" : "Show";
+        passwordToggle.setAttribute("aria-pressed", String(showPassword));
+        passwordToggle.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+      });
+    </script>
   </body>
 </html>
