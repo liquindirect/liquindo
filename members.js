@@ -11,6 +11,7 @@ const contentPanel = document.querySelector("#members-content");
 const profileEmail = document.querySelector("#profile-email");
 const profileRole = document.querySelector("#profile-role");
 const displayNameInput = document.querySelector("#display-name");
+const bioInput = document.querySelector("#profile-bio");
 const profileForm = document.querySelector("#profile-form");
 const saveButton = document.querySelector("#save-profile");
 const profileStatus = document.querySelector("#profile-status");
@@ -32,19 +33,24 @@ async function loadProfile() {
   if (!currentUser) return;
   profileEmail.textContent = currentUser.email || "Signed-in user";
   const { data, error } = await supabase.from("profiles")
-    .select("id, display_name, role").eq("id", currentUser.id).single();
+    .select("id, display_name, role, bio").eq("id", currentUser.id).maybeSingle();
   if (error) {
     showStatus(profileStatus, "Could not load your profile. Please set up the profiles table in Supabase first.", true);
     return;
   }
+  if (!data) {
+    showStatus(profileStatus, "Your profile row was not found. Please contact the site administrator.", true);
+    return;
+  }
   displayNameInput.value = data.display_name || "";
+  bioInput.value = data.bio || "";
   profileRole.textContent = data.role || "member";
 }
 async function loadDirectory() {
   directory.replaceChildren();
   showStatus(directoryStatus, "Loading members…");
   const { data, error } = await supabase.from("profiles")
-    .select("id, display_name, role").order("display_name", { ascending: true });
+    .select("id, display_name, role, bio").order("display_name", { ascending: true });
   if (error) {
     showStatus(directoryStatus, "Could not load the directory. Check the Supabase profile table and access policies.", true);
     return;
@@ -62,7 +68,37 @@ async function loadDirectory() {
     const role = document.createElement("span");
     role.className = "member-role";
     role.textContent = member.role || "member";
-    item.append(name, role);
+    const main = document.createElement("div");
+    main.className = "member-main";
+    main.append(name);
+    const roleLine = document.createElement("div");
+    roleLine.className = "member-role";
+    roleLine.textContent = member.role || "member";
+    main.append(roleLine);
+
+    const bio = document.createElement("p");
+    bio.className = "member-bio";
+    bio.hidden = true;
+    bio.textContent = member.bio || "This member hasn't added a bio yet.";
+
+    const toggle = document.createElement("button");
+    toggle.className = "member-bio-toggle";
+    toggle.type = "button";
+    toggle.textContent = "↓";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Show " + (member.display_name || "member") + "'s bio");
+    toggle.addEventListener("click", () => {
+      const opening = bio.hidden;
+      bio.hidden = !opening;
+      toggle.textContent = opening ? "↑" : "↓";
+      toggle.setAttribute("aria-expanded", String(opening));
+      toggle.setAttribute("aria-label", (opening ? "Hide " : "Show ") + (member.display_name || "member") + "'s bio");
+    });
+
+    const info = document.createElement("div");
+    info.className = "member-main";
+    info.append(main, bio);
+    item.append(info, toggle);
     directory.append(item);
   }
 }
@@ -70,6 +106,7 @@ profileForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!currentUser) return;
   const displayName = displayNameInput.value.trim();
+  const bio = bioInput.value.trim();
   if (!displayName || displayName.length > 40) {
     showStatus(profileStatus, "Please enter a display name between 1 and 40 characters.", true);
     return;
@@ -78,7 +115,7 @@ profileForm.addEventListener("submit", async (event) => {
   showStatus(profileStatus, "Saving your profile…");
   try {
     const { error } = await supabase.from("profiles")
-      .update({ display_name: displayName }).eq("id", currentUser.id);
+      .update({ display_name: displayName, bio }).eq("id", currentUser.id);
     if (error) throw error;
     showStatus(profileStatus, "Your profile has been saved.");
     await loadDirectory();
