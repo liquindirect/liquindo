@@ -12,8 +12,8 @@ const sanitizeOptions = {
 };
 
 async function loadApprovedArticles() {
-  const { data, error } = await supabase.from("wiki_articles")
-    .select("slug, title, content_html");
+  const { data, error } = await supabase.from("wiki_pages")
+    .select("slug, title, content");
   if (error) {
     console.error("LiquinWiki: could not load approved article revisions.", error.message);
     return;
@@ -21,7 +21,7 @@ async function loadApprovedArticles() {
   for (const articleData of data || []) {
     const article = document.getElementById(articleData.slug);
     if (!article || !article.hasAttribute("data-wiki-article")) continue;
-    article.innerHTML = DOMPurify.sanitize(articleData.content_html, sanitizeOptions);
+    article.innerHTML = DOMPurify.sanitize(articleData.content, sanitizeOptions);
     const title = article.querySelector(".article-title");
     if (title && window.location.hash === "#" + articleData.slug) {
       document.title = title.textContent.trim() + " - Liquinwiki";
