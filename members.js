@@ -179,7 +179,8 @@ profileForm.addEventListener("submit", async (event) => {
   } catch (error) {
     showStatus(profileStatus, error.message || "Could not save your profile.", true);
   } finally {
-    saveButton.disabled = false;
+    if (savedProfileValues) updateProfileEditState();
+    else saveButton.disabled = false;
   }
 });
 logoutButton.addEventListener("click", async () => {
