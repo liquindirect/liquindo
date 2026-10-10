@@ -271,8 +271,10 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
 function renderFilteredHistory() {
   const articleFilter = $("#history-article-filter")?.value || "";
   const statusFilter = $("#history-status-filter")?.value || "";
+  const mineOnly = $("#history-mine-only")?.checked || false;
   const searchQuery = ($("#history-search")?.value || "").trim().toLocaleLowerCase();
   const filtered = allLoadedRevisions.filter(revision => {
+    if (mineOnly && (!user || revision.edited_by !== user.id)) return false;
     if (articleFilter && revision.slug !== articleFilter) return false;
     if (statusFilter && revision.status !== statusFilter) return false;
     if (searchQuery) {
@@ -300,7 +302,7 @@ function renderFilteredHistory() {
   const summary = $("#history-filter-status");
   if (summary) summary.textContent = "Showing " + filtered.length + " of " + allLoadedRevisions.length + " revisions.";
 }
-["#history-article-filter", "#history-status-filter", "#history-search"].forEach(selector => {
+["#history-article-filter", "#history-status-filter", "#history-search", "#history-mine-only"].forEach(selector => {
   $(selector)?.addEventListener("input", renderFilteredHistory);
   $(selector)?.addEventListener("change", renderFilteredHistory);
 });
@@ -308,6 +310,7 @@ $("#history-filter-reset")?.addEventListener("click", () => {
   $("#history-article-filter").value = "";
   $("#history-status-filter").value = "";
   $("#history-search").value = "";
+  $("#history-mine-only").checked = false;
   renderFilteredHistory();
 });
 
