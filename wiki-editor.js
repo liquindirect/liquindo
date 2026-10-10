@@ -259,10 +259,10 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
   if (showReviewActions && revision.status === "pending") {
     const approve = element("button", "editor-button", "Approve and publish");
     approve.type = "button";
-    approve.addEventListener("click", () => reviewRevision(revision.id, "approved"));
+    approve.addEventListener("click", () => reviewRevision(revision.id, "approved", names));
     const reject = element("button", "editor-button", "Reject");
     reject.type = "button";
-    reject.addEventListener("click", () => reviewRevision(revision.id, "rejected"));
+    reject.addEventListener("click", () => reviewRevision(revision.id, "rejected", names));
     actions.append(approve, reject);
   }
   card.append(actions);
@@ -337,15 +337,37 @@ async function renderRevisions() {
     if (isWikiAdmin) pendingContainer.replaceChildren(element("p", "", "Could not load pending revisions."));
   }
 }
-async function reviewRevision(id, decision) {
+async function reviewRevision(id, decision, names = {}) {
   let note = "";
-  if (decision === "rejected") {
-    note = window.prompt("Optional note for the editor:", "") || "";
-  } else {
-    const confirmed = window.confirm("Approve this revision and publish it to the live wiki?");
-    if (!confirmed) return;
-  }
   try {
+    // Re-check the latest database status before asking for a publication decision.
+    const { data: latest, error: lookupError } = await supabase.from("wiki_revisions")
+      .select("id, slug, title, status, edited_by, edited_at")
+      .eq("id", id).maybeSingle();
+    if (lookupError) throw lookupError;
+    if (!latest) throw new Error("This revision could not be found. Refresh the page and try again.");
+    if (latest.status !== "pending") {
+      showMessage("This revision is no longer pending. Refreshing the revision list.", true);
+      await renderRevisions();
+      return;
+    }
+
+    if (decision === "rejected") {
+      const detail = "Reject this pending revision?\\n\\nArticle: " +
+        (latest.title || articles[latest.slug] || latest.slug) + "\\nSubmitted by: " +
+        (names[latest.edited_by] || "Member") + "\\nSubmitted: " + formatDate(latest.edited_at) +
+        "\\n\\nYou can optionally add a note for the editor.";
+      if (!window.confirm(detail)) return;
+      note = window.prompt("Optional note for the editor:", "") || "";
+    } else {
+      const detail = "PUBLISH THIS REVISION TO THE LIVE WIKI?\\n\\nArticle: " +
+        (latest.title || articles[latest.slug] || latest.slug) + "\\nSubmitted by: " +
+        (names[latest.edited_by] || "Member") + "\\nSubmitted: " + formatDate(latest.edited_at) +
+        "\\n\\nThe approved content will replace the current live version of this article. " +
+        "Check the submitted content preview and revision comparison before continuing.";
+      if (!window.confirm(detail)) return;
+    }
+
     const { error } = await supabase.rpc("review_liquinwiki_revision", {
       p_revision_id: id,
       p_decision: decision,
