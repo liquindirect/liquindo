@@ -114,6 +114,12 @@
         Articles
       </h2>
 
+      <div class="wiki-search" role="search" style="margin:1rem 0">
+        <label for="wiki-article-search" style="display:block;margin-bottom:.4rem">Search articles</label>
+        <input id="wiki-article-search" type="search" placeholder="Search titles and descriptions…" autocomplete="off" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.75rem;border:1px solid var(--border,#bbb);border-radius:8px;font:inherit" />
+        <p id="wiki-search-status" class="article-description" role="status" aria-live="polite">Showing all articles.</p>
+      </div>
+
       <div class="articles-list">
 
         <article class="article-card">
@@ -2017,6 +2023,29 @@
       window.scrollTo(0, 0);
     }
 
+
+    // Search the article directory without changing article content or URLs.
+    document.addEventListener("DOMContentLoaded", () => {
+      const searchInput = document.getElementById("wiki-article-search");
+      const searchStatus = document.getElementById("wiki-search-status");
+      const cards = [...document.querySelectorAll("#wiki-directory .article-card")];
+      if (!searchInput || !searchStatus) return;
+
+      function filterArticleCards() {
+        const query = searchInput.value.trim().toLocaleLowerCase();
+        let visibleCount = 0;
+        cards.forEach((card) => {
+          const matches = card.textContent.toLocaleLowerCase().includes(query);
+          card.hidden = !matches;
+          if (matches) visibleCount++;
+        });
+        searchStatus.textContent = query
+          ? (visibleCount === 1 ? "1 article found." : visibleCount + " articles found.")
+          : "Showing all " + cards.length + " articles.";
+      }
+
+      searchInput.addEventListener("input", filterArticleCards);
+    });
 
     document.addEventListener(
       "DOMContentLoaded",
