@@ -341,6 +341,47 @@ $("#history-filter-reset")?.addEventListener("click", () => {
   renderFilteredHistory();
 });
 
+function renderPendingRevisions(pending, allRevisions, names) {
+  const articleFilter = $("#pending-article-filter")?.value || "";
+  const search = ($("#pending-review-search")?.value || "").trim().toLocaleLowerCase();
+  const filtered = pending.filter(revision => {
+    if (articleFilter && revision.slug !== articleFilter) return false;
+    if (search) {
+      const haystack = [
+        revision.title,
+        articles[revision.slug],
+        revision.slug,
+        names[revision.edited_by]
+      ].filter(Boolean).join(" ").toLocaleLowerCase();
+      if (!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+  pendingContainer.replaceChildren();
+  if (!filtered.length) {
+    pendingContainer.append(element("p", "", pending.length
+      ? "No pending revisions match these review filters."
+      : "There are no pending revisions."));
+  } else {
+    for (const revision of filtered) addRevisionCard(pendingContainer, revision, names, true, allRevisions);
+  }
+  const count = $("#pending-review-filter-status");
+  if (count) count.textContent = "Showing " + filtered.length + " of " + pending.length + " pending revisions.";
+}
+["#pending-article-filter", "#pending-review-search"].forEach(selector => {
+  $(selector)?.addEventListener("input", () => {
+    if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+  });
+  $(selector)?.addEventListener("change", () => {
+    if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+  });
+});
+$("#pending-review-reset")?.addEventListener("click", () => {
+  $("#pending-article-filter").value = "";
+  $("#pending-review-search").value = "";
+  if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+});
+
 async function renderRevisions() {
   historyContainer.replaceChildren(element("p", "", "Loading revision history…"));
   if (isWikiAdmin) {
@@ -357,7 +398,6 @@ async function renderRevisions() {
     renderFilteredHistory();
 
     if (isWikiAdmin) {
-      pendingContainer.replaceChildren();
       const pending = revisions.filter(r => r.status === "pending");
       const alert = $("#pending-revision-alert");
       if (alert) {
@@ -367,8 +407,7 @@ async function renderRevisions() {
             " in the latest " + revisions.length + " loaded revisions. Review them below."
           : "All clear: no pending revisions in the latest " + revisions.length + " loaded revisions.";
       }
-      if (!pending.length) pendingContainer.append(element("p", "", "There are no pending revisions."));
-      for (const revision of pending) addRevisionCard(pendingContainer, revision, names, true, revisions);
+      renderPendingRevisions(pending, revisions, names);
     }
   } catch (error) {
     historyContainer.replaceChildren(element("p", "", error.message || "Could not load revision history."));
