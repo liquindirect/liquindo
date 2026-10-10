@@ -32,6 +32,37 @@ const historyContainer = $("#revision-history");
 let user = null;
 let isWikiAdmin = false;
 let isWikiEditor = false;
+let activeSlug = null;
+let draftTimer = null;
+
+function draftKey(slug) {
+  return "liquinwiki-draft:" + user.id + ":" + slug;
+}
+function saveDraft() {
+  if (!user || !activeSlug || !isWikiEditor) return;
+  try {
+    const content = safeHtml(canvas.innerHTML);
+    if (!content.trim()) return;
+    localStorage.setItem(draftKey(activeSlug), JSON.stringify({ content, savedAt: new Date().toISOString() }));
+    showMessage("Draft saved on this device · " + new Date().toLocaleTimeString());
+  } catch (error) {
+    showMessage("Could not save a local draft. Check this browser's storage settings.", true);
+  }
+}
+function scheduleDraftSave() {
+  if (draftTimer) clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraft, 600);
+}
+function clearDraftIfMatches(slug, submittedContent) {
+  if (!user) return;
+  try {
+    const key = draftKey(slug);
+    const saved = JSON.parse(localStorage.getItem(key) || "null");
+    if (saved && safeHtml(saved.content).trim() === submittedContent) localStorage.removeItem(key);
+  } catch {
+    // Draft cleanup is best-effort; a saved draft must never block submission.
+  }
+}
 
 function setVisible(element, visible) {
   element.classList.toggle("editor-hidden", !visible);
@@ -62,6 +93,11 @@ async function baselineContent(slug) {
   return article.innerHTML;
 }
 async function loadArticle() {
+  if (draftTimer) {
+    clearTimeout(draftTimer);
+    draftTimer = null;
+    saveDraft();
+  }
   const slug = articleSelect.value;
   showMessage("Loading article…");
   try {
@@ -69,7 +105,20 @@ async function loadArticle() {
       .select("content").eq("slug", slug).maybeSingle();
     if (error) throw error;
     const html = data?.content ?? await baselineContent(slug);
+    activeSlug = slug;
     canvas.innerHTML = safeHtml(html);
+    try {
+      const draft = JSON.parse(localStorage.getItem(draftKey(slug)) || "null");
+      if (draft?.content && draft.content !== safeHtml(html) &&
+          window.confirm("A local draft for this article was saved on " + formatDate(draft.savedAt) + ". Restore it?")) {
+        canvas.innerHTML = safeHtml(draft.content);
+        showMessage("Local draft restored. Continue editing or submit it for approval.");
+        return;
+      }
+    } catch (error) {
+      showMessage("Loaded article, but the local draft could not be read.", true);
+      return;
+    }
     showMessage("Loaded " + articles[slug] + ".");
   } catch (error) {
     showMessage(error.message || "Could not load article.", true);
@@ -192,7 +241,9 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
       showMessage("This revision refers to an article that is not available in the editor.", true);
       return;
     }
+    if (draftTimer) { clearTimeout(draftTimer); draftTimer = null; saveDraft(); }
     articleSelect.value = revision.slug;
+    activeSlug = revision.slug;
     canvas.innerHTML = safeHtml(revision.content);
     showMessage("Loaded an earlier version. Submit it to create a new revision; history will remain intact.");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -292,6 +343,11 @@ permissionForm.addEventListener("submit", async (event) => {
 
 $("#load-article").addEventListener("click", loadArticle);
 articleSelect.addEventListener("change", loadArticle);
+canvas.addEventListener("input", scheduleDraftSave);
+window.addEventListener("pagehide", () => {
+  if (draftTimer) clearTimeout(draftTimer);
+  saveDraft();
+});
 document.querySelectorAll("[data-command]").forEach(button => {
   button.addEventListener("click", () => {
     canvas.focus();
@@ -339,6 +395,7 @@ submitButton.addEventListener("click", async () => {
       status: "pending"
     });
     if (error) throw error;
+    clearDraftIfMatches(slug, content);
     showMessage("Revision submitted. It will go live only after an administrator approves it.");
     await renderRevisions();
   } catch (error) {
