@@ -20,6 +20,9 @@ const logoutButton = document.querySelector("#members-logout");
 const directoryStatus = document.querySelector("#directory-status");
 const directory = document.querySelector("#member-directory");
 const directorySearch = document.querySelector("#directory-search");
+const directorySearchClear = document.querySelector("#directory-search-clear");
+const bioCharacterCount = document.querySelector("#bio-character-count");
+let savedProfileValues = null;
 let currentUser = null;
 
 function showState(state) {
@@ -48,6 +51,8 @@ async function loadProfile() {
   displayNameInput.value = data.display_name || "";
   bioInput.value = data.bio || "";
   profileRole.textContent = data.role || "member";
+  savedProfileValues = { displayName: displayNameInput.value, bio: bioInput.value };
+  updateProfileEditState();
 }
 function filterDirectory() {
   const query = (directorySearch?.value || "").trim().toLocaleLowerCase();
@@ -66,6 +71,34 @@ function filterDirectory() {
   }
 }
 directorySearch?.addEventListener("input", filterDirectory);
+directorySearchClear?.addEventListener("click", () => {
+  if (!directorySearch) return;
+  directorySearch.value = "";
+  filterDirectory();
+  directorySearch.focus();
+});
+
+function updateProfileEditState() {
+  if (bioCharacterCount) {
+    bioCharacterCount.textContent = `${bioInput.value.length} / 500 characters`;
+  }
+  if (!savedProfileValues) return;
+  const changed = displayNameInput.value.trim() !== savedProfileValues.displayName ||
+    bioInput.value.trim() !== savedProfileValues.bio;
+  showStatus(profileStatus, changed ? "Unsaved changes." : "Your profile is up to date.");
+  saveButton.disabled = !changed;
+}
+displayNameInput.addEventListener("input", updateProfileEditState);
+bioInput.addEventListener("input", updateProfileEditState);
+window.addEventListener("beforeunload", (event) => {
+  if (!savedProfileValues) return;
+  const changed = displayNameInput.value.trim() !== savedProfileValues.displayName ||
+    bioInput.value.trim() !== savedProfileValues.bio;
+  if (changed) {
+    event.preventDefault();
+    event.returnValue = "";
+  }
+});
 
 async function loadDirectory() {
   directory.replaceChildren();
@@ -139,6 +172,8 @@ profileForm.addEventListener("submit", async (event) => {
     const { error } = await supabase.from("profiles")
       .update({ display_name: displayName, bio }).eq("id", currentUser.id);
     if (error) throw error;
+    savedProfileValues = { displayName, bio };
+    updateProfileEditState();
     showStatus(profileStatus, "Your profile has been saved.");
     await loadDirectory();
   } catch (error) {
