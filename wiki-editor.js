@@ -35,6 +35,8 @@ let isWikiEditor = false;
 let activeSlug = null;
 let draftTimer = null;
 let allLoadedRevisions = [];
+let allPendingRevisions = [];
+let allComparisonRevisions = [];
 let loadedRevisionNames = {};
 
 function draftKey(slug) {
@@ -148,6 +150,14 @@ async function fetchRevisions() {
     .select("id, page_id, slug, title, content, edited_by, edited_at, status, reviewed_by, reviewed_at, review_note")
     .order("edited_at", { ascending: false })
     .limit(100);
+  if (error) throw error;
+  return data || [];
+}
+async function fetchPendingRevisions() {
+  const { data, error } = await supabase.from("wiki_revisions")
+    .select("id, page_id, slug, title, content, edited_by, edited_at, status, reviewed_by, reviewed_at, review_note")
+    .eq("status", "pending")
+    .order("edited_at", { ascending: true });
   if (error) throw error;
   return data || [];
 }
@@ -396,7 +406,7 @@ function renderPendingRevisions(pending, allRevisions, names) {
 }
 ["#pending-article-filter", "#pending-review-search", "#pending-review-sort"].forEach(selector => {
   $(selector)?.addEventListener("input", () => {
-    if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+    if (isWikiAdmin) renderPendingRevisions(allPendingRevisions, allComparisonRevisions, loadedRevisionNames);
   });
   $(selector)?.addEventListener("change", () => {
     if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
@@ -405,6 +415,7 @@ function renderPendingRevisions(pending, allRevisions, names) {
 $("#pending-review-reset")?.addEventListener("click", () => {
   $("#pending-article-filter").value = "";
   $("#pending-review-search").value = "";
+  $("#pending-review-sort").value = "newest";
   if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
 });
 
@@ -418,22 +429,25 @@ async function renderRevisions() {
   }
   try {
     const revisions = await fetchRevisions();
-    const names = await profileNames(revisions.flatMap(r => [r.edited_by, r.reviewed_by]));
+    const pending = isWikiAdmin ? await fetchPendingRevisions() : [];
+    const comparisonRevisions = [...new Map([...revisions, ...pending].map(revision => [revision.id, revision])).values()];
+    const names = await profileNames(comparisonRevisions.flatMap(r => [r.edited_by, r.reviewed_by]));
     allLoadedRevisions = revisions;
+    allPendingRevisions = pending;
+    allComparisonRevisions = comparisonRevisions;
     loadedRevisionNames = names;
     renderFilteredHistory();
 
     if (isWikiAdmin) {
-      const pending = revisions.filter(r => r.status === "pending");
       const alert = $("#pending-revision-alert");
       if (alert) {
         alert.classList.toggle("pending-alert-active", pending.length > 0);
         alert.textContent = pending.length
           ? "Action needed: " + pending.length + " pending revision" + (pending.length === 1 ? "" : "s") +
-            " in the latest " + revisions.length + " loaded revisions. Review them below."
-          : "All clear: no pending revisions in the latest " + revisions.length + " loaded revisions.";
+            " awaiting review. Review them below."
+          : "All clear: there are no pending revisions awaiting review.";
       }
-      renderPendingRevisions(pending, revisions, names);
+      renderPendingRevisions(pending, comparisonRevisions, names);
     }
   } catch (error) {
     historyContainer.replaceChildren(element("p", "", error.message || "Could not load revision history."));
