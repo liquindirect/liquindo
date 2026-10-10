@@ -126,6 +126,9 @@
       <section class="editor-panel">
         <h2>Revision history</h2>
         <p class="editor-note">Your submissions appear here. Administrators can see all submissions. Loading an earlier version lets you submit it as a new revision; it does not overwrite history.</p>
+        <div id="submission-status-summary" class="editor-note" role="status" aria-live="polite">
+          <p>Your submission summary will appear after revision history loads.</p>
+        </div>
         <div class="editor-controls" style="margin:1rem 0" aria-label="Filter revision history">
           <label for="history-article-filter">Article
             <select id="history-article-filter">
@@ -175,6 +178,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-my-submissions"></script>
+  <script type="module" src="wiki-editor.js?v=20261010-submission-status"></script>
 </body>
 </html>
