@@ -24,6 +24,16 @@ let mode = "login";
 function setMessage(text, error = false) {
   message.textContent = text;
   message.style.color = error ? "#b42318" : "var(--teal)";
+  message.setAttribute("role", error ? "alert" : "status");
+}
+function recoveryErrorMessage(error) {
+  if (error?.code === "over_email_send_rate_limit" || /rate limit|too many requests/i.test(error?.message || "")) {
+    return "Too many recovery requests were made. Please wait a few minutes before trying again.";
+  }
+  if (/network|fetch/i.test(error?.message || "")) {
+    return "We could not reach the account service. Check your connection and try again.";
+  }
+  return "We could not send a recovery email right now. Please try again shortly.";
 }
 function setMode(next) {
   mode = next;
@@ -45,6 +55,7 @@ function showSession(session) {
   accountPanel.classList.toggle("auth-hidden", !signedIn);
   if (signedIn) accountEmail.textContent = session.user.email || "Signed-in user";
 }
+confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
 loginTab.addEventListener("click", () => setMode("login"));
 signupTab.addEventListener("click", () => setMode("signup"));
 forgotPasswordButton.addEventListener("click", async () => {
@@ -63,7 +74,7 @@ forgotPasswordButton.addEventListener("click", async () => {
     if (error) throw error;
     setMessage("If an account exists for that email, a password recovery link has been sent. Check your inbox and spam folder.");
   } catch (error) {
-    setMessage(error.message || "Could not send the recovery email. Please try again.", true);
+    setMessage(recoveryErrorMessage(error), true);
   } finally {
     forgotPasswordButton.disabled = false;
   }
@@ -77,10 +88,12 @@ form.addEventListener("submit", async (event) => {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     if (mode === "signup" && password !== confirmPasswordInput.value) {
+      confirmPasswordInput.setAttribute("aria-invalid", "true");
       setMessage("The passwords do not match. Please check both fields.", true);
       confirmPasswordInput.focus();
       return;
     }
+    confirmPasswordInput.removeAttribute("aria-invalid");
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email, password,

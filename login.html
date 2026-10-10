@@ -17,7 +17,16 @@
       .auth-tabs button { flex: 1; background: #ece8df; color: var(--ink); }
       .auth-tabs button[aria-pressed="true"], .auth-submit { background: var(--teal); color: white; }
       .auth-field { display: block; margin: 16px 0; font-weight: 700; }
-      .auth-field input { display: block; box-sizing: border-box; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--ink); }
+      .auth-field input { display: block; box-sizing: border-box; width: 100%; margin-top: 6px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: white; color: var(--ink); font-size: 16px; }
+      .password-toggle { min-height: 36px; }
+      .auth-submit, .auth-secondary { min-height: 44px; }
+      .auth-field input[aria-invalid="true"] { border-color: #b42318; }
+      @media (max-width: 420px) {
+        .auth-wrap { width: min(100% - 24px, 520px); margin-top: 28px; }
+        .auth-card { padding: 20px 16px; }
+        .auth-tabs { gap: 6px; }
+        .auth-tabs button { padding: 10px 12px; }
+      }
       .password-wrap { position: relative; margin-top: 6px; }
       .auth-field .password-wrap input { margin-top: 0; padding-right: 82px; }
       .password-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); border: 0; border-radius: 7px; padding: 6px 8px; background: transparent; color: var(--teal); font: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }

@@ -13,6 +13,25 @@
 
     <link rel="stylesheet" href="style.css" />
 
+    <style>
+      .nav-links .account-logout {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.93rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .nav-links .account-logout:hover { background: rgba(255, 255, 255, 0.24); color: #fff; }
+      .nav-links .account-logout[hidden] { display: none; }
+      .nav-links .account-logout:disabled { cursor: wait; opacity: 0.7; }
+    </style>
+
   </head>
 
   <body>
@@ -54,6 +73,9 @@
           <a href="login.html" id="account-nav-link" aria-live="polite">
             Log in
           </a>
+          <button type="button" class="account-logout" id="account-logout-button" hidden>
+            Log out
+          </button>
         </div>
 
         <div class="language-control">
@@ -600,18 +622,40 @@
       );
       sessionStorage.setItem("liquindo-homepage-visited", "yes");
       const accountLink = document.getElementById("account-nav-link");
+      const homepageLogoutButton = document.getElementById("account-logout-button");
 
       function updateAccountLink(session) {
-        if (session?.user) {
-          accountLink.textContent = "Logged in ✓";
+        const signedIn = Boolean(session?.user);
+        if (signedIn) {
+          accountLink.textContent = "Account · Logged in ✓";
+          accountLink.href = "login.html";
           accountLink.title = "Signed in as " + (session.user.email || "your account");
-          accountLink.setAttribute("aria-label", "Logged in. Open your account");
+          accountLink.setAttribute("aria-label", "Logged in. Open your account settings");
+          homepageLogoutButton.hidden = false;
         } else {
           accountLink.textContent = "Log in";
+          accountLink.href = "login.html";
           accountLink.title = "Log in to your account";
           accountLink.setAttribute("aria-label", "Log in");
+          homepageLogoutButton.hidden = true;
         }
       }
+
+      homepageLogoutButton.addEventListener("click", async () => {
+        homepageLogoutButton.disabled = true;
+        homepageLogoutButton.textContent = "Logging out…";
+        homepageLogoutButton.removeAttribute("title");
+        try {
+          const { error } = await supabase.auth.signOut();
+          if (error) throw error;
+          homepageLogoutButton.textContent = "Log out";
+        } catch (error) {
+          homepageLogoutButton.textContent = "Retry logout";
+          homepageLogoutButton.title = "Could not log out. Select to try again.";
+        } finally {
+          homepageLogoutButton.disabled = false;
+        }
+      });
 
       const { data: { session } } = await supabase.auth.getSession();
       updateAccountLink(session);
