@@ -21,9 +21,14 @@ const directoryStatus = document.querySelector("#directory-status");
 const directory = document.querySelector("#member-directory");
 const directorySearch = document.querySelector("#directory-search");
 const directorySearchClear = document.querySelector("#directory-search-clear");
+const directoryRoleFilter = document.querySelector("#directory-role-filter");
+const directoryLetters = document.querySelector("#directory-letters");
+const directoryCount = document.querySelector("#directory-count");
 const bioCharacterCount = document.querySelector("#bio-character-count");
 let savedProfileValues = null;
 let currentUser = null;
+let directoryMembers = [];
+let activeLetter = "";
 
 function showState(state) {
   loadingPanel.classList.toggle("members-hidden", state !== "loading");
@@ -54,34 +59,81 @@ async function loadProfile() {
   savedProfileValues = { displayName: displayNameInput.value, bio: bioInput.value };
   updateProfileEditState();
 }
-function filterDirectory() {
+function memberMatches(member) {
   const query = (directorySearch?.value || "").trim().toLocaleLowerCase();
-  const items = [...directory.children];
+  const role = (directoryRoleFilter?.value || "").toLocaleLowerCase();
+  const firstLetter = (member.display_name || "Member").trim().charAt(0).toLocaleUpperCase();
+  const searchText = [member.display_name, member.role, member.bio].filter(Boolean).join(" ").toLocaleLowerCase();
+  return (!query || searchText.includes(query)) &&
+    (!role || (member.role || "member").toLocaleLowerCase() === role) &&
+    (!activeLetter || firstLetter === activeLetter);
+}
+function renderAlphabet() {
+  if (!directoryLetters) return;
+  directoryLetters.replaceChildren();
+  const letters = [...new Set(directoryMembers.map(member =>
+    (member.display_name || "Member").trim().charAt(0).toLocaleUpperCase()
+  ))].filter(letter => /^[A-Z]$/.test(letter)).sort();
+  const allButton = document.createElement("button");
+  allButton.type = "button";
+  allButton.className = "directory-letter";
+  allButton.textContent = "All";
+  allButton.setAttribute("aria-pressed", String(!activeLetter));
+  allButton.addEventListener("click", () => { activeLetter = ""; renderAlphabet(); filterDirectory(); });
+  directoryLetters.append(allButton);
+  for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "directory-letter";
+    button.textContent = letter;
+    button.disabled = !letters.includes(letter);
+    button.setAttribute("aria-pressed", String(activeLetter === letter));
+    button.setAttribute("aria-label", "Show members beginning with " + letter);
+    button.addEventListener("click", () => {
+      activeLetter = activeLetter === letter ? "" : letter;
+      renderAlphabet();
+      filterDirectory();
+    });
+    directoryLetters.append(button);
+  }
+}
+function renderRoleOptions() {
+  if (!directoryRoleFilter) return;
+  const selectedRole = directoryRoleFilter.value;
+  const roles = [...new Set(directoryMembers.map(member => (member.role || "member").trim()))]
+    .filter(Boolean).sort((a, b) => a.localeCompare(b));
+  directoryRoleFilter.replaceChildren(new Option("All roles", ""));
+  for (const role of roles) directoryRoleFilter.add(new Option(role.charAt(0).toLocaleUpperCase() + role.slice(1), role.toLocaleLowerCase()));
+  if (roles.some(role => role.toLocaleLowerCase() === selectedRole)) directoryRoleFilter.value = selectedRole;
+}
+function filterDirectory() {
+  const items = [...directory.children].filter(item => !item.classList.contains("directory-empty"));
   let visible = 0;
   for (const item of items) {
-    const matches = !query || (item.dataset.searchText || item.textContent).toLocaleLowerCase().includes(query);
+    const matches = memberMatches(directoryMembers.find(member => member.id === item.dataset.memberId) || {});
     item.hidden = !matches;
     if (matches) visible++;
   }
-  if (items.length) {
-    showStatus(directoryStatus, query
-      ? `Showing ${visible} of ${items.length} members matching “${query}”.`
-      : `Showing all ${items.length} members.`);
-    if (query && visible === 0) showStatus(directoryStatus, "No members match that search.");
+  if (directoryCount) directoryCount.textContent = `${visible} of ${directoryMembers.length} members shown`;
+  if (directoryMembers.length && visible === 0) {
+    showStatus(directoryStatus, "No members match these filters. Try a different search or reset filters.");
+  } else if (directoryMembers.length) {
+    showStatus(directoryStatus, activeLetter ? `Showing members beginning with ${activeLetter}.` : "");
   }
 }
 directorySearch?.addEventListener("input", filterDirectory);
+directoryRoleFilter?.addEventListener("change", filterDirectory);
 directorySearchClear?.addEventListener("click", () => {
-  if (!directorySearch) return;
-  directorySearch.value = "";
+  if (directorySearch) directorySearch.value = "";
+  if (directoryRoleFilter) directoryRoleFilter.value = "";
+  activeLetter = "";
+  renderAlphabet();
   filterDirectory();
-  directorySearch.focus();
+  directorySearch?.focus();
 });
 
 function updateProfileEditState() {
-  if (bioCharacterCount) {
-    bioCharacterCount.textContent = `${bioInput.value.length} / 500 characters`;
-  }
+  if (bioCharacterCount) bioCharacterCount.textContent = `${bioInput.value.length} / 500 characters`;
   if (!savedProfileValues) return;
   const changed = displayNameInput.value.trim() !== savedProfileValues.displayName ||
     bioInput.value.trim() !== savedProfileValues.bio;
@@ -103,38 +155,41 @@ window.addEventListener("beforeunload", (event) => {
 async function loadDirectory() {
   directory.replaceChildren();
   showStatus(directoryStatus, "Loading members…");
+  if (directoryCount) directoryCount.textContent = "Loading member count…";
   const { data, error } = await supabase.from("profiles")
     .select("id, display_name, role, bio").order("display_name", { ascending: true });
   if (error) {
     showStatus(directoryStatus, "Could not load the directory. The public read policy may not be enabled in Supabase.", true);
+    if (directoryCount) directoryCount.textContent = "Member count unavailable";
     return;
   }
-  if (!data.length) {
+  directoryMembers = data || [];
+  if (!directoryMembers.length) {
     showStatus(directoryStatus, "No member profiles yet.");
+    if (directoryCount) directoryCount.textContent = "0 members";
+    if (directoryLetters) directoryLetters.replaceChildren();
     return;
   }
-  showStatus(directoryStatus, "");
-  for (const member of data) {
+  renderRoleOptions();
+  renderAlphabet();
+  for (const member of directoryMembers) {
     const item = document.createElement("li");
     item.className = "member-item";
+    item.dataset.memberId = member.id;
+    const avatar = document.createElement("span");
+    avatar.className = "member-avatar";
+    avatar.setAttribute("aria-hidden", "true");
+    avatar.textContent = (member.display_name || "M").trim().charAt(0).toLocaleUpperCase() || "M";
     const name = document.createElement("strong");
+    name.className = "member-name";
     name.textContent = member.display_name || "Member";
-    const role = document.createElement("span");
-    role.className = "member-role";
-    role.textContent = member.role || "member";
-    const main = document.createElement("div");
-    main.className = "member-main";
-    main.append(name);
-    const roleLine = document.createElement("div");
+    const roleLine = document.createElement("span");
     roleLine.className = "member-role";
     roleLine.textContent = member.role || "member";
-    main.append(roleLine);
-
     const bio = document.createElement("p");
     bio.className = "member-bio";
     bio.hidden = true;
     bio.textContent = member.bio || "This member hasn't added a bio yet.";
-
     const toggle = document.createElement("button");
     toggle.className = "member-bio-toggle";
     toggle.type = "button";
@@ -148,11 +203,10 @@ async function loadDirectory() {
       toggle.setAttribute("aria-expanded", String(opening));
       toggle.setAttribute("aria-label", (opening ? "Hide " : "Show ") + (member.display_name || "member") + "'s bio");
     });
-
-    const info = document.createElement("div");
-    info.className = "member-main";
-    info.append(main, bio);
-    item.append(info, toggle);
+    const main = document.createElement("div");
+    main.className = "member-main";
+    main.append(name, roleLine, bio);
+    item.append(avatar, main, toggle);
     directory.append(item);
   }
   filterDirectory();
