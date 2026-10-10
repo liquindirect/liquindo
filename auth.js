@@ -16,6 +16,7 @@ const accountPanel = document.querySelector("#auth-account-panel");
 const accountEmail = document.querySelector("#account-email");
 const accountMessage = document.querySelector("#account-message");
 const logoutButton = document.querySelector("#logout-button");
+const forgotPasswordButton = document.querySelector("#forgot-password-button");
 let mode = "login";
 
 function setMessage(text, error = false) {
@@ -29,6 +30,7 @@ function setMode(next) {
   signupTab.setAttribute("aria-pressed", String(signup));
   submitButton.textContent = signup ? "Create account" : "Log in";
   passwordInput.autocomplete = signup ? "new-password" : "current-password";
+  forgotPasswordButton.classList.toggle("auth-hidden", signup);
   document.querySelector("#auth-heading").textContent = signup ? "Create your account" : "Welcome back";
   setMessage("");
 }
@@ -40,6 +42,27 @@ function showSession(session) {
 }
 loginTab.addEventListener("click", () => setMode("login"));
 signupTab.addEventListener("click", () => setMode("signup"));
+forgotPasswordButton.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  if (!email) {
+    setMessage("Enter your email address first, then select Forgot password again.", true);
+    emailInput.focus();
+    return;
+  }
+  forgotPasswordButton.disabled = true;
+  setMessage("Sending password recovery email…");
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: new URL("reset-password.html", window.location.href).href
+    });
+    if (error) throw error;
+    setMessage("If an account exists for that email, a password recovery link has been sent. Check your inbox and spam folder.");
+  } catch (error) {
+    setMessage(error.message || "Could not send the recovery email. Please try again.", true);
+  } finally {
+    forgotPasswordButton.disabled = false;
+  }
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
