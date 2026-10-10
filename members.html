@@ -20,7 +20,7 @@
       .member-main { flex: 1; min-width: 0; }
       .member-bio-toggle { border: 0; border-radius: 999px; background: var(--teal); color: white; width: 2.4rem; height: 2.4rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; }
       .member-bio { margin: .55rem 0 0; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
-      .members-status { min-height: 1.5em; }
+      .members-status { min-height: 1.5em; }\n      .directory-search { display: grid; gap: .35rem; max-width: 34rem; margin: 1rem 0; }\n      .directory-search input { width: 100%; box-sizing: border-box; padding: .75rem; border: 1px solid var(--border, #ddd); border-radius: 8px; }
     </style>
   </head>
   <body>
@@ -80,7 +80,7 @@
         <article class="members-panel">
           <h2>Member directory</h2>
           <p>Anyone can browse member names and bios. Sign in to edit your profile.</p>
-          <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
+          <label class="directory-search" for="directory-search">Search members by name, role, or bio\n            <input id="directory-search" type="search" autocomplete="off" placeholder="Start typing a name or keyword…" />\n          </label>\n          <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
           <ul id="member-directory" class="member-directory"></ul>
         </article>
       </section>
