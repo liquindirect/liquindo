@@ -34,6 +34,8 @@ let isWikiAdmin = false;
 let isWikiEditor = false;
 let activeSlug = null;
 let draftTimer = null;
+let allLoadedRevisions = [];
+let loadedRevisionNames = {};
 
 function draftKey(slug) {
   return "liquinwiki-draft:" + user.id + ":" + slug;
@@ -266,6 +268,49 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
   card.append(actions);
   container.append(card);
 }
+function renderFilteredHistory() {
+  const articleFilter = $("#history-article-filter")?.value || "";
+  const statusFilter = $("#history-status-filter")?.value || "";
+  const searchQuery = ($("#history-search")?.value || "").trim().toLocaleLowerCase();
+  const filtered = allLoadedRevisions.filter(revision => {
+    if (articleFilter && revision.slug !== articleFilter) return false;
+    if (statusFilter && revision.status !== statusFilter) return false;
+    if (searchQuery) {
+      const searchable = [
+        revision.title,
+        articles[revision.slug],
+        revision.slug,
+        loadedRevisionNames[revision.edited_by],
+        loadedRevisionNames[revision.reviewed_by],
+        revision.review_note,
+        revision.status
+      ].filter(Boolean).join(" ").toLocaleLowerCase();
+      if (!searchable.includes(searchQuery)) return false;
+    }
+    return true;
+  });
+  historyContainer.replaceChildren();
+  if (!filtered.length) {
+    historyContainer.append(element("p", "", allLoadedRevisions.length
+      ? "No revisions match these filters."
+      : "No revisions have been submitted yet."));
+  } else {
+    for (const revision of filtered) addRevisionCard(historyContainer, revision, loadedRevisionNames, false, allLoadedRevisions);
+  }
+  const summary = $("#history-filter-status");
+  if (summary) summary.textContent = "Showing " + filtered.length + " of " + allLoadedRevisions.length + " revisions.";
+}
+["#history-article-filter", "#history-status-filter", "#history-search"].forEach(selector => {
+  $(selector)?.addEventListener("input", renderFilteredHistory);
+  $(selector)?.addEventListener("change", renderFilteredHistory);
+});
+$("#history-filter-reset")?.addEventListener("click", () => {
+  $("#history-article-filter").value = "";
+  $("#history-status-filter").value = "";
+  $("#history-search").value = "";
+  renderFilteredHistory();
+});
+
 async function renderRevisions() {
   historyContainer.replaceChildren(element("p", "", "Loading revision history…"));
   if (isWikiAdmin) {
@@ -277,9 +322,9 @@ async function renderRevisions() {
   try {
     const revisions = await fetchRevisions();
     const names = await profileNames(revisions.flatMap(r => [r.edited_by, r.reviewed_by]));
-    historyContainer.replaceChildren();
-    if (!revisions.length) historyContainer.append(element("p", "", "No revisions have been submitted yet."));
-    for (const revision of revisions) addRevisionCard(historyContainer, revision, names, false, revisions);
+    allLoadedRevisions = revisions;
+    loadedRevisionNames = names;
+    renderFilteredHistory();
 
     if (isWikiAdmin) {
       pendingContainer.replaceChildren();
