@@ -65,10 +65,10 @@ async function loadArticle() {
   const slug = articleSelect.value;
   showMessage("Loading article…");
   try {
-    const { data, error } = await supabase.from("wiki_articles")
-      .select("content_html").eq("slug", slug).maybeSingle();
+    const { data, error } = await supabase.from("wiki_pages")
+      .select("content").eq("slug", slug).maybeSingle();
     if (error) throw error;
-    const html = data?.content_html ?? await baselineContent(slug);
+    const html = data?.content ?? await baselineContent(slug);
     canvas.innerHTML = safeHtml(html);
     showMessage("Loaded " + articles[slug] + ".");
   } catch (error) {
@@ -94,19 +94,19 @@ async function profileNames(ids) {
 }
 async function fetchRevisions() {
   const { data, error } = await supabase.from("wiki_revisions")
-    .select("id, article_slug, title, content_html, submitted_by, submitted_at, status, reviewed_by, reviewed_at, review_note")
-    .order("submitted_at", { ascending: false })
+    .select("id, page_id, slug, title, content, edited_by, edited_at, status, reviewed_by, reviewed_at, review_note")
+    .order("edited_at", { ascending: false })
     .limit(100);
   if (error) throw error;
   return data || [];
 }
 function addRevisionCard(container, revision, names, showReviewActions) {
   const card = element("article", "revision-card");
-  const heading = element("h3", "", revision.title || articles[revision.article_slug] || revision.article_slug);
+  const heading = element("h3", "", revision.title || articles[revision.slug] || revision.article_slug);
   card.append(heading);
   const statusLine = element("p", "revision-meta");
   statusLine.textContent = "Status: " + revision.status + " · Submitted by " +
-    (names[revision.submitted_by] || "Member") + " · " + formatDate(revision.submitted_at);
+    (names[revision.edited_by] || "Member") + " · " + formatDate(revision.edited_at);
   card.append(statusLine);
   if (revision.reviewed_at) {
     card.append(element("p", "revision-meta", "Reviewed by " +
@@ -118,7 +118,7 @@ function addRevisionCard(container, revision, names, showReviewActions) {
   const summary = element("summary", "", "View submitted content");
   details.append(summary);
   const preview = element("div", "revision-preview wiki-article");
-  preview.innerHTML = safeHtml(revision.content_html);
+  preview.innerHTML = safeHtml(revision.content);
   details.append(preview);
   card.append(details);
 
@@ -257,11 +257,15 @@ submitButton.addEventListener("click", async () => {
   submitButton.disabled = true;
   showMessage("Submitting revision for approval…");
   try {
+    const { data: page, error: pageError } = await supabase.from("wiki_pages")
+      .select("id").eq("slug", slug).single();
+    if (pageError) throw pageError;
     const { error } = await supabase.from("wiki_revisions").insert({
-      article_slug: slug,
+      page_id: page.id,
+      slug,
       title: articles[slug],
-      content_html: content,
-      submitted_by: user.id,
+      content,
+      edited_by: user.id,
       status: "pending"
     });
     if (error) throw error;
