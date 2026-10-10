@@ -126,6 +126,31 @@
       <section class="editor-panel">
         <h2>Revision history</h2>
         <p class="editor-note">Your submissions appear here. Administrators can see all submissions. Loading an earlier version lets you submit it as a new revision; it does not overwrite history.</p>
+        <div class="editor-controls" style="margin:1rem 0" aria-label="Filter revision history">
+          <label for="history-article-filter">Article
+            <select id="history-article-filter">
+              <option value="">All articles</option>
+              <option value="liquindo">Liquindo</option>
+              <option value="liquin-plan">Liquin's Plan</option>
+              <option value="lnf">Liquindo Nationalist Front</option>
+              <option value="integralist-front">Liquindian Integralist Front</option>
+              <option value="npf">Nuclear Proliferation Faction</option>
+            </select>
+          </label>
+          <label for="history-status-filter">Status
+            <select id="history-status-filter">
+              <option value="">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </label>
+          <label for="history-search">Search revisions
+            <input id="history-search" type="search" placeholder="Title, editor, or review note…" autocomplete="off" />
+          </label>
+          <button id="history-filter-reset" class="editor-button" type="button">Clear filters</button>
+        </div>
+        <p id="history-filter-status" class="editor-note" role="status" aria-live="polite"></p>
         <div id="revision-history"><p>Loading revision history…</p></div>
       </section>
       <section id="revision-compare-panel" class="editor-panel editor-hidden" aria-live="polite">
@@ -146,6 +171,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-local-drafts"></script>
+  <script type="module" src="wiki-editor.js?v=20261010-history-filters"></script>
 </body>
 </html>
