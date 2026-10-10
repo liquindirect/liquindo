@@ -123,6 +123,23 @@
         <h2>Pending revisions</h2>
         <p id="pending-revision-alert" class="pending-alert" role="status" aria-live="polite">Checking pending revision count…</p>
         <p class="editor-note">Approve a revision to publish it on the live wiki, or reject it with an optional note.</p>
+        <div class="editor-controls" style="margin:1rem 0" aria-label="Filter pending revisions">
+          <label for="pending-article-filter">Article
+            <select id="pending-article-filter">
+              <option value="">All articles</option>
+              <option value="liquindo">Liquindo</option>
+              <option value="liquin-plan">Liquin's Plan</option>
+              <option value="lnf">Liquindo Nationalist Front</option>
+              <option value="integralist-front">Liquindian Integralist Front</option>
+              <option value="npf">Nuclear Proliferation Faction</option>
+            </select>
+          </label>
+          <label for="pending-review-search">Search submitter or article
+            <input id="pending-review-search" type="search" placeholder="Name or article title…" autocomplete="off" />
+          </label>
+          <button id="pending-review-reset" class="editor-button" type="button">Clear review filters</button>
+        </div>
+        <p id="pending-review-filter-status" class="editor-note" role="status" aria-live="polite"></p>
         <div id="pending-revisions"><p>Loading revisions…</p></div>
       </section>
 
@@ -181,6 +198,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-pending-alert"></script>
+  <script type="module" src="wiki-editor.js?v=20261010-admin-review-filters"></script>
 </body>
 </html>
