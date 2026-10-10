@@ -27,6 +27,12 @@
     .revision-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
     .status-pending{font-weight:700}
     .editor-note{font-size:.92rem;opacity:.85}
+    .revision-diff{white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,monospace;font-size:.9rem;padding:.85rem;border-radius:8px;background:var(--background,#fff);border:1px solid var(--border,#ddd)}
+    .revision-diff-line{display:block;padding:.12rem .35rem;border-radius:3px}
+    .revision-diff-line.added{background:#e6f6e9;color:#14532d}
+    .revision-diff-line.removed{background:#fde8e7;color:#8f1d18}
+    .revision-diff-line.unchanged{color:var(--text,#222)}
+    .revision-diff-legend{display:flex;flex-wrap:wrap;gap:1rem;margin:.5rem 0}
   </style>
 </head>
 <body>
@@ -121,6 +127,14 @@
         <h2>Revision history</h2>
         <p class="editor-note">Your submissions appear here. Administrators can see all submissions. Loading an earlier version lets you submit it as a new revision; it does not overwrite history.</p>
         <div id="revision-history"><p>Loading revision history…</p></div>
+      </section>
+      <section id="revision-compare-panel" class="editor-panel editor-hidden" aria-live="polite">
+        <div class="editor-controls" style="justify-content:space-between">
+          <h2 id="revision-compare-title">Revision comparison</h2>
+          <button id="close-revision-compare" class="editor-button" type="button">Close comparison</button>
+        </div>
+        <p class="editor-note">Line-level comparison of the selected revision against the immediately older revision of the same article. Green lines were added; red lines were removed. Formatting-only changes may not appear.</p>
+        <div id="revision-compare-result"></div>
       </section>
     </div>
   </main>
