@@ -126,8 +126,12 @@ function addRevisionCard(container, revision, names, showReviewActions) {
   const loadButton = element("button", "editor-button", "Load as a new revision");
   loadButton.type = "button";
   loadButton.addEventListener("click", () => {
-    articleSelect.value = revision.article_slug;
-    canvas.innerHTML = safeHtml(revision.content_html);
+    if (!Object.prototype.hasOwnProperty.call(articles, revision.slug)) {
+      showMessage("This revision refers to an article that is not available in the editor.", true);
+      return;
+    }
+    articleSelect.value = revision.slug;
+    canvas.innerHTML = safeHtml(revision.content);
     showMessage("Loaded an earlier version. Submit it to create a new revision; history will remain intact.");
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
