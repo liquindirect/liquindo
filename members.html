@@ -4,81 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-
-    <meta
-      name="description"
-      content="Publicly identified members and associates of Liquindo."
-    />
-
+    <meta name="description" content="The Liquindo member directory for signed-in members." />
     <title>Liquindo Members</title>
-
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .members-panel { max-width: 900px; margin: 0 auto 2rem; padding: 1.5rem; border: 1px solid var(--border, #ddd); border-radius: 12px; }
+      .members-hidden { display: none !important; }
+      .members-form { display: flex; flex-wrap: wrap; gap: .75rem; align-items: end; }
+      .members-form label { display: grid; gap: .35rem; flex: 1 1 240px; }
+      .members-form input { width: 100%; box-sizing: border-box; padding: .7rem; }
+      .members-button { padding: .7rem 1rem; cursor: pointer; }
+      .member-directory { list-style: none; padding: 0; display: grid; gap: .65rem; }
+      .member-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .85rem 1rem; border: 1px solid var(--border, #ddd); border-radius: 8px; }
+      .member-role { font-size: .85rem; opacity: .8; text-transform: capitalize; }
+      .members-status { min-height: 1.5em; }
+    </style>
   </head>
-
   <body>
     <header class="page-header">
       <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="index.html">
-          Liquindo
-        </a>
-
+        <a class="brand" href="index.html">Liquindo</a>
         <div class="nav-links">
-          <a
-            href="index.html#home"
-            data-i18n="nav.introduction"
-          >
-            Introduction
-          </a>
-
-          <a
-            href="index.html#history"
-            data-i18n="nav.history"
-          >
-            History
-          </a>
-
-          <a
-            href="index.html#ideology"
-            data-i18n="nav.ideology"
-          >
-            Ideology
-          </a>
-
-          <a
-            href="members.html"
-            data-i18n="nav.members"
-            aria-current="page"
-          >
-            Members
-          </a>
-
-          <a
-            href="gallery.html"
-            data-i18n="nav.gallery"
-          >
-            Gallery
-          </a>
-
-          <a
-            href="index.html#contact"
-            data-i18n="nav.contact"
-          >
-            Contact
-          </a>
-
-          <a
-            href="index.html#finance"
-            data-i18n="nav.finance"
-          >
-            Finance
-          </a>
+          <a href="index.html#home" data-i18n="nav.introduction">Introduction</a>
+          <a href="index.html#history" data-i18n="nav.history">History</a>
+          <a href="index.html#ideology" data-i18n="nav.ideology">Ideology</a>
+          <a href="members.html" data-i18n="nav.members" aria-current="page">Members</a>
+          <a href="gallery.html" data-i18n="nav.gallery">Gallery</a>
+          <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+          <a href="index.html#finance" data-i18n="nav.finance">Finance</a>
         </div>
-
-        <select
-          id="language-switcher"
-          class="language-switcher"
-          aria-label="Select language"
-        >
+        <select id="language-switcher" class="language-switcher" aria-label="Select language">
           <option value="en">English</option>
           <option value="pt">Português</option>
           <option value="pl">Polski</option>
@@ -86,146 +41,56 @@
           <option value="zh">中文</option>
         </select>
       </nav>
-
       <div class="page-title">
-        <p
-          class="eyebrow"
-          data-i18n="page.members"
-        >
-          Members
-        </p>
-
-        <h1 data-i18n="page.members.title">
-          Publicly identified members
-        </h1>
-
-        <p data-i18n="page.members.description">
-          View the publicly identified members and associates of Liquindo.
-        </p>
+        <p class="eyebrow" data-i18n="page.members">Members</p>
+        <h1>Liquindo Members</h1>
+        <p>Sign in to view the current member directory and manage your profile.</p>
       </div>
     </header>
 
-    <main>
-      <section
-        class="full-page-section"
-        aria-labelledby="members-list-title"
-      >
-        <h2
-          id="members-list-title"
-          class="visually-hidden"
-        >
-          Liquindo members
-        </h2>
+    <main class="full-page-section">
+      <section id="members-loading" class="members-panel" aria-live="polite">
+        <p>Checking your sign-in status…</p>
+      </section>
 
-        <div class="info-grid wide-grid">
-          <article>
-            <strong data-i18n="member.diego">
-              Diego Liquin
-            </strong>
+      <section id="members-signed-out" class="members-panel members-hidden">
+        <h2>Sign in required</h2>
+        <p>Please sign in or create an account to view the member directory.</p>
+        <a class="members-button" href="login.html">Log in or sign up</a>
+      </section>
 
-            <p data-i18n="member.diego.desc">
-              The founder of Liquindo and its main ideologue.
-            </p>
-          </article>
+      <section id="members-content" class="members-hidden">
+        <article class="members-panel">
+          <h2>Your profile</h2>
+          <p>Email: <strong id="profile-email"></strong></p>
+          <p>Role: <strong id="profile-role">member</strong></p>
+          <form id="profile-form" class="members-form">
+            <label for="display-name">Display name
+              <input id="display-name" name="display-name" type="text" minlength="1" maxlength="40" required />
+            </label>
+            <button id="save-profile" class="members-button" type="submit">Save profile</button>
+          </form>
+          <p id="profile-status" class="members-status" aria-live="polite"></p>
+          <button id="members-logout" class="members-button" type="button">Log out</button>
+        </article>
 
-          <article>
-            <strong data-i18n="member.fullwood">
-              Doctor Fullwood
-            </strong>
-
-            <p data-i18n="member.fullwood.desc">
-              Liquin's main advisor and trustee.
-            </p>
-          </article>
-
-          <article>
-            <strong data-i18n="member.edison">
-              Edison the Mentor
-            </strong>
-
-            <p data-i18n="member.edison.desc">
-              Liquin's political and philosophical mentor.
-            </p>
-          </article>
-
-          <article>
-            <strong>
-              Konsti
-            </strong>
-
-            <p>
-              Loyal patriot of Liquindo and early associate.
-            </p>
-          </article>
-
-          <article>
-            <strong>
-              Petrov
-            </strong>
-
-            <p>
-              Associate since August 2025.
-            </p>
-          </article>
-
-          <article>
-            <strong>
-              Tom
-            </strong>
-
-            <p>
-              Associate and supporter.
-            </p>
-          </article>
-
-          <article>
-            <strong>
-              Patryk Swierk
-            </strong>
-
-            <p>
-              Associate.
-            </p>
-          </article>
-
-          <article>
-            <strong>
-              William
-            </strong>
-
-            <p>
-              Associate.
-            </p>
-          </article>
-        </div>
+        <article class="members-panel">
+          <h2>Member directory</h2>
+          <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
+          <ul id="member-directory" class="member-directory"></ul>
+        </article>
       </section>
     </main>
 
     <footer>
       <div class="footer-content">
-        <p data-i18n="footer.contact">
-          Contact: liquindohq@yahoo.com
-        </p>
-
-        <a
-          href="index.html"
-          data-i18n="gallery.main"
-        >
-          Back to main page
-        </a>
+        <p data-i18n="footer.contact">Contact: liquindohq@yahoo.com</p>
+        <a href="index.html" data-i18n="gallery.main">Back to main page</a>
       </div>
-
-      <a
-        href="https://github.com/liquindirect/liquindo"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="footer-repo"
-        data-i18n="footer.repo"
-      >
-        View on GitHub
-      </a>
+      <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo" data-i18n="footer.repo">View on GitHub</a>
     </footer>
 
     <script src="i18n.js"></script>
+    <script type="module" src="members.js"></script>
   </body>
 </html>
