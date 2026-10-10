@@ -100,7 +100,69 @@ async function fetchRevisions() {
   if (error) throw error;
   return data || [];
 }
-function addRevisionCard(container, revision, names, showReviewActions) {
+function revisionTextLines(html) {
+  const parsed = new DOMParser().parseFromString(safeHtml(html), "text/html");
+  const root = parsed.body;
+  const blocks = [...root.children];
+  const lines = (blocks.length ? blocks : [root]).map(node => (node.textContent || "").replace(/\\s+/g, " ").trim()).filter(Boolean);
+  return lines.length ? lines : [""];
+}
+function showRevisionComparison(revision, allRevisions) {
+  const older = allRevisions
+    .filter(item => item.slug === revision.slug && item.id !== revision.id &&
+      new Date(item.edited_at).getTime() < new Date(revision.edited_at).getTime())
+    .sort((a, b) => new Date(b.edited_at).getTime() - new Date(a.edited_at).getTime())[0];
+  const panel = $("#revision-compare-panel");
+  const result = $("#revision-compare-result");
+  $("#revision-compare-title").textContent = "Compare: " + (revision.title || articles[revision.slug] || revision.slug);
+  result.replaceChildren();
+  if (!older) {
+    result.append(element("p", "", "There is no older revision of this article in the loaded history to compare against."));
+    panel.classList.remove("editor-hidden");
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const oldLines = revisionTextLines(older.content);
+  const newLines = revisionTextLines(revision.content);
+  const diff = element("div", "revision-diff");
+  const legend = element("div", "revision-diff-legend");
+  legend.append(element("span", "", "＋ Added"), element("span", "", "− Removed"), element("span", "", "  Unchanged"));
+  result.append(
+    element("p", "revision-meta", "Older version: " + formatDate(older.edited_at) + " · Selected version: " + formatDate(revision.edited_at)),
+    legend
+  );
+  if (oldLines.length * newLines.length > 40000) {
+    result.append(element("p", "", "This article is too large for an automatic line-by-line comparison. You can still open each revision using View submitted content."));
+    panel.classList.remove("editor-hidden");
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const dp = Array.from({ length: oldLines.length + 1 }, () => new Uint32Array(newLines.length + 1));
+  for (let i = oldLines.length - 1; i >= 0; i--) {
+    for (let j = newLines.length - 1; j >= 0; j--) {
+      dp[i][j] = oldLines[i] === newLines[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  let i = 0, j = 0;
+  while (i < oldLines.length || j < newLines.length) {
+    if (i < oldLines.length && j < newLines.length && oldLines[i] === newLines[j]) {
+      diff.append(element("span", "revision-diff-line unchanged", "  " + oldLines[i]));
+      i++; j++;
+    } else if (j < newLines.length && (i === oldLines.length || dp[i][j + 1] >= dp[i + 1][j])) {
+      diff.append(element("span", "revision-diff-line added", "+ " + newLines[j]));
+      j++;
+    } else {
+      diff.append(element("span", "revision-diff-line removed", "− " + oldLines[i]));
+      i++;
+    }
+  }
+  result.append(diff);
+  panel.classList.remove("editor-hidden");
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("#close-revision-compare").addEventListener("click", () => $("#revision-compare-panel").classList.add("editor-hidden"));
+
+function addRevisionCard(container, revision, names, showReviewActions, allRevisions) {
   const card = element("article", "revision-card");
   const heading = element("h3", "", revision.title || articles[revision.slug] || revision.article_slug);
   card.append(heading);
@@ -136,6 +198,10 @@ function addRevisionCard(container, revision, names, showReviewActions) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
   actions.append(loadButton);
+  const compareButton = element("button", "editor-button", "Compare with older revision");
+  compareButton.type = "button";
+  compareButton.addEventListener("click", () => showRevisionComparison(revision, allRevisions));
+  actions.append(compareButton);
 
   if (showReviewActions && revision.status === "pending") {
     const approve = element("button", "editor-button", "Approve and publish");
@@ -162,13 +228,13 @@ async function renderRevisions() {
     const names = await profileNames(revisions.flatMap(r => [r.edited_by, r.reviewed_by]));
     historyContainer.replaceChildren();
     if (!revisions.length) historyContainer.append(element("p", "", "No revisions have been submitted yet."));
-    for (const revision of revisions) addRevisionCard(historyContainer, revision, names, false);
+    for (const revision of revisions) addRevisionCard(historyContainer, revision, names, false, revisions);
 
     if (isWikiAdmin) {
       pendingContainer.replaceChildren();
       const pending = revisions.filter(r => r.status === "pending");
       if (!pending.length) pendingContainer.append(element("p", "", "There are no pending revisions."));
-      for (const revision of pending) addRevisionCard(pendingContainer, revision, names, true);
+      for (const revision of pending) addRevisionCard(pendingContainer, revision, names, true, revisions);
     }
   } catch (error) {
     historyContainer.replaceChildren(element("p", "", error.message || "Could not load revision history."));
