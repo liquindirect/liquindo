@@ -258,10 +258,10 @@ submitButton.addEventListener("click", async () => {
   showMessage("Submitting revision for approval…");
   try {
     const { data: page, error: pageError } = await supabase.from("wiki_pages")
-      .select("id").eq("slug", slug).single();
+      .select("id").eq("slug", slug).maybeSingle();
     if (pageError) throw pageError;
     const { error } = await supabase.from("wiki_revisions").insert({
-      page_id: page.id,
+      page_id: page?.id ?? null,
       slug,
       title: articles[slug],
       content,
