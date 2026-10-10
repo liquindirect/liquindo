@@ -26,6 +26,8 @@
     .revision-preview{max-height:260px;overflow:auto;border-top:1px solid #ddd;margin-top:.5rem;padding-top:.5rem}
     .revision-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
     .status-pending{font-weight:700}
+    .pending-alert{padding:.75rem 1rem;border:1px solid var(--border,#ddd);border-radius:8px;margin:.75rem 0}
+    .pending-alert-active{font-weight:700;border-color:var(--teal,#167d7a);background:var(--card-bg,#fff)}
     .editor-note{font-size:.92rem;opacity:.85}
     .revision-diff{white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,monospace;font-size:.9rem;padding:.85rem;border-radius:8px;background:var(--background,#fff);border:1px solid var(--border,#ddd)}
     .revision-diff-line{display:block;padding:.12rem .35rem;border-radius:3px}
@@ -119,6 +121,7 @@
 
       <section id="review-panel" class="editor-panel editor-hidden">
         <h2>Pending revisions</h2>
+        <p id="pending-revision-alert" class="pending-alert" role="status" aria-live="polite">Checking pending revision count…</p>
         <p class="editor-note">Approve a revision to publish it on the live wiki, or reject it with an optional note.</p>
         <div id="pending-revisions"><p>Loading revisions…</p></div>
       </section>
@@ -178,6 +181,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-submission-status"></script>
+  <script type="module" src="wiki-editor.js?v=20261010-pending-alert"></script>
 </body>
 </html>
