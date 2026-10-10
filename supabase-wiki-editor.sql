@@ -170,3 +170,49 @@ grant execute on function public.review_liquinwiki_revision(uuid, text, text) to
 
 -- Keep the existing profiles.role values unchanged. Existing profile admins
 -- automatically receive wiki administration rights through the functions above.
+
+-- Let wiki administrators grant or revoke wiki-only permissions by account email.
+create or replace function public.set_liquinwiki_permission(
+  p_email text,
+  p_permission text
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_user_id uuid;
+begin
+  if not public.can_manage_liquinwiki() then
+    raise exception 'Only LiquinWiki administrators can manage editor permissions';
+  end if;
+
+  if p_permission not in ('liquinwiki_editor', 'liquinwiki_admin', 'none') then
+    raise exception 'Permission must be liquinwiki_editor, liquinwiki_admin, or none';
+  end if;
+
+  select u.id into v_user_id
+  from auth.users u
+  where lower(u.email) = lower(trim(p_email))
+  limit 1;
+
+  if v_user_id is null then
+    raise exception 'No account found for that email address';
+  end if;
+
+  if p_permission = 'none' then
+    delete from public.wiki_permissions where user_id = v_user_id;
+  else
+    insert into public.wiki_permissions (user_id, permission, granted_by, granted_at)
+    values (v_user_id, p_permission, auth.uid(), now())
+    on conflict (user_id) do update
+      set permission = excluded.permission,
+          granted_by = excluded.granted_by,
+          granted_at = excluded.granted_at;
+  end if;
+end;
+$$;
+
+revoke all on function public.set_liquinwiki_permission(text, text) from public;
+grant execute on function public.set_liquinwiki_permission(text, text) to authenticated;
