@@ -158,32 +158,20 @@ function revisionTextLines(html) {
   const lines = (blocks.length ? blocks : [root]).map(node => (node.textContent || "").replace(/\\s+/g, " ").trim()).filter(Boolean);
   return lines.length ? lines : [""];
 }
-function showRevisionComparison(revision, allRevisions) {
-  const older = allRevisions
-    .filter(item => item.slug === revision.slug && item.id !== revision.id &&
-      new Date(item.edited_at).getTime() < new Date(revision.edited_at).getTime())
-    .sort((a, b) => new Date(b.edited_at).getTime() - new Date(a.edited_at).getTime())[0];
+function renderComparison(revision, oldHtml, oldLabel, newLabel) {
   const panel = $("#revision-compare-panel");
   const result = $("#revision-compare-result");
   $("#revision-compare-title").textContent = "Compare: " + (revision.title || articles[revision.slug] || revision.slug);
   result.replaceChildren();
-  if (!older) {
-    result.append(element("p", "", "There is no older revision of this article in the loaded history to compare against."));
-    panel.classList.remove("editor-hidden");
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    return;
-  }
-  const oldLines = revisionTextLines(older.content);
+  result.append(element("p", "revision-meta", oldLabel + " vs " + newLabel));
+  const oldLines = revisionTextLines(oldHtml);
   const newLines = revisionTextLines(revision.content);
   const diff = element("div", "revision-diff");
   const legend = element("div", "revision-diff-legend");
   legend.append(element("span", "", "＋ Added"), element("span", "", "− Removed"), element("span", "", "  Unchanged"));
-  result.append(
-    element("p", "revision-meta", "Older version: " + formatDate(older.edited_at) + " · Selected version: " + formatDate(revision.edited_at)),
-    legend
-  );
+  result.append(legend);
   if (oldLines.length * newLines.length > 40000) {
-    result.append(element("p", "", "This article is too large for an automatic line-by-line comparison. You can still open each revision using View submitted content."));
+    result.append(element("p", "", "This article is too large for an automatic line-by-line comparison. Open the submitted content preview and the live article separately."));
     panel.classList.remove("editor-hidden");
     panel.scrollIntoView({ behavior: "smooth", block: "start" });
     return;
@@ -210,6 +198,38 @@ function showRevisionComparison(revision, allRevisions) {
   result.append(diff);
   panel.classList.remove("editor-hidden");
   panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function showRevisionComparison(revision, allRevisions) {
+  const older = allRevisions
+    .filter(item => item.slug === revision.slug && item.id !== revision.id &&
+      new Date(item.edited_at).getTime() < new Date(revision.edited_at).getTime())
+    .sort((a, b) => new Date(b.edited_at).getTime() - new Date(a.edited_at).getTime())[0];
+  if (!older) {
+    const panel = $("#revision-compare-panel");
+    $("#revision-compare-title").textContent = "Compare: " + (revision.title || articles[revision.slug] || revision.slug);
+    $("#revision-compare-result").replaceChildren(element("p", "", "There is no older revision of this article in the loaded history to compare against."));
+    panel.classList.remove("editor-hidden");
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  renderComparison(revision, older.content,
+    "Older version (" + formatDate(older.edited_at) + ")",
+    "Selected revision (" + formatDate(revision.edited_at) + ")");
+}
+async function showLiveRevisionComparison(revision) {
+  showMessage("Loading the current live article for comparison…");
+  try {
+    const { data, error } = await supabase.from("wiki_pages")
+      .select("content, updated_at").eq("slug", revision.slug).maybeSingle();
+    if (error) throw error;
+    const liveHtml = data?.content ?? await baselineContent(revision.slug);
+    renderComparison(revision, liveHtml,
+      "Current live article" + (data?.updated_at ? " (" + formatDate(data.updated_at) + ")" : ""),
+      "Proposed revision (" + formatDate(revision.edited_at) + ")");
+    showMessage("Comparison ready. Review removed and added lines before deciding.");
+  } catch (error) {
+    showMessage(error.message || "Could not compare against the live article.", true);
+  }
 }
 $("#close-revision-compare").addEventListener("click", () => $("#revision-compare-panel").classList.add("editor-hidden"));
 
@@ -257,6 +277,10 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
   actions.append(compareButton);
 
   if (showReviewActions && revision.status === "pending") {
+    const liveCompare = element("button", "editor-button", "Compare with live article");
+    liveCompare.type = "button";
+    liveCompare.addEventListener("click", () => showLiveRevisionComparison(revision));
+    actions.append(liveCompare);
     const approve = element("button", "editor-button", "Approve and publish");
     approve.type = "button";
     approve.addEventListener("click", () => reviewRevision(revision.id, "approved", names));
@@ -344,6 +368,7 @@ $("#history-filter-reset")?.addEventListener("click", () => {
 function renderPendingRevisions(pending, allRevisions, names) {
   const articleFilter = $("#pending-article-filter")?.value || "";
   const search = ($("#pending-review-search")?.value || "").trim().toLocaleLowerCase();
+  const sort = $("#pending-review-sort")?.value || "newest";
   const filtered = pending.filter(revision => {
     if (articleFilter && revision.slug !== articleFilter) return false;
     if (search) {
@@ -357,6 +382,7 @@ function renderPendingRevisions(pending, allRevisions, names) {
     }
     return true;
   });
+  filtered.sort((a, b) => (new Date(a.edited_at).getTime() - new Date(b.edited_at).getTime()) * (sort === "oldest" ? 1 : -1));
   pendingContainer.replaceChildren();
   if (!filtered.length) {
     pendingContainer.append(element("p", "", pending.length
@@ -368,7 +394,7 @@ function renderPendingRevisions(pending, allRevisions, names) {
   const count = $("#pending-review-filter-status");
   if (count) count.textContent = "Showing " + filtered.length + " of " + pending.length + " pending revisions.";
 }
-["#pending-article-filter", "#pending-review-search"].forEach(selector => {
+["#pending-article-filter", "#pending-review-search", "#pending-review-sort"].forEach(selector => {
   $(selector)?.addEventListener("input", () => {
     if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
   });
