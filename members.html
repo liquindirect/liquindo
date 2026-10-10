@@ -17,6 +17,9 @@
       .member-directory { list-style: none; padding: 0; display: grid; gap: .65rem; }
       .member-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .85rem 1rem; border: 1px solid var(--border, #ddd); border-radius: 8px; }
       .member-role { font-size: .85rem; opacity: .8; text-transform: capitalize; }
+      .member-main { flex: 1; min-width: 0; }
+      .member-bio-toggle { border: 0; border-radius: 999px; background: var(--teal); color: white; width: 2.4rem; height: 2.4rem; font-size: 1.2rem; cursor: pointer; flex-shrink: 0; }
+      .member-bio { margin: .55rem 0 0; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
       .members-status { min-height: 1.5em; }
     </style>
   </head>
@@ -68,6 +71,9 @@
           <form id="profile-form" class="members-form">
             <label for="display-name">Display name
               <input id="display-name" name="display-name" type="text" minlength="1" maxlength="40" required />
+            </label>
+            <label for="profile-bio">Bio (up to 500 characters)
+              <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself."></textarea>
             </label>
             <button id="save-profile" class="members-button" type="submit">Save profile</button>
           </form>
