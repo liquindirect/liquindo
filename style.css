@@ -1677,3 +1677,64 @@ footer {
     animation-iteration-count: 1 !important;
   }
   }
+
+
+/* =========================================================
+   MOBILE NAVIGATION AND ACCOUNT ROUTING
+   ========================================================= */
+
+.nav-links a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.58);
+  color: #ffffff;
+}
+
+.nav-links a:focus-visible,
+.language-switcher:focus-visible {
+  outline-color: var(--gold);
+  outline-offset: 3px;
+}
+
+@media (max-width: 780px) {
+  .topbar {
+    min-width: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .nav-links a {
+    min-height: 40px;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .language-switcher {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .nav-links {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .nav-links a {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
