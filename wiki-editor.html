@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>LiquinWiki Editor</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .editor-wrap{max-width:1100px;margin:2rem auto;padding:0 1rem}
+    .editor-panel{background:var(--card-bg, #fff);border:1px solid var(--border, #ddd);border-radius:12px;padding:1.25rem;margin:1rem 0}
+    .editor-hidden{display:none!important}
+    .editor-controls{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+    .editor-controls select,.editor-controls input,.editor-controls button,.editor-button{padding:.65rem .8rem}
+    .editor-canvas{min-height:420px;border:1px solid var(--border,#bbb);border-radius:8px;padding:1rem;margin-top:.75rem;background:var(--background,#fff);color:var(--text,#222);overflow-wrap:anywhere}
+    .editor-canvas:focus{outline:2px solid var(--teal,#167d7a);outline-offset:2px}
+    .editor-canvas img{max-width:100%;height:auto}
+    .editor-canvas table{border-collapse:collapse;max-width:100%}
+    .editor-canvas td,.editor-canvas th{border:1px solid #aaa;padding:.35rem}
+    .editor-toolbar{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+    .editor-toolbar button,.editor-button{cursor:pointer}
+    .editor-status{min-height:1.5rem}
+    .revision-card{border:1px solid var(--border,#ddd);border-radius:8px;padding:1rem;margin:.8rem 0}
+    .revision-meta{font-size:.92rem;opacity:.85}
+    .revision-card details{margin:.65rem 0}
+    .revision-preview{max-height:260px;overflow:auto;border-top:1px solid #ddd;margin-top:.5rem;padding-top:.5rem}
+    .revision-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
+    .status-pending{font-weight:700}
+    .editor-note{font-size:.92rem;opacity:.85}
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <nav class="topbar" aria-label="Main navigation">
+      <a class="brand" href="index.html">Liquindo</a>
+      <div class="nav-links">
+        <a href="index.html">Main site</a>
+        <a href="wiki.html">LiquinWiki</a>
+        <a href="members.html">Members</a>
+      </div>
+    </nav>
+    <div class="page-title">
+      <p class="section-label">LiquinWiki</p>
+      <h1>Editor and revision review</h1>
+      <p>Changes are submitted for administrator approval before they appear in the live wiki.</p>
+    </div>
+  </header>
+
+  <main class="editor-wrap">
+    <section id="editor-loading" class="editor-panel" aria-live="polite"><p>Checking your account…</p></section>
+    <section id="editor-signed-out" class="editor-panel editor-hidden">
+      <h2>Sign in required</h2>
+      <p>Sign in with your Liquindo account to continue.</p>
+      <a class="editor-button" href="login.html">Log in or sign up</a>
+    </section>
+    <section id="editor-no-permission" class="editor-panel editor-hidden">
+      <h2>Wiki editor access required</h2>
+      <p>Your account is signed in, but it does not have LiquinWiki editor permissions. Ask a LiquinWiki administrator to grant you the <code>liquinwiki_editor</code> permission.</p>
+      <a href="wiki.html">Return to LiquinWiki</a>
+    </section>
+
+    <div id="editor-app" class="editor-hidden">
+      <section class="editor-panel">
+        <h2>Submit an article revision</h2>
+        <p class="editor-note">Choose an existing article and edit its content below. Your submission remains pending until an administrator approves it. Use the formatting buttons for headings, lists, links, and emphasis.</p>
+        <div class="editor-controls">
+          <label for="article-select">Article</label>
+          <select id="article-select">
+            <option value="liquindo">Liquindo</option>
+            <option value="liquin-plan">Liquin's Plan</option>
+            <option value="lnf">Liquindo Nationalist Front</option>
+            <option value="integralist-front">Liquindian Integralist Front</option>
+            <option value="npf">Nuclear Proliferation Faction</option>
+          </select>
+          <button id="load-article" class="editor-button" type="button">Load current version</button>
+        </div>
+        <div class="editor-toolbar" aria-label="Formatting tools">
+          <button type="button" data-command="bold"><strong>Bold</strong></button>
+          <button type="button" data-command="italic"><em>Italic</em></button>
+          <button type="button" data-command="formatBlock" data-value="h2">Heading</button>
+          <button type="button" data-command="formatBlock" data-value="p">Paragraph</button>
+          <button type="button" data-command="insertUnorderedList">Bulleted list</button>
+          <button type="button" data-command="insertOrderedList">Numbered list</button>
+          <button type="button" id="insert-link">Insert link</button>
+          <button type="button" id="remove-format">Clear formatting</button>
+        </div>
+        <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article content editor" aria-multiline="true"></div>
+        <div class="editor-controls" style="margin-top:1rem">
+          <button id="submit-revision" class="editor-button" type="button">Submit for approval</button>
+          <span id="editor-status" class="editor-status" role="status" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <section id="review-panel" class="editor-panel editor-hidden">
+        <h2>Pending revisions</h2>
+        <p class="editor-note">Approve a revision to publish it on the live wiki, or reject it with an optional note.</p>
+        <div id="pending-revisions"><p>Loading revisions…</p></div>
+      </section>
+
+      <section class="editor-panel">
+        <h2>Revision history</h2>
+        <p class="editor-note">Your submissions appear here. Administrators can see all submissions. Loading an earlier version lets you submit it as a new revision; it does not overwrite history.</p>
+        <div id="revision-history"><p>Loading revision history…</p></div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>Contact: liquindohq@yahoo.com</p>
+      <a href="wiki.html">Back to LiquinWiki</a>
+    </div>
+    <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
+  </footer>
+  <script type="module" src="wiki-editor.js"></script>
+</body>
+</html>
