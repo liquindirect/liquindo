@@ -165,7 +165,7 @@ function revisionTextLines(html) {
   const parsed = new DOMParser().parseFromString(safeHtml(html), "text/html");
   const root = parsed.body;
   const blocks = [...root.children];
-  const lines = (blocks.length ? blocks : [root]).map(node => (node.textContent || "").replace(/\\s+/g, " ").trim()).filter(Boolean);
+  const lines = (blocks.length ? blocks : [root]).map(node => (node.textContent || "").replace(/\s+/g, " ").trim()).filter(Boolean);
   return lines.length ? lines : [""];
 }
 function renderComparison(revision, oldHtml, oldLabel, newLabel) {
@@ -409,14 +409,14 @@ function renderPendingRevisions(pending, allRevisions, names) {
     if (isWikiAdmin) renderPendingRevisions(allPendingRevisions, allComparisonRevisions, loadedRevisionNames);
   });
   $(selector)?.addEventListener("change", () => {
-    if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+    if (isWikiAdmin) renderPendingRevisions(allPendingRevisions, allComparisonRevisions, loadedRevisionNames);
   });
 });
 $("#pending-review-reset")?.addEventListener("click", () => {
   $("#pending-article-filter").value = "";
   $("#pending-review-search").value = "";
   $("#pending-review-sort").value = "newest";
-  if (isWikiAdmin) renderPendingRevisions(allLoadedRevisions.filter(r => r.status === "pending"), allLoadedRevisions, loadedRevisionNames);
+  if (isWikiAdmin) renderPendingRevisions(allPendingRevisions, allComparisonRevisions, loadedRevisionNames);
 });
 
 async function renderRevisions() {
@@ -470,17 +470,17 @@ async function reviewRevision(id, decision, names = {}) {
     }
 
     if (decision === "rejected") {
-      const detail = "Reject this pending revision?\\n\\nArticle: " +
-        (latest.title || articles[latest.slug] || latest.slug) + "\\nSubmitted by: " +
-        (names[latest.edited_by] || "Member") + "\\nSubmitted: " + formatDate(latest.edited_at) +
-        "\\n\\nYou can optionally add a note for the editor.";
+      const detail = "Reject this pending revision?\n\nArticle: " +
+        (latest.title || articles[latest.slug] || latest.slug) + "\nSubmitted by: " +
+        (names[latest.edited_by] || "Member") + "\nSubmitted: " + formatDate(latest.edited_at) +
+        "\n\nYou can optionally add a note for the editor.";
       if (!window.confirm(detail)) return;
       note = window.prompt("Optional note for the editor:", "") || "";
     } else {
-      const detail = "PUBLISH THIS REVISION TO THE LIVE WIKI?\\n\\nArticle: " +
-        (latest.title || articles[latest.slug] || latest.slug) + "\\nSubmitted by: " +
-        (names[latest.edited_by] || "Member") + "\\nSubmitted: " + formatDate(latest.edited_at) +
-        "\\n\\nThe approved content will replace the current live version of this article. " +
+      const detail = "PUBLISH THIS REVISION TO THE LIVE WIKI?\n\nArticle: " +
+        (latest.title || articles[latest.slug] || latest.slug) + "\nSubmitted by: " +
+        (names[latest.edited_by] || "Member") + "\nSubmitted: " + formatDate(latest.edited_at) +
+        "\n\nThe approved content will replace the current live version of this article. " +
         "Check the submitted content preview and revision comparison before continuing.";
       if (!window.confirm(detail)) return;
     }
