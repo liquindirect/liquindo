@@ -268,7 +268,34 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
   card.append(actions);
   container.append(card);
 }
+function renderSubmissionStatusSummary() {
+  const summary = $("#submission-status-summary");
+  if (!summary) return;
+  if (!user) {
+    summary.textContent = "Sign in to see your submission status.";
+    return;
+  }
+  const mine = allLoadedRevisions.filter(revision => revision.edited_by === user.id);
+  const count = status => mine.filter(revision => revision.status === status).length;
+  const pending = count("pending");
+  const approved = count("approved");
+  const rejected = count("rejected");
+  summary.replaceChildren();
+  const heading = element("h3", "", "Your submission status");
+  const detail = element("p", "", mine.length
+    ? mine.length + " submission" + (mine.length === 1 ? "" : "s") + " in the latest 100 revisions: " +
+      pending + " pending · " + approved + " approved · " + rejected + " rejected."
+    : "No submissions from this account appear in the latest 100 revisions.");
+  summary.append(heading, detail);
+  const needsAttention = mine.filter(revision => revision.status === "rejected");
+  if (needsAttention.length) {
+    const attention = element("p", "editor-note", "Needs attention: review the note on your rejected revision" +
+      (needsAttention.length === 1 ? "" : "s") + " below, then load the content as a new revision if you want to resubmit.");
+    summary.append(attention);
+  }
+}
 function renderFilteredHistory() {
+  renderSubmissionStatusSummary();
   const articleFilter = $("#history-article-filter")?.value || "";
   const statusFilter = $("#history-status-filter")?.value || "";
   const mineOnly = $("#history-mine-only")?.checked || false;
