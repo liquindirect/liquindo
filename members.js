@@ -7,6 +7,7 @@ const supabase = createClient(
 
 const loadingPanel = document.querySelector("#members-loading");
 const signedOutPanel = document.querySelector("#members-signed-out");
+const profilePanel = document.querySelector("#profile-panel");
 const contentPanel = document.querySelector("#members-content");
 const profileEmail = document.querySelector("#profile-email");
 const profileRole = document.querySelector("#profile-role");
@@ -22,8 +23,9 @@ let currentUser = null;
 
 function showState(state) {
   loadingPanel.classList.toggle("members-hidden", state !== "loading");
-  signedOutPanel.classList.toggle("members-hidden", state !== "signed-out");
-  contentPanel.classList.toggle("members-hidden", state !== "signed-in");
+  if (signedOutPanel) signedOutPanel.classList.add("members-hidden");
+  contentPanel.classList.toggle("members-hidden", state === "loading");
+  profilePanel.classList.toggle("members-hidden", state !== "signed-in");
 }
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -52,7 +54,7 @@ async function loadDirectory() {
   const { data, error } = await supabase.from("profiles")
     .select("id, display_name, role, bio").order("display_name", { ascending: true });
   if (error) {
-    showStatus(directoryStatus, "Could not load the directory. Check the Supabase profile table and access policies.", true);
+    showStatus(directoryStatus, "Could not load the directory. The public read policy may not be enabled in Supabase.", true);
     return;
   }
   if (!data.length) {
@@ -136,6 +138,7 @@ async function initialize() {
   const { data: { session }, error } = await supabase.auth.getSession();
   if (error || !session?.user) {
     showState("signed-out");
+    await loadDirectory();
     return;
   }
   currentUser = session.user;
