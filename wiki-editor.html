@@ -137,6 +137,12 @@
           <label for="pending-review-search">Search submitter or article
             <input id="pending-review-search" type="search" placeholder="Name or article title…" autocomplete="off" />
           </label>
+          <label for="pending-review-sort">Sort by submission date
+            <select id="pending-review-sort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </label>
           <button id="pending-review-reset" class="editor-button" type="button">Clear review filters</button>
         </div>
         <p id="pending-review-filter-status" class="editor-note" role="status" aria-live="polite"></p>
@@ -198,6 +204,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-admin-review-filters"></script>
+  <script type="module" src="wiki-editor.js?v=20261010-complete-review-workflow"></script>
 </body>
 </html>
