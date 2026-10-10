@@ -359,6 +359,14 @@ async function renderRevisions() {
     if (isWikiAdmin) {
       pendingContainer.replaceChildren();
       const pending = revisions.filter(r => r.status === "pending");
+      const alert = $("#pending-revision-alert");
+      if (alert) {
+        alert.classList.toggle("pending-alert-active", pending.length > 0);
+        alert.textContent = pending.length
+          ? "Action needed: " + pending.length + " pending revision" + (pending.length === 1 ? "" : "s") +
+            " in the latest " + revisions.length + " loaded revisions. Review them below."
+          : "All clear: no pending revisions in the latest " + revisions.length + " loaded revisions.";
+      }
       if (!pending.length) pendingContainer.append(element("p", "", "There are no pending revisions."));
       for (const revision of pending) addRevisionCard(pendingContainer, revision, names, true, revisions);
     }
