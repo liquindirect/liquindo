@@ -75,9 +75,32 @@ begin
   if not found then raise exception 'Revision not found'; end if;
   if v_revision.status <> 'pending' then raise exception 'This revision has already been reviewed'; end if;
   if p_decision = 'approved' then
-    update public.wiki_pages set title = v_revision.title, content = v_revision.content, updated_by = auth.uid(), updated_at = now()
-    where id = v_revision.page_id;
-    if not found then raise exception 'The original wiki page could not be found'; end if;
+    if v_revision.page_id is null then
+      -- First approved revision for this slug creates the live page.
+      select id into v_revision.page_id
+      from public.wiki_pages where slug = v_revision.slug
+      order by id limit 1;
+
+      if v_revision.page_id is null then
+        insert into public.wiki_pages
+          (slug, title, content, created_by, updated_by, created_at, updated_at)
+        values
+          (v_revision.slug, v_revision.title, v_revision.content, v_revision.edited_by, auth.uid(), now(), now())
+        returning id into v_revision.page_id;
+      else
+        update public.wiki_pages
+        set title = v_revision.title, content = v_revision.content,
+            updated_by = auth.uid(), updated_at = now()
+        where id = v_revision.page_id;
+      end if;
+
+      update public.wiki_revisions set page_id = v_revision.page_id where id = p_revision_id;
+    else
+      update public.wiki_pages set title = v_revision.title, content = v_revision.content,
+        updated_by = auth.uid(), updated_at = now()
+      where id = v_revision.page_id;
+      if not found then raise exception 'The original wiki page could not be found'; end if;
+    end if;
   end if;
   update public.wiki_revisions set status = p_decision, reviewed_by = auth.uid(), reviewed_at = now(),
     review_note = left(coalesce(p_note,''),2000) where id = p_revision_id;
