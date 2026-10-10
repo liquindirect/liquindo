@@ -72,6 +72,7 @@
             </label>
             <label for="profile-bio">Bio (up to 500 characters)
               <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself."></textarea>
+              <span id="bio-character-count" class="members-status" aria-live="polite">0 / 500 characters</span>
             </label>
             <button id="save-profile" class="members-button" type="submit">Save profile</button>
           </form>
@@ -84,6 +85,7 @@
           <p>Anyone can browse member names and bios. Sign in to edit your profile.</p>
           <label class="directory-search" for="directory-search">Search members by name, role, or bio
             <input id="directory-search" type="search" autocomplete="off" placeholder="Start typing a name or keyword…" />
+            <button id="directory-search-clear" class="members-button" type="button">Clear search</button>
           </label>
           <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
           <ul id="member-directory" class="member-directory"></ul>
