@@ -22,6 +22,11 @@ const canvas = $("#editor-canvas");
 const status = $("#editor-status");
 const submitButton = $("#submit-revision");
 const pendingPanel = $("#review-panel");
+const permissionPanel = $("#permission-panel");
+const permissionForm = $("#permission-form");
+const permissionEmail = $("#permission-email");
+const permissionChoice = $("#permission-choice");
+const permissionStatus = $("#permission-status");
 const pendingContainer = $("#pending-revisions");
 const historyContainer = $("#revision-history");
 let user = null;
@@ -188,6 +193,33 @@ async function reviewRevision(id, decision) {
   }
 }
 
+permissionForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!isWikiAdmin) return;
+  const email = permissionEmail.value.trim();
+  const permission = permissionChoice.value;
+  const button = $("#permission-save");
+  button.disabled = true;
+  permissionStatus.textContent = "Saving permission…";
+  permissionStatus.style.color = "";
+  try {
+    const { error } = await supabase.rpc("set_liquinwiki_permission", {
+      p_email: email,
+      p_permission: permission
+    });
+    if (error) throw error;
+    permissionStatus.textContent = permission === "none"
+      ? "Wiki access removed for that account."
+      : "Wiki permission saved. The user may need to refresh or sign in again.";
+    permissionEmail.value = "";
+  } catch (error) {
+    permissionStatus.textContent = error.message || "Could not save wiki permission.";
+    permissionStatus.style.color = "#b42318";
+  } finally {
+    button.disabled = false;
+  }
+});
+
 $("#load-article").addEventListener("click", loadArticle);
 articleSelect.addEventListener("change", loadArticle);
 document.querySelectorAll("[data-command]").forEach(button => {
@@ -263,6 +295,7 @@ async function initialize() {
     return;
   }
   setAppState("ready");
+  setVisible(permissionPanel, isWikiAdmin);
   await loadArticle();
   await renderRevisions();
 }
@@ -270,6 +303,7 @@ try {
   await initialize();
 } catch (error) {
   setAppState("no-permission");
-  status.textContent = error.message || "Could not initialize the editor. Check that the Supabase SQL setup has been run.";
-  status.style.color = "#b42318";
+  const explanation = noPermission.querySelector("p");
+  explanation.textContent = error.message || "Could not initialize the editor. Check that the Supabase SQL setup has been run.";
+  explanation.style.color = "#b42318";
 }
