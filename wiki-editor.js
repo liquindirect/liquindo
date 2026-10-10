@@ -116,7 +116,7 @@ async function loadArticle() {
       if (draft?.content && draft.content !== safeHtml(html) &&
           window.confirm("A local draft for this article was saved on " + formatDate(draft.savedAt) + ". Restore it?")) {
         canvas.innerHTML = safeHtml(draft.content);
-        showMessage("Local draft restored. Continue editing or submit it for approval.");
+        showMessage(isWikiAdmin ? "Local draft restored. Continue editing; administrator changes publish immediately." : "Local draft restored. Continue editing or submit it for approval.");
         return;
       }
     } catch (error) {
@@ -569,8 +569,20 @@ submitButton.addEventListener("click", async () => {
     return;
   }
   submitButton.disabled = true;
-  showMessage("Submitting revision for approval…");
+  showMessage(isWikiAdmin ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
   try {
+    if (isWikiAdmin) {
+      const { error } = await supabase.rpc("publish_liquinwiki_admin_revision", {
+        p_slug: slug,
+        p_title: articles[slug],
+        p_content: content
+      });
+      if (error) throw error;
+      clearDraftIfMatches(slug, content);
+      showMessage("Article published immediately. A revision was recorded in history.");
+      await renderRevisions();
+      return;
+    }
     const { data: page, error: pageError } = await supabase.from("wiki_pages")
       .select("id").eq("slug", slug).maybeSingle();
     if (pageError) throw pageError;
@@ -609,6 +621,7 @@ async function initialize() {
   if (permissionError) throw permissionError;
   isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
   isWikiEditor = isWikiAdmin || permission?.permission === "liquinwiki_editor";
+  submitButton.textContent = isWikiAdmin ? "Publish article immediately" : "Submit revision for approval";
   if (!isWikiEditor) {
     setAppState("no-permission");
     return;
