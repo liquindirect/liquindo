@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <meta name="description" content="The Liquindo member directory for signed-in members." />
+    <meta name="description" content="Public directory of Liquindo members and their bios." />
     <title>Liquindo Members</title>
     <link rel="stylesheet" href="style.css" />
     <style>
@@ -48,7 +48,7 @@
       <div class="page-title">
         <p class="eyebrow" data-i18n="page.members">Members</p>
         <h1>Liquindo Members</h1>
-        <p>Sign in to view the current member directory and manage your profile.</p>
+        <p>Browse member profiles and bios. Sign in to edit your own profile.</p>
       </div>
     </header>
 
@@ -57,14 +57,10 @@
         <p>Checking your sign-in status…</p>
       </section>
 
-      <section id="members-signed-out" class="members-panel members-hidden">
-        <h2>Sign in required</h2>
-        <p>Please sign in or create an account to view the member directory.</p>
-        <a class="members-button" href="login.html">Log in or sign up</a>
-      </section>
+      
 
       <section id="members-content" class="members-hidden">
-        <article class="members-panel">
+        <article id="profile-panel" class="members-panel">
           <h2>Your profile</h2>
           <p>Email: <strong id="profile-email"></strong></p>
           <p>Role: <strong id="profile-role">member</strong></p>
@@ -83,6 +79,7 @@
 
         <article class="members-panel">
           <h2>Member directory</h2>
+          <p>Anyone can browse member names and bios. Sign in to edit your profile.</p>
           <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
           <ul id="member-directory" class="member-directory"></ul>
         </article>
