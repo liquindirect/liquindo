@@ -64,10 +64,17 @@
             </label>
             <label class="auth-field" for="password">Password
               <div class="password-wrap">
-                <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" required />
+                <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" aria-describedby="password-hint" required />
                 <button class="password-toggle" id="password-toggle" type="button" aria-controls="password" aria-pressed="false" aria-label="Show password">Show</button>
               </div>
             </label>
+            <label class="auth-field auth-hidden" id="confirm-password-field" for="confirm-password">Confirm password
+              <div class="password-wrap">
+                <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" minlength="6" aria-describedby="password-hint" />
+                <button class="password-toggle" id="confirm-password-toggle" type="button" aria-controls="confirm-password" aria-pressed="false" aria-label="Show password confirmation">Show</button>
+              </div>
+            </label>
+            <p id="password-hint" class="auth-intro">For a new account, use at least 6 characters.</p>
             <button class="auth-submit" id="submit-button" type="submit">Log in</button>
           </form>
           <button class="auth-secondary" id="forgot-password-button" type="button" style="width:100%;margin-top:12px">Forgot password?</button>
@@ -96,14 +103,18 @@
     </footer>
     <script type="module" src="auth.js"></script>
     <script>
-      const passwordField = document.querySelector("#password");
-      const passwordToggle = document.querySelector("#password-toggle");
-      passwordToggle.addEventListener("click", () => {
-        const showPassword = passwordField.type === "password";
-        passwordField.type = showPassword ? "text" : "password";
-        passwordToggle.textContent = showPassword ? "Hide" : "Show";
-        passwordToggle.setAttribute("aria-pressed", String(showPassword));
-        passwordToggle.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+      const passwordToggles = [
+        { field: document.querySelector("#password"), toggle: document.querySelector("#password-toggle"), label: "password" },
+        { field: document.querySelector("#confirm-password"), toggle: document.querySelector("#confirm-password-toggle"), label: "password confirmation" }
+      ];
+      passwordToggles.forEach(({ field, toggle, label }) => {
+        toggle.addEventListener("click", () => {
+          const showPassword = field.type === "password";
+          field.type = showPassword ? "text" : "password";
+          toggle.textContent = showPassword ? "Hide" : "Show";
+          toggle.setAttribute("aria-pressed", String(showPassword));
+          toggle.setAttribute("aria-label", (showPassword ? "Hide " : "Show ") + label);
+        });
       });
     </script>
   </body>

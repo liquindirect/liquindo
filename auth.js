@@ -7,6 +7,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const form = document.querySelector("#auth-form");
 const emailInput = document.querySelector("#email");
 const passwordInput = document.querySelector("#password");
+const confirmPasswordInput = document.querySelector("#confirm-password");
+const confirmPasswordField = document.querySelector("#confirm-password-field");
 const submitButton = document.querySelector("#submit-button");
 const message = document.querySelector("#auth-message");
 const loginTab = document.querySelector("#login-tab");
@@ -30,6 +32,9 @@ function setMode(next) {
   signupTab.setAttribute("aria-pressed", String(signup));
   submitButton.textContent = signup ? "Create account" : "Log in";
   passwordInput.autocomplete = signup ? "new-password" : "current-password";
+  confirmPasswordField.classList.toggle("auth-hidden", !signup);
+  confirmPasswordInput.required = signup;
+  if (!signup) confirmPasswordInput.value = "";
   forgotPasswordButton.classList.toggle("auth-hidden", signup);
   document.querySelector("#auth-heading").textContent = signup ? "Create your account" : "Welcome back";
   setMessage("");
@@ -71,6 +76,11 @@ form.addEventListener("submit", async (event) => {
   try {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
+    if (mode === "signup" && password !== confirmPasswordInput.value) {
+      setMessage("The passwords do not match. Please check both fields.", true);
+      confirmPasswordInput.focus();
+      return;
+    }
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email, password,
