@@ -91,6 +91,25 @@
         </div>
       </section>
 
+      <section id="permission-panel" class="editor-panel editor-hidden">
+        <h2>Manage wiki permissions</h2>
+        <p class="editor-note">Grant wiki editing access to an existing Liquindo account. This does not change that account's member/admin role.</p>
+        <form id="permission-form" class="editor-controls">
+          <label for="permission-email">Account email
+            <input id="permission-email" type="email" autocomplete="off" required />
+          </label>
+          <label for="permission-choice">Wiki permission
+            <select id="permission-choice">
+              <option value="liquinwiki_editor">LiquinWiki editor</option>
+              <option value="liquinwiki_admin">LiquinWiki administrator</option>
+              <option value="none">Remove wiki access</option>
+            </select>
+          </label>
+          <button id="permission-save" class="editor-button" type="submit">Save permission</button>
+        </form>
+        <p id="permission-status" class="editor-status" role="status" aria-live="polite"></p>
+      </section>
+
       <section id="review-panel" class="editor-panel editor-hidden">
         <h2>Pending revisions</h2>
         <p class="editor-note">Approve a revision to publish it on the live wiki, or reject it with an optional note.</p>
