@@ -18,7 +18,7 @@ const saveButton = document.querySelector("#save-profile");
 const profileStatus = document.querySelector("#profile-status");
 const logoutButton = document.querySelector("#members-logout");
 const directoryStatus = document.querySelector("#directory-status");
-const directory = document.querySelector("#member-directory");
+const directory = document.querySelector("#member-directory");\nconst directorySearch = document.querySelector("#directory-search");
 let currentUser = null;
 
 function showState(state) {
@@ -48,7 +48,7 @@ async function loadProfile() {
   bioInput.value = data.bio || "";
   profileRole.textContent = data.role || "member";
 }
-async function loadDirectory() {
+function filterDirectory() {\n  const query = (directorySearch?.value || "").trim().toLocaleLowerCase();\n  const items = [...directory.children];\n  let visible = 0;\n  for (const item of items) {\n    const matches = !query || (item.dataset.searchText || item.textContent).toLocaleLowerCase().includes(query);\n    item.hidden = !matches;\n    if (matches) visible++;\n  }\n  if (items.length) {\n    showStatus(directoryStatus, query\n      ? `Showing ${visible} of ${items.length} members matching “${query}”.`\n      : `Showing all ${items.length} members.`);\n    if (query && visible === 0) showStatus(directoryStatus, "No members match that search.");\n  }\n}\ndirectorySearch?.addEventListener("input", filterDirectory);\n\nasync function loadDirectory() {
   directory.replaceChildren();
   showStatus(directoryStatus, "Loading members…");
   const { data, error } = await supabase.from("profiles")
