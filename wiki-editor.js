@@ -286,7 +286,11 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
   compareButton.addEventListener("click", () => showRevisionComparison(revision, allRevisions));
   actions.append(compareButton);
 
-  if (showReviewActions && revision.status === "pending") {
+  if (showReviewActions && revision.status === "pending" && user && revision.edited_by === user.id) {
+    actions.append(element("p", "editor-note", "You submitted this revision. For independent review, another LiquinWiki administrator must approve or reject it."));
+  }
+
+  if (showReviewActions && revision.status === "pending" && (!user || revision.edited_by !== user.id)) {
     const liveCompare = element("button", "editor-button", "Compare with live article");
     liveCompare.type = "button";
     liveCompare.addEventListener("click", () => showLiveRevisionComparison(revision));
