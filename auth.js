@@ -134,7 +134,7 @@ form.addEventListener("submit", async (event) => {
       setMessage("Signed in successfully.");
     }
   } catch (error) {
-    setMessage(error.message || "Something went wrong. Please try again.", true);
+    setMessage("Something went wrong. Please try again.", true);
   } finally {
     submitButton.disabled = false;
   }
