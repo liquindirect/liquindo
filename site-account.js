@@ -7,23 +7,31 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const accountLink = document.querySelector("#site-account-link");
 const logoutButton = document.querySelector("#site-account-logout");
 
+function translate(key, fallback) {
+  return window.languageManager?.get?.(key) || fallback;
+}
+
 function updateNavigation(session) {
   const signedIn = Boolean(session?.user);
+  const email = session?.user?.email || "";
   if (accountLink) {
-    accountLink.textContent = signedIn ? "Account · signed in" : "Account";
-    accountLink.title = signedIn
-      ? `Signed in as ${session.user.email || "your account"}`
-      : "Account access";
+    accountLink.textContent = signedIn
+      ? translate("home.accountNavSignedIn", "Account · signed in")
+      : translate("auth.access", "Account access");
+    const title = signedIn
+      ? `${translate("home.accountSignedInTitle", "Signed in as")} ${email || translate("auth.current", "your account")}`
+      : translate("home.accountLoginTitle", "Account access");
+    accountLink.title = title;
     accountLink.setAttribute("aria-label", signedIn
-      ? `Account, signed in as ${session.user.email || "your account"}`
-      : "Account access");
+      ? `${translate("home.accountNavSignedIn", "Account · signed in")}, ${title}`
+      : translate("auth.access", "Account access"));
     accountLink.dataset.accountState = signedIn ? "signed-in" : "signed-out";
   }
   if (logoutButton) {
     logoutButton.hidden = !signedIn;
     logoutButton.disabled = false;
-    logoutButton.textContent = "Log out";
-    logoutButton.setAttribute("aria-label", "Log out of Liquindo");
+    logoutButton.textContent = translate("auth.logout", "Log out");
+    logoutButton.setAttribute("aria-label", translate("auth.logout", "Log out"));
   }
 }
 
@@ -36,12 +44,17 @@ if (accountLink || logoutButton) {
     })
     .catch(() => {
       if (accountLink) {
-        accountLink.textContent = "Account";
-        accountLink.removeAttribute("title");
+        accountLink.textContent = translate("auth.access", "Account access");
+        accountLink.title = translate("home.accountLoginTitle", "Account access");
+        accountLink.setAttribute("aria-label", translate("auth.access", "Account access"));
         accountLink.dataset.accountState = "unknown";
       }
       if (logoutButton) logoutButton.hidden = true;
     });
+
+  document.addEventListener("liquindo-language-changed", () => {
+    supabase.auth.getSession().then(({ data }) => updateNavigation(data.session));
+  });
 
   logoutButton?.addEventListener("click", async () => {
     logoutButton.disabled = true;
@@ -52,7 +65,7 @@ if (accountLink || logoutButton) {
       accountLink?.focus();
     } catch {
       logoutButton.disabled = false;
-      logoutButton.textContent = "Log out (retry)";
+      logoutButton.textContent = translate("home.accountLogoutRetry", "Log out (retry)");
     }
   });
 }
