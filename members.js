@@ -125,7 +125,9 @@ function filterDirectory() {
   if (directoryMembers.length && visible === 0) {
     showStatus(directoryStatus, "dir.noMatch");
   } else if (directoryMembers.length) {
-    showStatus(directoryStatus, "dir.loading");
+    directoryStatus.textContent = "";
+    delete directoryStatus.dataset.i18nMessageKey;
+    delete directoryStatus.dataset.i18nMessageValues;
   }
 }
 directorySearch?.addEventListener("input", filterDirectory);
