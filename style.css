@@ -2840,3 +2840,245 @@ select:not(.language-switcher) {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Homepage-only navy and gold redesign; preserve and better integrate the hero image. */
+body:has(#home.hero) {
+  --ink: #f4f0e5;
+  --muted: #c0c8d5;
+  --paper: #0a1220;
+  --surface: #111e31;
+  --teal: #dfbf70;
+  --coral: #dfbf70;
+  --gold: #dfbf70;
+  --green: #dfbf70;
+  --border: rgba(223,191,112,.28);
+  --shadow: 0 18px 48px rgba(0,0,0,.25);
+  background: #0a1220;
+  color: #f4f0e5;
+}
+body:has(#home.hero) .site-header,
+body:has(#home.hero) .topbar { background: #080f1c; }
+body:has(#home.hero) .brand { color: #fff8e8; }
+body:has(#home.hero) .nav-links a,
+body:has(#home.hero) .nav-links .account-logout {
+  border-color: rgba(223,191,112,.22);
+  background: rgba(255,255,255,.035);
+  color: #f4f0e5;
+}
+body:has(#home.hero) .nav-links a:hover,
+body:has(#home.hero) .nav-links .account-logout:hover,
+body:has(#home.hero) .nav-links a[aria-current="page"] {
+  border-color: #dfbf70;
+  background: rgba(223,191,112,.12);
+  color: #fff0c5;
+}
+body:has(#home.hero) .language-control {
+  border-color: rgba(223,191,112,.28);
+  background: rgba(255,255,255,.035);
+}
+body:has(#home.hero) .language-icon,
+body:has(#home.hero) .language-switcher {
+  border-color: rgba(223,191,112,.24);
+  background: #111e31;
+  color: #f4f0e5;
+}
+body:has(#home.hero) .language-switcher option { background: #111e31; color: #f4f0e5; }
+body:has(#home.hero) .liquin-message {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  padding: 10px 20px;
+  border-top: 1px solid rgba(223,191,112,.13);
+  border-bottom: 1px solid rgba(223,191,112,.2);
+  background: #101b2c;
+}
+body:has(#home.hero) .liquin-message strong { color: #dfbf70; }
+body:has(#home.hero) .liquin-message span { color: #d6dce5; }
+
+body:has(#home.hero) .hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: clamp(470px,72vh,760px);
+  padding: clamp(64px,10vw,128px) clamp(22px,7vw,100px);
+  overflow: hidden;
+  border-bottom: 1px solid rgba(223,191,112,.36);
+  background-color: #0a1220;
+  background-image:
+    linear-gradient(90deg,rgba(7,14,25,.97) 0%,rgba(7,14,25,.86) 28%,rgba(7,14,25,.52) 52%,rgba(7,14,25,.12) 82%,rgba(7,14,25,.25) 100%),
+    linear-gradient(0deg,#0a1220 0%,rgba(10,18,32,.02) 32%,rgba(10,18,32,.12) 100%),
+    url("images/liquindo-intro.png");
+  background-position: center,center,58% center;
+  background-size: cover;
+}
+body:has(#home.hero) .hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(110deg,transparent 0 54%,rgba(223,191,112,.08) 100%);
+}
+body:has(#home.hero) .hero-content {
+  width: min(780px,100%);
+  padding: clamp(22px,3.5vw,42px);
+  border-left: 3px solid #dfbf70;
+  background: linear-gradient(90deg,rgba(8,15,28,.68),rgba(8,15,28,.12));
+  text-shadow: 0 2px 22px rgba(0,0,0,.35);
+}
+body:has(#home.hero) .hero .eyebrow {
+  margin-bottom: 18px;
+  color: #dfbf70;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+}
+body:has(#home.hero) .hero h1 {
+  margin: 0 0 22px;
+  color: #fff8e8;
+  font-size: clamp(3.6rem,10vw,7.8rem);
+  line-height: .92;
+  letter-spacing: -.06em;
+}
+body:has(#home.hero) .hero p:not(.eyebrow) {
+  max-width: 620px;
+  margin-bottom: 0;
+  color: #e3e7ed;
+  font-size: clamp(1.02rem,1.6vw,1.2rem);
+  line-height: 1.8;
+}
+body:has(#home.hero) .section-label,
+body:has(#home.hero) .eyebrow { color: #dfbf70; }
+body:has(#home.hero) main { background: #0a1220; }
+body:has(#home.hero) .home-hub {
+  width: min(1160px,calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(28px,5vw,58px) 0;
+  border: 0;
+  border-bottom: 1px solid rgba(223,191,112,.28);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+body:has(#home.hero) .home-hub-heading { margin-bottom: 26px; }
+body:has(#home.hero) .home-hub-heading h2 {
+  color: #fff7e5;
+  font-size: clamp(2rem,4vw,3rem);
+  letter-spacing: -.04em;
+}
+body:has(#home.hero) .home-feature-card {
+  min-height: 205px;
+  padding: clamp(20px,2.5vw,28px);
+  border: 1px solid rgba(223,191,112,.22);
+  border-radius: 10px;
+  background: linear-gradient(145deg,#142238,#0e192a);
+  color: #f4f0e5;
+  box-shadow: 0 12px 28px rgba(0,0,0,.16);
+}
+body:has(#home.hero) .home-feature-card:hover {
+  border-color: #dfbf70;
+  background: linear-gradient(145deg,#1b2d46,#111e31);
+  color: #fff8e8;
+  box-shadow: 0 16px 34px rgba(0,0,0,.28);
+  transform: translateY(-3px);
+}
+body:has(#home.hero) .home-feature-number,
+body:has(#home.hero) .home-card-cta { color: #dfbf70; }
+body:has(#home.hero) .home-feature-card h3 { color: #fff5dc; }
+body:has(#home.hero) .home-feature-card p { color: #c0c8d5; }
+body:has(#home.hero) .home-account-card { border-color: rgba(223,191,112,.55); }
+body:has(#home.hero) .content-section {
+  width: min(1160px,calc(100% - 40px));
+  padding: clamp(54px,7vw,88px) 0;
+  border-bottom: 1px solid rgba(223,191,112,.16);
+}
+body:has(#home.hero) .content-section > div:first-child { margin-bottom: 28px; }
+body:has(#home.hero) .content-section h2 {
+  color: #fff7e5;
+  font-size: clamp(2rem,4vw,3rem);
+  line-height: 1.12;
+}
+body:has(#home.hero) .content-section h3,
+body:has(#home.hero) .content-section h4 { color: #f5e8c6; }
+body:has(#home.hero) .content-section p { color: #c0c8d5; }
+body:has(#home.hero) .timeline article,
+body:has(#home.hero) .faq-item,
+body:has(#home.hero) .contact-card,
+body:has(#home.hero) .unavailable-panel,
+body:has(#home.hero) .countdown-panel {
+  border: 1px solid rgba(223,191,112,.22);
+  border-radius: 12px;
+  background: linear-gradient(145deg,#142238,#101a2b);
+  color: #f4f0e5;
+  box-shadow: 0 12px 28px rgba(0,0,0,.14);
+}
+body:has(#home.hero) .timeline article span { color: #dfbf70; }
+body:has(#home.hero) .faq-item { padding: 22px; }
+body:has(#home.hero) .contact-card { padding: clamp(22px,3vw,34px); }
+body:has(#home.hero) .email-button {
+  border-color: rgba(223,191,112,.55);
+  background: rgba(223,191,112,.09);
+  color: #f2d58d;
+  text-decoration: none;
+}
+body:has(#home.hero) .email-button:hover {
+  border-color: #dfbf70;
+  background: rgba(223,191,112,.17);
+  color: #fff0c5;
+}
+body:has(#home.hero) .unavailable-panel { border-style: dashed; }
+body:has(#home.hero) .status-badge {
+  border-color: rgba(223,191,112,.45);
+  background: rgba(223,191,112,.09);
+  color: #dfbf70;
+}
+body:has(#home.hero) .countdown-panel > p { color: #c0c8d5; }
+body:has(#home.hero) .countdown-row { border-bottom-color: rgba(223,191,112,.18); }
+body:has(#home.hero) .countdown-row strong { color: #dfbf70; }
+body:has(#home.hero) footer {
+  border-top: 1px solid rgba(223,191,112,.28);
+  background: #060c16;
+  color: #f4f0e5;
+}
+body:has(#home.hero) .footer-content p { color: #aeb8c8; }
+body:has(#home.hero) footer a { color: #dfbf70; }
+body:has(#home.hero) footer a:hover { color: #fff1c9; }
+body:has(#home.hero) :focus-visible { outline-color: #f0d18a; }
+body:has(#home.hero) ::selection { background: rgba(223,191,112,.32); color: #fff8e8; }
+
+@media (max-width:780px) {
+  body:has(#home.hero) .hero {
+    min-height: 500px;
+    padding: 44px 18px;
+    background-image:
+      linear-gradient(90deg,rgba(7,14,25,.84),rgba(7,14,25,.44)),
+      linear-gradient(0deg,#0a1220 0%,rgba(10,18,32,.02) 48%),
+      url("images/liquindo-intro.png");
+    background-position: center,center,62% center;
+  }
+  body:has(#home.hero) .hero-content {
+    padding: 22px 18px;
+    background: linear-gradient(90deg,rgba(8,15,28,.78),rgba(8,15,28,.3));
+  }
+  body:has(#home.hero) .hero h1 { font-size: clamp(3.3rem,15vw,5.6rem); }
+  body:has(#home.hero) .home-hub,
+  body:has(#home.hero) .content-section { width: calc(100% - 32px); }
+  body:has(#home.hero) .home-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  body:has(#home.hero) .home-feature-card { min-height: 0; }
+}
+@media (max-width:520px) {
+  body:has(#home.hero) .hero { min-height: 460px; background-position: center,center,64% center; }
+  body:has(#home.hero) .hero-content { padding: 18px 14px; }
+  body:has(#home.hero) .home-feature-grid { grid-template-columns: minmax(0,1fr); }
+  body:has(#home.hero) .home-feature-card { padding: 20px; }
+  body:has(#home.hero) .content-section { padding: 48px 0; }
+  body:has(#home.hero) .liquin-message { align-items: flex-start; flex-direction: column; }
+}
+@media (prefers-reduced-motion:reduce) {
+  body:has(#home.hero) .home-feature-card { transition: none; }
+  body:has(#home.hero) .home-feature-card:hover { transform: none; }
+}
