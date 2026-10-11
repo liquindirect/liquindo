@@ -35,7 +35,12 @@ const AUTH_MESSAGE_KEYS = new Map([
   ["Signed in successfully.", "auth.msg.signedIn"],
   ["Something went wrong. Please try again.", "auth.msg.genericError"],
   ["You have been logged out.", "auth.msg.loggedOut"],
-  ["Enter your email address first, then select Forgot password again.", "auth.msg.emailRequired"]
+  ["Enter your email address first, then select Forgot password again.", "auth.msg.emailRequired"],
+  ["Email or password is incorrect.", "auth.msg.invalidCredentials"],
+  ["Please confirm your email using the link we sent before signing in.", "auth.msg.emailNotConfirmed"],
+  ["An account may already exist for this email. Try logging in or using Forgot password.", "auth.msg.accountExists"],
+  ["That password was rejected. Please choose a stronger password and try again.", "auth.msg.weakPassword"],
+  ["Enter a valid email address.", "auth.msg.invalidEmail"]
 ]);
 
 function setMessage(text, error = false) {
@@ -45,6 +50,29 @@ function setMessage(text, error = false) {
   message.textContent = safeKey && window.languageManager ? window.languageManager.get(safeKey) : text;
   message.style.color = error ? "#b42318" : "var(--teal)";
   message.setAttribute("role", error ? "alert" : "status");
+}
+function authErrorMessage(error) {
+  const detail = (error?.message || "").toLowerCase();
+  const code = (error?.code || "").toLowerCase();
+  if (/network|fetch|failed to fetch|load failed/i.test(detail)) {
+    return "We could not reach the account service. Check your connection and try again.";
+  }
+  if (/invalid login credentials|invalid_credentials/.test(detail) || code === "invalid_credentials") {
+    return "Email or password is incorrect.";
+  }
+  if (/email not confirmed|email_not_confirmed/.test(detail) || code === "email_not_confirmed") {
+    return "Please confirm your email using the link we sent before signing in.";
+  }
+  if (/user already registered|already exists|user_already_exists/.test(detail) || code === "user_already_exists") {
+    return "An account may already exist for this email. Try logging in or using Forgot password.";
+  }
+  if (/password.*(short|weak|common)|should be at least|weak_password/.test(detail) || code === "weak_password") {
+    return "That password was rejected. Please choose a stronger password and try again.";
+  }
+  if (/invalid email|email_address_invalid/.test(detail) || code === "email_address_invalid") {
+    return "Enter a valid email address.";
+  }
+  return "Something went wrong. Please try again.";
 }
 function recoveryErrorMessage(error) {
   if (error?.code === "over_email_send_rate_limit" || /rate limit|too many requests/i.test(error?.message || "")) {
@@ -98,6 +126,12 @@ forgotPasswordButton.addEventListener("click", async () => {
     emailInput.focus();
     return;
   }
+  if (!emailInput.checkValidity()) {
+    setMessage("Enter a valid email address.", true);
+    emailInput.reportValidity();
+    emailInput.focus();
+    return;
+  }
   forgotPasswordButton.disabled = true;
   setMessage("Sending password recovery email…");
   try {
@@ -116,6 +150,7 @@ forgotPasswordButton.addEventListener("click", async () => {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   submitButton.disabled = true;
+  form.setAttribute("aria-busy", "true");
   setMessage(mode === "signup" ? "Creating your account…" : "Signing in…");
   try {
     const email = emailInput.value.trim();
@@ -142,15 +177,22 @@ form.addEventListener("submit", async (event) => {
       setMessage("Signed in successfully.");
     }
   } catch (error) {
-    setMessage("Something went wrong. Please try again.", true);
+    setMessage(authErrorMessage(error), true);
   } finally {
     submitButton.disabled = false;
+    form.removeAttribute("aria-busy");
   }
 });
 logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
   accountMessage.textContent = "";
-  const { error } = await supabase.auth.signOut();
+  let error = null;
+  try {
+    const result = await supabase.auth.signOut();
+    error = result.error;
+  } catch (signOutError) {
+    error = signOutError;
+  }
   accountMessage.dataset.i18nMessageKey = error ? "auth.msg.authError" : "auth.msg.loggedOut";
   accountMessage.textContent = window.languageManager?.get(accountMessage.dataset.i18nMessageKey) || (error ? "We could not complete that account request. Check your details and try again." : "You have been logged out.");
   logoutButton.disabled = false;
