@@ -125,6 +125,7 @@ const translations = {
 
     "footer.top": "Back to top",
     "footer.github": "GitHub",
+    "footer.contact": "Contact:",
     "footer.text": "Liquindo"
   },
 
@@ -254,6 +255,7 @@ const translations = {
 
     "footer.top": "Voltar ao topo",
     "footer.github": "GitHub",
+    "footer.contact": "Contacto:",
     "footer.text": "Liquindo"
   },
 
@@ -383,6 +385,7 @@ const translations = {
 
     "footer.top": "Volver arriba",
     "footer.github": "GitHub",
+    "footer.contact": "Contacto:",
     "footer.text": "Liquindo"
   },
 
@@ -512,6 +515,7 @@ const translations = {
 
     "footer.top": "Retour en haut",
     "footer.github": "GitHub",
+    "footer.contact": "Contact :",
     "footer.text": "Liquindo"
   },
 
@@ -641,6 +645,7 @@ const translations = {
 
     "footer.top": "Nach oben",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -770,6 +775,7 @@ const translations = {
 
     "footer.top": "Torna in alto",
     "footer.github": "GitHub",
+    "footer.contact": "Contatto:",
     "footer.text": "Liquindo"
   },
 
@@ -899,6 +905,7 @@ const translations = {
 
     "footer.top": "Natrag na vrh",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -1028,6 +1035,7 @@ const translations = {
 
     "footer.top": "Επιστροφή στην κορυφή",
     "footer.github": "GitHub",
+    "footer.contact": "Επικοινωνία:",
     "footer.text": "Liquindo"
   },
 
@@ -1157,6 +1165,7 @@ const translations = {
 
     "footer.top": "Powrót na górę",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -1286,6 +1295,7 @@ const translations = {
 
     "footer.top": "Наверх",
     "footer.github": "GitHub",
+    "footer.contact": "Контакт:",
     "footer.text": "Liquindo"
   },
 
@@ -1415,6 +1425,7 @@ const translations = {
 
     "footer.top": "返回顶部",
     "footer.github": "GitHub",
+    "footer.contact": "联系方式：",
     "footer.text": "Liquindo"
   }
 };
@@ -1495,8 +1506,12 @@ Object.assign(translations.en, englishImageDescriptions);
 
 class LanguageManager {
   constructor() {
-    const savedLanguage =
-      localStorage.getItem("liquindo-language");
+    let savedLanguage = null;
+    try {
+      savedLanguage = localStorage.getItem("liquindo-language");
+    } catch (error) {
+      console.warn("[Liquindo i18n] Language preference storage is unavailable.");
+    }
 
     this.currentLanguage =
       translations[savedLanguage]
@@ -1513,10 +1528,11 @@ class LanguageManager {
 
     this.currentLanguage = lang;
 
-    localStorage.setItem(
-      "liquindo-language",
-      lang
-    );
+    try {
+      localStorage.setItem("liquindo-language", lang);
+    } catch (error) {
+      console.warn("[Liquindo i18n] Could not save the language preference.");
+    }
 
     this.updatePageLanguage();
   }
@@ -1530,42 +1546,51 @@ class LanguageManager {
   }
 
   updatePageLanguage() {
-    document
-      .querySelectorAll("[data-i18n]")
-      .forEach((element) => {
-        const key =
-          element.getAttribute("data-i18n");
-
-        const translation = this.get(key);
-
-        if (translation !== key) {
-          element.textContent = translation;
+    // Translate visible text without replacing nested markup or controls.
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      const key = element.getAttribute("data-i18n");
+      const translation = this.get(key);
+      if (translation === key) {
+        if (!this._missingKeys) this._missingKeys = new Set();
+        if (!this._missingKeys.has(key)) {
+          this._missingKeys.add(key);
+          console.warn("[Liquindo i18n] Missing translation key:", key);
         }
-      });
+        return;
+      }
 
-    const switcher =
-      document.getElementById(
-        "language-switcher"
+      const textNodes = [...element.childNodes].filter(
+        (node) => node.nodeType === Node.TEXT_NODE
       );
+      if (textNodes.length) {
+        textNodes[0].nodeValue = translation;
+        textNodes.slice(1).forEach((node) => { node.nodeValue = ""; });
+      } else if (!element.children.length) {
+        element.textContent = translation;
+      } else {
+        element.insertBefore(document.createTextNode(translation), element.firstChild);
+      }
+    });
 
-    if (switcher) {
-      switcher.value =
-        this.currentLanguage;
-    }
+    // Translate common HTML attributes as well as visible text.
+    ["placeholder", "title", "aria-label", "alt"].forEach((attribute) => {
+      const dataAttribute = "data-i18n-" + attribute;
+      document.querySelectorAll("[" + dataAttribute + "]").forEach((element) => {
+        const key = element.getAttribute(dataAttribute);
+        const translation = this.get(key);
+        if (translation !== key) element.setAttribute(attribute, translation);
+      });
+    });
 
-    document.documentElement.lang =
-      this.currentLanguage;
+    const switcher = document.getElementById("language-switcher");
+    if (switcher) switcher.value = this.currentLanguage;
+
+    document.documentElement.lang = this.currentLanguage;
 
     document.dispatchEvent(
-      new CustomEvent(
-        "liquindo-language-changed",
-        {
-          detail: {
-            language:
-              this.currentLanguage
-          }
-        }
-      )
+      new CustomEvent("liquindo-language-changed", {
+        detail: { language: this.currentLanguage }
+      })
     );
   }
 
