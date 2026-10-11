@@ -125,6 +125,7 @@ const translations = {
 
     "footer.top": "Back to top",
     "footer.github": "GitHub",
+    "footer.contact": "Contact:",
     "footer.text": "Liquindo"
   },
 
@@ -254,6 +255,7 @@ const translations = {
 
     "footer.top": "Voltar ao topo",
     "footer.github": "GitHub",
+    "footer.contact": "Contacto:",
     "footer.text": "Liquindo"
   },
 
@@ -383,6 +385,7 @@ const translations = {
 
     "footer.top": "Volver arriba",
     "footer.github": "GitHub",
+    "footer.contact": "Contacto:",
     "footer.text": "Liquindo"
   },
 
@@ -512,6 +515,7 @@ const translations = {
 
     "footer.top": "Retour en haut",
     "footer.github": "GitHub",
+    "footer.contact": "Contact :",
     "footer.text": "Liquindo"
   },
 
@@ -641,6 +645,7 @@ const translations = {
 
     "footer.top": "Nach oben",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -770,6 +775,7 @@ const translations = {
 
     "footer.top": "Torna in alto",
     "footer.github": "GitHub",
+    "footer.contact": "Contatto:",
     "footer.text": "Liquindo"
   },
 
@@ -899,6 +905,7 @@ const translations = {
 
     "footer.top": "Natrag na vrh",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -1028,6 +1035,7 @@ const translations = {
 
     "footer.top": "Επιστροφή στην κορυφή",
     "footer.github": "GitHub",
+    "footer.contact": "Επικοινωνία:",
     "footer.text": "Liquindo"
   },
 
@@ -1157,6 +1165,7 @@ const translations = {
 
     "footer.top": "Powrót na górę",
     "footer.github": "GitHub",
+    "footer.contact": "Kontakt:",
     "footer.text": "Liquindo"
   },
 
@@ -1286,6 +1295,7 @@ const translations = {
 
     "footer.top": "Наверх",
     "footer.github": "GitHub",
+    "footer.contact": "Контакт:",
     "footer.text": "Liquindo"
   },
 
@@ -1415,6 +1425,7 @@ const translations = {
 
     "footer.top": "返回顶部",
     "footer.github": "GitHub",
+    "footer.contact": "联系方式：",
     "footer.text": "Liquindo"
   }
 };
