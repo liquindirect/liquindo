@@ -132,6 +132,13 @@
           toggle.setAttribute("aria-label", (showPassword ? "Hide " : "Show ") + label);
         });
       });
+      document.addEventListener("liquindo-language-changed", () => {
+        passwordToggles.forEach(({ field, toggle }) => {
+          const showing = field.type === "text";
+          toggle.textContent = window.languageManager?.get(showing ? "auth.hide" : "auth.show") || (showing ? "Hide" : "Show");
+          toggle.setAttribute("aria-label", window.languageManager?.get(showing ? "auth.hide" : "auth.show") || (showing ? "Hide" : "Show"));
+        });
+      });
     </script>
   </body>
 </html>
