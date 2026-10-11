@@ -220,6 +220,7 @@ async function loadDirectory() {
       bio.hidden = !opening;
       toggle.textContent = opening ? "↑" : "↓";
       toggle.setAttribute("aria-expanded", String(opening));
+      item.classList.toggle("member-item-expanded", opening);
       toggle.setAttribute("aria-label", t(opening ? "dir.hideBio" : "dir.showBio", {name: member.display_name || "member"}));
     });
     const main = document.createElement("div");
