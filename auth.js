@@ -70,8 +70,16 @@ function setMode(next) {
   setMessage("");
 }
 document.addEventListener("liquindo-language-changed", () => {
+  const previousKey = message.dataset.i18nMessageKey;
+  const previousRole = message.getAttribute("role") || "status";
+  const previousColor = message.style.color;
   setMode(mode);
-  if (message.dataset.i18nMessageKey && window.languageManager) message.textContent = window.languageManager.get(message.dataset.i18nMessageKey);
+  if (previousKey && window.languageManager) {
+    message.dataset.i18nMessageKey = previousKey;
+    message.textContent = window.languageManager.get(previousKey);
+    message.setAttribute("role", previousRole);
+    message.style.color = previousColor;
+  }
   if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
 });
 function showSession(session) {
