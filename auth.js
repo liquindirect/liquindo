@@ -21,8 +21,27 @@ const logoutButton = document.querySelector("#logout-button");
 const forgotPasswordButton = document.querySelector("#forgot-password-button");
 let mode = "login";
 
+const AUTH_MESSAGE_KEYS = new Map([
+  ["Sending password recovery email…", "auth.msg.recoverySending"],
+  ["If an account exists for that email, a password recovery link has been sent. Check your inbox and spam folder.", "auth.msg.recoverySent"],
+  ["Too many recovery requests were made. Please wait a few minutes before trying again.", "auth.msg.rateLimit"],
+  ["We could not reach the account service. Check your connection and try again.", "auth.msg.network"],
+  ["We could not send a recovery email right now. Please try again shortly.", "auth.msg.recoveryError"],
+  ["Creating your account…", "auth.msg.creating"],
+  ["Signing in…", "auth.msg.signingIn"],
+  ["The passwords do not match. Please check both fields.", "auth.msg.passwordMismatch"],
+  ["Account created and signed in.", "auth.msg.createdSignedIn"],
+  ["Account created. Check your email for a confirmation link before logging in.", "auth.msg.createdConfirm"],
+  ["Signed in successfully.", "auth.msg.signedIn"],
+  ["Something went wrong. Please try again.", "auth.msg.genericError"],
+  ["You have been logged out.", "auth.msg.loggedOut"]
+]);
+
 function setMessage(text, error = false) {
-  message.textContent = text;
+  const messageKey = AUTH_MESSAGE_KEYS.get(text);
+  message.textContent = messageKey && window.languageManager
+    ? window.languageManager.get(messageKey)
+    : text;
   message.style.color = error ? "#b42318" : "var(--teal)";
   message.setAttribute("role", error ? "alert" : "status");
 }
@@ -40,15 +59,16 @@ function setMode(next) {
   const signup = mode === "signup";
   loginTab.setAttribute("aria-pressed", String(!signup));
   signupTab.setAttribute("aria-pressed", String(signup));
-  submitButton.textContent = signup ? "Create account" : "Log in";
+  submitButton.textContent = window.languageManager?.get(signup ? "auth.create" : "auth.login") || (signup ? "Create account" : "Log in");
   passwordInput.autocomplete = signup ? "new-password" : "current-password";
   confirmPasswordField.classList.toggle("auth-hidden", !signup);
   confirmPasswordInput.required = signup;
   if (!signup) confirmPasswordInput.value = "";
   forgotPasswordButton.classList.toggle("auth-hidden", signup);
-  document.querySelector("#auth-heading").textContent = signup ? "Create your account" : "Welcome back";
+  document.querySelector("#auth-heading").textContent = window.languageManager?.get(signup ? "auth.create" : "auth.welcome") || (signup ? "Create your account" : "Welcome back");
   setMessage("");
 }
+document.addEventListener("liquindo-language-changed", () => setMode(mode));
 function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
@@ -118,7 +138,7 @@ logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
   accountMessage.textContent = "";
   const { error } = await supabase.auth.signOut();
-  accountMessage.textContent = error ? error.message : "You have been logged out.";
+  accountMessage.textContent = error ? error.message : (window.languageManager?.get("auth.msg.loggedOut") || "You have been logged out.");
   logoutButton.disabled = false;
 });
 supabase.auth.onAuthStateChange((_event, session) => showSession(session));
