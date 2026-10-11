@@ -175,7 +175,7 @@ async function loadDirectory() {
   directoryMembers = data || [];
   if (!directoryMembers.length) {
     showStatus(directoryStatus, "dir.noMembers");
-    if (directoryCount) directoryCount.textContent = "0 members";
+    if (directoryCount) directoryCount.textContent = t("dir.count", {shown: 0, total: 0});
     if (directoryLetters) directoryLetters.replaceChildren();
     return;
   }
