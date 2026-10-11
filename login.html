@@ -49,6 +49,10 @@
           <a href="index.html#history" data-i18n="auth.nav.history">History</a>
           <a href="index.html#contact" data-i18n="auth.nav.contact">Contact</a>
           <a href="members.html" data-i18n="auth.nav.members">Members</a>
+          <a href="gallery.html" data-i18n="nav.gallery">Gallery</a>
+          <a href="wiki.html" data-i18n="auth.wiki">LiquinWiki</a>
+          <a href="login.html" id="site-account-link" aria-live="polite">Account</a>
+          <button type="button" class="account-logout" id="site-account-logout" hidden>Log out</button>
         </div>
         <select id="language-switcher" class="language-switcher" aria-label="Select language">
           <option value="en">English</option><option value="pt">Português</option><option value="es">Español</option>
@@ -118,6 +122,7 @@
     </footer>
     <script src="i18n.js"></script>
     <script type="module" src="auth.js"></script>
+    <script type="module" src="site-account.js"></script>
     <script>
       const passwordToggles = [
         { field: document.querySelector("#password"), toggle: document.querySelector("#password-toggle"), label: "password" },
