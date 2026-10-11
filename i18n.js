@@ -2716,3 +2716,20 @@ const homepageHubLabelTranslations = {
   zh: { "home.hubTitle": "探索 Liquindo", "home.explore": "探索栏目 →", "home.read": "阅读概览 →" }
 };
 for (const [language, entries] of Object.entries(homepageHubLabelTranslations)) Object.assign(translations[language], entries);
+
+
+
+const homepageAccountStatusTranslations = {
+  en: { "home.accountSignedIn": "You are signed in. Open your account to manage your profile.", "home.accountSignedOut": "Sign in or open your account settings." },
+  pt: { "home.accountSignedIn": "Você está conectado. Abra sua conta para gerenciar seu perfil.", "home.accountSignedOut": "Entre ou abra as configurações da sua conta." },
+  es: { "home.accountSignedIn": "Has iniciado sesión. Abre tu cuenta para gestionar tu perfil.", "home.accountSignedOut": "Inicia sesión o abre la configuración de tu cuenta." },
+  fr: { "home.accountSignedIn": "Vous êtes connecté. Ouvrez votre compte pour gérer votre profil.", "home.accountSignedOut": "Connectez-vous ou ouvrez les paramètres de votre compte." },
+  de: { "home.accountSignedIn": "Du bist angemeldet. Öffne dein Konto, um dein Profil zu verwalten.", "home.accountSignedOut": "Melde dich an oder öffne deine Kontoeinstellungen." },
+  it: { "home.accountSignedIn": "Hai effettuato l’accesso. Apri il tuo account per gestire il profilo.", "home.accountSignedOut": "Accedi o apri le impostazioni del tuo account." },
+  hr: { "home.accountSignedIn": "Prijavljeni ste. Otvorite račun kako biste uredili profil.", "home.accountSignedOut": "Prijavite se ili otvorite postavke računa." },
+  el: { "home.accountSignedIn": "Έχετε συνδεθεί. Ανοίξτε τον λογαριασμό σας για να διαχειριστείτε το προφίλ σας.", "home.accountSignedOut": "Συνδεθείτε ή ανοίξτε τις ρυθμίσεις του λογαριασμού σας." },
+  pl: { "home.accountSignedIn": "Jesteś zalogowany. Otwórz konto, aby zarządzać profilem.", "home.accountSignedOut": "Zaloguj się lub otwórz ustawienia konta." },
+  ru: { "home.accountSignedIn": "Вы вошли в систему. Откройте аккаунт, чтобы управлять профилем.", "home.accountSignedOut": "Войдите или откройте настройки аккаунта." },
+  zh: { "home.accountSignedIn": "你已登录。打开账户以管理个人资料。", "home.accountSignedOut": "登录或打开账户设置。" }
+};
+for (const [language, entries] of Object.entries(homepageAccountStatusTranslations)) Object.assign(translations[language], entries);
