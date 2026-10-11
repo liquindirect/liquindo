@@ -2268,6 +2268,45 @@ for (const [language, entries] of Object.entries(directoryRecoveryTranslations))
 
 
 
+
+
+// Profile role label translation.
+const directoryRoleTranslations = {
+  "en": {
+    "dir.roleLabel": "Role"
+  },
+  "pt": {
+    "dir.roleLabel": "Função"
+  },
+  "es": {
+    "dir.roleLabel": "Rol"
+  },
+  "fr": {
+    "dir.roleLabel": "Rôle"
+  },
+  "de": {
+    "dir.roleLabel": "Rolle"
+  },
+  "it": {
+    "dir.roleLabel": "Ruolo"
+  },
+  "hr": {
+    "dir.roleLabel": "Uloga"
+  },
+  "el": {
+    "dir.roleLabel": "Ρόλος"
+  },
+  "pl": {
+    "dir.roleLabel": "Rola"
+  },
+  "ru": {
+    "dir.roleLabel": "Роль"
+  },
+  "zh": {
+    "dir.roleLabel": "角色"
+  }
+};
+for (const [language, entries] of Object.entries(directoryRoleTranslations)) Object.assign(translations[language], entries);
 // Directory and recovery-flow UI labels.
 const directoryUiTranslations = {
   "en": {
