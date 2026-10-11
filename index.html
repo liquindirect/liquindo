@@ -146,6 +146,21 @@
         <a href="login.html" data-i18n="auth.access">Account access</a>
       </nav>
 
+      <section class="home-hub" aria-labelledby="home-hub-title">
+        <div class="home-hub-heading">
+          <p class="section-label" data-i18n="hero.eyebrow">Federal Republic of Liquindo</p>
+          <h2 id="home-hub-title" data-i18n="home.hubTitle">Explore Liquindo</h2>
+          <p data-i18n="hero.description">Liquindo is a political and nation-building project centered on the idea of collectively establishing a new community with its own institutions, identity, economy, and political system.</p>
+        </div>
+        <div class="home-feature-grid">
+          <a class="home-feature-card" href="wiki.html"><span class="home-feature-number" aria-hidden="true">01</span><h3 data-i18n="auth.wiki">LiquinWiki</h3><p data-i18n="section.history.title">Background and important moments</p><span class="home-card-cta" data-i18n="home.explore">Explore section →</span></a>
+          <a class="home-feature-card" href="members.html"><span class="home-feature-number" aria-hidden="true">02</span><h3 data-i18n="nav.members">Members</h3><p data-i18n="members.title">Members</p><span class="home-card-cta" data-i18n="home.explore">Explore section →</span></a>
+          <a class="home-feature-card" href="#history"><span class="home-feature-number" aria-hidden="true">03</span><h3 data-i18n="nav.history">History</h3><p data-i18n="section.history.title">Background and important moments</p><span class="home-card-cta" data-i18n="home.read">Read overview →</span></a>
+          <a class="home-feature-card" href="#ideology"><span class="home-feature-number" aria-hidden="true">04</span><h3 data-i18n="nav.ideology">Ideology</h3><p data-i18n="ideology.a1">Liquindo is a project focused on developing a new political community, its institutions, identity and long-term organization.</p><span class="home-card-cta" data-i18n="home.read">Read overview →</span></a>
+          <a class="home-feature-card" href="#gallery"><span class="home-feature-number" aria-hidden="true">05</span><h3 data-i18n="nav.gallery">Gallery</h3><p data-i18n="gallery.title">Gallery</p><span class="home-card-cta" data-i18n="home.read">Read overview →</span></a>
+          <a class="home-feature-card home-account-card" href="login.html"><span class="home-feature-number" aria-hidden="true">06</span><h3 data-i18n="auth.access">Account access</h3><p id="home-account-status" aria-live="polite">Sign in or open your account settings.</p><span class="home-card-cta" data-i18n="auth.access">Account access</span></a>
+        </div>
+      </section>
       <!-- Liquinwiki -->
       <section class="liquinwiki-strip" aria-label="Liquinwiki">
         <a class="liquinwiki-link" href="wiki.html">
@@ -646,6 +661,12 @@
           accountLink.title = "Log in to your account";
           accountLink.setAttribute("aria-label", "Log in");
           homepageLogoutButton.hidden = true;
+        }
+        const status = document.getElementById("home-account-status");
+        if (status) {
+          status.textContent = signedIn
+            ? "You are signed in. Open your account to manage your profile."
+            : "Sign in or open your account settings.";
         }
       }
 
