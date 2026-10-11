@@ -84,7 +84,7 @@ function renderAlphabet() {
   const allButton = document.createElement("button");
   allButton.type = "button";
   allButton.className = "directory-letter";
-  allButton.textContent = t("nav.members");
+  allButton.textContent = t("dir.allLetters");
   allButton.setAttribute("aria-pressed", String(!activeLetter));
   allButton.addEventListener("click", () => { activeLetter = ""; renderAlphabet(); filterDirectory(); });
   directoryLetters.append(allButton);
@@ -95,7 +95,7 @@ function renderAlphabet() {
     button.textContent = letter;
     button.disabled = !letters.includes(letter);
     button.setAttribute("aria-pressed", String(activeLetter === letter));
-    button.setAttribute("aria-label", "Show members beginning with " + letter);
+    button.setAttribute("aria-label", t("dir.showLetter", {letter}));
     button.addEventListener("click", () => {
       activeLetter = activeLetter === letter ? "" : letter;
       renderAlphabet();
@@ -140,7 +140,7 @@ directorySearchClear?.addEventListener("click", () => {
 });
 
 function updateProfileEditState() {
-  if (bioCharacterCount) bioCharacterCount.textContent = `${bioInput.value.length} / 500 characters`;
+  if (bioCharacterCount) bioCharacterCount.textContent = t("dir.bioCount", {count: bioInput.value.length});
   if (!savedProfileValues) return;
   const changed = displayNameInput.value.trim() !== savedProfileValues.displayName ||
     bioInput.value.trim() !== savedProfileValues.bio;
