@@ -164,7 +164,7 @@ window.addEventListener("beforeunload", (event) => {
 async function loadDirectory() {
   directory.replaceChildren();
   showStatus(directoryStatus, "dir.loading");
-  if (directoryCount) directoryCount.textContent = t("dir.loading");
+  if (directoryCount) directoryCount.textContent = t("dir.loadingCount");
   const { data, error } = await supabase.from("profiles")
     .select("id, display_name, role, bio").order("display_name", { ascending: true });
   if (error) {
