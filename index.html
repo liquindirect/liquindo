@@ -652,16 +652,18 @@
         homepageSession = session || null;
         const signedIn = Boolean(session?.user);
         if (signedIn) {
-          accountLink.textContent = "Account · Logged in ✓";
+          accountLink.textContent = window.languageManager?.get("home.accountNavSignedIn") || "Account · Logged in ✓";
           accountLink.href = "login.html";
-          accountLink.title = "Signed in as " + (session.user.email || "your account");
-          accountLink.setAttribute("aria-label", "Logged in. Open your account settings");
+          accountLink.title = (window.languageManager?.get("home.accountLoginTitle") || "Signed in as") + " " + (session.user.email || "your account");
+          accountLink.setAttribute("aria-label", window.languageManager?.get("home.accountNavSignedIn") || "Logged in. Open your account settings");
+          homepageLogoutButton.textContent = window.languageManager?.get("auth.logout") || "Log out";
           homepageLogoutButton.hidden = false;
         } else {
-          accountLink.textContent = "Log in";
+          accountLink.textContent = window.languageManager?.get("auth.login") || "Log in";
           accountLink.href = "login.html";
-          accountLink.title = "Log in to your account";
-          accountLink.setAttribute("aria-label", "Log in");
+          accountLink.title = window.languageManager?.get("home.accountLoginTitle") || "Log in to your account";
+          accountLink.setAttribute("aria-label", window.languageManager?.get("auth.login") || "Log in");
+          homepageLogoutButton.textContent = window.languageManager?.get("auth.logout") || "Log out";
           homepageLogoutButton.hidden = true;
         }
         const status = document.getElementById("home-account-status");
@@ -675,15 +677,15 @@
 
       homepageLogoutButton.addEventListener("click", async () => {
         homepageLogoutButton.disabled = true;
-        homepageLogoutButton.textContent = "Logging out…";
+        homepageLogoutButton.textContent = window.languageManager?.get("home.accountLogoutBusy") || "Logging out…";
         homepageLogoutButton.removeAttribute("title");
         try {
           const { error } = await supabase.auth.signOut();
           if (error) throw error;
-          homepageLogoutButton.textContent = "Log out";
+          homepageLogoutButton.textContent = window.languageManager?.get("auth.logout") || "Log out";
         } catch (error) {
-          homepageLogoutButton.textContent = "Retry logout";
-          homepageLogoutButton.title = "Could not log out. Select to try again.";
+          homepageLogoutButton.textContent = window.languageManager?.get("home.accountLogoutRetry") || "Retry logout";
+          homepageLogoutButton.title = window.languageManager?.get("home.accountLogoutError") || "Could not log out. Select to try again.";
         } finally {
           homepageLogoutButton.disabled = false;
         }
