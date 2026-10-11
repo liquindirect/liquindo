@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex" />
     <meta name="description" content="Public directory of Liquindo members and their bios." />
     <title data-i18n="page.members.title">Liquindo Members</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20261011-directory-redesign" />
     <style>
       .members-panel { max-width: 1040px; margin: 0 auto 1.5rem; padding: clamp(1rem, 3vw, 1.75rem); border: 1px solid var(--border, #ddd); border-radius: 16px; background: var(--surface, #fff); box-shadow: 0 12px 30px rgba(23,33,38,.06); }
       .members-hidden { display: none !important; }
@@ -45,9 +45,57 @@
       #directory-status { margin: .55rem 0; color: var(--muted); }
       .directory-empty { grid-column: 1 / -1; padding: 1.25rem; border: 1px dashed var(--border); border-radius: 12px; color: var(--muted); text-align: center; }
       @media (max-width: 620px) { .directory-tools { grid-template-columns: 1fr; } .member-item { padding: .85rem; } .directory-toolbar { align-items: flex-start; } }
+
+      /* Member directory redesign: navy, warm paper and muted gold */
+      body.members-redesign { background: #0b1724; color: #f4f0e7; }
+      body.members-redesign .page-header { background: linear-gradient(145deg, #0b1724 0%, #14263a 100%); border-bottom: 1px solid rgba(215,176,95,.28); }
+      body.members-redesign .topbar { background: transparent; }
+      body.members-redesign .brand { color: #e2c27b; }
+      body.members-redesign .nav-links a { border-color: rgba(226,194,123,.24); background: rgba(255,255,255,.045); }
+      body.members-redesign .nav-links a[aria-current="page"] { border-color: #c9a85d; background: rgba(201,168,93,.16); color: #f4d995; }
+      body.members-redesign .language-switcher { background: #14263a; color: #f4f0e7; border-color: rgba(226,194,123,.32); }
+      body.members-redesign .page-title { padding-top: clamp(2.8rem, 7vw, 5.5rem); padding-bottom: clamp(2rem, 4vw, 3.25rem); }
+      body.members-redesign .page-title .eyebrow { color: #e2c27b; letter-spacing: .18em; }
+      body.members-redesign .page-title h1 { color: #fffaf0; max-width: 850px; }
+      body.members-redesign .page-title p { color: #c5ced7; max-width: 680px; font-size: 1.08rem; }
+      body.members-redesign .full-page-section { padding-top: 1.25rem; padding-bottom: 4.5rem; }
+      body.members-redesign .members-panel { background: #f8f5ee; color: #172534; border: 1px solid rgba(226,194,123,.36); border-radius: 18px; box-shadow: 0 18px 46px rgba(0,0,0,.2); }
+      body.members-redesign .members-panel h2 { color: #14263a; font-size: clamp(1.65rem, 3.3vw, 2.2rem); letter-spacing: -.025em; }
+      body.members-redesign .directory-intro { color: #596572; max-width: 760px; }
+      body.members-redesign .directory-search input, body.members-redesign .directory-role-filter select,
+      body.members-redesign .members-form input, body.members-redesign .members-form textarea { background: #fffdf8; color: #172534; border-color: #d8d0c1; border-radius: 11px; }
+      body.members-redesign .directory-search input:focus, body.members-redesign .directory-role-filter select:focus,
+      body.members-redesign .members-form input:focus, body.members-redesign .members-form textarea:focus { border-color: #b28a39; outline-color: #b28a39; }
+      body.members-redesign .members-button { border-color: #c8b98f; background: #f3ead5; color: #263447; border-radius: 10px; transition: background .18s ease, transform .18s ease, border-color .18s ease; }
+      body.members-redesign .members-button:hover:not(:disabled) { background: #ead9ad; border-color: #b28a39; color: #172534; transform: translateY(-1px); }
+      body.members-redesign .directory-count { color: #3d4c5c; }
+      body.members-redesign .directory-letters { gap: .4rem; }
+      body.members-redesign .directory-letter { background: #fffdf8; border-color: #d8d0c1; color: #263447; border-radius: 9px; }
+      body.members-redesign .directory-letter[aria-pressed="true"] { background: #17304a; color: #f4d995; border-color: #17304a; }
+      body.members-redesign .member-directory { gap: 1rem; }
+      body.members-redesign .member-item { background: linear-gradient(145deg, #fffdf8 0%, #f1ece1 100%); border-color: #ded5c5; border-radius: 15px; padding: 1.1rem; box-shadow: 0 5px 15px rgba(23,37,52,.055); }
+      body.members-redesign .member-item:hover, body.members-redesign .member-item:focus-within { border-color: #b28a39; box-shadow: 0 10px 24px rgba(23,37,52,.11); }
+      body.members-redesign .member-avatar { background: linear-gradient(145deg, #203b56, #14263a); color: #f4d995; border-color: rgba(201,168,93,.55); border-radius: 13px; }
+      body.members-redesign .member-name { color: #14263a; font-size: 1.08rem; }
+      body.members-redesign .member-role { background: #eee4cc; border-color: #e1d0a4; color: #514321; }
+      body.members-redesign .member-bio-toggle { background: #17304a; color: #f4d995; border-color: rgba(201,168,93,.55); border-radius: 11px; }
+      body.members-redesign .member-bio-toggle:hover, body.members-redesign .member-bio-toggle[aria-expanded="true"] { background: #244665; border-color: #b28a39; }
+      body.members-redesign .member-bio { color: #4e5b67; border-top-color: #e5ddcf; }
+      body.members-redesign .directory-empty { border-color: #c8b98f; color: #596572; }
+      body.members-redesign #directory-status, body.members-redesign #profile-status, body.members-redesign #bio-character-count { color: #596572; }
+      body.members-redesign footer { background: #08121d; color: #d5dce3; border-top: 1px solid rgba(226,194,123,.25); }
+      body.members-redesign footer a { color: #e2c27b; }
+      @media (max-width: 760px) {
+        body.members-redesign .topbar { padding: 14px 18px; }
+        body.members-redesign .page-title { width: min(1200px, calc(100% - 32px)); }
+        body.members-redesign .full-page-section { width: calc(100% - 24px); padding-top: .5rem; }
+        body.members-redesign .members-panel { padding: 1rem; border-radius: 15px; }
+      }
+      @media (prefers-reduced-motion: reduce) { body.members-redesign * { scroll-behavior: auto; } }
+
     </style>
   </head>
-  <body>
+  <body class="members-redesign">
     <script src="homepage-gate.js"></script>
     <header class="page-header">
       <nav class="topbar" aria-label="Main navigation">
