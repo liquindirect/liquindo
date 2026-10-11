@@ -87,24 +87,6 @@
       
 
       <section id="members-content" class="members-hidden">
-        <article id="profile-panel" class="members-panel">
-          <h2 data-i18n="dir.profileTitle">Your profile</h2>
-          <p><span data-i18n="auth.email">Email address</span>: <strong id="profile-email"></strong></p>
-          <p><span data-i18n="dir.roleLabel">Role</span>: <strong id="profile-role">member</strong></p>
-          <form id="profile-form" class="members-form">
-            <label for="display-name" data-i18n="dir.displayName">Display name
-              <input id="display-name" name="display-name" type="text" minlength="1" maxlength="40" required />
-            </label>
-            <label for="profile-bio" data-i18n="dir.bio">Bio (up to 500 characters)
-              <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself." data-i18n-placeholder="dir.bioPlaceholder"></textarea>
-              <span id="bio-character-count" class="members-status" aria-live="polite">0 / 500 characters</span>
-            </label>
-            <button id="save-profile" class="members-button" type="submit" data-i18n="dir.save">Save profile</button>
-          </form>
-          <p id="profile-status" class="members-status" aria-live="polite"></p>
-          <button id="members-logout" class="members-button" type="button" data-i18n="dir.logout">Log out</button>
-        </article>
-
         <article class="members-panel">
           <h2 data-i18n="dir.heading">Member directory</h2>
           <p class="directory-intro" data-i18n="dir.intro">Explore member profiles. Everyone can browse public names and bios; sign in to edit your own profile.</p>
@@ -124,7 +106,26 @@
           </div>
           <nav id="directory-letters" class="directory-letters" aria-label="Filter members alphabetically" data-i18n-aria-label="dir.alphabet"></nav>
           <p id="directory-status" class="members-status" aria-live="polite" data-i18n="dir.loading">Loading members…</p>
+          <button id="directory-retry" class="members-button" type="button" data-i18n="dir.retry" hidden>Try again</button>
           <ul id="member-directory" class="member-directory"></ul>
+        </article>
+
+        <article id="profile-panel" class="members-panel">
+          <h2 data-i18n="dir.profileTitle">Your profile</h2>
+          <p><span data-i18n="auth.email">Email address</span>: <strong id="profile-email"></strong></p>
+          <p><span data-i18n="dir.roleLabel">Role</span>: <strong id="profile-role">member</strong></p>
+          <form id="profile-form" class="members-form">
+            <label for="display-name" data-i18n="dir.displayName">Display name
+              <input id="display-name" name="display-name" type="text" minlength="1" maxlength="40" required />
+            </label>
+            <label for="profile-bio" data-i18n="dir.bio">Bio (up to 500 characters)
+              <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself." data-i18n-placeholder="dir.bioPlaceholder"></textarea>
+              <span id="bio-character-count" class="members-status" aria-live="polite">0 / 500 characters</span>
+            </label>
+            <button id="save-profile" class="members-button" type="submit" data-i18n="dir.save">Save profile</button>
+          </form>
+          <p id="profile-status" class="members-status" aria-live="polite"></p>
+          <button id="members-logout" class="members-button" type="button" data-i18n="dir.logout">Log out</button>
         </article>
       </section>
     </main>

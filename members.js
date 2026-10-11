@@ -24,6 +24,7 @@ const directorySearchClear = document.querySelector("#directory-search-clear");
 const directoryRoleFilter = document.querySelector("#directory-role-filter");
 const directoryLetters = document.querySelector("#directory-letters");
 const directoryCount = document.querySelector("#directory-count");
+const directoryRetry = document.querySelector("#directory-retry");
 const bioCharacterCount = document.querySelector("#bio-character-count");
 let savedProfileValues = null;
 let currentUser = null;
@@ -130,6 +131,11 @@ function filterDirectory() {
     delete directoryStatus.dataset.i18nMessageValues;
   }
 }
+directoryRetry?.addEventListener("click", async () => {
+  directoryRetry.disabled = true;
+  try { await loadDirectory(); }
+  finally { directoryRetry.disabled = false; }
+});
 directorySearch?.addEventListener("input", filterDirectory);
 directoryRoleFilter?.addEventListener("change", filterDirectory);
 directorySearchClear?.addEventListener("click", () => {
@@ -163,11 +169,13 @@ window.addEventListener("beforeunload", (event) => {
 
 async function loadDirectory() {
   directory.replaceChildren();
+  if (directoryRetry) directoryRetry.hidden = true;
   showStatus(directoryStatus, "dir.loading");
   if (directoryCount) directoryCount.textContent = t("dir.loadingCount");
   const { data, error } = await supabase.from("profiles")
     .select("id, display_name, role, bio").order("display_name", { ascending: true });
   if (error) {
+    if (directoryRetry) directoryRetry.hidden = false;
     showStatus(directoryStatus, "dir.loadError", true);
     if (directoryCount) directoryCount.textContent = t("dir.loadError");
     return;
@@ -196,6 +204,7 @@ async function loadDirectory() {
     roleLine.className = "member-role";
     roleLine.textContent = member.role || "member";
     const bio = document.createElement("p");
+    bio.id = `member-bio-${directoryMembers.indexOf(member)}`;
     bio.className = "member-bio";
     bio.hidden = true;
     bio.textContent = member.bio || t("dir.bioEmpty");
@@ -204,6 +213,7 @@ async function loadDirectory() {
     toggle.type = "button";
     toggle.textContent = "↓";
     toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", bio.id);
     toggle.setAttribute("aria-label", t("dir.showBio", {name: member.display_name || "member"}));
     toggle.addEventListener("click", () => {
       const opening = bio.hidden;

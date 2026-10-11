@@ -2497,3 +2497,6 @@ footer {
   }
 }
 
+/* Directory recovery controls */
+#directory-retry[hidden] { display: none; }
+#directory-retry { margin: .35rem 0 .75rem; }
