@@ -81,49 +81,49 @@
 
     <main class="full-page-section">
       <section id="members-loading" class="members-panel" aria-live="polite">
-        <p>Checking your sign-in status…</p>
+        <p data-i18n="dir.loading">Checking your sign-in status…</p>
       </section>
 
       
 
       <section id="members-content" class="members-hidden">
         <article id="profile-panel" class="members-panel">
-          <h2>Your profile</h2>
-          <p>Email: <strong id="profile-email"></strong></p>
+          <h2 data-i18n="dir.profileTitle">Your profile</h2>
+          <p><span data-i18n="auth.email">Email address</span>: <strong id="profile-email"></strong></p>
           <p>Role: <strong id="profile-role">member</strong></p>
           <form id="profile-form" class="members-form">
-            <label for="display-name">Display name
+            <label for="display-name" data-i18n="dir.displayName">Display name
               <input id="display-name" name="display-name" type="text" minlength="1" maxlength="40" required />
             </label>
-            <label for="profile-bio">Bio (up to 500 characters)
-              <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself."></textarea>
-              <span id="bio-character-count" class="members-status" aria-live="polite">0 / 500 characters</span>
+            <label for="profile-bio" data-i18n="dir.bio">Bio (up to 500 characters)
+              <textarea id="profile-bio" name="profile-bio" maxlength="500" rows="4" placeholder="Tell other members a little about yourself." data-i18n-placeholder="dir.bioPlaceholder"></textarea>
+              <span id="bio-character-count" class="members-status" aria-live="polite" data-i18n="dir.bioCount">0 / 500 characters</span>
             </label>
-            <button id="save-profile" class="members-button" type="submit">Save profile</button>
+            <button id="save-profile" class="members-button" type="submit" data-i18n="dir.save">Save profile</button>
           </form>
           <p id="profile-status" class="members-status" aria-live="polite"></p>
-          <button id="members-logout" class="members-button" type="button">Log out</button>
+          <button id="members-logout" class="members-button" type="button" data-i18n="dir.logout">Log out</button>
         </article>
 
         <article class="members-panel">
-          <h2>Member directory</h2>
-          <p class="directory-intro">Explore member profiles. Everyone can browse public names and bios; sign in to edit your own profile.</p>
+          <h2 data-i18n="dir.heading">Member directory</h2>
+          <p class="directory-intro" data-i18n="dir.intro">Explore member profiles. Everyone can browse public names and bios; sign in to edit your own profile.</p>
           <div class="directory-tools">
-            <label class="directory-search" for="directory-search">Search members
-              <input id="directory-search" type="search" autocomplete="off" placeholder="Search name, role, or bio…" />
+            <label class="directory-search" for="directory-search" data-i18n="dir.search">Search members
+              <input id="directory-search" type="search" autocomplete="off" placeholder="Search name, role, or bio…" data-i18n-placeholder="dir.searchPlaceholder" />
             </label>
-            <label class="directory-role-filter" for="directory-role-filter">Filter by role
+            <label class="directory-role-filter" for="directory-role-filter" data-i18n="dir.filterRole">Filter by role
               <select id="directory-role-filter">
-                <option value="">All roles</option>
+                <option value="" data-i18n="dir.allRoles">All roles</option>
               </select>
             </label>
           </div>
           <div class="directory-toolbar">
-            <p id="directory-count" class="directory-count" aria-live="polite">Loading member count…</p>
-            <button id="directory-search-clear" class="members-button" type="button">Reset filters</button>
+            <p id="directory-count" class="directory-count" aria-live="polite" data-i18n="dir.loadingCount">Loading member count…</p>
+            <button id="directory-search-clear" class="members-button" type="button" data-i18n="dir.reset">Reset filters</button>
           </div>
-          <nav id="directory-letters" class="directory-letters" aria-label="Filter members alphabetically"></nav>
-          <p id="directory-status" class="members-status" aria-live="polite">Loading members…</p>
+          <nav id="directory-letters" class="directory-letters" aria-label="Filter members alphabetically" data-i18n-aria-label="dir.alphabet"></nav>
+          <p id="directory-status" class="members-status" aria-live="polite" data-i18n="dir.loading">Loading members…</p>
           <ul id="member-directory" class="member-directory"></ul>
         </article>
       </section>
