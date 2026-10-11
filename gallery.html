@@ -386,6 +386,21 @@
       </section>
     </main>
 
+
+    <dialog class="gallery-lightbox" id="gallery-lightbox" aria-labelledby="lightbox-title">
+      <div class="lightbox-toolbar">
+        <p id="lightbox-title" class="lightbox-count" aria-live="polite">Image 1 of 52</p>
+        <button type="button" class="lightbox-close" id="lightbox-close" data-i18n="gallery.viewer.close" aria-label="Close image viewer">Close <span aria-hidden="true">×</span></button>
+      </div>
+      <button type="button" class="lightbox-nav lightbox-previous" id="lightbox-previous" data-i18n-aria-label="gallery.viewer.previous" aria-label="Previous image"><span aria-hidden="true">‹</span><span class="lightbox-control-text" data-i18n="gallery.viewer.previous">Previous</span></button>
+      <figure class="lightbox-figure">
+        <img id="lightbox-image" alt="" />
+        <figcaption id="lightbox-caption"></figcaption>
+      </figure>
+      <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" data-i18n-aria-label="gallery.viewer.next" aria-label="Next image"><span class="lightbox-control-text" data-i18n="gallery.viewer.next">Next</span><span aria-hidden="true">›</span></button>
+      <p class="lightbox-hint" data-i18n="gallery.viewer.hint">Use ← and → to browse; press Escape to close.</p>
+    </dialog>
+
     <footer>
       <div class="footer-content">
         <p data-i18n="footer.contact">
@@ -462,39 +477,88 @@
             getImageDescription(imageNumber);
         }
 
-        function selectImage(figure) {
-          const image =
-            figure.querySelector("img");
+        const lightbox = document.getElementById("gallery-lightbox");
+        const lightboxImage = document.getElementById("lightbox-image");
+        const lightboxCaption = document.getElementById("lightbox-caption");
+        const lightboxTitle = document.getElementById("lightbox-title");
+        const closeButton = document.getElementById("lightbox-close");
+        const previousButton = document.getElementById("lightbox-previous");
+        const nextButton = document.getElementById("lightbox-next");
+        let selectedIndex = -1;
+        const figureList = Array.from(galleryFigures);
 
-          const imageNumber =
-            figure.dataset.imageNumber;
-
-          selectedPanel.hidden = false;
-
+        function renderLightbox(index) {
+          if (!figureList.length) return;
+          selectedIndex = (index + figureList.length) % figureList.length;
+          const figure = figureList[selectedIndex];
+          const image = figure.querySelector("img");
+          const imageNumber = figure.dataset.imageNumber;
+          const description = getImageDescription(imageNumber);
           selectedImage.src = image.src;
           selectedImage.alt = image.alt;
-
-          selectedTitle.textContent =
-            `Image ${imageNumber}`;
-
-          selectedText.textContent =
-            getImageDescription(imageNumber);
-
+          selectedTitle.textContent = `Image ${imageNumber}`;
+          selectedText.textContent = description;
+          lightboxImage.src = image.src;
+          lightboxImage.alt = image.alt;
+          lightboxCaption.textContent = description;
+          lightboxTitle.textContent = `${t("gallery.viewer.image", "Image")} ${imageNumber} ${t("gallery.viewer.of", "of")} ${figureList.length}`;
           galleryFigures.forEach((item) => {
             item.classList.remove("is-selected");
+            item.removeAttribute("aria-current");
           });
-
           figure.classList.add("is-selected");
-
-          selectedPanel.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
+          figure.setAttribute("aria-current", "true");
+          selectedPanel.hidden = false;
         }
+
+        function t(key, fallback) {
+          return window.languageManager?.get(key) || fallback;
+        }
+
+        function openLightbox(figure) {
+          renderLightbox(figureList.indexOf(figure));
+          if (!lightbox.open) {
+            if (typeof lightbox.showModal === "function") lightbox.showModal();
+            else lightbox.setAttribute("open", "");
+          }
+          closeButton.focus();
+        }
+
+        function closeLightbox() {
+          if (typeof lightbox.close === "function" && lightbox.open) lightbox.close();
+          else lightbox.removeAttribute("open");
+        }
+
+        function selectImage(figure) {
+          openLightbox(figure);
+        }
+
+        previousButton.addEventListener("click", () => renderLightbox(selectedIndex - 1));
+        nextButton.addEventListener("click", () => renderLightbox(selectedIndex + 1));
+        closeButton.addEventListener("click", closeLightbox);
+        lightbox.addEventListener("click", (event) => {
+          if (event.target === lightbox) closeLightbox();
+        });
+        lightbox.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            renderLightbox(selectedIndex - 1);
+          } else if (event.key === "ArrowRight") {
+            event.preventDefault();
+            renderLightbox(selectedIndex + 1);
+          }
+        });
+        lightbox.addEventListener("close", () => {
+          if (selectedIndex >= 0) figureList[selectedIndex]?.focus();
+        });
+        document.addEventListener("liquindo-language-changed", () => {
+          if (lightbox.open && selectedIndex >= 0) renderLightbox(selectedIndex);
+        });
 
         galleryFigures.forEach((figure) => {
           figure.tabIndex = 0;
           figure.setAttribute("role", "button");
+          figure.setAttribute("aria-haspopup", "dialog");
 
           figure.addEventListener("click", () => {
             selectImage(figure);
