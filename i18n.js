@@ -2908,3 +2908,140 @@ const galleryViewerTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(galleryViewerTranslations)) Object.assign(translations[language], entries);
+
+
+const accountExperienceTranslations = {
+  "en": {
+    "auth.msg.invalidCredentials": "Email or password is incorrect.",
+    "auth.msg.emailNotConfirmed": "Please confirm your email using the link we sent before signing in.",
+    "auth.msg.accountExists": "An account may already exist for this email. Try logging in or using Forgot password.",
+    "auth.msg.weakPassword": "That password was rejected. Please choose a stronger password and try again.",
+    "auth.msg.invalidEmail": "Enter a valid email address.",
+    "home.accountNavSignedIn": "Account · Logged in ✓",
+    "home.accountLoginTitle": "Log in to your account",
+    "home.accountLogoutBusy": "Logging out…",
+    "home.accountLogoutRetry": "Retry logout",
+    "home.accountLogoutError": "Could not log out. Select to try again."
+  },
+  "pt": {
+    "auth.msg.invalidCredentials": "O e-mail ou a senha estão incorretos.",
+    "auth.msg.emailNotConfirmed": "Confirme seu e-mail pelo link que enviamos antes de entrar.",
+    "auth.msg.accountExists": "Talvez já exista uma conta com este e-mail. Tente entrar ou usar Esqueci a senha.",
+    "auth.msg.weakPassword": "A senha foi rejeitada. Escolha uma senha mais forte e tente novamente.",
+    "auth.msg.invalidEmail": "Digite um endereço de e-mail válido.",
+    "home.accountNavSignedIn": "Conta · Conectado ✓",
+    "home.accountLoginTitle": "Entrar na sua conta",
+    "home.accountLogoutBusy": "Saindo…",
+    "home.accountLogoutRetry": "Tentar sair novamente",
+    "home.accountLogoutError": "Não foi possível sair. Selecione para tentar novamente."
+  },
+  "es": {
+    "auth.msg.invalidCredentials": "El correo electrónico o la contraseña son incorrectos.",
+    "auth.msg.emailNotConfirmed": "Confirma tu correo con el enlace que enviamos antes de iniciar sesión.",
+    "auth.msg.accountExists": "Puede que ya exista una cuenta con este correo. Intenta iniciar sesión o recuperar la contraseña.",
+    "auth.msg.weakPassword": "Se rechazó la contraseña. Elige una contraseña más segura e inténtalo de nuevo.",
+    "auth.msg.invalidEmail": "Introduce una dirección de correo válida.",
+    "home.accountNavSignedIn": "Cuenta · Sesión iniciada ✓",
+    "home.accountLoginTitle": "Inicia sesión en tu cuenta",
+    "home.accountLogoutBusy": "Cerrando sesión…",
+    "home.accountLogoutRetry": "Reintentar cierre de sesión",
+    "home.accountLogoutError": "No se pudo cerrar la sesión. Selecciona para volver a intentarlo."
+  },
+  "fr": {
+    "auth.msg.invalidCredentials": "L’adresse e-mail ou le mot de passe est incorrect.",
+    "auth.msg.emailNotConfirmed": "Confirmez votre adresse e-mail avec le lien envoyé avant de vous connecter.",
+    "auth.msg.accountExists": "Un compte existe peut-être déjà pour cette adresse. Essayez de vous connecter ou de récupérer le mot de passe.",
+    "auth.msg.weakPassword": "Ce mot de passe a été refusé. Choisissez un mot de passe plus robuste et réessayez.",
+    "auth.msg.invalidEmail": "Saisissez une adresse e-mail valide.",
+    "home.accountNavSignedIn": "Compte · Connecté ✓",
+    "home.accountLoginTitle": "Connectez-vous à votre compte",
+    "home.accountLogoutBusy": "Déconnexion…",
+    "home.accountLogoutRetry": "Réessayer la déconnexion",
+    "home.accountLogoutError": "Déconnexion impossible. Sélectionnez pour réessayer."
+  },
+  "de": {
+    "auth.msg.invalidCredentials": "E-Mail-Adresse oder Passwort ist falsch.",
+    "auth.msg.emailNotConfirmed": "Bitte bestätigen Sie Ihre E-Mail über den zugesandten Link, bevor Sie sich anmelden.",
+    "auth.msg.accountExists": "Möglicherweise gibt es bereits ein Konto für diese E-Mail. Melden Sie sich an oder nutzen Sie „Passwort vergessen“.",
+    "auth.msg.weakPassword": "Dieses Passwort wurde abgelehnt. Wählen Sie ein stärkeres Passwort und versuchen Sie es erneut.",
+    "auth.msg.invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein.",
+    "home.accountNavSignedIn": "Konto · Angemeldet ✓",
+    "home.accountLoginTitle": "Bei Ihrem Konto anmelden",
+    "home.accountLogoutBusy": "Abmeldung…",
+    "home.accountLogoutRetry": "Abmeldung erneut versuchen",
+    "home.accountLogoutError": "Abmeldung fehlgeschlagen. Wählen Sie diese Option, um es erneut zu versuchen."
+  },
+  "it": {
+    "auth.msg.invalidCredentials": "L’indirizzo e-mail o la password non sono corretti.",
+    "auth.msg.emailNotConfirmed": "Conferma l’e-mail tramite il link inviato prima di accedere.",
+    "auth.msg.accountExists": "Potrebbe già esistere un account con questa e-mail. Prova ad accedere o a recuperare la password.",
+    "auth.msg.weakPassword": "La password è stata rifiutata. Scegline una più sicura e riprova.",
+    "auth.msg.invalidEmail": "Inserisci un indirizzo e-mail valido.",
+    "home.accountNavSignedIn": "Account · Accesso effettuato ✓",
+    "home.accountLoginTitle": "Accedi al tuo account",
+    "home.accountLogoutBusy": "Disconnessione…",
+    "home.accountLogoutRetry": "Riprova la disconnessione",
+    "home.accountLogoutError": "Impossibile disconnettersi. Seleziona per riprovare."
+  },
+  "hr": {
+    "auth.msg.invalidCredentials": "E-pošta ili lozinka nisu ispravne.",
+    "auth.msg.emailNotConfirmed": "Potvrdite e-poštu putem poveznice koju smo poslali prije prijave.",
+    "auth.msg.accountExists": "Možda već postoji račun za ovu e-poštu. Pokušajte se prijaviti ili oporaviti lozinku.",
+    "auth.msg.weakPassword": "Lozinka je odbijena. Odaberite snažniju lozinku i pokušajte ponovno.",
+    "auth.msg.invalidEmail": "Unesite valjanu adresu e-pošte.",
+    "home.accountNavSignedIn": "Račun · Prijavljeni ✓",
+    "home.accountLoginTitle": "Prijavite se na svoj račun",
+    "home.accountLogoutBusy": "Odjava…",
+    "home.accountLogoutRetry": "Pokušaj odjave ponovno",
+    "home.accountLogoutError": "Odjava nije uspjela. Odaberite za ponovni pokušaj."
+  },
+  "el": {
+    "auth.msg.invalidCredentials": "Το email ή ο κωδικός πρόσβασης είναι λανθασμένος.",
+    "auth.msg.emailNotConfirmed": "Επιβεβαιώστε το email σας μέσω του συνδέσμου που στείλαμε πριν συνδεθείτε.",
+    "auth.msg.accountExists": "Ίσως υπάρχει ήδη λογαριασμός με αυτό το email. Δοκιμάστε σύνδεση ή ανάκτηση κωδικού.",
+    "auth.msg.weakPassword": "Ο κωδικός απορρίφθηκε. Επιλέξτε ισχυρότερο κωδικό και δοκιμάστε ξανά.",
+    "auth.msg.invalidEmail": "Εισαγάγετε έγκυρη διεύθυνση email.",
+    "home.accountNavSignedIn": "Λογαριασμός · Συνδεδεμένος ✓",
+    "home.accountLoginTitle": "Συνδεθείτε στον λογαριασμό σας",
+    "home.accountLogoutBusy": "Αποσύνδεση…",
+    "home.accountLogoutRetry": "Επανάληψη αποσύνδεσης",
+    "home.accountLogoutError": "Δεν ήταν δυνατή η αποσύνδεση. Επιλέξτε για να δοκιμάσετε ξανά."
+  },
+  "pl": {
+    "auth.msg.invalidCredentials": "Adres e-mail lub hasło są nieprawidłowe.",
+    "auth.msg.emailNotConfirmed": "Potwierdź adres e-mail za pomocą wysłanego linku przed zalogowaniem.",
+    "auth.msg.accountExists": "Konto z tym adresem może już istnieć. Spróbuj się zalogować lub odzyskać hasło.",
+    "auth.msg.weakPassword": "Hasło zostało odrzucone. Wybierz silniejsze hasło i spróbuj ponownie.",
+    "auth.msg.invalidEmail": "Wpisz prawidłowy adres e-mail.",
+    "home.accountNavSignedIn": "Konto · Zalogowano ✓",
+    "home.accountLoginTitle": "Zaloguj się na swoje konto",
+    "home.accountLogoutBusy": "Wylogowywanie…",
+    "home.accountLogoutRetry": "Ponów wylogowanie",
+    "home.accountLogoutError": "Nie udało się wylogować. Wybierz, aby spróbować ponownie."
+  },
+  "ru": {
+    "auth.msg.invalidCredentials": "Неверный адрес электронной почты или пароль.",
+    "auth.msg.emailNotConfirmed": "Подтвердите электронную почту по отправленной ссылке перед входом.",
+    "auth.msg.accountExists": "Возможно, аккаунт с этим адресом уже существует. Попробуйте войти или восстановить пароль.",
+    "auth.msg.weakPassword": "Пароль отклонён. Выберите более надёжный пароль и попробуйте снова.",
+    "auth.msg.invalidEmail": "Введите действительный адрес электронной почты.",
+    "home.accountNavSignedIn": "Аккаунт · Вы вошли ✓",
+    "home.accountLoginTitle": "Войти в аккаунт",
+    "home.accountLogoutBusy": "Выход…",
+    "home.accountLogoutRetry": "Повторить выход",
+    "home.accountLogoutError": "Не удалось выйти. Нажмите, чтобы повторить попытку."
+  },
+  "zh": {
+    "auth.msg.invalidCredentials": "电子邮件或密码不正确。",
+    "auth.msg.emailNotConfirmed": "请先通过我们发送的链接确认电子邮件，再登录。",
+    "auth.msg.accountExists": "此邮箱可能已有账户。请尝试登录或使用忘记密码功能。",
+    "auth.msg.weakPassword": "密码未被接受。请选择更强的密码并重试。",
+    "auth.msg.invalidEmail": "请输入有效的电子邮件地址。",
+    "home.accountNavSignedIn": "账户 · 已登录 ✓",
+    "home.accountLoginTitle": "登录账户",
+    "home.accountLogoutBusy": "正在退出…",
+    "home.accountLogoutRetry": "重试退出",
+    "home.accountLogoutError": "无法退出。请选择此项重试。"
+  }
+};
+for (const [language, entries] of Object.entries(accountExperienceTranslations)) Object.assign(translations[language], entries);
