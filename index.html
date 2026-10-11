@@ -647,7 +647,9 @@
       const accountLink = document.getElementById("account-nav-link");
       const homepageLogoutButton = document.getElementById("account-logout-button");
 
+      let homepageSession = null;
       function updateAccountLink(session) {
+        homepageSession = session || null;
         const signedIn = Boolean(session?.user);
         if (signedIn) {
           accountLink.textContent = "Account · Logged in ✓";
@@ -664,9 +666,10 @@
         }
         const status = document.getElementById("home-account-status");
         if (status) {
-          status.textContent = signedIn
+          const statusKey = signedIn ? "home.accountSignedIn" : "home.accountSignedOut";
+          status.textContent = window.languageManager?.get(statusKey) || (signedIn
             ? "You are signed in. Open your account to manage your profile."
-            : "Sign in or open your account settings.";
+            : "Sign in or open your account settings.");
         }
       }
 
@@ -690,6 +693,9 @@
       updateAccountLink(session);
       supabase.auth.onAuthStateChange((_event, nextSession) => {
         updateAccountLink(nextSession);
+      });
+      document.addEventListener("liquindo-language-changed", () => {
+        updateAccountLink(homepageSession);
       });
     </script>
   </body>
