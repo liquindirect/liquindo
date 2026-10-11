@@ -2815,3 +2815,96 @@ const homepageCardDescriptionTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(homepageCardDescriptionTranslations)) Object.assign(translations[language], entries);
+
+
+const galleryViewerTranslations = {
+  "en": {
+    "gallery.viewer.close": "Close",
+    "gallery.viewer.previous": "Previous",
+    "gallery.viewer.next": "Next",
+    "gallery.viewer.hint": "Use ← and → to browse; press Escape to close.",
+    "gallery.viewer.image": "Image",
+    "gallery.viewer.of": "of"
+  },
+  "pt": {
+    "gallery.viewer.close": "Fechar",
+    "gallery.viewer.previous": "Anterior",
+    "gallery.viewer.next": "Próxima",
+    "gallery.viewer.hint": "Use ← e → para navegar; pressione Escape para fechar.",
+    "gallery.viewer.image": "Imagem",
+    "gallery.viewer.of": "de"
+  },
+  "es": {
+    "gallery.viewer.close": "Cerrar",
+    "gallery.viewer.previous": "Anterior",
+    "gallery.viewer.next": "Siguiente",
+    "gallery.viewer.hint": "Usa ← y → para navegar; pulsa Escape para cerrar.",
+    "gallery.viewer.image": "Imagen",
+    "gallery.viewer.of": "de"
+  },
+  "fr": {
+    "gallery.viewer.close": "Fermer",
+    "gallery.viewer.previous": "Précédent",
+    "gallery.viewer.next": "Suivant",
+    "gallery.viewer.hint": "Utilisez ← et → pour parcourir les images ; appuyez sur Échap pour fermer.",
+    "gallery.viewer.image": "Image",
+    "gallery.viewer.of": "sur"
+  },
+  "de": {
+    "gallery.viewer.close": "Schließen",
+    "gallery.viewer.previous": "Zurück",
+    "gallery.viewer.next": "Weiter",
+    "gallery.viewer.hint": "Mit ← und → blättern; mit Escape schließen.",
+    "gallery.viewer.image": "Bild",
+    "gallery.viewer.of": "von"
+  },
+  "it": {
+    "gallery.viewer.close": "Chiudi",
+    "gallery.viewer.previous": "Precedente",
+    "gallery.viewer.next": "Successiva",
+    "gallery.viewer.hint": "Usa ← e → per sfogliare; premi Esc per chiudere.",
+    "gallery.viewer.image": "Immagine",
+    "gallery.viewer.of": "di"
+  },
+  "hr": {
+    "gallery.viewer.close": "Zatvori",
+    "gallery.viewer.previous": "Prethodna",
+    "gallery.viewer.next": "Sljedeća",
+    "gallery.viewer.hint": "Koristite ← i → za pregled; pritisnite Escape za zatvaranje.",
+    "gallery.viewer.image": "Slika",
+    "gallery.viewer.of": "od"
+  },
+  "el": {
+    "gallery.viewer.close": "Κλείσιμο",
+    "gallery.viewer.previous": "Προηγούμενη",
+    "gallery.viewer.next": "Επόμενη",
+    "gallery.viewer.hint": "Χρησιμοποιήστε ← και → για περιήγηση· πατήστε Escape για κλείσιμο.",
+    "gallery.viewer.image": "Εικόνα",
+    "gallery.viewer.of": "από"
+  },
+  "pl": {
+    "gallery.viewer.close": "Zamknij",
+    "gallery.viewer.previous": "Poprzedni",
+    "gallery.viewer.next": "Następny",
+    "gallery.viewer.hint": "Użyj ← i →, aby przeglądać; naciśnij Escape, aby zamknąć.",
+    "gallery.viewer.image": "Obraz",
+    "gallery.viewer.of": "z"
+  },
+  "ru": {
+    "gallery.viewer.close": "Закрыть",
+    "gallery.viewer.previous": "Назад",
+    "gallery.viewer.next": "Далее",
+    "gallery.viewer.hint": "Используйте ← и → для просмотра; нажмите Escape, чтобы закрыть.",
+    "gallery.viewer.image": "Изображение",
+    "gallery.viewer.of": "из"
+  },
+  "zh": {
+    "gallery.viewer.close": "关闭",
+    "gallery.viewer.previous": "上一张",
+    "gallery.viewer.next": "下一张",
+    "gallery.viewer.hint": "使用 ← 和 → 浏览；按 Escape 关闭。",
+    "gallery.viewer.image": "图片",
+    "gallery.viewer.of": "共"
+  }
+};
+for (const [language, entries] of Object.entries(galleryViewerTranslations)) Object.assign(translations[language], entries);
