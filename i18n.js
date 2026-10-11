@@ -3045,3 +3045,41 @@ const accountExperienceTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(accountExperienceTranslations)) Object.assign(translations[language], entries);
+
+
+const signedInTitleTranslations = {
+  "en": {
+    "home.accountSignedInTitle": "Signed in as"
+  },
+  "pt": {
+    "home.accountSignedInTitle": "Conectado como"
+  },
+  "es": {
+    "home.accountSignedInTitle": "Sesión iniciada como"
+  },
+  "fr": {
+    "home.accountSignedInTitle": "Connecté en tant que"
+  },
+  "de": {
+    "home.accountSignedInTitle": "Angemeldet als"
+  },
+  "it": {
+    "home.accountSignedInTitle": "Accesso effettuato come"
+  },
+  "hr": {
+    "home.accountSignedInTitle": "Prijavljeni kao"
+  },
+  "el": {
+    "home.accountSignedInTitle": "Συνδεδεμένος ως"
+  },
+  "pl": {
+    "home.accountSignedInTitle": "Zalogowano jako"
+  },
+  "ru": {
+    "home.accountSignedInTitle": "Вы вошли как"
+  },
+  "zh": {
+    "home.accountSignedInTitle": "当前登录账户："
+  }
+};
+for (const [language, entries] of Object.entries(signedInTitleTranslations)) Object.assign(translations[language], entries);
