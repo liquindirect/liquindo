@@ -2699,3 +2699,119 @@ document.addEventListener(
       new LanguageManager();
   }
 );
+
+
+// Labels for the homepage community hub.
+const homepageHubLabelTranslations = {
+  en: { "home.hubTitle": "Explore Liquindo", "home.explore": "Explore section →", "home.read": "Read overview →" },
+  pt: { "home.hubTitle": "Explore Liquindo", "home.explore": "Explorar seção →", "home.read": "Ler visão geral →" },
+  es: { "home.hubTitle": "Explora Liquindo", "home.explore": "Explorar sección →", "home.read": "Leer resumen →" },
+  fr: { "home.hubTitle": "Explorer Liquindo", "home.explore": "Explorer la section →", "home.read": "Lire l’aperçu →" },
+  de: { "home.hubTitle": "Liquindo entdecken", "home.explore": "Bereich erkunden →", "home.read": "Überblick lesen →" },
+  it: { "home.hubTitle": "Esplora Liquindo", "home.explore": "Esplora la sezione →", "home.read": "Leggi la panoramica →" },
+  hr: { "home.hubTitle": "Istražite Liquindo", "home.explore": "Istraži odjeljak →", "home.read": "Pročitaj pregled →" },
+  el: { "home.hubTitle": "Εξερευνήστε το Liquindo", "home.explore": "Εξερεύνηση ενότητας →", "home.read": "Διαβάστε την επισκόπηση →" },
+  pl: { "home.hubTitle": "Poznaj Liquindo", "home.explore": "Poznaj sekcję →", "home.read": "Przeczytaj przegląd →" },
+  ru: { "home.hubTitle": "Исследуйте Liquindo", "home.explore": "Открыть раздел →", "home.read": "Читать обзор →" },
+  zh: { "home.hubTitle": "探索 Liquindo", "home.explore": "探索栏目 →", "home.read": "阅读概览 →" }
+};
+for (const [language, entries] of Object.entries(homepageHubLabelTranslations)) Object.assign(translations[language], entries);
+
+
+
+const homepageAccountStatusTranslations = {
+  en: { "home.accountSignedIn": "You are signed in. Open your account to manage your profile.", "home.accountSignedOut": "Sign in or open your account settings." },
+  pt: { "home.accountSignedIn": "Você está conectado. Abra sua conta para gerenciar seu perfil.", "home.accountSignedOut": "Entre ou abra as configurações da sua conta." },
+  es: { "home.accountSignedIn": "Has iniciado sesión. Abre tu cuenta para gestionar tu perfil.", "home.accountSignedOut": "Inicia sesión o abre la configuración de tu cuenta." },
+  fr: { "home.accountSignedIn": "Vous êtes connecté. Ouvrez votre compte pour gérer votre profil.", "home.accountSignedOut": "Connectez-vous ou ouvrez les paramètres de votre compte." },
+  de: { "home.accountSignedIn": "Du bist angemeldet. Öffne dein Konto, um dein Profil zu verwalten.", "home.accountSignedOut": "Melde dich an oder öffne deine Kontoeinstellungen." },
+  it: { "home.accountSignedIn": "Hai effettuato l’accesso. Apri il tuo account per gestire il profilo.", "home.accountSignedOut": "Accedi o apri le impostazioni del tuo account." },
+  hr: { "home.accountSignedIn": "Prijavljeni ste. Otvorite račun kako biste uredili profil.", "home.accountSignedOut": "Prijavite se ili otvorite postavke računa." },
+  el: { "home.accountSignedIn": "Έχετε συνδεθεί. Ανοίξτε τον λογαριασμό σας για να διαχειριστείτε το προφίλ σας.", "home.accountSignedOut": "Συνδεθείτε ή ανοίξτε τις ρυθμίσεις του λογαριασμού σας." },
+  pl: { "home.accountSignedIn": "Jesteś zalogowany. Otwórz konto, aby zarządzać profilem.", "home.accountSignedOut": "Zaloguj się lub otwórz ustawienia konta." },
+  ru: { "home.accountSignedIn": "Вы вошли в систему. Откройте аккаунт, чтобы управлять профилем.", "home.accountSignedOut": "Войдите или откройте настройки аккаунта." },
+  zh: { "home.accountSignedIn": "你已登录。打开账户以管理个人资料。", "home.accountSignedOut": "登录或打开账户设置。" }
+};
+for (const [language, entries] of Object.entries(homepageAccountStatusTranslations)) Object.assign(translations[language], entries);
+
+
+const homepageCardDescriptionTranslations = {
+  "en": {
+    "home.cardWikiDescription": "Explore articles and reference material.",
+    "home.cardMembersDescription": "Browse public member profiles and bios.",
+    "home.cardHistoryDescription": "Learn about the project’s origins and milestones.",
+    "home.cardIdeologyDescription": "Read about the project’s developing principles and ideas.",
+    "home.cardGalleryDescription": "Browse visual materials from the project."
+  },
+  "pt": {
+    "home.cardWikiDescription": "Explore artigos e materiais de referência.",
+    "home.cardMembersDescription": "Consulte perfis e biografias públicas dos membros.",
+    "home.cardHistoryDescription": "Conheça as origens e os marcos do projeto.",
+    "home.cardIdeologyDescription": "Leia sobre os princípios e as ideias em desenvolvimento do projeto.",
+    "home.cardGalleryDescription": "Explore materiais visuais do projeto."
+  },
+  "es": {
+    "home.cardWikiDescription": "Explora artículos y material de referencia.",
+    "home.cardMembersDescription": "Consulta perfiles y biografías públicas de miembros.",
+    "home.cardHistoryDescription": "Conoce los orígenes y los hitos del proyecto.",
+    "home.cardIdeologyDescription": "Lee sobre los principios e ideas en desarrollo del proyecto.",
+    "home.cardGalleryDescription": "Explora materiales visuales del proyecto."
+  },
+  "fr": {
+    "home.cardWikiDescription": "Explorez les articles et les documents de référence.",
+    "home.cardMembersDescription": "Consultez les profils et biographies publics des membres.",
+    "home.cardHistoryDescription": "Découvrez les origines et les étapes clés du projet.",
+    "home.cardIdeologyDescription": "Découvrez les principes et idées en cours d’élaboration.",
+    "home.cardGalleryDescription": "Parcourez les documents visuels du projet."
+  },
+  "de": {
+    "home.cardWikiDescription": "Entdecke Artikel und Referenzmaterial.",
+    "home.cardMembersDescription": "Durchsuche öffentliche Mitgliederprofile und Biografien.",
+    "home.cardHistoryDescription": "Erfahre mehr über Ursprung und Meilensteine des Projekts.",
+    "home.cardIdeologyDescription": "Lies über die sich entwickelnden Grundsätze und Ideen des Projekts.",
+    "home.cardGalleryDescription": "Durchsuche visuelle Materialien des Projekts."
+  },
+  "it": {
+    "home.cardWikiDescription": "Esplora articoli e materiali di riferimento.",
+    "home.cardMembersDescription": "Consulta profili pubblici e biografie dei membri.",
+    "home.cardHistoryDescription": "Scopri le origini e le tappe principali del progetto.",
+    "home.cardIdeologyDescription": "Leggi i principi e le idee in evoluzione del progetto.",
+    "home.cardGalleryDescription": "Esplora i materiali visivi del progetto."
+  },
+  "hr": {
+    "home.cardWikiDescription": "Istražite članke i referentne materijale.",
+    "home.cardMembersDescription": "Pregledajte javne profile i biografije članova.",
+    "home.cardHistoryDescription": "Upoznajte početke i važne prekretnice projekta.",
+    "home.cardIdeologyDescription": "Pročitajte o načelima i idejama projekta koje se razvijaju.",
+    "home.cardGalleryDescription": "Pregledajte vizualne materijale projekta."
+  },
+  "el": {
+    "home.cardWikiDescription": "Εξερευνήστε άρθρα και υλικό αναφοράς.",
+    "home.cardMembersDescription": "Περιηγηθείτε σε δημόσια προφίλ και βιογραφικά μελών.",
+    "home.cardHistoryDescription": "Μάθετε για τις απαρχές και τα ορόσημα του έργου.",
+    "home.cardIdeologyDescription": "Διαβάστε για τις αρχές και τις ιδέες που αναπτύσσει το έργο.",
+    "home.cardGalleryDescription": "Περιηγηθείτε στο οπτικό υλικό του έργου."
+  },
+  "pl": {
+    "home.cardWikiDescription": "Przeglądaj artykuły i materiały źródłowe.",
+    "home.cardMembersDescription": "Przeglądaj publiczne profile i biografie członków.",
+    "home.cardHistoryDescription": "Poznaj początki projektu i jego najważniejsze etapy.",
+    "home.cardIdeologyDescription": "Przeczytaj o rozwijanych zasadach i ideach projektu.",
+    "home.cardGalleryDescription": "Przeglądaj materiały wizualne projektu."
+  },
+  "ru": {
+    "home.cardWikiDescription": "Изучайте статьи и справочные материалы.",
+    "home.cardMembersDescription": "Просматривайте открытые профили и биографии участников.",
+    "home.cardHistoryDescription": "Узнайте об истоках проекта и ключевых этапах.",
+    "home.cardIdeologyDescription": "Читайте о развивающихся принципах и идеях проекта.",
+    "home.cardGalleryDescription": "Просматривайте визуальные материалы проекта."
+  },
+  "zh": {
+    "home.cardWikiDescription": "探索文章和参考资料。",
+    "home.cardMembersDescription": "浏览公开的成员资料和简介。",
+    "home.cardHistoryDescription": "了解项目的起源和重要里程碑。",
+    "home.cardIdeologyDescription": "了解项目正在发展的原则和理念。",
+    "home.cardGalleryDescription": "浏览项目的视觉资料。"
+  }
+};
+for (const [language, entries] of Object.entries(homepageCardDescriptionTranslations)) Object.assign(translations[language], entries);
