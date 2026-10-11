@@ -2843,7 +2843,7 @@ select:not(.language-switcher) {
 
 
 /* Homepage-only navy and gold redesign; preserve and better integrate the hero image. */
-body:has(#home.hero) {
+body.homepage-redesign {
   --ink: #f4f0e5;
   --muted: #c0c8d5;
   --paper: #0a1220;
@@ -2857,34 +2857,34 @@ body:has(#home.hero) {
   background: #0a1220;
   color: #f4f0e5;
 }
-body:has(#home.hero) .site-header,
-body:has(#home.hero) .topbar { background: #080f1c; }
-body:has(#home.hero) .brand { color: #fff8e8; }
-body:has(#home.hero) .nav-links a,
-body:has(#home.hero) .nav-links .account-logout {
+body.homepage-redesign .site-header,
+body.homepage-redesign .topbar { background: #080f1c; }
+body.homepage-redesign .brand { color: #fff8e8; }
+body.homepage-redesign .nav-links a,
+body.homepage-redesign .nav-links .account-logout {
   border-color: rgba(223,191,112,.22);
   background: rgba(255,255,255,.035);
   color: #f4f0e5;
 }
-body:has(#home.hero) .nav-links a:hover,
-body:has(#home.hero) .nav-links .account-logout:hover,
-body:has(#home.hero) .nav-links a[aria-current="page"] {
+body.homepage-redesign .nav-links a:hover,
+body.homepage-redesign .nav-links .account-logout:hover,
+body.homepage-redesign .nav-links a[aria-current="page"] {
   border-color: #dfbf70;
   background: rgba(223,191,112,.12);
   color: #fff0c5;
 }
-body:has(#home.hero) .language-control {
+body.homepage-redesign .language-control {
   border-color: rgba(223,191,112,.28);
   background: rgba(255,255,255,.035);
 }
-body:has(#home.hero) .language-icon,
-body:has(#home.hero) .language-switcher {
+body.homepage-redesign .language-icon,
+body.homepage-redesign .language-switcher {
   border-color: rgba(223,191,112,.24);
   background: #111e31;
   color: #f4f0e5;
 }
-body:has(#home.hero) .language-switcher option { background: #111e31; color: #f4f0e5; }
-body:has(#home.hero) .liquin-message {
+body.homepage-redesign .language-switcher option { background: #111e31; color: #f4f0e5; }
+body.homepage-redesign .liquin-message {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -2894,10 +2894,10 @@ body:has(#home.hero) .liquin-message {
   border-bottom: 1px solid rgba(223,191,112,.2);
   background: #101b2c;
 }
-body:has(#home.hero) .liquin-message strong { color: #dfbf70; }
-body:has(#home.hero) .liquin-message span { color: #d6dce5; }
+body.homepage-redesign .liquin-message strong { color: #dfbf70; }
+body.homepage-redesign .liquin-message span { color: #d6dce5; }
 
-body:has(#home.hero) .hero {
+body.homepage-redesign .hero {
   position: relative;
   isolation: isolate;
   display: flex;
@@ -2914,7 +2914,7 @@ body:has(#home.hero) .hero {
   background-position: center,center,58% center;
   background-size: cover;
 }
-body:has(#home.hero) .hero::before {
+body.homepage-redesign .hero::before {
   position: absolute;
   z-index: -1;
   inset: 0;
@@ -2922,14 +2922,14 @@ body:has(#home.hero) .hero::before {
   pointer-events: none;
   background: linear-gradient(110deg,transparent 0 54%,rgba(223,191,112,.08) 100%);
 }
-body:has(#home.hero) .hero-content {
+body.homepage-redesign .hero-content {
   width: min(780px,100%);
   padding: clamp(22px,3.5vw,42px);
   border-left: 3px solid #dfbf70;
   background: linear-gradient(90deg,rgba(8,15,28,.68),rgba(8,15,28,.12));
   text-shadow: 0 2px 22px rgba(0,0,0,.35);
 }
-body:has(#home.hero) .hero .eyebrow {
+body.homepage-redesign .hero .eyebrow {
   margin-bottom: 18px;
   color: #dfbf70;
   font-size: .78rem;
@@ -2937,24 +2937,24 @@ body:has(#home.hero) .hero .eyebrow {
   letter-spacing: .19em;
   text-transform: uppercase;
 }
-body:has(#home.hero) .hero h1 {
+body.homepage-redesign .hero h1 {
   margin: 0 0 22px;
   color: #fff8e8;
   font-size: clamp(3.6rem,10vw,7.8rem);
   line-height: .92;
   letter-spacing: -.06em;
 }
-body:has(#home.hero) .hero p:not(.eyebrow) {
+body.homepage-redesign .hero p:not(.eyebrow) {
   max-width: 620px;
   margin-bottom: 0;
   color: #e3e7ed;
   font-size: clamp(1.02rem,1.6vw,1.2rem);
   line-height: 1.8;
 }
-body:has(#home.hero) .section-label,
-body:has(#home.hero) .eyebrow { color: #dfbf70; }
-body:has(#home.hero) main { background: #0a1220; }
-body:has(#home.hero) .home-hub {
+body.homepage-redesign .section-label,
+body.homepage-redesign .eyebrow { color: #dfbf70; }
+body.homepage-redesign main { background: #0a1220; }
+body.homepage-redesign .home-hub {
   width: min(1160px,calc(100% - 40px));
   margin: 0 auto;
   padding: clamp(28px,5vw,58px) 0;
@@ -2964,13 +2964,13 @@ body:has(#home.hero) .home-hub {
   background: transparent;
   box-shadow: none;
 }
-body:has(#home.hero) .home-hub-heading { margin-bottom: 26px; }
-body:has(#home.hero) .home-hub-heading h2 {
+body.homepage-redesign .home-hub-heading { margin-bottom: 26px; }
+body.homepage-redesign .home-hub-heading h2 {
   color: #fff7e5;
   font-size: clamp(2rem,4vw,3rem);
   letter-spacing: -.04em;
 }
-body:has(#home.hero) .home-feature-card {
+body.homepage-redesign .home-feature-card {
   min-height: 205px;
   padding: clamp(20px,2.5vw,28px);
   border: 1px solid rgba(223,191,112,.22);
@@ -2979,79 +2979,79 @@ body:has(#home.hero) .home-feature-card {
   color: #f4f0e5;
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
 }
-body:has(#home.hero) .home-feature-card:hover {
+body.homepage-redesign .home-feature-card:hover {
   border-color: #dfbf70;
   background: linear-gradient(145deg,#1b2d46,#111e31);
   color: #fff8e8;
   box-shadow: 0 16px 34px rgba(0,0,0,.28);
   transform: translateY(-3px);
 }
-body:has(#home.hero) .home-feature-number,
-body:has(#home.hero) .home-card-cta { color: #dfbf70; }
-body:has(#home.hero) .home-feature-card h3 { color: #fff5dc; }
-body:has(#home.hero) .home-feature-card p { color: #c0c8d5; }
-body:has(#home.hero) .home-account-card { border-color: rgba(223,191,112,.55); }
-body:has(#home.hero) .content-section {
+body.homepage-redesign .home-feature-number,
+body.homepage-redesign .home-card-cta { color: #dfbf70; }
+body.homepage-redesign .home-feature-card h3 { color: #fff5dc; }
+body.homepage-redesign .home-feature-card p { color: #c0c8d5; }
+body.homepage-redesign .home-account-card { border-color: rgba(223,191,112,.55); }
+body.homepage-redesign .content-section {
   width: min(1160px,calc(100% - 40px));
   padding: clamp(54px,7vw,88px) 0;
   border-bottom: 1px solid rgba(223,191,112,.16);
 }
-body:has(#home.hero) .content-section > div:first-child { margin-bottom: 28px; }
-body:has(#home.hero) .content-section h2 {
+body.homepage-redesign .content-section > div:first-child { margin-bottom: 28px; }
+body.homepage-redesign .content-section h2 {
   color: #fff7e5;
   font-size: clamp(2rem,4vw,3rem);
   line-height: 1.12;
 }
-body:has(#home.hero) .content-section h3,
-body:has(#home.hero) .content-section h4 { color: #f5e8c6; }
-body:has(#home.hero) .content-section p { color: #c0c8d5; }
-body:has(#home.hero) .timeline article,
-body:has(#home.hero) .faq-item,
-body:has(#home.hero) .contact-card,
-body:has(#home.hero) .unavailable-panel,
-body:has(#home.hero) .countdown-panel {
+body.homepage-redesign .content-section h3,
+body.homepage-redesign .content-section h4 { color: #f5e8c6; }
+body.homepage-redesign .content-section p { color: #c0c8d5; }
+body.homepage-redesign .timeline article,
+body.homepage-redesign .faq-item,
+body.homepage-redesign .contact-card,
+body.homepage-redesign .unavailable-panel,
+body.homepage-redesign .countdown-panel {
   border: 1px solid rgba(223,191,112,.22);
   border-radius: 12px;
   background: linear-gradient(145deg,#142238,#101a2b);
   color: #f4f0e5;
   box-shadow: 0 12px 28px rgba(0,0,0,.14);
 }
-body:has(#home.hero) .timeline article span { color: #dfbf70; }
-body:has(#home.hero) .faq-item { padding: 22px; }
-body:has(#home.hero) .contact-card { padding: clamp(22px,3vw,34px); }
-body:has(#home.hero) .email-button {
+body.homepage-redesign .timeline article span { color: #dfbf70; }
+body.homepage-redesign .faq-item { padding: 22px; }
+body.homepage-redesign .contact-card { padding: clamp(22px,3vw,34px); }
+body.homepage-redesign .email-button {
   border-color: rgba(223,191,112,.55);
   background: rgba(223,191,112,.09);
   color: #f2d58d;
   text-decoration: none;
 }
-body:has(#home.hero) .email-button:hover {
+body.homepage-redesign .email-button:hover {
   border-color: #dfbf70;
   background: rgba(223,191,112,.17);
   color: #fff0c5;
 }
-body:has(#home.hero) .unavailable-panel { border-style: dashed; }
-body:has(#home.hero) .status-badge {
+body.homepage-redesign .unavailable-panel { border-style: dashed; }
+body.homepage-redesign .status-badge {
   border-color: rgba(223,191,112,.45);
   background: rgba(223,191,112,.09);
   color: #dfbf70;
 }
-body:has(#home.hero) .countdown-panel > p { color: #c0c8d5; }
-body:has(#home.hero) .countdown-row { border-bottom-color: rgba(223,191,112,.18); }
-body:has(#home.hero) .countdown-row strong { color: #dfbf70; }
-body:has(#home.hero) footer {
+body.homepage-redesign .countdown-panel > p { color: #c0c8d5; }
+body.homepage-redesign .countdown-row { border-bottom-color: rgba(223,191,112,.18); }
+body.homepage-redesign .countdown-row strong { color: #dfbf70; }
+body.homepage-redesign footer {
   border-top: 1px solid rgba(223,191,112,.28);
   background: #060c16;
   color: #f4f0e5;
 }
-body:has(#home.hero) .footer-content p { color: #aeb8c8; }
-body:has(#home.hero) footer a { color: #dfbf70; }
-body:has(#home.hero) footer a:hover { color: #fff1c9; }
-body:has(#home.hero) :focus-visible { outline-color: #f0d18a; }
-body:has(#home.hero) ::selection { background: rgba(223,191,112,.32); color: #fff8e8; }
+body.homepage-redesign .footer-content p { color: #aeb8c8; }
+body.homepage-redesign footer a { color: #dfbf70; }
+body.homepage-redesign footer a:hover { color: #fff1c9; }
+body.homepage-redesign :focus-visible { outline-color: #f0d18a; }
+body.homepage-redesign ::selection { background: rgba(223,191,112,.32); color: #fff8e8; }
 
 @media (max-width:780px) {
-  body:has(#home.hero) .hero {
+  body.homepage-redesign .hero {
     min-height: 500px;
     padding: 44px 18px;
     background-image:
@@ -3060,25 +3060,25 @@ body:has(#home.hero) ::selection { background: rgba(223,191,112,.32); color: #ff
       url("images/liquindo-intro.png");
     background-position: center,center,62% center;
   }
-  body:has(#home.hero) .hero-content {
+  body.homepage-redesign .hero-content {
     padding: 22px 18px;
     background: linear-gradient(90deg,rgba(8,15,28,.78),rgba(8,15,28,.3));
   }
-  body:has(#home.hero) .hero h1 { font-size: clamp(3.3rem,15vw,5.6rem); }
-  body:has(#home.hero) .home-hub,
-  body:has(#home.hero) .content-section { width: calc(100% - 32px); }
-  body:has(#home.hero) .home-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  body:has(#home.hero) .home-feature-card { min-height: 0; }
+  body.homepage-redesign .hero h1 { font-size: clamp(3.3rem,15vw,5.6rem); }
+  body.homepage-redesign .home-hub,
+  body.homepage-redesign .content-section { width: calc(100% - 32px); }
+  body.homepage-redesign .home-feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  body.homepage-redesign .home-feature-card { min-height: 0; }
 }
 @media (max-width:520px) {
-  body:has(#home.hero) .hero { min-height: 460px; background-position: center,center,64% center; }
-  body:has(#home.hero) .hero-content { padding: 18px 14px; }
-  body:has(#home.hero) .home-feature-grid { grid-template-columns: minmax(0,1fr); }
-  body:has(#home.hero) .home-feature-card { padding: 20px; }
-  body:has(#home.hero) .content-section { padding: 48px 0; }
-  body:has(#home.hero) .liquin-message { align-items: flex-start; flex-direction: column; }
+  body.homepage-redesign .hero { min-height: 460px; background-position: center,center,64% center; }
+  body.homepage-redesign .hero-content { padding: 18px 14px; }
+  body.homepage-redesign .home-feature-grid { grid-template-columns: minmax(0,1fr); }
+  body.homepage-redesign .home-feature-card { padding: 20px; }
+  body.homepage-redesign .content-section { padding: 48px 0; }
+  body.homepage-redesign .liquin-message { align-items: flex-start; flex-direction: column; }
 }
 @media (prefers-reduced-motion:reduce) {
-  body:has(#home.hero) .home-feature-card { transition: none; }
-  body:has(#home.hero) .home-feature-card:hover { transform: none; }
+  body.homepage-redesign .home-feature-card { transition: none; }
+  body.homepage-redesign .home-feature-card:hover { transform: none; }
 }
