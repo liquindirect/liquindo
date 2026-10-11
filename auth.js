@@ -34,14 +34,15 @@ const AUTH_MESSAGE_KEYS = new Map([
   ["Account created. Check your email for a confirmation link before logging in.", "auth.msg.createdConfirm"],
   ["Signed in successfully.", "auth.msg.signedIn"],
   ["Something went wrong. Please try again.", "auth.msg.genericError"],
-  ["You have been logged out.", "auth.msg.loggedOut"]
+  ["You have been logged out.", "auth.msg.loggedOut"],
+  ["Enter your email address first, then select Forgot password again.", "auth.msg.emailRequired"]
 ]);
 
 function setMessage(text, error = false) {
   const messageKey = AUTH_MESSAGE_KEYS.get(text);
-  message.textContent = messageKey && window.languageManager
-    ? window.languageManager.get(messageKey)
-    : text;
+  const safeKey = messageKey || (error && text ? "auth.msg.authError" : null);
+  message.dataset.i18nMessageKey = safeKey || "";
+  message.textContent = safeKey && window.languageManager ? window.languageManager.get(safeKey) : text;
   message.style.color = error ? "#b42318" : "var(--teal)";
   message.setAttribute("role", error ? "alert" : "status");
 }
@@ -68,7 +69,19 @@ function setMode(next) {
   document.querySelector("#auth-heading").textContent = window.languageManager?.get(signup ? "auth.create" : "auth.welcome") || (signup ? "Create your account" : "Welcome back");
   setMessage("");
 }
-document.addEventListener("liquindo-language-changed", () => setMode(mode));
+document.addEventListener("liquindo-language-changed", () => {
+  const previousKey = message.dataset.i18nMessageKey;
+  const previousRole = message.getAttribute("role") || "status";
+  const previousColor = message.style.color;
+  setMode(mode);
+  if (previousKey && window.languageManager) {
+    message.dataset.i18nMessageKey = previousKey;
+    message.textContent = window.languageManager.get(previousKey);
+    message.setAttribute("role", previousRole);
+    message.style.color = previousColor;
+  }
+  if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
+});
 function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
@@ -129,7 +142,7 @@ form.addEventListener("submit", async (event) => {
       setMessage("Signed in successfully.");
     }
   } catch (error) {
-    setMessage(error.message || "Something went wrong. Please try again.", true);
+    setMessage("Something went wrong. Please try again.", true);
   } finally {
     submitButton.disabled = false;
   }
@@ -138,10 +151,11 @@ logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
   accountMessage.textContent = "";
   const { error } = await supabase.auth.signOut();
-  accountMessage.textContent = error ? error.message : (window.languageManager?.get("auth.msg.loggedOut") || "You have been logged out.");
+  accountMessage.dataset.i18nMessageKey = error ? "auth.msg.authError" : "auth.msg.loggedOut";
+  accountMessage.textContent = window.languageManager?.get(accountMessage.dataset.i18nMessageKey) || (error ? "We could not complete that account request. Check your details and try again." : "You have been logged out.");
   logoutButton.disabled = false;
 });
 supabase.auth.onAuthStateChange((_event, session) => showSession(session));
 const { data: { session }, error } = await supabase.auth.getSession();
-if (error) setMessage(error.message, true);
+if (error) setMessage("We could not complete that account request. Check your details and try again.", true);
 showSession(session);
