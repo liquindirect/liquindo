@@ -1990,6 +1990,7 @@ Object.assign(translations.en, englishImageDescriptions);
 const directoryRecoveryTranslations = {
   "en": {
     "dir.loading": "Loading members…",
+    "dir.retry": "Try again",
     "dir.loadError": "Could not load the directory. Public read access may not be enabled in Supabase.",
     "dir.count": "{shown} of {total} members shown",
     "dir.noMatch": "No members match these filters. Try a different search or reset filters.",
@@ -2015,6 +2016,7 @@ const directoryRecoveryTranslations = {
   },
   "pt": {
     "dir.loading": "Carregando membros…",
+    "dir.retry": "Tentar novamente",
     "dir.loadError": "Não foi possível carregar o diretório. A leitura pública pode não estar habilitada no Supabase.",
     "dir.count": "{shown} de {total} membros exibidos",
     "dir.noMatch": "Nenhum membro corresponde aos filtros. Tente outra pesquisa ou redefina os filtros.",
@@ -2040,6 +2042,7 @@ const directoryRecoveryTranslations = {
   },
   "es": {
     "dir.loading": "Cargando miembros…",
+    "dir.retry": "Intentar de nuevo",
     "dir.loadError": "No se pudo cargar el directorio. Puede que la lectura pública no esté habilitada en Supabase.",
     "dir.count": "Se muestran {shown} de {total} miembros",
     "dir.noMatch": "Ningún miembro coincide con estos filtros. Prueba otra búsqueda o restablece los filtros.",
@@ -2065,6 +2068,7 @@ const directoryRecoveryTranslations = {
   },
   "fr": {
     "dir.loading": "Chargement des membres…",
+    "dir.retry": "Réessayer",
     "dir.loadError": "Impossible de charger l’annuaire. La lecture publique n’est peut-être pas activée dans Supabase.",
     "dir.count": "{shown} membre(s) sur {total} affiché(s)",
     "dir.noMatch": "Aucun membre ne correspond à ces filtres. Essayez une autre recherche ou réinitialisez les filtres.",
@@ -2090,6 +2094,7 @@ const directoryRecoveryTranslations = {
   },
   "de": {
     "dir.loading": "Mitglieder werden geladen…",
+    "dir.retry": "Erneut versuchen",
     "dir.loadError": "Das Verzeichnis konnte nicht geladen werden. Öffentlicher Lesezugriff ist möglicherweise nicht aktiviert.",
     "dir.count": "{shown} von {total} Mitgliedern angezeigt",
     "dir.noMatch": "Keine Mitglieder entsprechen diesen Filtern. Suche anders oder setze die Filter zurück.",
@@ -2115,6 +2120,7 @@ const directoryRecoveryTranslations = {
   },
   "it": {
     "dir.loading": "Caricamento membri…",
+    "dir.retry": "Riprova",
     "dir.loadError": "Impossibile caricare l’elenco. La lettura pubblica potrebbe non essere abilitata in Supabase.",
     "dir.count": "Visualizzati {shown} membri su {total}",
     "dir.noMatch": "Nessun membro corrisponde ai filtri. Prova un’altra ricerca o reimposta i filtri.",
@@ -2140,6 +2146,7 @@ const directoryRecoveryTranslations = {
   },
   "hr": {
     "dir.loading": "Učitavanje članova…",
+    "dir.retry": "Pokušajte ponovno",
     "dir.loadError": "Imenik nije moguće učitati. Javno čitanje možda nije omogućeno u Supabaseu.",
     "dir.count": "Prikazano {shown} od {total} članova",
     "dir.noMatch": "Nijedan član ne odgovara filtrima. Pokušajte drugu pretragu ili poništite filtre.",
@@ -2165,6 +2172,7 @@ const directoryRecoveryTranslations = {
   },
   "el": {
     "dir.loading": "Φόρτωση μελών…",
+    "dir.retry": "Δοκιμάστε ξανά",
     "dir.loadError": "Δεν ήταν δυνατή η φόρτωση του καταλόγου. Ίσως δεν είναι ενεργή η δημόσια ανάγνωση στο Supabase.",
     "dir.count": "Εμφανίζονται {shown} από {total} μέλη",
     "dir.noMatch": "Κανένα μέλος δεν ταιριάζει στα φίλτρα. Δοκιμάστε άλλη αναζήτηση ή επαναφέρετε τα φίλτρα.",
@@ -2190,6 +2198,7 @@ const directoryRecoveryTranslations = {
   },
   "pl": {
     "dir.loading": "Wczytywanie członków…",
+    "dir.retry": "Spróbuj ponownie",
     "dir.loadError": "Nie można wczytać katalogu. Publiczny odczyt może nie być włączony w Supabase.",
     "dir.count": "Wyświetlono {shown} z {total} członków",
     "dir.noMatch": "Żaden członek nie pasuje do filtrów. Zmień wyszukiwanie lub wyczyść filtry.",
@@ -2215,6 +2224,7 @@ const directoryRecoveryTranslations = {
   },
   "ru": {
     "dir.loading": "Загрузка участников…",
+    "dir.retry": "Попробовать снова",
     "dir.loadError": "Не удалось загрузить каталог. Возможно, в Supabase не включено публичное чтение.",
     "dir.count": "Показано {shown} из {total} участников",
     "dir.noMatch": "Нет участников, соответствующих фильтрам. Измените поиск или сбросьте фильтры.",
@@ -2240,6 +2250,7 @@ const directoryRecoveryTranslations = {
   },
   "zh": {
     "dir.loading": "正在加载成员…",
+    "dir.retry": "重试",
     "dir.loadError": "无法加载目录。Supabase 可能尚未启用公开读取策略。",
     "dir.count": "显示 {total} 位成员中的 {shown} 位",
     "dir.noMatch": "没有符合这些筛选条件的成员。请尝试其他搜索或重置筛选。",
