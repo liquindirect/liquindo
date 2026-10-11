@@ -2699,3 +2699,20 @@ document.addEventListener(
       new LanguageManager();
   }
 );
+
+
+// Labels for the homepage community hub.
+const homepageHubLabelTranslations = {
+  en: { "home.hubTitle": "Explore Liquindo", "home.explore": "Explore section →", "home.read": "Read overview →" },
+  pt: { "home.hubTitle": "Explore Liquindo", "home.explore": "Explorar seção →", "home.read": "Ler visão geral →" },
+  es: { "home.hubTitle": "Explora Liquindo", "home.explore": "Explorar sección →", "home.read": "Leer resumen →" },
+  fr: { "home.hubTitle": "Explorer Liquindo", "home.explore": "Explorer la section →", "home.read": "Lire l’aperçu →" },
+  de: { "home.hubTitle": "Liquindo entdecken", "home.explore": "Bereich erkunden →", "home.read": "Überblick lesen →" },
+  it: { "home.hubTitle": "Esplora Liquindo", "home.explore": "Esplora la sezione →", "home.read": "Leggi la panoramica →" },
+  hr: { "home.hubTitle": "Istražite Liquindo", "home.explore": "Istraži odjeljak →", "home.read": "Pročitaj pregled →" },
+  el: { "home.hubTitle": "Εξερευνήστε το Liquindo", "home.explore": "Εξερεύνηση ενότητας →", "home.read": "Διαβάστε την επισκόπηση →" },
+  pl: { "home.hubTitle": "Poznaj Liquindo", "home.explore": "Poznaj sekcję →", "home.read": "Przeczytaj przegląd →" },
+  ru: { "home.hubTitle": "Исследуйте Liquindo", "home.explore": "Открыть раздел →", "home.read": "Читать обзор →" },
+  zh: { "home.hubTitle": "探索 Liquindo", "home.explore": "探索栏目 →", "home.read": "阅读概览 →" }
+};
+for (const [language, entries] of Object.entries(homepageHubLabelTranslations)) Object.assign(translations[language], entries);
