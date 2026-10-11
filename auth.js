@@ -40,15 +40,16 @@ function setMode(next) {
   const signup = mode === "signup";
   loginTab.setAttribute("aria-pressed", String(!signup));
   signupTab.setAttribute("aria-pressed", String(signup));
-  submitButton.textContent = signup ? "Create account" : "Log in";
+  submitButton.textContent = window.languageManager?.get(signup ? "auth.create" : "auth.login") || (signup ? "Create account" : "Log in");
   passwordInput.autocomplete = signup ? "new-password" : "current-password";
   confirmPasswordField.classList.toggle("auth-hidden", !signup);
   confirmPasswordInput.required = signup;
   if (!signup) confirmPasswordInput.value = "";
   forgotPasswordButton.classList.toggle("auth-hidden", signup);
-  document.querySelector("#auth-heading").textContent = signup ? "Create your account" : "Welcome back";
+  document.querySelector("#auth-heading").textContent = window.languageManager?.get(signup ? "auth.create" : "auth.welcome") || (signup ? "Create your account" : "Welcome back");
   setMessage("");
 }
+document.addEventListener("liquindo-language-changed", () => setMode(mode));
 function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
