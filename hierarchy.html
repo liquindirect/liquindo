@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="The organisational hierarchy of Liquindo." />
+  <title>Liquindo Hierarchy</title>
+  <link rel="stylesheet" href="style.css?v=20261012-hierarchy" />
+  <style>
+    body.hierarchy-page { background: #f4f1e9; }
+    body.hierarchy-page .page-header { background: #081522; border-bottom: 1px solid rgba(226,194,123,.3); }
+    body.hierarchy-page .topbar { background: #081522; }
+    body.hierarchy-page .page-title { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: clamp(2.8rem, 7vw, 5rem) 0 3rem; }
+    body.hierarchy-page .page-title .eyebrow { color: #e2c27b; letter-spacing: .18em; text-transform: uppercase; font-size: .8rem; font-weight: 800; }
+    body.hierarchy-page .page-title h1 { margin: .35rem 0 .75rem; color: #fffaf0; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.1; }
+    body.hierarchy-page .page-title p { color: #c5ced7; max-width: 700px; font-size: 1.08rem; }
+    .hierarchy-main { width: min(1000px, calc(100% - 32px)); margin: 0 auto; padding: 3rem 0 4.5rem; }
+    .hierarchy-intro { max-width: 720px; margin: 0 auto 2.5rem; text-align: center; color: #52606a; }
+    .org-chart { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .org-node { width: min(100%, 460px); padding: 1.35rem 1.5rem; text-align: center; border: 1px solid #d7c38f; border-radius: 16px; background: #fffdf8; box-shadow: 0 12px 28px rgba(8,21,34,.08); }
+    .org-node.leader { background: linear-gradient(145deg, #0b1b2b, #142c40); color: #fffaf0; border: 2px solid #d8b86b; box-shadow: 0 16px 34px rgba(8,21,34,.18); }
+    .org-node .node-level { display: block; margin-bottom: .35rem; color: #a27a2b; text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; font-weight: 850; }
+    .org-node.leader .node-level { color: #f0d58e; }
+    .org-node h2 { margin: .1rem 0 .25rem; font-size: clamp(1.25rem, 3vw, 1.65rem); line-height: 1.25; }
+    .org-node p { margin: .35rem 0 0; color: #5d6870; }
+    .org-node.leader p { color: #d4dce4; }
+    .org-connector { width: 2px; height: 32px; background: #c9a85d; position: relative; }
+    .org-connector::after { content: ""; position: absolute; bottom: 0; left: -5px; width: 10px; height: 10px; border-right: 2px solid #c9a85d; border-bottom: 2px solid #c9a85d; transform: rotate(45deg); }
+    .org-node.community { background: #fff; border-color: #d9dfe4; }
+    .hierarchy-note { margin: 2.25rem auto 0; max-width: 700px; padding: 1rem 1.15rem; border-left: 3px solid #c9a85d; border-radius: 0 10px 10px 0; background: rgba(255,255,255,.72); color: #52606a; font-size: .95rem; }
+    .hierarchy-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .hierarchy-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .7rem 1rem; border: 1px solid #c9a85d; border-radius: 999px; background: #0b1b2b; color: #f4d995; font-weight: 750; }
+    .hierarchy-actions a:hover { background: #17324a; }
+    body.hierarchy-page footer { background: #08121d; color: #d5dce3; border-top: 1px solid rgba(226,194,123,.25); }
+    body.hierarchy-page footer a { color: #e2c27b; }
+    @media (max-width: 600px) {
+      body.hierarchy-page .page-title { width: calc(100% - 28px); }
+      .hierarchy-main { width: calc(100% - 24px); padding-top: 2rem; }
+      .org-node { padding: 1.15rem 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { body.hierarchy-page * { scroll-behavior: auto; transition: none !important; } }
+  </style>
+</head>
+<body class="hierarchy-page">
+  <script src="homepage-gate.js"></script>
+  <header class="page-header">
+    <nav class="topbar" aria-label="Main navigation">
+      <a class="brand" href="index.html#home">Liquindo</a>
+      <div class="nav-links">
+        <a href="index.html#history">History</a>
+        <a href="index.html#ideology">Ideology</a>
+        <a href="wiki.html">LiquinWiki</a>
+        <a href="members.html">Members</a>
+        <a href="hierarchy.html" aria-current="page">Hierarchy</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="login.html" id="site-account-link" aria-live="polite">Account</a>
+        <button type="button" class="account-logout" id="site-account-logout" hidden>Log out</button>
+      </div>
+      <select id="language-switcher" class="language-switcher" aria-label="Select language">
+        <option value="en">English</option><option value="pt">Português</option><option value="es">Español</option>
+        <option value="fr">Français</option><option value="de">Deutsch</option><option value="it">Italiano</option>
+        <option value="hr">Hrvatski</option><option value="el">Ελληνικά</option><option value="pl">Polski</option>
+        <option value="ru">Русский</option><option value="zh">中文</option>
+      </select>
+    </nav>
+    <div class="page-title">
+      <p class="eyebrow">Organisation</p>
+      <h1>Liquindo Hierarchy</h1>
+      <p>An overview of leadership and the community structure of Liquindo.</p>
+    </div>
+  </header>
+
+  <main class="hierarchy-main">
+    <p class="hierarchy-intro">The hierarchy places the leadership of Liquindo at the top, followed by the wider leadership team and community.</p>
+    <section class="org-chart" aria-label="Liquindo organisational hierarchy">
+      <article class="org-node leader">
+        <span class="node-level">Founder · Leader</span>
+        <h2>Liquin</h2>
+        <p>Leader of Liquindo</p>
+      </article>
+      <div class="org-connector" aria-hidden="true"></div>
+      <article class="org-node">
+        <span class="node-level">Leadership</span>
+        <h2>Doctor Fullwood</h2>
+        <p>Co-Director</p>
+      </article>
+      <div class="org-connector" aria-hidden="true"></div>
+      <article class="org-node community">
+        <span class="node-level">Community</span>
+        <h2>Members &amp; Associates</h2>
+        <p>Participants contributing to the Liquindo project and its development.</p>
+      </article>
+    </section>
+    <p class="hierarchy-note">This page presents the currently listed organisational structure. Specific offices and responsibilities can be expanded as Liquindo's institutions develop.</p>
+    <div class="hierarchy-actions">
+      <a href="members.html">View members directory</a>
+      <a href="index.html">Return to homepage</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>Contact: liquindohq@yahoo.com</p>
+      <a href="index.html">Back to main page</a>
+    </div>
+    <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
+  </footer>
+  <script src="i18n.js"></script>
+  <script type="module" src="site-account.js"></script>
+</body>
+</html>
