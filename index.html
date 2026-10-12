@@ -30,6 +30,30 @@
       .nav-links .account-logout:hover { background: rgba(255, 255, 255, 0.24); color: #fff; }
       .nav-links .account-logout[hidden] { display: none; }
       .nav-links .account-logout:disabled { cursor: wait; opacity: 0.7; }
+
+      /* Prominent homepage shortcut, independent of the navigation and feature grid. */
+      .homepage-hierarchy-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        margin-top: 1.25rem;
+        padding: 0.8rem 1.25rem;
+        border: 1px solid #d9b765;
+        border-radius: 999px;
+        background: #d9b765;
+        color: #14243d;
+        font-weight: 800;
+        text-decoration: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+      }
+      .homepage-hierarchy-cta:hover,
+      .homepage-hierarchy-cta:focus-visible {
+        background: #f0d48d;
+        border-color: #f0d48d;
+        color: #14243d;
+        transform: translateY(-1px);
+      }
     </style>
 
   </head>
@@ -131,6 +155,7 @@
             idea of collectively establishing a new community with its own
             institutions, identity, economy, and political system.
           </p>
+          <a class="homepage-hierarchy-cta" href="hierarchy.html">View Liquindo's Hierarchy <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </header>
