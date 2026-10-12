@@ -3082,3 +3082,46 @@ body.homepage-redesign ::selection { background: rgba(223,191,112,.32); color: #
   body.homepage-redesign .home-feature-card { transition: none; }
   body.homepage-redesign .home-feature-card:hover { transform: none; }
 }
+
+
+/* Homepage navigation cleanup and accessible collapsible FAQ. */
+body.homepage-redesign .home-card-cta { display: none; }
+
+body.homepage-redesign .faq-item {
+  padding: 0;
+  overflow: clip;
+}
+body.homepage-redesign .faq-item > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  color: #f5e8c6;
+  font-weight: 750;
+  line-height: 1.5;
+  cursor: pointer;
+  list-style: none;
+}
+body.homepage-redesign .faq-item > summary::-webkit-details-marker { display: none; }
+body.homepage-redesign .faq-item > summary::after {
+  content: "+";
+  flex: 0 0 auto;
+  color: #dfbf70;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1;
+}
+body.homepage-redesign .faq-item[open] > summary::after { content: "−"; }
+body.homepage-redesign .faq-item > summary:focus-visible {
+  outline: 3px solid #f0d18a;
+  outline-offset: -4px;
+  border-radius: 10px;
+}
+body.homepage-redesign .faq-item > p {
+  margin: 0;
+  padding: 0 22px 22px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.homepage-redesign .faq-item { scroll-behavior: auto; }
+}
