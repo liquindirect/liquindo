@@ -4147,3 +4147,14 @@ body.gallery-redesign footer a { color: #fdbe00; }
   body.gallery-redesign .gallery-page-grid figure { transition: none; }
   body.gallery-redesign .gallery-page-grid figure:hover { transform: none; }
 }
+
+
+body.gallery-redesign .gallery-empty-state {
+  margin: 28px 0 0;
+  padding: 28px;
+  border: 1px dashed rgba(253,190,0,.38);
+  border-radius: 12px;
+  color: #c0c8d5;
+  text-align: center;
+}
+body.gallery-redesign .gallery-empty-state[hidden] { display: none !important; }
