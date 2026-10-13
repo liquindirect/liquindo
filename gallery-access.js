@@ -19,9 +19,9 @@ function showGalleryMessage(message) {
 }
 
 function hidePublicImageSources() {
-  document.querySelectorAll(".gallery-redesign img[src^='images/']").forEach((img) => {
-    img.dataset.privateGalleryPath = decodeURIComponent(img.getAttribute("src").slice("images/".length));
-    img.removeAttribute("src");
+  document.querySelectorAll(".gallery-page-grid img[data-gallery-source^='images/']").forEach((img) => {
+    img.dataset.privateGalleryPath = decodeURIComponent(img.getAttribute("data-gallery-source").slice("images/".length));
+    img.removeAttribute("data-gallery-source");
   });
 }
 
