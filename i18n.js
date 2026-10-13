@@ -3243,3 +3243,51 @@ const homepageVisualArchiveTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(homepageVisualArchiveTranslations)) Object.assign(translations[language], entries);
+
+const homepageVisualArchiveAccessibilityTranslations = {
+  "en": {
+    "home.archive.illustration.aria": "Illustrated institutional motif",
+    "home.archive.illustration.alt": "Abstract architectural illustration"
+  },
+  "pt": {
+    "home.archive.illustration.aria": "Motivo institucional ilustrado",
+    "home.archive.illustration.alt": "Ilustração arquitetónica abstrata"
+  },
+  "es": {
+    "home.archive.illustration.aria": "Motivo institucional ilustrado",
+    "home.archive.illustration.alt": "Ilustración arquitectónica abstracta"
+  },
+  "fr": {
+    "home.archive.illustration.aria": "Motif institutionnel illustré",
+    "home.archive.illustration.alt": "Illustration architecturale abstraite"
+  },
+  "de": {
+    "home.archive.illustration.aria": "Illustriertes institutionelles Motiv",
+    "home.archive.illustration.alt": "Abstrakte architektonische Illustration"
+  },
+  "it": {
+    "home.archive.illustration.aria": "Motivo istituzionale illustrato",
+    "home.archive.illustration.alt": "Illustrazione architettonica astratta"
+  },
+  "hr": {
+    "home.archive.illustration.aria": "Ilustrirani institucionalni motiv",
+    "home.archive.illustration.alt": "Apstraktna arhitektonska ilustracija"
+  },
+  "el": {
+    "home.archive.illustration.aria": "Εικονογραφημένο θεσμικό μοτίβο",
+    "home.archive.illustration.alt": "Αφηρημένη αρχιτεκτονική εικονογράφηση"
+  },
+  "pl": {
+    "home.archive.illustration.aria": "Ilustrowany motyw instytucjonalny",
+    "home.archive.illustration.alt": "Abstrakcyjna ilustracja architektoniczna"
+  },
+  "ru": {
+    "home.archive.illustration.aria": "Иллюстрированный институциональный мотив",
+    "home.archive.illustration.alt": "Абстрактная архитектурная иллюстрация"
+  },
+  "zh": {
+    "home.archive.illustration.aria": "机构主题插图",
+    "home.archive.illustration.alt": "抽象建筑插图"
+  }
+};
+for (const [language, entries] of Object.entries(homepageVisualArchiveAccessibilityTranslations)) Object.assign(translations[language], entries);
