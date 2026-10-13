@@ -407,6 +407,7 @@
             <figcaption>Image 52</figcaption>
           </figure>
         </div>
+        <p class="gallery-empty-state" id="gallery-empty" hidden data-i18n="gallery.redesign.empty">No images match your search. Try another term or format.</p>
       </section>
     </main>
 
@@ -455,6 +456,7 @@
         const gallerySearch = document.getElementById("gallery-search");
         const galleryFilter = document.getElementById("gallery-filter");
         const galleryResults = document.getElementById("gallery-results");
+        const galleryEmpty = document.getElementById("gallery-empty");
         let visibleFigures = galleryFigures.slice();
 
         function applyGalleryFilters() {
@@ -473,6 +475,8 @@
             figure.hidden = !visible;
             return visible;
           });
+          figureList = visibleFigures;
+          if (galleryEmpty) galleryEmpty.hidden = visibleFigures.length !== 0;
           if (galleryResults) {
             const key = visibleFigures.length === 1 ? "gallery.redesign.resultSingle" : "gallery.redesign.resultPlural";
             const fallback = visibleFigures.length === 1 ? "Showing 1 image" : `Showing ${visibleFigures.length} images`;
