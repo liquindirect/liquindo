@@ -3290,3 +3290,120 @@ body.wiki-redesign :focus-visible { outline: 3px solid #f0d18a; outline-offset: 
   body.wiki-redesign .wiki-container { width: calc(100% - 32px); }
   body.wiki-redesign .infobox { float: none; width: 100%; margin: 0 0 24px; }
 }
+
+
+/* Editorial collapsible contents menu inspired by document-style site indexes. */
+body.homepage-redesign .topbar {
+  gap: 18px;
+}
+body.homepage-redesign .contents-menu {
+  position: relative;
+  z-index: 30;
+  flex: 0 0 auto;
+}
+body.homepage-redesign .contents-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid rgba(223,191,112,.42);
+  background: rgba(223,191,112,.06);
+  color: #f4f0e5;
+  cursor: pointer;
+  list-style: none;
+  font-size: .92rem;
+  font-weight: 750;
+  letter-spacing: .025em;
+}
+body.homepage-redesign .contents-menu > summary::-webkit-details-marker { display: none; }
+body.homepage-redesign .contents-menu > summary:hover,
+body.homepage-redesign .contents-menu[open] > summary {
+  border-color: #dfbf70;
+  background: rgba(223,191,112,.13);
+  color: #fff0c5;
+}
+body.homepage-redesign .contents-menu-icon {
+  color: #dfbf70;
+  font-size: 1.08rem;
+  line-height: 1;
+}
+body.homepage-redesign .contents-chevron {
+  margin-left: 4px;
+  color: #dfbf70;
+  transition: transform .18s ease;
+}
+body.homepage-redesign .contents-menu[open] .contents-chevron { transform: rotate(180deg); }
+body.homepage-redesign .contents-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: min(340px, calc(100vw - 32px));
+  padding: 10px 18px 14px;
+  border: 1px solid rgba(223,191,112,.38);
+  border-top: 2px solid #dfbf70;
+  background: #0d192a;
+  box-shadow: 0 22px 48px rgba(0,0,0,.38);
+}
+body.homepage-redesign .contents-panel-label {
+  margin: 5px 0 8px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid rgba(223,191,112,.24);
+  color: #dfbf70;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+body.homepage-redesign .contents-panel a {
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0,1fr);
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 2px;
+  border-bottom: 1px solid rgba(223,191,112,.13);
+  color: #e9e5da;
+  font-size: .96rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color .16s ease, padding-left .16s ease;
+}
+body.homepage-redesign .contents-panel a:last-child { border-bottom: 0; }
+body.homepage-redesign .contents-panel a > span:first-child {
+  color: #dfbf70;
+  font-size: .76rem;
+  font-variant-numeric: tabular-nums;
+}
+body.homepage-redesign .contents-panel a:hover,
+body.homepage-redesign .contents-panel a:focus-visible {
+  padding-left: 6px;
+  color: #fff0c5;
+}
+body.homepage-redesign .topbar > .nav-links {
+  margin-left: auto;
+}
+body.homepage-redesign .homepage-hierarchy-cta {
+  border-radius: 2px;
+  box-shadow: none;
+}
+@media (max-width: 780px) {
+  body.homepage-redesign .topbar { flex-wrap: wrap; }
+  body.homepage-redesign .contents-menu { order: 3; }
+  body.homepage-redesign .contents-panel { left: 0; }
+  body.homepage-redesign .topbar > .nav-links { margin-left: auto; }
+  body.homepage-redesign .language-control { margin-left: 0; }
+}
+@media (max-width: 520px) {
+  body.homepage-redesign .contents-menu > summary { min-height: 42px; }
+  body.homepage-redesign .contents-panel {
+    position: fixed;
+    top: auto;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    width: auto;
+    max-height: min(72vh, 560px);
+    overflow-y: auto;
+    box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  }
+}
