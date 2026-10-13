@@ -1751,9 +1751,9 @@ footer {
   --muted: #c0c8d4;
   --paper: #0b1424;
   --surface: #121f33;
-  --teal: #d7b56d;
-  --coral: #d7b56d;
-  --gold: #d7b56d;
+  --teal: #fdbe00;
+  --coral: #fdbe00;
+  --gold: #fdbe00;
   --green: #a9c3a5;
   --border: #344258;
   --shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
@@ -2513,7 +2513,7 @@ footer {
   --surface: #fffefa;
   --teal: #147b78;
   --coral: #b95a42;
-  --gold: #c9a45b;
+  --gold: #fdbe00;
   --green: #4d805c;
   --border: #ddd7cb;
   --shadow: 0 18px 48px rgba(23, 36, 58, .09);
@@ -2532,7 +2532,7 @@ body {
 ::selection { background: rgba(201, 164, 91, .28); color: var(--ink); }
 a { text-underline-offset: .2em; }
 a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid #d9b86f; outline-offset: 4px; }
+:focus-visible { outline: 3px solid #fdbe00; outline-offset: 4px; }
 
 .site-header,
 .page-header {
@@ -2600,7 +2600,7 @@ a:hover { text-decoration-thickness: 2px; }
   border-top-color: rgba(255,255,255,.08);
   background: #000032;
 }
-.liquin-message strong { color: #e3c783; }
+.liquin-message strong { color: #fdbe00; }
 .liquin-message span { color: #d5dce6; }
 
 .hero {
@@ -2615,7 +2615,7 @@ a:hover { text-decoration-thickness: 2px; }
 .hero .eyebrow {
   display: inline-block;
   margin-bottom: 18px;
-  color: #e2c47d;
+  color: #fdbe00;
   font-size: .76rem;
   letter-spacing: .17em;
 }
@@ -2647,7 +2647,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .page-title p { color: #d1d9e4; }
 .page-title .eyebrow,
-.page-title .section-label { color: #e2c47d; }
+.page-title .section-label { color: #fdbe00; }
 
 main { overflow: clip; }
 .content-section,
@@ -2689,13 +2689,13 @@ main { overflow: clip; }
   box-shadow: 0 5px 18px rgba(23,36,58,.035);
 }
 .home-feature-card:hover {
-  border-color: #c9a45b;
+  border-color: #fdbe00;
   background: #fff;
   color: var(--ink);
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(23,36,58,.08);
 }
-.home-feature-number { color: #9b7632; }
+.home-feature-number { color: #fdbe00; }
 .home-feature-card p { color: #596579; }
 .home-card-cta { color: #126e6b; }
 
@@ -2704,7 +2704,7 @@ footer {
   background: #111d30;
   color: #edf0f4;
 }
-footer a { color: #e3c783; }
+footer a { color: #fdbe00; }
 footer a:hover { color: #fff; }
 .footer-content { gap: 14px 24px; }
 
@@ -2773,7 +2773,7 @@ select:not(.language-switcher) {
   padding: 8px 12px;
   border: 1px solid #d7c9a7;
   border-radius: 9px;
-  color: #735722;
+  color: #fdbe00;
   font-weight: 700;
 }
 .section-link:hover,
