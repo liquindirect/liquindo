@@ -559,7 +559,18 @@
           selectedText.textContent = description;
           lightboxImage.src = image.src;
           lightboxImage.alt = image.alt;
+          lightboxImage.classList.remove("is-zoomed");
           lightboxCaption.textContent = description;
+
+          // Warm the neighbouring images so next/previous feels immediate.
+          [-1, 1].forEach((offset) => {
+            const neighbour = figureList[(selectedIndex + offset + figureList.length) % figureList.length];
+            const neighbourImage = neighbour?.querySelector("img");
+            if (neighbourImage?.src) {
+              const preload = new Image();
+              preload.src = neighbourImage.src;
+            }
+          });
           lightboxTitle.textContent = `${t("gallery.viewer.image", "Image")} ${imageNumber} ${t("gallery.viewer.of", "of")} ${figureList.length}`;
           galleryFigures.forEach((item) => {
             item.classList.remove("is-selected");
@@ -594,6 +605,22 @@
 
         previousButton.addEventListener("click", () => renderLightbox(selectedIndex - 1));
         nextButton.addEventListener("click", () => renderLightbox(selectedIndex + 1));
+
+        // Mobile users can swipe directly across the image to browse.
+        let touchStartX = 0;
+        let touchStartY = 0;
+        lightbox.addEventListener("touchstart", (event) => {
+          if (event.touches.length !== 1) return;
+          touchStartX = event.touches[0].clientX;
+          touchStartY = event.touches[0].clientY;
+        }, { passive: true });
+        lightbox.addEventListener("touchend", (event) => {
+          if (event.changedTouches.length !== 1) return;
+          const deltaX = event.changedTouches[0].clientX - touchStartX;
+          const deltaY = event.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) return;
+          renderLightbox(selectedIndex + (deltaX < 0 ? 1 : -1));
+        }, { passive: true });
         closeButton.addEventListener("click", closeLightbox);
         lightbox.addEventListener("click", (event) => {
           if (event.target === lightbox) closeLightbox();
