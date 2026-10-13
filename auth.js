@@ -58,6 +58,9 @@ function setMessage(text, error = false) {
 function authErrorMessage(error) {
   const detail = (error?.message || "").toLowerCase();
   const code = (error?.code || "").toLowerCase();
+  if (/captcha|turnstile/.test(detail) || code === "captcha_failed") {
+    return "CAPTCHA verification failed or expired. Please complete the security check and try again.";
+  }
   if (/network|fetch|failed to fetch|load failed/i.test(detail)) {
     return "We could not reach the account service. Check your connection and try again.";
   }
