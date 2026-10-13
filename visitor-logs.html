@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Visitor Access Logs · Liquindo</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background:#101d32; color:#f5f0e5; min-height:100vh; }
+    .log-wrap { width:min(1100px,92vw); margin:3rem auto; }
+    .log-panel { background:#172840; border:1px solid rgba(217,183,101,.35); border-radius:18px; padding:clamp(1rem,3vw,2rem); overflow:hidden; }
+    h1,h2 { color:#e0c477; } .log-muted { color:#c5cfdb; }
+    .log-actions { display:flex; gap:.75rem; flex-wrap:wrap; margin:1rem 0; }
+    .log-button { border:1px solid #d9b765; border-radius:999px; padding:.7rem 1rem; background:#d9b765; color:#14243d; font-weight:800; cursor:pointer; }
+    .log-button.secondary { background:transparent; color:#f5f0e5; }
+    .log-table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:620px; }
+    th,td { padding:.8rem .65rem; border-bottom:1px solid rgba(255,255,255,.12); text-align:left; }
+    th { color:#e0c477; font-size:.9rem; }
+    code { overflow-wrap:anywhere; }
+    #log-status { min-height:1.5em; color:#d9b765; }
+    .log-note { font-size:.92rem; line-height:1.6; color:#c5cfdb; }
+  </style>
+</head>
+<body>
+  <main class="log-wrap">
+    <p><a href="index.html" style="color:#e0c477">← Back to Liquindo</a></p>
+    <section class="log-panel">
+      <p class="log-muted">PRIVATE ADMIN TOOL</p>
+      <h1>Visitor access logs</h1>
+      <p class="log-muted">IP address and visit timestamp only. No page URLs or browsing history are stored here. Records are automatically removed after seven days.</p>
+      <div class="log-actions">
+        <button id="refresh-logs" class="log-button" type="button">Refresh logs</button>
+        <button id="sign-out" class="log-button secondary" type="button">Sign out</button>
+      </div>
+      <p id="log-status" role="status">Checking administrator access…</p>
+      <div class="log-table-wrap">
+        <table>
+          <thead><tr><th>Timestamp (UTC)</th><th>IP address</th><th>Visitor</th><th>Member</th></tr></thead>
+          <tbody id="log-rows"><tr><td colspan="4">Logs will appear here after administrator access is verified.</td></tr></tbody>
+        </table>
+      </div>
+      <p class="log-note">IP addresses can be personal data. Use these records only for legitimate site security and administration, restrict access, and ensure your privacy notice explains collection and retention.</p>
+    </section>
+  </main>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    const URL = "https://uivjovkvpskvvazznlyr.supabase.co";
+    const KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
+    const supabase = createClient(URL, KEY);
+    const status = document.getElementById("log-status");
+    const rows = document.getElementById("log-rows");
+    const refresh = document.getElementById("refresh-logs");
+    const signOut = document.getElementById("sign-out");
+    async function loadLogs() {
+      refresh.disabled = true;
+      status.textContent = "Loading logs…";
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) {
+          status.textContent = "Please sign in with an administrator account first.";
+          rows.replaceChildren();
+          return;
+        }
+        const response = await fetch(URL + "/functions/v1/visitor-log-admin", {
+          headers: { apikey: KEY, Authorization: "Bearer " + session.access_token }
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Access denied");
+        rows.replaceChildren();
+        if (!payload.logs?.length) {
+          const tr = document.createElement("tr"); const td = document.createElement("td");
+          td.colSpan = 4; td.textContent = "No visits recorded in the last seven days."; tr.append(td); rows.append(tr);
+        } else {
+          for (const item of payload.logs) {
+            const tr = document.createElement("tr");
+            for (const value of [
+              new Date(item.visited_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "medium", timeZone: "UTC" }) + " UTC",
+              item.ip_address, item.visitor_type, item.member || "—"
+            ]) {
+              const td = document.createElement("td"); td.textContent = value; tr.append(td);
+            }
+            rows.append(tr);
+          }
+        }
+        status.textContent = "Loaded " + (payload.logs?.length || 0) + " visit record(s).";
+      } catch (error) {
+        rows.replaceChildren();
+        status.textContent = error.message || "Could not load logs.";
+      } finally { refresh.disabled = false; }
+    }
+    refresh.addEventListener("click", loadLogs);
+    signOut.addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      status.textContent = "Signed out.";
+      rows.replaceChildren();
+    });
+    loadLogs();
+  </script>
+  <script type="module" src="visitor-log.js"></script>
+</body>
+</html>
