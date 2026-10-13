@@ -11,7 +11,7 @@
 
     <title>Liquindo</title>
 
-    <link rel="stylesheet" href="style.css?v=20261013-editorial-contents" />
+    <link rel="stylesheet" href="style.css?v=20261013-full-height-sidebar" />
 
     <style>
       .nav-links .account-logout {
@@ -61,39 +61,33 @@
   <body class="homepage-redesign">
     <header class="site-header">
       <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="#home">
-          Liquindo
-        </a>
+        <a class="brand" href="#home">Liquindo</a>
 
         <details class="contents-menu">
-          <summary aria-label="Open site contents">
+          <summary aria-label="Open site contents" aria-controls="site-contents-panel">
             <span class="contents-menu-icon" aria-hidden="true">☰</span>
             <span>Contents</span>
             <span class="contents-chevron" aria-hidden="true">⌄</span>
           </summary>
-          <div class="contents-panel">
-            <p class="contents-panel-label">Contents</p>
-            <a href="#home"><span>00</span><span data-i18n="nav.introduction">Introduction</span></a>
-            <a href="#history"><span>01</span><span data-i18n="nav.history">History</span></a>
-            <a href="#ideology"><span>02</span><span data-i18n="nav.ideology">Ideology</span></a>
+          <button type="button" class="contents-backdrop" aria-label="Close contents menu" tabindex="-1"></button>
+          <div class="contents-panel" id="site-contents-panel">
+            <p class="contents-panel-label">Liquindo · Contents</p>
+            <a href="index.html#home"><span>00</span><span>Introduction</span></a>
+            <a href="index.html#history"><span>01</span><span data-i18n="nav.history">History</span></a>
+            <a href="index.html#ideology"><span>02</span><span data-i18n="nav.ideology">Ideology</span></a>
             <a href="hierarchy.html"><span>03</span><span>Hierarchy</span></a>
             <a href="members.html"><span>04</span><span data-i18n="nav.members">Members</span></a>
             <a href="wiki.html"><span>05</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
-            <a href="#gallery"><span>06</span><span data-i18n="nav.gallery">Gallery</span></a>
-            <a href="#contact"><span>07</span><span data-i18n="nav.contact">Contact</span></a>
-            <a href="#finance"><span>08</span><span data-i18n="nav.finance">Finance</span></a>
+            <a href="gallery.html"><span>06</span><span data-i18n="nav.gallery">Gallery</span></a>
+            <a href="index.html#contact"><span>07</span><span data-i18n="nav.contact">Contact</span></a>
+            <a href="index.html#finance"><span>08</span><span data-i18n="nav.finance">Finance</span></a>
+            <a href="login.html"><span>09</span><span>Account</span></a>
           </div>
         </details>
-
         <div class="nav-links">
-          <a href="login.html" id="account-nav-link" aria-live="polite">
-            Log in
-          </a>
-          <button type="button" class="account-logout" id="account-logout-button" hidden>
-            Log out
-          </button>
+          <a href="login.html" id="account-nav-link" aria-live="polite">Log in</a>
+          <button type="button" class="account-logout" id="account-logout-button" hidden>Log out</button>
         </div>
-
         <div class="language-control">
           <label
             class="language-icon"
@@ -547,23 +541,6 @@
       </a>
     </footer>
 
-    <script>
-      // Close the contents index after choosing a destination, including same-page anchors.
-      document.querySelectorAll(".contents-menu .contents-panel a").forEach((link) => {
-        link.addEventListener("click", () => {
-          const menu = link.closest(".contents-menu");
-          if (menu) menu.open = false;
-        });
-      });
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          document.querySelectorAll(".contents-menu[open]").forEach((menu) => {
-            menu.open = false;
-          });
-        }
-      });
-    </script>
-
     <script src="i18n.js"></script>
 
     <script>
@@ -721,5 +698,33 @@
         updateAccountLink(homepageSession);
       });
     </script>
-  </body>
+  <script>
+  (() => {
+    const menu = document.querySelector(".contents-menu");
+    if (!menu) return;
+    const topbar = menu.closest(".topbar");
+    const backdrop = menu.querySelector(".contents-backdrop");
+    const syncOpenState = () => {
+      if (topbar) topbar.classList.toggle("contents-nav-open", menu.open);
+    };
+    menu.addEventListener("toggle", syncOpenState);
+    menu.querySelectorAll(".contents-panel a").forEach((link) => {
+      link.addEventListener("click", () => { menu.open = false; syncOpenState(); });
+    });
+    if (backdrop) backdrop.addEventListener("click", () => { menu.open = false; syncOpenState(); });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) {
+        menu.open = false;
+        syncOpenState();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target)) {
+        menu.open = false;
+        syncOpenState();
+      }
+    });
+  })();
+</script>
+</body>
   </html>
