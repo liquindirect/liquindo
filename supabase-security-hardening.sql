@@ -88,3 +88,32 @@ $$;
 
 revoke all on function public.review_liquinwiki_revision(bigint,text,text) from public;
 grant execute on function public.review_liquinwiki_revision(bigint,text,text) to authenticated;
+
+
+-- 3) Restrict profile updates to editable public-facing fields.
+-- This blocks self-service role escalation through the Data API.
+ALTER TABLE public.profiles ALTER COLUMN role SET DEFAULT 'member';
+REVOKE UPDATE ON TABLE public.profiles FROM PUBLIC, anon, authenticated;
+GRANT UPDATE (display_name, bio) ON TABLE public.profiles TO authenticated;
+
+-- 4) Remove anonymous execution of privileged functions and disable the legacy
+-- direct-write wiki function, which bypasses the current revision-approval flow.
+REVOKE EXECUTE ON FUNCTION public.can_edit_liquinwiki() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.can_manage_liquinwiki() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.is_admin() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.is_editor_or_admin() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.publish_liquinwiki_admin_revision(text, text, text) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.review_liquinwiki_revision(bigint, text, text) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.save_wiki_page(text, text, text, text) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.set_liquinwiki_permission(text, text) FROM PUBLIC, anon, authenticated;
+
+-- Restore authenticated access only where required by RLS policies and the
+-- current authenticated wiki editor/reviewer UI. The functions enforce role checks.
+GRANT EXECUTE ON FUNCTION public.can_edit_liquinwiki() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.can_manage_liquinwiki() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_editor_or_admin() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.publish_liquinwiki_admin_revision(text, text, text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.review_liquinwiki_revision(bigint, text, text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.set_liquinwiki_permission(text, text) TO authenticated;
