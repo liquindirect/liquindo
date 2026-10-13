@@ -19,6 +19,10 @@ const accountEmail = document.querySelector("#account-email");
 const accountMessage = document.querySelector("#account-message");
 const logoutButton = document.querySelector("#logout-button");
 const forgotPasswordButton = document.querySelector("#forgot-password-button");
+const turnstileElement = document.querySelector("#turnstile-widget");
+const TURNSTILE_SITE_KEY = "0x4AAAAAAFWAloaUC3WLdJTI";
+let turnstileWidgetId = null;
+let captchaToken = "";
 let mode = "login";
 
 const AUTH_MESSAGE_KEYS = new Map([
@@ -83,6 +87,34 @@ function recoveryErrorMessage(error) {
   }
   return "We could not send a recovery email right now. Please try again shortly.";
 }
+async function initialiseTurnstile() {
+  if (!turnstileElement) return;
+  if (!window.turnstile) {
+    const script = document.querySelector("#turnstile-script");
+    if (script) await new Promise((resolve, reject) => {
+      script.addEventListener("load", resolve, { once: true });
+      script.addEventListener("error", reject, { once: true });
+    });
+  }
+  if (!window.turnstile) throw new Error("CAPTCHA could not load. Please refresh and try again.");
+  turnstileWidgetId = window.turnstile.render(turnstileElement, {
+    sitekey: TURNSTILE_SITE_KEY,
+    callback: (token) => { captchaToken = token; },
+    "expired-callback": () => { captchaToken = ""; },
+    "error-callback": () => { captchaToken = ""; setMessage("CAPTCHA could not load. Please refresh and try again.", true); }
+  });
+}
+function getCaptchaToken() {
+  const token = (turnstileWidgetId !== null && window.turnstile?.getResponse(turnstileWidgetId)) || captchaToken;
+  if (!token) throw new Error("Please complete the CAPTCHA check before continuing.");
+  return token;
+}
+function resetCaptcha() {
+  captchaToken = "";
+  if (turnstileWidgetId !== null && window.turnstile) window.turnstile.reset(turnstileWidgetId);
+}
+void initialiseTurnstile().catch(() => setMessage("CAPTCHA could not load. Please refresh and try again.", true));
+
 function setMode(next) {
   mode = next;
   const signup = mode === "signup";
@@ -135,14 +167,17 @@ forgotPasswordButton.addEventListener("click", async () => {
   forgotPasswordButton.disabled = true;
   setMessage("Sending password recovery email…");
   try {
+    const token = getCaptchaToken();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: new URL("reset-password.html", window.location.href).href
+      redirectTo: new URL("reset-password.html", window.location.href).href,
+      captchaToken: token
     });
     if (error) throw error;
     setMessage("If an account exists for that email, a password recovery link has been sent. Check your inbox and spam folder.");
   } catch (error) {
     setMessage(recoveryErrorMessage(error), true);
   } finally {
+    resetCaptcha();
     forgotPasswordButton.disabled = false;
   }
 });
@@ -162,17 +197,18 @@ form.addEventListener("submit", async (event) => {
       return;
     }
     confirmPasswordInput.removeAttribute("aria-invalid");
+    const token = getCaptchaToken();
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email, password,
-        options: { emailRedirectTo: new URL("login.html", window.location.href).href }
+        options: { emailRedirectTo: new URL("login.html", window.location.href).href, captchaToken: token }
       });
       if (error) throw error;
       setMessage(data.session
         ? "Account created and signed in."
         : "Account created. Check your email for a confirmation link before logging in.");
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: token } });
       if (error) throw error;
       setMessage("Signed in successfully.");
       const requestedPage = new URLSearchParams(window.location.search).get("next");
@@ -184,6 +220,7 @@ form.addEventListener("submit", async (event) => {
   } catch (error) {
     setMessage(authErrorMessage(error), true);
   } finally {
+    resetCaptcha();
     submitButton.disabled = false;
     form.removeAttribute("aria-busy");
   }
