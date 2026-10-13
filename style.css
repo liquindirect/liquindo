@@ -3668,3 +3668,168 @@ body .contents-menu .contents-panel a:focus-visible {
 @media (max-width: 780px) {
   .topbar > .brand { margin-left: 126px; }
 }
+
+
+/* =========================================================
+   HOMEPAGE VISUAL ARCHIVE
+   ========================================================= */
+body.homepage-redesign .visual-archive-section {
+  padding-top: clamp(54px, 7vw, 92px);
+  padding-bottom: clamp(54px, 7vw, 92px);
+}
+body.homepage-redesign .visual-archive-heading {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+body.homepage-redesign .visual-archive-heading > p:last-child {
+  max-width: 650px;
+  margin-top: 12px;
+  color: #c0c8d5;
+}
+body.homepage-redesign .visual-archive-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+body.homepage-redesign .visual-archive-card {
+  position: relative;
+  min-width: 0;
+  min-height: 250px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(253,190,0,.28);
+  border-radius: 16px;
+  background: #080f1c;
+  box-shadow: 0 16px 36px rgba(0,0,0,.2);
+}
+body.homepage-redesign .visual-archive-card--feature {
+  grid-row: span 2;
+}
+body.homepage-redesign .visual-archive-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+body.homepage-redesign .visual-archive-card--feature img {
+  min-height: 516px;
+}
+body.homepage-redesign .visual-archive-card::after {
+  position: absolute;
+  inset: 25% 0 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(0,0,20,.9));
+}
+body.homepage-redesign .visual-archive-card:hover img {
+  transform: scale(1.035);
+}
+body.homepage-redesign .visual-archive-card figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: grid;
+  gap: 5px;
+}
+body.homepage-redesign .visual-archive-index {
+  color: #fdbe00;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+body.homepage-redesign .visual-archive-card figcaption strong {
+  color: #fff8e8;
+  font-size: 1.05rem;
+}
+body.homepage-redesign .visual-archive-illustration {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(253,190,0,.45);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(253,190,0,.12), transparent 62%),
+    linear-gradient(145deg, #101c36, #000032 72%);
+}
+body.homepage-redesign .illustration-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: #fdbe00;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+body.homepage-redesign .visual-archive-illustration svg {
+  display: block;
+  width: min(100%, 320px);
+  max-height: 190px;
+  margin: 0 auto;
+}
+body.homepage-redesign .visual-archive-illustration h3 {
+  margin: 8px 0 3px;
+  color: #fff5dc;
+  font-size: 1.1rem;
+}
+body.homepage-redesign .visual-archive-illustration p {
+  margin: 0;
+  color: #c0c8d5;
+  font-size: .88rem;
+  line-height: 1.5;
+}
+body.homepage-redesign .visual-archive-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(253,190,0,.65);
+  color: #fdbe00;
+  font-weight: 800;
+}
+body.homepage-redesign .visual-archive-link:hover {
+  color: #fff1c9;
+}
+@media (max-width: 760px) {
+  body.homepage-redesign .visual-archive-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body.homepage-redesign .visual-archive-card--feature {
+    grid-row: auto;
+  }
+  body.homepage-redesign .visual-archive-card--feature img,
+  body.homepage-redesign .visual-archive-card img {
+    min-height: 230px;
+  }
+  body.homepage-redesign .visual-archive-illustration {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 480px) {
+  body.homepage-redesign .visual-archive-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body.homepage-redesign .visual-archive-card,
+  body.homepage-redesign .visual-archive-card img,
+  body.homepage-redesign .visual-archive-card--feature img {
+    min-height: 260px;
+  }
+  body.homepage-redesign .visual-archive-illustration {
+    grid-column: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.homepage-redesign .visual-archive-card img {
+    transition: none;
+  }
+  body.homepage-redesign .visual-archive-card:hover img {
+    transform: none;
+  }
+}
