@@ -10,12 +10,12 @@
       content="A numbered gallery archive of Liquindo images."
     />
 
-    <title>Liquindo Gallery</title>
+    <title>Gallery | Liquindo</title>
 
-    <link rel="stylesheet" href="style.css?v=20261013-full-height-sidebar-v3" />
+    <link rel="stylesheet" href="style.css?v=20261013-gallery-overhaul-v1" />
   </head>
 
-  <body>
+  <body class="gallery-redesign">
     <script src="homepage-gate.js"></script>
     <header class="page-header">
       <nav class="topbar" aria-label="Main navigation">
@@ -80,7 +80,21 @@
       </div>
     </header>
 
-    <main>
+    <section class="gallery-intro-band" aria-label="Gallery introduction">
+      <div class="gallery-intro-copy">
+        <p class="gallery-kicker" data-i18n="gallery.redesign.kicker">THE LIQUINDO ARCHIVE</p>
+        <h2 data-i18n="gallery.redesign.introTitle">A living visual record.</h2>
+        <p data-i18n="gallery.redesign.introText">Explore the images, materials and moments collected throughout the project.</p>
+        <a href="#gallery-collection" class="gallery-jump-link"><span data-i18n="gallery.redesign.browse">Browse the collection</span><span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="gallery-intro-mosaic" aria-hidden="true">
+        <img src="images/20250705_123516.jpg" alt="" fetchpriority="high" />
+        <img src="images/20251021_182628.png" alt="" loading="lazy" />
+        <img src="images/20260325_162009.jpg" alt="" loading="lazy" />
+      </div>
+    </section>
+
+    <main id="gallery-collection">
       <section
         class="full-page-section"
         aria-label="Liquindo image gallery"
@@ -108,6 +122,29 @@
             <p id="selected-text"></p>
           </div>
         </article>
+
+        <div class="gallery-toolbar" aria-label="Gallery controls">
+          <div class="gallery-toolbar-heading">
+            <p class="gallery-kicker" data-i18n="gallery.redesign.collection">COLLECTION</p>
+            <h2 data-i18n="gallery.redesign.collectionTitle">Explore the archive</h2>
+          </div>
+          <div class="gallery-controls">
+            <label class="gallery-search">
+              <span class="sr-only" data-i18n="gallery.redesign.searchLabel">Search images</span>
+              <span class="gallery-search-icon" aria-hidden="true">⌕</span>
+              <input id="gallery-search" type="search" placeholder="Search by filename or number…" data-i18n-placeholder="gallery.redesign.searchPlaceholder" autocomplete="off" />
+            </label>
+            <label class="gallery-filter-label">
+              <span data-i18n="gallery.redesign.filterLabel">Show</span>
+              <select id="gallery-filter">
+                <option value="all" data-i18n="gallery.redesign.filterAll">All formats</option>
+                <option value="photo" data-i18n="gallery.redesign.filterPhotos">Photographs (JPG)</option>
+                <option value="graphic" data-i18n="gallery.redesign.filterGraphics">Graphics (PNG)</option>
+              </select>
+            </label>
+          </div>
+          <p class="gallery-results" id="gallery-results" role="status" aria-live="polite">Showing 52 images</p>
+        </div>
 
         <div class="gallery-grid gallery-page-grid">
           <figure data-image-number="1">
@@ -414,9 +451,39 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const galleryFigures = document.querySelectorAll(
-          ".gallery-page-grid figure"
-        );
+        const galleryFigures = Array.from(document.querySelectorAll(".gallery-page-grid figure"));
+        const gallerySearch = document.getElementById("gallery-search");
+        const galleryFilter = document.getElementById("gallery-filter");
+        const galleryResults = document.getElementById("gallery-results");
+        let visibleFigures = galleryFigures.slice();
+
+        function applyGalleryFilters() {
+          const query = (gallerySearch?.value || "").trim().toLowerCase();
+          const format = galleryFilter?.value || "all";
+          visibleFigures = galleryFigures.filter((figure) => {
+            const image = figure.querySelector("img");
+            const src = image?.getAttribute("src") || "";
+            const label = (image?.alt || "") + " " + (figure.querySelector("figcaption")?.textContent || "") + " " + src + " " + figure.dataset.imageNumber;
+            const extension = src.split(".").pop().split("?")[0].toLowerCase();
+            const matchesFormat = format === "all" ||
+              (format === "photo" && ["jpg", "jpeg", "heic"].includes(extension)) ||
+              (format === "graphic" && extension === "png");
+            const matchesQuery = !query || label.toLowerCase().includes(query);
+            const visible = matchesFormat && matchesQuery;
+            figure.hidden = !visible;
+            return visible;
+          });
+          if (galleryResults) {
+            const key = visibleFigures.length === 1 ? "gallery.redesign.resultSingle" : "gallery.redesign.resultPlural";
+            const fallback = visibleFigures.length === 1 ? "Showing 1 image" : `Showing ${visibleFigures.length} images`;
+            galleryResults.textContent = window.languageManager?.get(key)?.replace("{count}", String(visibleFigures.length)) || fallback;
+          }
+          if (selectedIndex >= 0 && !visibleFigures.includes(galleryFigures[selectedIndex])) {
+            selectedIndex = -1;
+          }
+        }
+        gallerySearch?.addEventListener("input", applyGalleryFilters);
+        galleryFilter?.addEventListener("change", applyGalleryFilters);
 
         const selectedImage =
           document.getElementById("selected-image");
@@ -472,9 +539,10 @@
         const previousButton = document.getElementById("lightbox-previous");
         const nextButton = document.getElementById("lightbox-next");
         let selectedIndex = -1;
-        const figureList = Array.from(galleryFigures);
+        let figureList = visibleFigures;
 
         function renderLightbox(index) {
+          figureList = visibleFigures;
           if (!figureList.length) return;
           selectedIndex = (index + figureList.length) % figureList.length;
           const figure = figureList[selectedIndex];
@@ -564,6 +632,8 @@
             }
           );
         });
+
+        applyGalleryFilters();
 
         if (languageSwitcher) {
           languageSwitcher.addEventListener(
