@@ -4574,3 +4574,80 @@ body :focus-visible {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Final overrides for legacy inline styles on remaining subpages. */
+body.gallery-redesign,
+body.wiki-redesign,
+body.members-redesign,
+body.login-redesign,
+body.hierarchy-page,
+body.wiki-editor-redesign,
+body.privacy-redesign,
+body.visitor-logs-redesign,
+body.account-recovery-redesign {
+  background: #000032 !important;
+}
+body.hierarchy-page .hierarchy-intro {
+  color: #c0c8d5 !important;
+}
+body.hierarchy-page .hierarchy-note {
+  border-color: #fdbe00;
+  background: #080f1c;
+  color: #d7deea;
+}
+body.hierarchy-page .org-node .node-level {
+  color: #8a6500;
+}
+body.hierarchy-page .org-node.leader .node-level {
+  color: #fdbe00;
+}
+body.hierarchy-page .org-node.leader {
+  background: linear-gradient(145deg, #080f1c, #000032);
+}
+body.hierarchy-page .hierarchy-actions a {
+  border-radius: 2px;
+  background: #000032;
+  color: #fdbe00;
+}
+body.hierarchy-page .hierarchy-actions a:hover {
+  background: #17213a;
+}
+body.account-recovery-redesign .reset-card {
+  background: #f8f5ee;
+  color: #172534;
+  border: 1px solid rgba(253,190,0,.45);
+  border-radius: 3px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.28);
+}
+body.account-recovery-redesign .reset-card h1 {
+  color: #000032;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -.035em;
+}
+body.account-recovery-redesign .reset-card p { color: #596572; }
+body.account-recovery-redesign .reset-field input {
+  border-color: #d8d0c1;
+  border-radius: 3px;
+  background: #fffdf8;
+  color: #172534;
+}
+body.account-recovery-redesign .reset-password-toggle {
+  border-color: #d8d0c1;
+  border-radius: 3px;
+  background: #eee8dc;
+  color: #000032;
+}
+body.account-recovery-redesign .reset-submit {
+  border: 1px solid #fdbe00;
+  border-radius: 2px;
+  background: #fdbe00;
+  color: #000032;
+  font-weight: 800;
+}
+body.account-recovery-redesign .reset-submit:hover { background: #ffd34d; }
+body.account-recovery-redesign .reset-back { color: #000032; text-decoration: underline; text-decoration-color: #fdbe00; text-underline-offset: 4px; }
+body.account-recovery-redesign .page-title h1 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  letter-spacing: -.04em !important;
+}
