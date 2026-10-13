@@ -4329,3 +4329,248 @@ body.gallery-redesign .gallery-lightbox .lightbox-hint {
   body.gallery-redesign .gallery-lightbox *::before,
   body.gallery-redesign .gallery-lightbox *::after { transition: none !important; }
 }
+
+
+/* =========================================================
+   SUBPAGE CONSISTENCY PASS — shared editorial typography,
+   spacing, navigation, accessible controls and mobile rhythm.
+   ========================================================= */
+:root {
+  --liquindo-navy: #000032;
+  --liquindo-gold: #fdbe00;
+  --liquindo-ivory: #f8f5ee;
+  --liquindo-muted: #c0c8d5;
+}
+body.gallery-redesign,
+body.wiki-redesign,
+body.members-redesign,
+body.login-redesign,
+body.hierarchy-page,
+body.wiki-editor-redesign,
+body.privacy-redesign,
+body.visitor-logs-redesign,
+body.account-recovery-redesign {
+  min-height: 100vh;
+  background-color: var(--liquindo-navy);
+  color: #f4f0e7;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+body.gallery-redesign .page-header,
+body.wiki-redesign .page-header,
+body.members-redesign .page-header,
+body.login-redesign .page-header,
+body.hierarchy-page .page-header,
+body.wiki-editor-redesign .page-header,
+body.account-recovery-redesign .page-header {
+  background:
+    radial-gradient(ellipse at 82% 8%, rgba(253,190,0,.08), transparent 34%),
+    linear-gradient(145deg, #080f1c 0%, #000032 76%) !important;
+  border-bottom: 1px solid rgba(253,190,0,.28) !important;
+  color: #f4f0e7 !important;
+}
+body.gallery-redesign .topbar,
+body.wiki-redesign .topbar,
+body.members-redesign .topbar,
+body.login-redesign .topbar,
+body.hierarchy-page .topbar,
+body.wiki-editor-redesign .topbar,
+body.account-recovery-redesign .topbar {
+  width: min(1240px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 18px 0;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(253,190,0,.16);
+}
+body.gallery-redesign .brand,
+body.wiki-redesign .brand,
+body.members-redesign .brand,
+body.login-redesign .brand,
+body.hierarchy-page .brand,
+body.wiki-editor-redesign .brand,
+body.account-recovery-redesign .brand {
+  color: #fdbe00 !important;
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+body.gallery-redesign .nav-links a,
+body.wiki-redesign .nav-links a,
+body.members-redesign .nav-links a,
+body.login-redesign .nav-links a,
+body.hierarchy-page .nav-links a,
+body.wiki-editor-redesign .nav-links a,
+body.account-recovery-redesign .nav-links a {
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid rgba(253,190,0,.25) !important;
+  border-radius: 2px !important;
+  background: rgba(255,255,255,.035) !important;
+  color: #f4f0e7 !important;
+  font-size: .88rem;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+body.gallery-redesign .nav-links a:hover,
+body.gallery-redesign .nav-links a:focus-visible,
+body.wiki-redesign .nav-links a:hover,
+body.wiki-redesign .nav-links a:focus-visible,
+body.members-redesign .nav-links a:hover,
+body.members-redesign .nav-links a:focus-visible,
+body.login-redesign .nav-links a:hover,
+body.login-redesign .nav-links a:focus-visible,
+body.hierarchy-page .nav-links a:hover,
+body.hierarchy-page .nav-links a:focus-visible,
+body.wiki-editor-redesign .nav-links a:hover,
+body.wiki-editor-redesign .nav-links a:focus-visible,
+body.account-recovery-redesign .nav-links a:hover,
+body.account-recovery-redesign .nav-links a:focus-visible {
+  border-color: #fdbe00 !important;
+  background: rgba(253,190,0,.12) !important;
+  color: #fdbe00 !important;
+}
+body.gallery-redesign .contents-menu > summary,
+body.wiki-redesign .contents-menu > summary,
+body.members-redesign .contents-menu > summary,
+body.login-redesign .contents-menu > summary,
+body.hierarchy-page .contents-menu > summary,
+body.wiki-editor-redesign .contents-menu > summary,
+body.account-recovery-redesign .contents-menu > summary {
+  border: 1px solid rgba(253,190,0,.58);
+  border-radius: 2px;
+  background: #000032;
+  color: #f4f0e7;
+  box-shadow: 0 5px 20px rgba(0,0,0,.2);
+}
+body.gallery-redesign .page-title h1,
+body.wiki-redesign .page-title h1,
+body.members-redesign .page-title h1,
+body.login-redesign .page-title h1,
+body.hierarchy-page .page-title h1,
+body.wiki-editor-redesign .page-title h1,
+body.account-recovery-redesign .page-title h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: -.04em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+body.gallery-redesign main,
+body.wiki-redesign main,
+body.members-redesign main,
+body.login-redesign main,
+body.hierarchy-page main,
+body.wiki-editor-redesign main,
+body.account-recovery-redesign main {
+  scroll-margin-top: 24px;
+}
+body.members-redesign button,
+body.login-redesign button,
+body.hierarchy-page button,
+body.wiki-editor-redesign button,
+body.visitor-logs-redesign button,
+body.account-recovery-redesign button {
+  min-height: 42px;
+  cursor: pointer;
+}
+body.members-redesign input,
+body.members-redesign select,
+body.members-redesign textarea,
+body.login-redesign input,
+body.login-redesign select,
+body.login-redesign textarea,
+body.wiki-editor-redesign input,
+body.wiki-editor-redesign select,
+body.wiki-editor-redesign textarea,
+body.account-recovery-redesign input,
+body.account-recovery-redesign select,
+body.account-recovery-redesign textarea {
+  max-width: 100%;
+  font: inherit;
+}
+body.privacy-redesign .privacy-wrap,
+body.visitor-logs-redesign .log-wrap {
+  width: min(1100px, calc(100% - 40px));
+  margin: clamp(28px, 5vw, 64px) auto;
+}
+body.privacy-redesign .privacy-panel,
+body.visitor-logs-redesign .log-panel {
+  border-radius: 3px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.22);
+}
+body.privacy-redesign h1,
+body.visitor-logs-redesign h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -.035em;
+  line-height: 1.1;
+}
+body.privacy-redesign a,
+body.visitor-logs-redesign a { text-underline-offset: 4px; }
+body :focus-visible {
+  outline-color: #fdbe00;
+  outline-offset: 3px;
+}
+@media (max-width: 780px) {
+  body.gallery-redesign .topbar,
+  body.wiki-redesign .topbar,
+  body.members-redesign .topbar,
+  body.login-redesign .topbar,
+  body.hierarchy-page .topbar,
+  body.wiki-editor-redesign .topbar,
+  body.account-recovery-redesign .topbar {
+    width: calc(100% - 32px);
+    padding: 14px 0;
+    gap: 12px;
+  }
+  body.gallery-redesign .page-title,
+  body.wiki-redesign .page-title,
+  body.members-redesign .page-title,
+  body.login-redesign .page-title,
+  body.hierarchy-page .page-title,
+  body.wiki-editor-redesign .page-title,
+  body.account-recovery-redesign .page-title {
+    width: calc(100% - 32px);
+  }
+  body.gallery-redesign .nav-links,
+  body.wiki-redesign .nav-links,
+  body.members-redesign .nav-links,
+  body.login-redesign .nav-links,
+  body.hierarchy-page .nav-links,
+  body.wiki-editor-redesign .nav-links,
+  body.account-recovery-redesign .nav-links {
+    gap: 6px;
+  }
+}
+@media (max-width: 480px) {
+  body.privacy-redesign .privacy-wrap,
+  body.visitor-logs-redesign .log-wrap {
+    width: calc(100% - 28px);
+    margin: 24px auto;
+  }
+  body.gallery-redesign .topbar > .brand,
+  body.wiki-redesign .topbar > .brand,
+  body.members-redesign .topbar > .brand,
+  body.login-redesign .topbar > .brand,
+  body.hierarchy-page .topbar > .brand,
+  body.wiki-editor-redesign .topbar > .brand,
+  body.account-recovery-redesign .topbar > .brand {
+    font-size: 1.2rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.gallery-redesign *,
+  body.wiki-redesign *,
+  body.members-redesign *,
+  body.login-redesign *,
+  body.hierarchy-page *,
+  body.wiki-editor-redesign *,
+  body.privacy-redesign *,
+  body.visitor-logs-redesign *,
+  body.account-recovery-redesign * {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
