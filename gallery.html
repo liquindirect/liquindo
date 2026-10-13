@@ -453,7 +453,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const galleryFigures = Array.from(document.querySelectorAll(".gallery-page-grid figure"));
+        let galleryFigures = Array.from(document.querySelectorAll(".gallery-page-grid figure"));
         const gallerySearch = document.getElementById("gallery-search");
         const galleryFilter = document.getElementById("gallery-filter");
         const galleryResults = document.getElementById("gallery-results");
@@ -604,6 +604,15 @@
         function selectImage(figure) {
           openLightbox(figure);
         }
+
+        // Allow the private-storage loader to add/remove cards without breaking
+        // the existing search, filters, keyboard controls or slideshow.
+        window.openGalleryFigure = selectImage;
+        window.refreshGalleryFigures = () => {
+          galleryFigures = Array.from(document.querySelectorAll(".gallery-page-grid figure"));
+          figureList = galleryFigures.slice();
+          applyGalleryFilters();
+        };
 
         lightboxImage.tabIndex = 0;
         lightboxImage.setAttribute("role", "button");
