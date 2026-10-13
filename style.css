@@ -6,7 +6,7 @@
 
   --teal: #0e7c7b;
   --coral: #d95d39;
-  --gold: #d8a31a;
+  --gold: #fdbe00;
   --green: #4d8f42;
 
   --border: #ded7ca;
@@ -2598,7 +2598,7 @@ a:hover { text-decoration-thickness: 2px; }
 .liquin-message {
   padding: 10px 20px 12px;
   border-top-color: rgba(255,255,255,.08);
-  background: #172840;
+  background: #000032;
 }
 .liquin-message strong { color: #e3c783; }
 .liquin-message span { color: #d5dce6; }
@@ -2846,15 +2846,15 @@ select:not(.language-switcher) {
 body.homepage-redesign {
   --ink: #f4f0e5;
   --muted: #c0c8d5;
-  --paper: #0a1220;
+  --paper: #000032;
   --surface: #111e31;
-  --teal: #dfbf70;
-  --coral: #dfbf70;
-  --gold: #dfbf70;
-  --green: #dfbf70;
+  --teal: #fdbe00;
+  --coral: #fdbe00;
+  --gold: #fdbe00;
+  --green: #fdbe00;
   --border: rgba(223,191,112,.28);
   --shadow: 0 18px 48px rgba(0,0,0,.25);
-  background: #0a1220;
+  background: #000032;
   color: #f4f0e5;
 }
 body.homepage-redesign .site-header,
@@ -2869,7 +2869,7 @@ body.homepage-redesign .nav-links .account-logout {
 body.homepage-redesign .nav-links a:hover,
 body.homepage-redesign .nav-links .account-logout:hover,
 body.homepage-redesign .nav-links a[aria-current="page"] {
-  border-color: #dfbf70;
+  border-color: #fdbe00;
   background: rgba(223,191,112,.12);
   color: #fff0c5;
 }
@@ -2894,7 +2894,7 @@ body.homepage-redesign .liquin-message {
   border-bottom: 1px solid rgba(223,191,112,.2);
   background: #101b2c;
 }
-body.homepage-redesign .liquin-message strong { color: #dfbf70; }
+body.homepage-redesign .liquin-message strong { color: #fdbe00; }
 body.homepage-redesign .liquin-message span { color: #d6dce5; }
 
 body.homepage-redesign .hero {
@@ -2906,10 +2906,10 @@ body.homepage-redesign .hero {
   padding: clamp(64px,10vw,128px) clamp(22px,7vw,100px);
   overflow: hidden;
   border-bottom: 1px solid rgba(223,191,112,.36);
-  background-color: #0a1220;
+  background-color: #000032;
   background-image:
-    linear-gradient(90deg,rgba(7,14,25,.97) 0%,rgba(7,14,25,.86) 28%,rgba(7,14,25,.52) 52%,rgba(7,14,25,.12) 82%,rgba(7,14,25,.25) 100%),
-    linear-gradient(0deg,#0a1220 0%,rgba(10,18,32,.02) 32%,rgba(10,18,32,.12) 100%),
+    linear-gradient(90deg,rgba(0,0,50,.97) 0%,rgba(0,0,50,.86) 28%,rgba(0,0,50,.52) 52%,rgba(0,0,50,.12) 82%,rgba(0,0,50,.25) 100%),
+    linear-gradient(0deg,#000032 0%,rgba(0,0,50,.02) 32%,rgba(0,0,50,.12) 100%),
     url("images/liquindo-intro.png");
   background-position: center,center,58% center;
   background-size: cover;
@@ -2925,13 +2925,13 @@ body.homepage-redesign .hero::before {
 body.homepage-redesign .hero-content {
   width: min(780px,100%);
   padding: clamp(22px,3.5vw,42px);
-  border-left: 3px solid #dfbf70;
-  background: linear-gradient(90deg,rgba(8,15,28,.68),rgba(8,15,28,.12));
+  border-left: 3px solid #fdbe00;
+  background: linear-gradient(90deg,rgba(0,0,50,.68),rgba(0,0,50,.12));
   text-shadow: 0 2px 22px rgba(0,0,0,.35);
 }
 body.homepage-redesign .hero .eyebrow {
   margin-bottom: 18px;
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .78rem;
   font-weight: 800;
   letter-spacing: .19em;
@@ -2952,8 +2952,8 @@ body.homepage-redesign .hero p:not(.eyebrow) {
   line-height: 1.8;
 }
 body.homepage-redesign .section-label,
-body.homepage-redesign .eyebrow { color: #dfbf70; }
-body.homepage-redesign main { background: #0a1220; }
+body.homepage-redesign .eyebrow { color: #fdbe00; }
+body.homepage-redesign main { background: #000032; }
 body.homepage-redesign .home-hub {
   width: min(1160px,calc(100% - 40px));
   margin: 0 auto;
@@ -2975,19 +2975,19 @@ body.homepage-redesign .home-feature-card {
   padding: clamp(20px,2.5vw,28px);
   border: 1px solid rgba(223,191,112,.22);
   border-radius: 10px;
-  background: linear-gradient(145deg,#142238,#0e192a);
+  background: linear-gradient(145deg,#000032,#0e192a);
   color: #f4f0e5;
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
 }
 body.homepage-redesign .home-feature-card:hover {
-  border-color: #dfbf70;
+  border-color: #fdbe00;
   background: linear-gradient(145deg,#1b2d46,#111e31);
   color: #fff8e8;
   box-shadow: 0 16px 34px rgba(0,0,0,.28);
   transform: translateY(-3px);
 }
 body.homepage-redesign .home-feature-number,
-body.homepage-redesign .home-card-cta { color: #dfbf70; }
+body.homepage-redesign .home-card-cta { color: #fdbe00; }
 body.homepage-redesign .home-feature-card h3 { color: #fff5dc; }
 body.homepage-redesign .home-feature-card p { color: #c0c8d5; }
 body.homepage-redesign .home-account-card { border-color: rgba(223,191,112,.55); }
@@ -3012,21 +3012,21 @@ body.homepage-redesign .unavailable-panel,
 body.homepage-redesign .countdown-panel {
   border: 1px solid rgba(223,191,112,.22);
   border-radius: 12px;
-  background: linear-gradient(145deg,#142238,#101a2b);
+  background: linear-gradient(145deg,#000032,#000032);
   color: #f4f0e5;
   box-shadow: 0 12px 28px rgba(0,0,0,.14);
 }
-body.homepage-redesign .timeline article span { color: #dfbf70; }
+body.homepage-redesign .timeline article span { color: #fdbe00; }
 body.homepage-redesign .faq-item { padding: 22px; }
 body.homepage-redesign .contact-card { padding: clamp(22px,3vw,34px); }
 body.homepage-redesign .email-button {
   border-color: rgba(223,191,112,.55);
   background: rgba(223,191,112,.09);
-  color: #f2d58d;
+  color: #fdbe00;
   text-decoration: none;
 }
 body.homepage-redesign .email-button:hover {
-  border-color: #dfbf70;
+  border-color: #fdbe00;
   background: rgba(223,191,112,.17);
   color: #fff0c5;
 }
@@ -3034,20 +3034,20 @@ body.homepage-redesign .unavailable-panel { border-style: dashed; }
 body.homepage-redesign .status-badge {
   border-color: rgba(223,191,112,.45);
   background: rgba(223,191,112,.09);
-  color: #dfbf70;
+  color: #fdbe00;
 }
 body.homepage-redesign .countdown-panel > p { color: #c0c8d5; }
 body.homepage-redesign .countdown-row { border-bottom-color: rgba(223,191,112,.18); }
-body.homepage-redesign .countdown-row strong { color: #dfbf70; }
+body.homepage-redesign .countdown-row strong { color: #fdbe00; }
 body.homepage-redesign footer {
   border-top: 1px solid rgba(223,191,112,.28);
-  background: #060c16;
+  background: #000032;
   color: #f4f0e5;
 }
 body.homepage-redesign .footer-content p { color: #aeb8c8; }
-body.homepage-redesign footer a { color: #dfbf70; }
+body.homepage-redesign footer a { color: #fdbe00; }
 body.homepage-redesign footer a:hover { color: #fff1c9; }
-body.homepage-redesign :focus-visible { outline-color: #f0d18a; }
+body.homepage-redesign :focus-visible { outline-color: #fdbe00; }
 body.homepage-redesign ::selection { background: rgba(223,191,112,.32); color: #fff8e8; }
 
 @media (max-width:780px) {
@@ -3055,14 +3055,14 @@ body.homepage-redesign ::selection { background: rgba(223,191,112,.32); color: #
     min-height: 500px;
     padding: 44px 18px;
     background-image:
-      linear-gradient(90deg,rgba(7,14,25,.84),rgba(7,14,25,.44)),
-      linear-gradient(0deg,#0a1220 0%,rgba(10,18,32,.02) 48%),
+      linear-gradient(90deg,rgba(0,0,50,.84),rgba(0,0,50,.44)),
+      linear-gradient(0deg,#000032 0%,rgba(0,0,50,.02) 48%),
       url("images/liquindo-intro.png");
     background-position: center,center,62% center;
   }
   body.homepage-redesign .hero-content {
     padding: 22px 18px;
-    background: linear-gradient(90deg,rgba(8,15,28,.78),rgba(8,15,28,.3));
+    background: linear-gradient(90deg,rgba(0,0,50,.78),rgba(0,0,50,.3));
   }
   body.homepage-redesign .hero h1 { font-size: clamp(3.3rem,15vw,5.6rem); }
   body.homepage-redesign .home-hub,
@@ -3107,14 +3107,14 @@ body.homepage-redesign .faq-item > summary::-webkit-details-marker { display: no
 body.homepage-redesign .faq-item > summary::after {
   content: "+";
   flex: 0 0 auto;
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 1;
 }
 body.homepage-redesign .faq-item[open] > summary::after { content: "−"; }
 body.homepage-redesign .faq-item > summary:focus-visible {
-  outline: 3px solid #f0d18a;
+  outline: 3px solid #fdbe00;
   outline-offset: -4px;
   border-radius: 10px;
 }
@@ -3130,11 +3130,11 @@ body.homepage-redesign .faq-item > p {
 /* LiquinWiki visual alignment with the dark navy and gold homepage. */
 body.wiki-redesign {
   min-height: 100vh;
-  background: #0a1220;
+  background: #000032;
   color: #e3e7ed;
 }
 body.wiki-redesign .page-header {
-  background: #0a1220;
+  background: #000032;
   color: #f4f0e5;
   border-bottom: 1px solid rgba(223,191,112,.24);
 }
@@ -3158,11 +3158,11 @@ body.wiki-redesign .nav-links a {
 body.wiki-redesign .nav-links a:hover,
 body.wiki-redesign .nav-links a:focus-visible {
   background: rgba(223,191,112,.12);
-  color: #f0d18a;
+  color: #fdbe00;
 }
 body.wiki-redesign .language-switcher {
   color: #f4f0e5;
-  background: #142238;
+  background: #000032;
   border: 1px solid rgba(223,191,112,.35);
   border-radius: 8px;
 }
@@ -3177,10 +3177,10 @@ body.wiki-redesign .page-title h1 {
   line-height: 1.04;
   letter-spacing: -.055em;
 }
-body.wiki-redesign .section-label { color: #dfbf70; }
+body.wiki-redesign .section-label { color: #fdbe00; }
 body.wiki-redesign main,
 body.wiki-redesign .wiki-container {
-  background: #0a1220;
+  background: #000032;
   color: #c0c8d5;
 }
 body.wiki-redesign .wiki-container {
@@ -3212,20 +3212,20 @@ body.wiki-redesign .back-link {
   border: 1px solid rgba(223,191,112,.42);
   border-radius: 999px;
   background: rgba(223,191,112,.08);
-  color: #f0d18a;
+  color: #fdbe00;
   font-weight: 750;
   text-decoration: none;
 }
 body.wiki-redesign .section-link:hover,
 body.wiki-redesign .back-link:hover {
   background: rgba(223,191,112,.17);
-  border-color: #dfbf70;
+  border-color: #fdbe00;
   color: #fff1c9;
 }
 body.wiki-redesign .wiki-search label { color: #f5e8c6; font-weight: 700; }
 body.wiki-redesign .wiki-search input {
   color: #f4f0e5 !important;
-  background: #101c2e !important;
+  background: #000032 !important;
   border-color: rgba(223,191,112,.35) !important;
 }
 body.wiki-redesign .article-card,
@@ -3238,11 +3238,11 @@ body.wiki-redesign .article-card {
   padding: 24px;
   border: 1px solid rgba(223,191,112,.22);
   border-radius: 12px;
-  background: linear-gradient(145deg,#142238,#101a2b);
+  background: linear-gradient(145deg,#000032,#000032);
   box-shadow: 0 12px 28px rgba(0,0,0,.16);
 }
 body.wiki-redesign .article-card a,
-body.wiki-redesign .wiki-article a { color: #f0d18a; }
+body.wiki-redesign .wiki-article a { color: #fdbe00; }
 body.wiki-redesign .article-card a:hover,
 body.wiki-redesign .wiki-article a:hover { color: #fff1c9; }
 body.wiki-redesign .article-description,
@@ -3266,12 +3266,12 @@ body.wiki-redesign .infobox {
   overflow: hidden;
   border: 1px solid rgba(223,191,112,.35);
   border-radius: 12px;
-  background: #101a2b;
+  background: #000032;
 }
 body.wiki-redesign .infobox-title {
   padding: 16px;
-  background: #182943;
-  color: #f0d18a;
+  background: #000032;
+  color: #fdbe00;
   font-weight: 800;
 }
 body.wiki-redesign .infobox-row {
@@ -3281,9 +3281,9 @@ body.wiki-redesign .infobox-row {
   padding: 12px 16px;
   border-top: 1px solid rgba(223,191,112,.14);
 }
-body.wiki-redesign .infobox-label { color: #dfbf70; font-size: .84rem; font-weight: 750; }
+body.wiki-redesign .infobox-label { color: #fdbe00; font-size: .84rem; font-weight: 750; }
 body.wiki-redesign .infobox-value { color: #e3e7ed; }
-body.wiki-redesign :focus-visible { outline: 3px solid #f0d18a; outline-offset: 3px; }
+body.wiki-redesign :focus-visible { outline: 3px solid #fdbe00; outline-offset: 3px; }
 @media (max-width: 780px) {
   body.wiki-redesign .topbar { width: calc(100% - 32px); }
   body.wiki-redesign .page-title,
@@ -3319,18 +3319,18 @@ body.homepage-redesign .contents-menu > summary {
 body.homepage-redesign .contents-menu > summary::-webkit-details-marker { display: none; }
 body.homepage-redesign .contents-menu > summary:hover,
 body.homepage-redesign .contents-menu[open] > summary {
-  border-color: #dfbf70;
+  border-color: #fdbe00;
   background: rgba(223,191,112,.13);
   color: #fff0c5;
 }
 body.homepage-redesign .contents-menu-icon {
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: 1.08rem;
   line-height: 1;
 }
 body.homepage-redesign .contents-chevron {
   margin-left: 4px;
-  color: #dfbf70;
+  color: #fdbe00;
   transition: transform .18s ease;
 }
 body.homepage-redesign .contents-menu[open] .contents-chevron { transform: rotate(180deg); }
@@ -3341,15 +3341,15 @@ body.homepage-redesign .contents-panel {
   width: min(340px, calc(100vw - 32px));
   padding: 10px 18px 14px;
   border: 1px solid rgba(223,191,112,.38);
-  border-top: 2px solid #dfbf70;
-  background: #0d192a;
+  border-top: 2px solid #fdbe00;
+  background: #000032;
   box-shadow: 0 22px 48px rgba(0,0,0,.38);
 }
 body.homepage-redesign .contents-panel-label {
   margin: 5px 0 8px;
   padding: 0 0 10px;
   border-bottom: 1px solid rgba(223,191,112,.24);
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .16em;
@@ -3370,7 +3370,7 @@ body.homepage-redesign .contents-panel a {
 }
 body.homepage-redesign .contents-panel a:last-child { border-bottom: 0; }
 body.homepage-redesign .contents-panel a > span:first-child {
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .76rem;
   font-variant-numeric: tabular-nums;
 }
@@ -3441,7 +3441,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
   padding: 9px 13px;
   border: 1px solid rgba(223,191,112,.58);
   border-radius: 2px;
-  background: #0d192a;
+  background: #000032;
   color: #f4f0e5;
   box-shadow: 0 5px 20px rgba(0,0,0,.2);
   cursor: pointer;
@@ -3453,18 +3453,18 @@ body.homepage-redesign .homepage-hierarchy-cta {
 .contents-menu > summary::-webkit-details-marker { display: none; }
 .contents-menu > summary:hover,
 .contents-menu[open] > summary {
-  border-color: #dfbf70;
-  background: #172840;
+  border-color: #fdbe00;
+  background: #000032;
   color: #fff0c5;
 }
 .contents-menu-icon {
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: 1.08rem;
   line-height: 1;
 }
 .contents-chevron {
   margin-left: 3px;
-  color: #dfbf70;
+  color: #fdbe00;
   transition: transform .18s ease;
 }
 .contents-menu[open] .contents-chevron { transform: rotate(180deg); }
@@ -3480,7 +3480,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: rgba(3, 8, 15, .64);
+  background: rgba(0, 0, 30, .64);
   cursor: default;
 }
 .contents-menu .contents-panel {
@@ -3500,7 +3500,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
   border-right: 1px solid rgba(223,191,112,.42);
   border-top: 0;
   border-radius: 0;
-  background: #0d192a;
+  background: #000032;
   color: #e9e5da;
   box-shadow: 18px 0 48px rgba(0,0,0,.28);
   animation: contents-sidebar-enter .2s ease-out;
@@ -3509,7 +3509,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
   margin: 0 0 10px;
   padding: 0 0 14px;
   border-bottom: 1px solid rgba(223,191,112,.32);
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .16em;
@@ -3536,7 +3536,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
 }
 .contents-menu .contents-panel a:last-child { border-bottom: 0; }
 .contents-menu .contents-panel a > span:first-child {
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .76rem;
   font-variant-numeric: tabular-nums;
 }
@@ -3550,7 +3550,7 @@ body.homepage-redesign .homepage-hierarchy-cta {
 }
 .contents-menu > summary:focus-visible,
 .contents-menu .contents-panel a:focus-visible {
-  outline: 2px solid #dfbf70;
+  outline: 2px solid #fdbe00;
   outline-offset: 3px;
 }
 @keyframes contents-sidebar-enter {
@@ -3587,14 +3587,14 @@ body .contents-menu > summary {
   padding: 9px 13px;
   border: 1px solid rgba(223,191,112,.58);
   border-radius: 2px;
-  background: #0d192a;
+  background: #000032;
   color: #f4f0e5;
   box-shadow: 0 5px 20px rgba(0,0,0,.2);
 }
 body .contents-menu > summary:hover,
 body .contents-menu[open] > summary {
-  border-color: #dfbf70;
-  background: #172840;
+  border-color: #fdbe00;
+  background: #000032;
   color: #fff0c5;
 }
 body .contents-menu[open] .contents-panel {
@@ -3612,7 +3612,7 @@ body .contents-menu[open] .contents-panel {
   border: 0;
   border-right: 1px solid rgba(223,191,112,.42);
   border-radius: 0;
-  background: #0d192a;
+  background: #000032;
   color: #e9e5da;
   box-shadow: 18px 0 48px rgba(0,0,0,.28);
 }
@@ -3620,7 +3620,7 @@ body .contents-menu .contents-panel-label {
   margin: 0 0 10px;
   padding: 0 0 14px;
   border-bottom: 1px solid rgba(223,191,112,.32);
-  color: #dfbf70;
+  color: #fdbe00;
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .16em;
