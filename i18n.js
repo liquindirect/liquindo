@@ -3472,3 +3472,40 @@ const galleryRedesignTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(galleryRedesignTranslations)) Object.assign(translations[language], entries);
+
+const galleryEmptyTranslations = {
+  "en": {
+    "gallery.redesign.empty": "No images match your search. Try another term or format."
+  },
+  "pt": {
+    "gallery.redesign.empty": "Nenhuma imagem corresponde à pesquisa. Experimente outro termo ou formato."
+  },
+  "es": {
+    "gallery.redesign.empty": "Ninguna imagen coincide con la búsqueda. Prueba otro término o formato."
+  },
+  "fr": {
+    "gallery.redesign.empty": "Aucune image ne correspond à votre recherche. Essayez un autre terme ou format."
+  },
+  "de": {
+    "gallery.redesign.empty": "Keine Bilder entsprechen deiner Suche. Probiere einen anderen Begriff oder ein anderes Format."
+  },
+  "it": {
+    "gallery.redesign.empty": "Nessuna immagine corrisponde alla ricerca. Prova un altro termine o formato."
+  },
+  "hr": {
+    "gallery.redesign.empty": "Nijedna slika ne odgovara pretraživanju. Pokušajte drugi pojam ili format."
+  },
+  "el": {
+    "gallery.redesign.empty": "Δεν βρέθηκαν εικόνες για την αναζήτησή σας. Δοκιμάστε άλλο όρο ή μορφή."
+  },
+  "pl": {
+    "gallery.redesign.empty": "Brak obrazów pasujących do wyszukiwania. Spróbuj innego hasła lub formatu."
+  },
+  "ru": {
+    "gallery.redesign.empty": "По запросу ничего не найдено. Попробуйте другой запрос или формат."
+  },
+  "zh": {
+    "gallery.redesign.empty": "没有符合搜索条件的图片。请尝试其他关键词或格式。"
+  }
+};
+for (const [language, entries] of Object.entries(galleryEmptyTranslations)) Object.assign(translations[language], entries);
