@@ -7,7 +7,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 (async () => {
   try {
     const { data: { session } } = await supabase.auth.getSession();
-    const headers = { "Content-Type": "application/json" };
+    const headers = { "Content-Type": "application/json", "apikey": SUPABASE_PUBLISHABLE_KEY };
     if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
     await fetch(`${SUPABASE_URL}/functions/v1/visitor-log`, {
       method: "POST",
