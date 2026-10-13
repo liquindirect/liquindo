@@ -28,13 +28,17 @@ function hidePublicImageSources() {
 async function importImagesIfNeeded(isAdmin) {
   const { data: objects, error } = await supabase.storage.from(BUCKET).list("", { limit: 100 });
   if (error) throw error;
-  if ((objects || []).length >= EXPECTED_IMAGE_COUNT) return;
-  if (!isAdmin) throw new Error("The private gallery is still being set up by an administrator. Please try again shortly.");
+  const count = (objects || []).length;
+  if (count > 0) {
+    if (count < EXPECTED_IMAGE_COUNT) showGalleryMessage("The private archive currently contains " + count + " image(s). An administrator can add more images using Gallery management.");
+    return;
+  }
+  if (!isAdmin) throw new Error("The private gallery is being set up. Please try again after an administrator has opened it.");
   showGalleryMessage("Securing the gallery images in private storage. This may take a minute…");
   const { data, error: importError } = await supabase.functions.invoke("import-liquindo-gallery", { method: "POST" });
   if (importError) throw importError;
   if (data?.failed?.length || data?.imported !== EXPECTED_IMAGE_COUNT) {
-    throw new Error("Some gallery images could not be imported (" + (data?.imported ?? 0) + "/" + EXPECTED_IMAGE_COUNT + ").");
+    throw new Error("Some gallery images could not be imported (" + (data?.imported ?? 0) + "/" + EXPECTED_IMAGE_COUNT + "). Please contact an administrator.");
   }
 }
 
