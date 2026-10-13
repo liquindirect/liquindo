@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex" />
     <meta name="description" content="Sign in or create a Liquindo account." />
     <title>Liquindo Account</title>
-    <link rel="stylesheet" href="style.css?v=20261013-full-height-sidebar-v3" />
+    <link rel="stylesheet" href="style.css?v=20261013-consistent-subpages-v1" />
     <style>
       .auth-wrap { width: min(520px, calc(100% - 32px)); margin: 56px auto 80px; }
       .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: clamp(22px, 5vw, 36px); box-shadow: var(--shadow); }
@@ -37,9 +37,47 @@
       .auth-account { padding: 16px; background: #f0f5f2; border-radius: 12px; overflow-wrap: anywhere; }
       .auth-hidden { display: none !important; }
       .auth-back { display: inline-block; margin-top: 24px; color: var(--teal); font-weight: 700; }
+
+      /* Account screen: match Liquindo's navy-and-gold editorial homepage. */
+      body.login-redesign { min-height: 100vh; background: #000032; color: #f4f0e7; }
+      body.login-redesign .page-header { background: radial-gradient(ellipse at 82% 10%, rgba(253,190,0,.09), transparent 34%), linear-gradient(145deg,#080f1c 0%,#000032 74%); border-bottom: 1px solid rgba(253,190,0,.28); }
+      body.login-redesign .topbar { background: transparent; }
+      body.login-redesign .brand { color: #fdbe00; }
+      body.login-redesign .nav-links a { border-color: rgba(253,190,0,.3); background: rgba(255,255,255,.045); color: #fff8e8; }
+      body.login-redesign .nav-links a:hover, body.login-redesign .nav-links a[aria-current="page"] { border-color: #fdbe00; background: rgba(253,190,0,.14); color: #fdbe00; }
+      body.login-redesign .language-switcher { background: #080f1c; color: #fff8e8; border-color: rgba(253,190,0,.35); }
+      body.login-redesign .page-title { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: clamp(42px,7vw,84px) 0 clamp(30px,5vw,54px); }
+      body.login-redesign .page-title .eyebrow { color: #fdbe00; letter-spacing: .18em; }
+      body.login-redesign .page-title h1 { color: #fff8e8; font-size: clamp(2.8rem,7vw,5.6rem); line-height: 1; letter-spacing: -.045em; }
+      body.login-redesign .page-title > p:last-child { max-width: 650px; color: #c0c8d5; font-size: clamp(1rem,1.8vw,1.15rem); }
+      body.login-redesign .auth-wrap { margin-top: 0; padding-bottom: 24px; }
+      body.login-redesign .auth-card { background: #f8f5ee; color: #172534; border: 1px solid rgba(253,190,0,.45); border-radius: 18px; box-shadow: 0 24px 60px rgba(0,0,0,.28); }
+      body.login-redesign .auth-card h1 { color: #000032; letter-spacing: -.025em; }
+      body.login-redesign .auth-intro { color: #596572; }
+      body.login-redesign .auth-tabs { padding: 5px; border: 1px solid #e2d8c5; border-radius: 999px; background: #eee8dc; }
+      body.login-redesign .auth-tabs button { background: transparent; color: #263447; }
+      body.login-redesign .auth-tabs button[aria-pressed="true"] { background: #000032; color: #fdbe00; box-shadow: 0 3px 10px rgba(0,0,50,.18); }
+      body.login-redesign .auth-field { color: #263447; }
+      body.login-redesign .auth-field input { background: #fffdf8; color: #172534; border-color: #d8d0c1; border-radius: 10px; }
+      body.login-redesign .auth-field input:focus { border-color: #fdbe00; outline: 2px solid rgba(253,190,0,.32); outline-offset: 1px; }
+      body.login-redesign .password-toggle { color: #000032; }
+      body.login-redesign .password-toggle:focus-visible { outline: 2px solid #fdbe00; }
+      body.login-redesign .auth-submit { background: #fdbe00; color: #000032; border: 1px solid #fdbe00; font-weight: 800; transition: transform .18s ease, background .18s ease; }
+      body.login-redesign .auth-submit:hover { background: #ffd34d; transform: translateY(-1px); }
+      body.login-redesign .auth-secondary { border: 1px solid #d8d0c1; background: #eee8dc; color: #172534; }
+      body.login-redesign .auth-secondary:hover { border-color: #fdbe00; background: #f3ead5; }
+      body.login-redesign .auth-account { background: #eee8dc; border: 1px solid #e2d8c5; color: #172534; }
+      body.login-redesign .auth-account-links a, body.login-redesign .auth-back { color: #fdbe00; }
+      body.login-redesign .auth-account-links a { color: #000032; text-decoration: underline; text-decoration-color: #fdbe00; text-underline-offset: 4px; }
+      body.login-redesign .auth-message { color: #263447; }
+      body.login-redesign footer { background: #080f1c; color: #d5dce3; border-top: 1px solid rgba(253,190,0,.25); }
+      body.login-redesign footer a { color: #fdbe00; }
+      body.login-redesign :focus-visible { outline-color: #fdbe00; }
+      @media (max-width: 760px) { body.login-redesign .topbar { padding: 14px 18px; } body.login-redesign .page-title { width: calc(100% - 32px); } body.login-redesign .auth-wrap { margin-bottom: 42px; } }
+      @media (prefers-reduced-motion: reduce) { body.login-redesign *, body.login-redesign *::before, body.login-redesign *::after { transition: none !important; } }
     </style>
   </head>
-  <body>
+  <body class="login-redesign">
     <script src="homepage-gate.js"></script>
     <header class="page-header">
       <nav class="topbar" aria-label="Main navigation">
