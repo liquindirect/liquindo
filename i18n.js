@@ -3094,3 +3094,152 @@ const signedInTitleTranslations = {
   }
 };
 for (const [language, entries] of Object.entries(signedInTitleTranslations)) Object.assign(translations[language], entries);
+
+
+// Homepage visual archive labels; fall back to English only if a future locale is added.
+const homepageVisualArchiveTranslations = {
+  "en": {
+    "home.archive.eyebrow": "From the archive",
+    "home.archive.title": "A project in pictures",
+    "home.archive.description": "A visual record of Liquindo’s materials, milestones and ongoing development.",
+    "home.archive.image.alt": "Image from the Liquindo project archive",
+    "home.archive.caption1": "Project materials",
+    "home.archive.caption2": "Visual records",
+    "home.archive.caption3": "Project development",
+    "home.archive.illustration.label": "INSTITUTIONS · COMMUNITY · FUTURE",
+    "home.archive.illustration.title": "Building the framework",
+    "home.archive.illustration.caption": "An original illustration complements the photographic archive.",
+    "home.archive.cta": "Explore the full gallery"
+  },
+  "pt": {
+    "home.archive.eyebrow": "Do arquivo",
+    "home.archive.title": "Um projeto em imagens",
+    "home.archive.description": "Um registo visual dos materiais, marcos e desenvolvimento contínuo de Liquindo.",
+    "home.archive.image.alt": "Imagem do arquivo do projeto Liquindo",
+    "home.archive.caption1": "Materiais do projeto",
+    "home.archive.caption2": "Registos visuais",
+    "home.archive.caption3": "Desenvolvimento do projeto",
+    "home.archive.illustration.label": "INSTITUIÇÕES · COMUNIDADE · FUTURO",
+    "home.archive.illustration.title": "Construir a estrutura",
+    "home.archive.illustration.caption": "Uma ilustração original complementa o arquivo fotográfico.",
+    "home.archive.cta": "Explorar a galeria completa"
+  },
+  "es": {
+    "home.archive.eyebrow": "Del archivo",
+    "home.archive.title": "Un proyecto en imágenes",
+    "home.archive.description": "Un registro visual de los materiales, hitos y desarrollo continuo de Liquindo.",
+    "home.archive.image.alt": "Imagen del archivo del proyecto Liquindo",
+    "home.archive.caption1": "Materiales del proyecto",
+    "home.archive.caption2": "Registros visuales",
+    "home.archive.caption3": "Desarrollo del proyecto",
+    "home.archive.illustration.label": "INSTITUCIONES · COMUNIDAD · FUTURO",
+    "home.archive.illustration.title": "Construir la estructura",
+    "home.archive.illustration.caption": "Una ilustración original complementa el archivo fotográfico.",
+    "home.archive.cta": "Explorar la galería completa"
+  },
+  "fr": {
+    "home.archive.eyebrow": "Dans les archives",
+    "home.archive.title": "Un projet en images",
+    "home.archive.description": "Un aperçu visuel des documents, étapes marquantes et du développement continu de Liquindo.",
+    "home.archive.image.alt": "Image des archives du projet Liquindo",
+    "home.archive.caption1": "Documents du projet",
+    "home.archive.caption2": "Archives visuelles",
+    "home.archive.caption3": "Développement du projet",
+    "home.archive.illustration.label": "INSTITUTIONS · COMMUNAUTÉ · AVENIR",
+    "home.archive.illustration.title": "Construire le cadre",
+    "home.archive.illustration.caption": "Une illustration originale complète les archives photographiques.",
+    "home.archive.cta": "Explorer toute la galerie"
+  },
+  "de": {
+    "home.archive.eyebrow": "Aus dem Archiv",
+    "home.archive.title": "Ein Projekt in Bildern",
+    "home.archive.description": "Ein visueller Einblick in Materialien, Meilensteine und die laufende Entwicklung von Liquindo.",
+    "home.archive.image.alt": "Bild aus dem Archiv des Liquindo-Projekts",
+    "home.archive.caption1": "Projektmaterialien",
+    "home.archive.caption2": "Visuelle Dokumentation",
+    "home.archive.caption3": "Projektentwicklung",
+    "home.archive.illustration.label": "INSTITUTIONEN · GEMEINSCHAFT · ZUKUNFT",
+    "home.archive.illustration.title": "Das Fundament gestalten",
+    "home.archive.illustration.caption": "Eine eigens gestaltete Illustration ergänzt das Fotoarchiv.",
+    "home.archive.cta": "Gesamte Galerie ansehen"
+  },
+  "it": {
+    "home.archive.eyebrow": "Dall’archivio",
+    "home.archive.title": "Un progetto per immagini",
+    "home.archive.description": "Una raccolta visiva di materiali, tappe importanti e sviluppo continuo di Liquindo.",
+    "home.archive.image.alt": "Immagine dall’archivio del progetto Liquindo",
+    "home.archive.caption1": "Materiali del progetto",
+    "home.archive.caption2": "Documentazione visiva",
+    "home.archive.caption3": "Sviluppo del progetto",
+    "home.archive.illustration.label": "ISTITUZIONI · COMUNITÀ · FUTURO",
+    "home.archive.illustration.title": "Costruire la struttura",
+    "home.archive.illustration.caption": "Un’illustrazione originale affianca l’archivio fotografico.",
+    "home.archive.cta": "Esplora la galleria completa"
+  },
+  "hr": {
+    "home.archive.eyebrow": "Iz arhive",
+    "home.archive.title": "Projekt u slikama",
+    "home.archive.description": "Vizualni zapis materijala, važnih trenutaka i daljnjeg razvoja Liquinda.",
+    "home.archive.image.alt": "Slika iz arhive projekta Liquindo",
+    "home.archive.caption1": "Materijali projekta",
+    "home.archive.caption2": "Vizualni zapisi",
+    "home.archive.caption3": "Razvoj projekta",
+    "home.archive.illustration.label": "INSTITUCIJE · ZAJEDNICA · BUDUĆNOST",
+    "home.archive.illustration.title": "Izgradnja okvira",
+    "home.archive.illustration.caption": "Izvorna ilustracija nadopunjuje fotografsku arhivu.",
+    "home.archive.cta": "Otvori cijelu galeriju"
+  },
+  "el": {
+    "home.archive.eyebrow": "Από το αρχείο",
+    "home.archive.title": "Ένα έργο σε εικόνες",
+    "home.archive.description": "Οπτική καταγραφή του υλικού, των σημαντικών στιγμών και της συνεχιζόμενης ανάπτυξης του Liquindo.",
+    "home.archive.image.alt": "Εικόνα από το αρχείο του έργου Liquindo",
+    "home.archive.caption1": "Υλικό του έργου",
+    "home.archive.caption2": "Οπτικά αρχεία",
+    "home.archive.caption3": "Ανάπτυξη του έργου",
+    "home.archive.illustration.label": "ΘΕΣΜΟΙ · ΚΟΙΝΟΤΗΤΑ · ΜΕΛΛΟΝ",
+    "home.archive.illustration.title": "Χτίζοντας το πλαίσιο",
+    "home.archive.illustration.caption": "Μια πρωτότυπη εικονογράφηση συμπληρώνει το φωτογραφικό αρχείο.",
+    "home.archive.cta": "Εξερεύνηση πλήρους γκαλερί"
+  },
+  "pl": {
+    "home.archive.eyebrow": "Z archiwum",
+    "home.archive.title": "Projekt w obrazach",
+    "home.archive.description": "Wizualny zapis materiałów, ważnych wydarzeń i dalszego rozwoju Liquindo.",
+    "home.archive.image.alt": "Obraz z archiwum projektu Liquindo",
+    "home.archive.caption1": "Materiały projektu",
+    "home.archive.caption2": "Dokumentacja wizualna",
+    "home.archive.caption3": "Rozwój projektu",
+    "home.archive.illustration.label": "INSTYTUCJE · SPOŁECZNOŚĆ · PRZYSZŁOŚĆ",
+    "home.archive.illustration.title": "Budowanie struktur",
+    "home.archive.illustration.caption": "Oryginalna ilustracja uzupełnia archiwum fotografii.",
+    "home.archive.cta": "Otwórz pełną galerię"
+  },
+  "ru": {
+    "home.archive.eyebrow": "Из архива",
+    "home.archive.title": "Проект в изображениях",
+    "home.archive.description": "Визуальная хроника материалов, важных этапов и дальнейшего развития Liquindo.",
+    "home.archive.image.alt": "Изображение из архива проекта Liquindo",
+    "home.archive.caption1": "Материалы проекта",
+    "home.archive.caption2": "Визуальные записи",
+    "home.archive.caption3": "Развитие проекта",
+    "home.archive.illustration.label": "ИНСТИТУТЫ · СООБЩЕСТВО · БУДУЩЕЕ",
+    "home.archive.illustration.title": "Создание структуры",
+    "home.archive.illustration.caption": "Оригинальная иллюстрация дополняет фотоархив.",
+    "home.archive.cta": "Открыть всю галерею"
+  },
+  "zh": {
+    "home.archive.eyebrow": "档案精选",
+    "home.archive.title": "影像中的项目",
+    "home.archive.description": "以视觉方式记录 Liquindo 的项目资料、重要节点与持续发展。",
+    "home.archive.image.alt": "Liquindo 项目档案图片",
+    "home.archive.caption1": "项目资料",
+    "home.archive.caption2": "视觉记录",
+    "home.archive.caption3": "项目发展",
+    "home.archive.illustration.label": "制度 · 社群 · 未来",
+    "home.archive.illustration.title": "构建制度框架",
+    "home.archive.illustration.caption": "原创插图为摄影档案增添另一种视觉表达。",
+    "home.archive.cta": "浏览完整图库"
+  }
+};
+for (const [language, entries] of Object.entries(homepageVisualArchiveTranslations)) Object.assign(translations[language], entries);
