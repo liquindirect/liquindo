@@ -125,6 +125,21 @@
           <div id="layerList" class="fm-layer-list" aria-label="Flag layers"></div>
         </section>
         <section class="fm-group">
+          <h3>Flag templates</h3>
+          <p class="fm-note">Start with a classic layout, then customise its colours and shapes.</p>
+          <div class="fm-field"><label for="templateSelect">Starting design</label><select id="templateSelect">
+            <option value="horizontal-tricolour">Horizontal tricolour</option>
+            <option value="vertical-tricolour">Vertical tricolour</option>
+            <option value="nordic-cross">Nordic cross</option>
+            <option value="diagonal">Diagonal split</option>
+            <option value="cross">Central cross</option>
+            <option value="sun">Sunburst</option>
+            <option value="star-canton">Star in canton</option>
+            <option value="plain">Plain background</option>
+          </select></div>
+          <button class="fm-btn primary" id="applyTemplateBtn" type="button">Apply template</button>
+        </section>
+        <section class="fm-group">
           <h3>Add elements</h3>
           <div class="fm-toolbar">
             <button class="fm-btn" data-add="hstripe" type="button">＋ Horizontal stripe</button>
@@ -216,6 +231,39 @@
     else return;
     el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; el.dataset.name=typeLabel(type); el.dataset.visible='true'; el.dataset.locked='false'; layer.append(el); selected=id; selectedIds=[id]; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
   }
+  function applyTemplate(name) {
+    const d=dims(), w=d.width, h=d.height;
+    remember(); layer.replaceChildren(); selected=null; selectedIds=[];
+    const addShape=(type,tag,attrs,color,label)=>{
+      const el=make(tag,attrs);
+      el.setAttribute('data-object',''); el.dataset.id='obj-'+nextId++; el.dataset.type=type;
+      el.dataset.color=color; el.dataset.name=label||typeLabel(type); el.dataset.visible='true'; el.dataset.locked='false';
+      layer.append(el); return el;
+    };
+    const rect=(x,y,width,height,color,label='Stripe')=>addShape('hstripe','rect',{x,y,width,height,fill:color},color,label);
+    const poly=(points,color,label='Triangle')=>addShape('triangle','polygon',{points,fill:color},color,label);
+    const circle=(cx,cy,r,color,label='Circle')=>addShape('circle','circle',{cx,cy,r,fill:color},color,label);
+    const star=(cx,cy,r,color,label='Star')=>addShape('star','polygon',{points:starPoints(cx,cy,r,r*.43),fill:color},color,label);
+    if(name==='horizontal-tricolour'){
+      applyBackgroundColor('#ffffff'); rect(0,0,w,h/3,'#c8102e','Top stripe'); rect(0,h/3,w,h/3,'#ffffff','Middle stripe'); rect(0,2*h/3,w,h/3,'#0033a0','Bottom stripe');
+    } else if(name==='vertical-tricolour'){
+      applyBackgroundColor('#ffffff'); addShape('vstripe','rect',{x:0,y:0,width:w/3,height:h,fill:'#0033a0'},'#0033a0','Left stripe'); addShape('vstripe','rect',{x:w/3,y:0,width:w/3,height:h,fill:'#ffffff'},'#ffffff','Middle stripe'); addShape('vstripe','rect',{x:2*w/3,y:0,width:w/3,height:h,fill:'#c8102e'},'#c8102e','Right stripe');
+    } else if(name==='nordic-cross'){
+      applyBackgroundColor('#c8102e'); rect(0,h*.40,w,h*.20,'#ffffff','Horizontal cross'); addShape('vstripe','rect',{x:w*.30,y:0,width:w*.12,height:h,fill:'#ffffff'},'#ffffff','Vertical cross'); rect(0,h*.445,w,h*.11,'#0033a0','Horizontal cross centre'); addShape('vstripe','rect',{x:w*.325,y:0,width:w*.07,height:h,fill:'#0033a0'},'#0033a0','Vertical cross centre');
+    } else if(name==='diagonal'){
+      applyBackgroundColor('#ffffff'); poly(`0,0 ${w},0 ${w},${h} 0,${h}`,'#ffffff','Base field'); poly(`0,0 ${w},0 0,${h}`,'#0033a0','Diagonal field'); poly(`0,${h*.76} ${w*.76},0 ${w},0 ${w},${h*.24} ${w*.24},${h} 0,${h}`,'#c8102e','Diagonal band');
+    } else if(name==='cross'){
+      applyBackgroundColor('#ffffff'); rect(0,h*.40,w,h*.20,'#c8102e','Horizontal cross'); addShape('vstripe','rect',{x:w*.42,y:0,width:w*.16,height:h,fill:'#c8102e'},'#c8102e','Vertical cross');
+    } else if(name==='sun'){
+      applyBackgroundColor('#ffffff'); circle(w/2,h/2,Math.min(w,h)*.23,'#fdbe00','Sun disc'); for(let i=0;i<12;i++){const a=i*Math.PI/6-Math.PI/2, r1=Math.min(w,h)*.27,r2=Math.min(w,h)*.43; poly(`${w/2+Math.cos(a)*r1},${h/2+Math.sin(a)*r1} ${w/2+Math.cos(a-.10)*r2},${h/2+Math.sin(a-.10)*r2} ${w/2+Math.cos(a+.10)*r2},${h/2+Math.sin(a+.10)*r2}`,'#fdbe00','Sun ray');}
+    } else if(name==='star-canton'){
+      applyBackgroundColor('#c8102e'); addShape('hstripe','rect',{x:0,y:0,width:w*.46,height:h*.58,fill:'#0033a0'},'#0033a0','Canton'); star(w*.23,h*.29,Math.min(w,h)*.15,'#ffffff','Canton star');
+    } else {
+      applyBackgroundColor('#ffffff');
+    }
+    bindObjects(); refreshSelection(); say('Template applied. Adjust its colours, proportions and individual layers to make it your own.');
+  }
+  $('applyTemplateBtn').addEventListener('click',()=>applyTemplate($('templateSelect').value));
   function bindObjects() {
     layer.querySelectorAll('[data-object]').forEach(el=>{
       el.classList.toggle('selected',selectedIds.includes(el.dataset.id));
