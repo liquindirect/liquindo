@@ -87,6 +87,7 @@
         <section class="fm-group">
           <h2>Canvas</h2>
           <div class="fm-field"><label for="ratioSelect">Flag proportions</label><select id="ratioSelect"><option value="600,360">5:3 (landscape)</option><option value="600,400">3:2</option><option value="600,300">2:1</option><option value="600,600">1:1 (square)</option><option value="360,600">3:5 (portrait)</option></select></div>
+          <div class="fm-field"><label><input id="snapEnabled" type="checkbox" checked> Snap shapes into alignment</label><span class="fm-note">Align to a 10-unit grid, the flag centre, and canvas edges.</span></div>
           <div class="fm-field"><label for="backgroundColor">Background colour</label><input id="backgroundColor" type="color" value="#ffffff"></div>
         </section>
         <section class="fm-group">
@@ -159,8 +160,38 @@
   function bindObjects() { layer.querySelectorAll('[data-object]').forEach(el=>{el.classList.toggle('selected',el.dataset.id===selected); el.onpointerdown=e=>{ if(e.button!==0)return; selected=el.dataset.id; refreshSelection(); const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault(); }; }); }
   function point(e) { const p=svg.createSVGPoint(); p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()); }
   svg.addEventListener('pointermove',e=>{ if(!dragging||!dragStart)return; const p=point(e), dx=p.x-dragStart.x, dy=p.y-dragStart.y; moveElement(dragging,dx,dy); dragStart=p; });
-  svg.addEventListener('pointerup',()=>{ if(dragging){dragging=null;dragStart=null;remember();say('Element moved.');} });
+  svg.addEventListener('pointerup',()=>{ if(dragging){const moved=dragging; dragging=null;dragStart=null; if($('snapEnabled').checked){const result=snapElement(moved); remember(); say(result||'Element aligned to the grid.');}else{remember();say('Element moved.');} refreshSelection();} });
   svg.addEventListener('pointercancel',()=>{dragging=null;dragStart=null;});
+  function snapElement(el) {
+    try {
+      const box=el.getBBox(), matrix=el.getCTM(), d=dims();
+      const corners=[
+        svg.createSVGPoint(),svg.createSVGPoint(),svg.createSVGPoint(),svg.createSVGPoint()
+      ];
+      corners[0].x=box.x; corners[0].y=box.y;
+      corners[1].x=box.x+box.width; corners[1].y=box.y;
+      corners[2].x=box.x+box.width; corners[2].y=box.y+box.height;
+      corners[3].x=box.x; corners[3].y=box.y+box.height;
+      const pts=corners.map(p=>p.matrixTransform(matrix));
+      const left=Math.min(...pts.map(p=>p.x)), right=Math.max(...pts.map(p=>p.x));
+      const top=Math.min(...pts.map(p=>p.y)), bottom=Math.max(...pts.map(p=>p.y));
+      const cx=(left+right)/2, cy=(top+bottom)/2;
+      let dx=Math.round(cx/10)*10-cx, dy=Math.round(cy/10)*10-cy;
+      let message='Element snapped to the 10-unit grid.';
+      const centerX=d.width/2, centerY=d.height/2;
+      if(Math.abs(cx-centerX)<8){dx=centerX-cx;message='Snapped to the vertical centre line.';}
+      if(Math.abs(cy-centerY)<8){dy=centerY-cy;message=message.includes('centre line')?'Snapped to the exact centre of the flag.':'Snapped to the horizontal centre line.';}
+      if(Math.abs(left)<8){dx=-left;message='Snapped to the left edge.';}
+      else if(Math.abs(right-d.width)<8){dx=d.width-right;message='Snapped to the right edge.';}
+      if(Math.abs(top)<8){dy=-top;message='Snapped to the top edge.';}
+      else if(Math.abs(bottom-d.height)<8){dy=d.height-bottom;message='Snapped to the bottom edge.';}
+      if(Math.abs(dx)>.01||Math.abs(dy)>.01){
+        const existing=el.getAttribute('transform')||'';
+        el.setAttribute('transform',`translate(${dx} ${dy}) ${existing}`.trim());
+      }
+      return message;
+    } catch(e) { return 'Element moved. You can enable snapping and try again.'; }
+  }
   function moveElement(el,dx,dy) {
     const type=el.dataset.type;
     if(el.tagName==='g'){el.querySelectorAll('*').forEach(child=>{for(const attr of ['cx','x'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dx);for(const attr of ['cy','y'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dy);if(child.hasAttribute('d')){const tr=el.getAttribute('transform')||'';el.setAttribute('transform',tr+` translate(${dx} ${dy})`);}}); if(!el.querySelector('[data-moved]'))el.setAttribute('transform',(el.getAttribute('transform')||'')+` translate(${dx} ${dy})`); }
