@@ -144,10 +144,14 @@
           <div class="fm-field"><label for="objectColor">Colour</label><input id="objectColor" type="color" value="#000032"><input id="objectHex" type="text" value="#000032" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#000032" aria-label="Selected element colour hex code"></div>
           <div class="fm-field"><label for="objectText">Text (for text elements)</label><input id="objectText" type="text" maxlength="32" placeholder="Enter flag text"></div>
           <div class="fm-row">
-            <div class="fm-field"><label for="objectX">X position</label><input id="objectX" type="number" min="0" max="600" value="300"></div>
-            <div class="fm-field"><label for="objectY">Y position</label><input id="objectY" type="number" min="0" max="600" value="180"></div>
+            <div class="fm-field"><label for="objectX">Left X</label><input id="objectX" type="number" min="-2000" max="2000" step="1" value="0"></div>
+            <div class="fm-field"><label for="objectY">Top Y</label><input id="objectY" type="number" min="-2000" max="2000" step="1" value="0"></div>
           </div>
-          <div class="fm-field"><label for="objectSize">Size</label><input id="objectSize" type="range" min="20" max="400" value="100"></div>
+          <div class="fm-row">
+            <div class="fm-field"><label for="objectWidth">Width</label><input id="objectWidth" type="number" min="1" max="3000" step="1" value="100"></div>
+            <div class="fm-field"><label for="objectHeight">Height</label><input id="objectHeight" type="number" min="1" max="3000" step="1" value="100"></div>
+          </div>
+          <p class="fm-note">Position and dimensions use the selected shape’s visible bounding box. Width and height can be changed independently.</p>
           <div class="fm-toolbar">
             <button class="fm-btn" id="duplicateBtn" type="button">Duplicate</button>
             <button class="fm-btn" id="frontBtn" type="button">Bring forward</button>
@@ -335,7 +339,7 @@
   $('distributeVerticalBtn').addEventListener('click',()=>distribute('y'));
   function refreshSelection() {
     bindObjects(); const el=current(), disabled=!el;
-    ['objectColor','objectText','objectX','objectY','objectSize','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
+    ['objectColor','objectText','objectX','objectY','objectWidth','objectHeight','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
     $('selectionHint').textContent=el?'Editing: '+(el.dataset.name||el.dataset.type)+(el.dataset.locked==='true'?' (locked)':''):'Select an element on the flag or add one to edit its settings.';
     $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected. Shortcuts: Shift-click to add/remove; Delete to remove; Ctrl+A to select all; Esc to clear.';
     document.querySelectorAll('[data-align]').forEach(b=>b.disabled=selectedIds.length<2);
@@ -344,10 +348,9 @@
     renderLayers();
     if(!el)return;
     $('objectColor').value=el.dataset.color||'#000032'; $('objectHex').value=el.dataset.color||'#000032'; $('objectText').value=el.tagName.toLowerCase()==='text'?el.textContent:'';
-    const x=el.hasAttribute('cx')?el.getAttribute('cx'):el.hasAttribute('x')?el.getAttribute('x'):dims().width/2;
-    const y=el.hasAttribute('cy')?el.getAttribute('cy'):el.hasAttribute('y')?el.getAttribute('y'):dims().height/2;
-    $('objectX').value=Math.round(+x); $('objectY').value=Math.round(+y);
-    $('objectSize').value=Math.min(400,Math.max(20,Math.round((+(el.getAttribute('r')||el.getAttribute('width')||el.getAttribute('font-size')||100)))));
+    const b=objectBounds(el);
+    $('objectX').value=Math.round(b.left); $('objectY').value=Math.round(b.top);
+    $('objectWidth').value=Math.max(1,Math.round(b.right-b.left)); $('objectHeight').value=Math.max(1,Math.round(b.bottom-b.top));
   }
   function changeSelected(fn,msg) { const el=current(); if(!el)return; remember(); fn(el); refreshSelection(); if(msg)say(msg); }
   document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>add(b.dataset.add)));
@@ -388,9 +391,20 @@
     remember();applyObjectColor(value.toLowerCase());say('Element colour updated.');
   });
   $('objectText').addEventListener('change',e=>changeSelected(el=>{if(el.tagName.toLowerCase()==='text')el.textContent=e.target.value;},'Text updated.'));
-  function setPos(axis,val){const el=current();if(!el)return;remember();const attr=axis==='x'?(el.hasAttribute('cx')?'cx':'x'):(el.hasAttribute('cy')?'cy':'y');if(el.hasAttribute(attr))el.setAttribute(attr,val);else {const d=dims();el.setAttribute('transform',`translate(${axis==='x'?val-d.width/2:0} ${axis==='y'?val-d.height/2:0})`);}refreshSelection();}
+  function setPos(axis,val){const el=current();if(!el||!Number.isFinite(val))return;const b=objectBounds(el),currentPos=axis==='x'?b.left:b.top,delta=val-currentPos;if(Math.abs(delta)<0.001)return;remember();el.setAttribute('transform',`translate(${axis==='x'?delta:0} ${axis==='y'?delta:0}) ${el.getAttribute('transform')||''}`.trim());refreshSelection();say('Element position updated.');}
+  function setDimension(axis,val){
+    const el=current();if(!el||!Number.isFinite(val)||val<=0)return;
+    const b=objectBounds(el),oldW=b.right-b.left,oldH=b.bottom-b.top;
+    const old=axis==='x'?oldW:oldH;if(old<=0)return;
+    const factor=val/old;if(Math.abs(factor-1)<0.0001)return;
+    const cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;
+    remember();
+    const sx=axis==='x'?factor:1,sy=axis==='y'?factor:1;
+    el.setAttribute('transform',`translate(${cx} ${cy}) scale(${sx} ${sy}) translate(${-cx} ${-cy}) ${el.getAttribute('transform')||''}`.trim());
+    refreshSelection();say((axis==='x'?'Width':'Height')+' updated.');
+  }
   $('objectX').addEventListener('change',e=>setPos('x',+e.target.value)); $('objectY').addEventListener('change',e=>setPos('y',+e.target.value));
-  $('objectSize').addEventListener('change',e=>changeSelected(el=>{const v=+e.target.value;if(el.hasAttribute('r'))el.setAttribute('r',v);else if(el.hasAttribute('width'))el.setAttribute('width',v);else if(el.tagName.toLowerCase()==='text')el.setAttribute('font-size',v);else el.setAttribute('transform',(el.getAttribute('transform')||'')+` scale(${v/100})`);},'Element size updated.'));
+  $('objectWidth').addEventListener('change',e=>setDimension('x',+e.target.value)); $('objectHeight').addEventListener('change',e=>setDimension('y',+e.target.value));
   $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',(t+' translate(18 18)').trim());layer.append(clone);selected=clone.dataset.id;selectedIds=[clone.dataset.id];bindObjects();refreshSelection();say('Element duplicated.');});
   $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);refreshSelection();say('Element brought forward.');}});
   $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('Element deleted.');}});
