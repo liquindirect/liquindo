@@ -107,8 +107,14 @@
         </section>
         <section class="fm-group">
           <h3>Arrange multiple elements</h3>
-          <p class="fm-note">Hold Shift and tap/click shapes to select several, then distribute them evenly.</p>
+          <p class="fm-note">Hold Shift and tap/click shapes to select several, then align or distribute them.</p>
           <div class="fm-toolbar">
+            <button class="fm-btn" data-align="left" type="button" disabled>Align left</button>
+            <button class="fm-btn" data-align="centerX" type="button" disabled>Centre horizontally</button>
+            <button class="fm-btn" data-align="right" type="button" disabled>Align right</button>
+            <button class="fm-btn" data-align="top" type="button" disabled>Align top</button>
+            <button class="fm-btn" data-align="centerY" type="button" disabled>Centre vertically</button>
+            <button class="fm-btn" data-align="bottom" type="button" disabled>Align bottom</button>
             <button class="fm-btn" id="distributeHorizontalBtn" type="button" disabled>Distribute horizontally</button>
             <button class="fm-btn" id="distributeVerticalBtn" type="button" disabled>Distribute vertically</button>
           </div>
@@ -177,7 +183,7 @@
           selected=selectedIds.includes(el.dataset.id)?el.dataset.id:(selectedIds[selectedIds.length-1]||null);
           refreshSelection(); e.preventDefault(); return;
         }
-        if(!selectedIds.includes(el.dataset.id)) selectedIds=[el.dataset.id];
+        selectedIds=[el.dataset.id];
         selected=el.dataset.id; refreshSelection();
         const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault();
       };
@@ -238,6 +244,31 @@
     const existing=el.getAttribute('transform')||'';
     el.setAttribute('transform',('translate('+dx+' '+dy+') '+existing).trim());
   }
+  function selectedItems() {
+    return selectedIds.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean).map(el=>({el,b:objectBounds(el)}));
+  }
+  function alignSelection(mode) {
+    const items=selectedItems();
+    if(items.length<2)return;
+    remember();
+    const left=Math.min(...items.map(i=>i.b.left)), right=Math.max(...items.map(i=>i.b.right));
+    const top=Math.min(...items.map(i=>i.b.top)), bottom=Math.max(...items.map(i=>i.b.bottom));
+    const centerX=(left+right)/2, centerY=(top+bottom)/2;
+    items.forEach(({el,b})=>{
+      let dx=0,dy=0;
+      if(mode==='left')dx=left-b.left;
+      if(mode==='centerX')dx=centerX-(b.left+b.right)/2;
+      if(mode==='right')dx=right-b.right;
+      if(mode==='top')dy=top-b.top;
+      if(mode==='centerY')dy=centerY-(b.top+b.bottom)/2;
+      if(mode==='bottom')dy=bottom-b.bottom;
+      translateObject(el,dx,dy);
+    });
+    refreshSelection();
+    const names={left:'left edges',centerX:'horizontal centres',right:'right edges',top:'top edges',centerY:'vertical centres',bottom:'bottom edges'};
+    say('Aligned '+items.length+' elements by their '+names[mode]+'.');
+  }
+  document.querySelectorAll('[data-align]').forEach(b=>b.addEventListener('click',()=>alignSelection(b.dataset.align)));
   function distribute(axis) {
     const items=selectedIds.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean);
     if(items.length<3)return;
@@ -262,7 +293,8 @@
     bindObjects(); const el=current(), disabled=!el;
     ['objectColor','objectText','objectX','objectY','objectSize','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
     $('selectionHint').textContent=el?'Editing: '+el.dataset.type:'Select an element on the flag or add one to edit its settings.';
-    $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected';
+    $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected. Shortcuts: Shift-click to add/remove; Delete to remove; Ctrl+A to select all; Esc to clear.';
+    document.querySelectorAll('[data-align]').forEach(b=>b.disabled=selectedIds.length<2);
     $('distributeHorizontalBtn').disabled=selectedIds.length<3;
     $('distributeVerticalBtn').disabled=selectedIds.length<3;
     if(!el)return;
@@ -313,7 +345,7 @@
   function setPos(axis,val){const el=current();if(!el)return;remember();const attr=axis==='x'?(el.hasAttribute('cx')?'cx':'x'):(el.hasAttribute('cy')?'cy':'y');if(el.hasAttribute(attr))el.setAttribute(attr,val);else {const d=dims();el.setAttribute('transform',`translate(${axis==='x'?val-d.width/2:0} ${axis==='y'?val-d.height/2:0})`);}refreshSelection();}
   $('objectX').addEventListener('change',e=>setPos('x',+e.target.value)); $('objectY').addEventListener('change',e=>setPos('y',+e.target.value));
   $('objectSize').addEventListener('change',e=>changeSelected(el=>{const v=+e.target.value;if(el.hasAttribute('r'))el.setAttribute('r',v);else if(el.hasAttribute('width'))el.setAttribute('width',v);else if(el.tagName.toLowerCase()==='text')el.setAttribute('font-size',v);else el.setAttribute('transform',(el.getAttribute('transform')||'')+` scale(${v/100})`);},'Element size updated.'));
-  $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',t+' translate(18 18)');layer.append(clone);selected=clone.dataset.id;bindObjects();refreshSelection();say('Element duplicated.');});
+  $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',(t+' translate(18 18)').trim());layer.append(clone);selected=clone.dataset.id;selectedIds=[clone.dataset.id];bindObjects();refreshSelection();say('Element duplicated.');});
   $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);say('Element brought forward.');}});
   $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('Element deleted.');}});
   $('ratioSelect').addEventListener('change',e=>{remember();const [w,h]=e.target.value.split(',').map(Number);svg.setAttribute('viewBox',`0 0 ${w} ${h}`);bg.setAttribute('width',w);bg.setAttribute('height',h);refreshSelection();say('Flag proportions changed.');});
@@ -326,6 +358,27 @@
   $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
   $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';$('backgroundHex').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
   bg.addEventListener('click',()=>{selected=null;selectedIds=[];refreshSelection();});
+  document.addEventListener('keydown',e=>{
+    const tag=(e.target&&e.target.tagName||'').toLowerCase();
+    const typing=['input','textarea','select'].includes(tag)||e.target?.isContentEditable;
+    if(typing)return;
+    if((e.key==='Delete'||e.key==='Backspace')&&selectedIds.length){
+      e.preventDefault();remember();
+      selectedIds.forEach(id=>layer.querySelector('[data-id="'+id+'"]')?.remove());
+      selected=null;selectedIds=[];refreshSelection();say('Selected elements deleted.');
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='a'){
+      e.preventDefault();selectedIds=Array.from(layer.querySelectorAll('[data-object]')).map(el=>el.dataset.id);
+      selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('All '+selectedIds.length+' elements selected.');
+    } else if(e.key==='Escape'){
+      selected=null;selectedIds=[];refreshSelection();say('Selection cleared.');
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'&&current()){
+      e.preventDefault();$('duplicateBtn').click();
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){
+      e.preventDefault();(e.shiftKey?$('redoBtn'):$('undoBtn')).click();
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){
+      e.preventDefault();$('redoBtn').click();
+    }
+  });
   refreshSelection();updateHistoryButtons();
 })();
 </script>
