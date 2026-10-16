@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Design, customise and export your own flags with the Liquindo Flag Maker.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Flag Maker | Liquindo</title>
+  <link rel="stylesheet" href="style.css?v=20261013-subpage-consistency-v1">
+  <style>
+    :root { --fm-navy:#000032; --fm-gold:#fdbe00; }
+    body { background:#f5f3ee; }
+    .fm-head { background:var(--fm-navy); color:#fff; border-bottom:4px solid var(--fm-gold); }
+    .fm-top { width:min(1400px,100%); margin:auto; padding:18px 24px; display:flex; gap:16px; align-items:center; justify-content:space-between; }
+    .fm-brand { font-size:1.35rem; font-weight:900; color:#fff; }
+    .fm-back { color:var(--fm-gold); font-weight:800; }
+    .fm-intro { width:min(1200px,calc(100% - 32px)); margin:32px auto 22px; }
+    .fm-kicker { color:#816000; text-transform:uppercase; font-weight:900; letter-spacing:.13em; font-size:.78rem; margin:0 0 8px; }
+    .fm-intro h1 { margin:0; color:var(--fm-navy); font-size:clamp(2.2rem,6vw,4rem); letter-spacing:-.04em; line-height:1.05; }
+    .fm-intro p { max-width:760px; color:#52606a; }
+    .fm-app { width:min(1400px,calc(100% - 32px)); margin:0 auto 56px; display:grid; grid-template-columns:minmax(0,1.6fr) minmax(270px,.8fr); gap:20px; align-items:start; }
+    .fm-panel { background:#fff; border:1px solid #ded7ca; border-radius:16px; padding:18px; box-shadow:0 12px 32px #1721260d; min-width:0; }
+    .fm-panel h2 { margin:0 0 14px; color:var(--fm-navy); font-size:1.15rem; }
+    .fm-stage { min-height:340px; display:grid; place-items:center; padding:18px; border:1px solid #e3e3e8; border-radius:12px; background-color:#fafafa; background-image:linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:20px 20px; background-position:0 0,0 10px,10px -10px,-10px 0; }
+    #flagSvg { width:min(100%,850px); height:auto; max-height:62vh; box-shadow:0 10px 28px #0002; touch-action:none; user-select:none; }
+    #flagSvg [data-object] { cursor:move; }
+    #flagSvg [data-object].selected { stroke:#fdbe00; stroke-width:2; stroke-dasharray:5 4; }
+    .fm-toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .fm-btn { border:1px solid #d5d5dd; border-radius:9px; padding:9px 12px; background:#fff; color:#111638; font-weight:750; cursor:pointer; }
+    .fm-btn:hover { border-color:#b28a00; background:#fff9df; }
+    .fm-btn.primary { background:var(--fm-navy); color:#fff; border-color:var(--fm-navy); }
+    .fm-btn.primary:hover { background:#15155c; }
+    .fm-btn.danger { color:#9d2828; }
+    .fm-controls { display:grid; gap:16px; }
+    .fm-group { border-bottom:1px solid #e8e3da; padding-bottom:15px; }
+    .fm-group:last-child { border:0; padding:0; }
+    .fm-group h3 { font-size:.95rem; color:#24233b; margin:0 0 10px; }
+    .fm-field { display:grid; gap:5px; margin:9px 0; }
+    .fm-field label { font-size:.84rem; font-weight:750; color:#4b4b58; }
+    .fm-field input[type="text"], .fm-field input[type="number"], .fm-field select { width:100%; min-width:0; border:1px solid #d5d5dd; border-radius:8px; padding:9px; background:#fff; color:#20202c; }
+    .fm-field input[type="color"] { width:100%; height:38px; padding:3px; border:1px solid #d5d5dd; border-radius:8px; background:white; }
+    .fm-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .fm-note { color:#656575; font-size:.82rem; margin:10px 0 0; }
+    .fm-status { min-height:1.3em; color:#425344; font-size:.84rem; margin:10px 0 0; }
+    .fm-footer { text-align:center; color:#777; padding:0 16px 30px; font-size:.85rem; }
+    @media(max-width:850px) { .fm-app { grid-template-columns:1fr; } .fm-stage { min-height:220px; padding:10px; } #flagSvg { max-height:none; } }
+    @media(max-width:480px) { .fm-panel { padding:12px; } .fm-top { padding:14px 16px; } .fm-toolbar .fm-btn { flex:1 1 auto; } }
+  </style>
+</head>
+<body>
+  <header class="fm-head">
+    <nav class="fm-top" aria-label="Flag Maker navigation">
+      <a class="fm-brand" href="index.html">Liquindo</a>
+      <a class="fm-back" href="index.html">← Back to website</a>
+    </nav>
+  </header>
+  <section class="fm-intro">
+    <p class="fm-kicker">Liquindo tools</p>
+    <h1>Flag Maker</h1>
+    <p>Build a flag from stripes, shapes and symbols. Select an object to edit it, or drag it directly on the flag. Your work stays in this browser until you export it.</p>
+  </section>
+  <main class="fm-app">
+    <section class="fm-panel" aria-label="Flag preview and canvas">
+      <h2>Your flag</h2>
+      <div class="fm-stage">
+        <svg id="flagSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="Your editable flag">
+          <rect id="flagBackground" x="0" y="0" width="600" height="360" fill="#ffffff"></rect>
+          <g id="flagObjects"></g>
+        </svg>
+      </div>
+      <div class="fm-toolbar">
+        <button class="fm-btn" id="undoBtn" type="button">↶ Undo</button>
+        <button class="fm-btn" id="redoBtn" type="button">↷ Redo</button>
+        <button class="fm-btn" id="saveBtn" type="button">Save in browser</button>
+        <button class="fm-btn" id="loadBtn" type="button">Load saved</button>
+      </div>
+      <div class="fm-toolbar">
+        <button class="fm-btn primary" id="svgExportBtn" type="button">Export SVG</button>
+        <button class="fm-btn primary" id="pngExportBtn" type="button">Export PNG</button>
+        <button class="fm-btn danger" id="resetBtn" type="button">Reset flag</button>
+      </div>
+      <p class="fm-note">Tip: select any added symbol, then drag it on the canvas. Export SVG for crisp vector artwork or PNG for a ready-to-share image.</p>
+      <p class="fm-status" id="status" role="status" aria-live="polite"></p>
+    </section>
+    <aside class="fm-panel">
+      <div class="fm-controls">
+        <section class="fm-group">
+          <h2>Canvas</h2>
+          <div class="fm-field"><label for="ratioSelect">Flag proportions</label><select id="ratioSelect"><option value="600,360">5:3 (landscape)</option><option value="600,400">3:2</option><option value="600,300">2:1</option><option value="600,600">1:1 (square)</option><option value="360,600">3:5 (portrait)</option></select></div>
+          <div class="fm-field"><label for="backgroundColor">Background colour</label><input id="backgroundColor" type="color" value="#ffffff"></div>
+        </section>
+        <section class="fm-group">
+          <h3>Add elements</h3>
+          <div class="fm-toolbar">
+            <button class="fm-btn" data-add="hstripe" type="button">＋ Horizontal stripe</button>
+            <button class="fm-btn" data-add="vstripe" type="button">＋ Vertical stripe</button>
+            <button class="fm-btn" data-add="circle" type="button">＋ Circle</button>
+            <button class="fm-btn" data-add="star" type="button">＋ Star</button>
+            <button class="fm-btn" data-add="triangle" type="button">＋ Triangle</button>
+            <button class="fm-btn" data-add="cross" type="button">＋ Cross</button>
+            <button class="fm-btn" data-add="crescent" type="button">＋ Crescent</button>
+            <button class="fm-btn" data-add="diamond" type="button">＋ Diamond</button>
+            <button class="fm-btn" data-add="yin-yang" type="button">＋ Yin-yang</button>
+            <button class="fm-btn" data-add="text" type="button">＋ Text</button>
+          </div>
+        </section>
+        <section class="fm-group">
+          <h3>Selected element</h3>
+          <p id="selectionHint" class="fm-note">Select an element on the flag or add one to edit its settings.</p>
+          <div class="fm-field"><label for="objectColor">Colour</label><input id="objectColor" type="color" value="#000032"></div>
+          <div class="fm-field"><label for="objectText">Text (for text elements)</label><input id="objectText" type="text" maxlength="32" placeholder="Enter flag text"></div>
+          <div class="fm-row">
+            <div class="fm-field"><label for="objectX">X position</label><input id="objectX" type="number" min="0" max="600" value="300"></div>
+            <div class="fm-field"><label for="objectY">Y position</label><input id="objectY" type="number" min="0" max="600" value="180"></div>
+          </div>
+          <div class="fm-field"><label for="objectSize">Size</label><input id="objectSize" type="range" min="20" max="400" value="100"></div>
+          <div class="fm-toolbar">
+            <button class="fm-btn" id="duplicateBtn" type="button">Duplicate</button>
+            <button class="fm-btn" id="frontBtn" type="button">Bring forward</button>
+            <button class="fm-btn danger" id="deleteBtn" type="button">Delete element</button>
+          </div>
+        </section>
+      </div>
+    </aside>
+  </main>
+  <footer class="fm-footer">Liquindo Flag Maker · Designs are yours to create and export.</footer>
+<script>
+(() => {
+  const svg = document.getElementById('flagSvg');
+  const bg = document.getElementById('flagBackground');
+  const layer = document.getElementById('flagObjects');
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  let selected = null, nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null;
+  const snapshot = () => ({background:bg.getAttribute('fill'), viewBox:svg.getAttribute('viewBox'), objects:layer.innerHTML, selected});
+  function remember() { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); redoStack=[]; updateHistoryButtons(); }
+  function restore(s) { bg.setAttribute('fill',s.background); svg.setAttribute('viewBox',s.viewBox); layer.innerHTML=s.objects; selected=s.selected; bindObjects(); refreshSelection(); }
+  function updateHistoryButtons() { $('undoBtn').disabled=!undoStack.length; $('redoBtn').disabled=!redoStack.length; }
+  function say(message) { $('status').textContent=message; }
+  function dims() { return svg.viewBox.baseVal; }
+  function make(tag,attrs={}) { const el=document.createElementNS(NS,tag); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v)); return el; }
+  function starPoints(cx,cy,outer,inner,points=5) { let a=[]; for(let i=0;i<points*2;i++){let r=i%2?inner:outer, angle=-Math.PI/2+i*Math.PI/points; a.push((cx+Math.cos(angle)*r)+','+(cy+Math.sin(angle)*r));} return a.join(' '); }
+  function add(type) {
+    remember(); const d=dims(), cx=d.width/2, cy=d.height/2, color=$('objectColor').value, id='obj-'+nextId++;
+    let el;
+    if(type==='hstripe') el=make('rect',{x:0,y:cy-d.height*.16,width:d.width,height:d.height*.32,fill:color});
+    else if(type==='vstripe') el=make('rect',{x:cx-d.width*.16,y:0,width:d.width*.32,height:d.height,fill:color});
+    else if(type==='circle') el=make('circle',{cx,cy,r:Math.min(d.width,d.height)*.18,fill:color});
+    else if(type==='star') el=make('polygon',{points:starPoints(cx,cy,Math.min(d.width,d.height)*.22,Math.min(d.width,d.height)*.095),fill:color});
+    else if(type==='triangle') el=make('polygon',{points:`${cx},${cy-d.height*.24} ${cx-d.width*.2},${cy+d.height*.18} ${cx+d.width*.2},${cy+d.height*.18}`,fill:color});
+    else if(type==='diamond') el=make('polygon',{points:`${cx},${cy-d.height*.25} ${cx+d.width*.15},${cy} ${cx},${cy+d.height*.25} ${cx-d.width*.15},${cy}`,fill:color});
+    else if(type==='cross') { const w=d.width*.12,h=d.height*.38; el=make('path',{d:`M ${cx-w/2} ${cy-h/2} H ${cx+w/2} V ${cy-w/2} H ${cx+h/2} V ${cy+w/2} H ${cx+w/2} V ${cy+h/2} H ${cx-w/2} V ${cy+w/2} H ${cx-h/2} V ${cy-w/2} H ${cx-w/2} Z`,fill:color}); }
+    else if(type==='crescent') { let r=Math.min(d.width,d.height)*.23; el=make('path',{d:`M ${cx} ${cy-r} A ${r} ${r} 0 1 0 ${cx} ${cy+r} A ${r*.72} ${r*.72} 0 1 1 ${cx} ${cy-r} Z`,fill:color,fillRule:'evenodd'}); }
+    else if(type==='yin-yang') { const r=Math.min(d.width,d.height)*.22; el=make('g',{}); el.append(make('circle',{cx,cy,r,fill:color})); el.append(make('path',{d:`M ${cx} ${cy-r} A ${r/2} ${r/2} 0 0 1 ${cx} ${cy} A ${r/2} ${r/2} 0 0 0 ${cx} ${cy+r} A ${r} ${r} 0 0 1 ${cx} ${cy-r} Z`,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy-r/2,r:r/7,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy+r/2,r:r/7,fill:color})); }
+    else if(type==='text') { el=make('text',{x:cx,y:cy,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Arial, Helvetica, sans-serif','font-weight':'800','font-size':Math.min(d.width,d.height)*.14,fill:color}); el.textContent='LIQUINDO'; }
+    else return;
+    el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; layer.append(el); selected=id; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
+  }
+  function bindObjects() { layer.querySelectorAll('[data-object]').forEach(el=>{el.classList.toggle('selected',el.dataset.id===selected); el.onpointerdown=e=>{ if(e.button!==0)return; selected=el.dataset.id; refreshSelection(); const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault(); }; }); }
+  function point(e) { const p=svg.createSVGPoint(); p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()); }
+  svg.addEventListener('pointermove',e=>{ if(!dragging||!dragStart)return; const p=point(e), dx=p.x-dragStart.x, dy=p.y-dragStart.y; moveElement(dragging,dx,dy); dragStart=p; });
+  svg.addEventListener('pointerup',()=>{ if(dragging){dragging=null;dragStart=null;remember();say('Element moved.');} });
+  svg.addEventListener('pointercancel',()=>{dragging=null;dragStart=null;});
+  function moveElement(el,dx,dy) {
+    const type=el.dataset.type;
+    if(el.tagName==='g'){el.querySelectorAll('*').forEach(child=>{for(const attr of ['cx','x'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dx);for(const attr of ['cy','y'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dy);if(child.hasAttribute('d')){const tr=el.getAttribute('transform')||'';el.setAttribute('transform',tr+` translate(${dx} ${dy})`);}}); if(!el.querySelector('[data-moved]'))el.setAttribute('transform',(el.getAttribute('transform')||'')+` translate(${dx} ${dy})`); }
+    else if(type==='hstripe') el.setAttribute('y',+el.getAttribute('y')+dy);
+    else if(type==='vstripe') el.setAttribute('x',+el.getAttribute('x')+dx);
+    else { for(const attr of ['cx','x'])if(el.hasAttribute(attr))el.setAttribute(attr,+el.getAttribute(attr)+dx); for(const attr of ['cy','y'])if(el.hasAttribute(attr))el.setAttribute(attr,+el.getAttribute(attr)+dy); if(el.hasAttribute('points'))el.setAttribute('points',el.getAttribute('points').trim().split(/\s+/).map(pair=>{const [x,y]=pair.split(',').map(Number);return (x+dx)+','+(y+dy)}).join(' ')); if(el.hasAttribute('d')){const t=el.getAttribute('transform')||'';el.setAttribute('transform',t+` translate(${dx} ${dy})`);} }
+    $('objectX').value=Math.round((+($('objectX').value)||0)+dx); $('objectY').value=Math.round((+($('objectY').value)||0)+dy);
+  }
+  function current() { return layer.querySelector('[data-id="'+selected+'"]'); }
+  function refreshSelection() {
+    bindObjects(); const el=current(), disabled=!el;
+    ['objectColor','objectText','objectX','objectY','objectSize','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
+    $('selectionHint').textContent=el?'Editing: '+el.dataset.type:'Select an element on the flag or add one to edit its settings.';
+    if(!el)return;
+    $('objectColor').value=el.dataset.color||'#000032'; $('objectText').value=el.tagName.toLowerCase()==='text'?el.textContent:'';
+    const x=el.hasAttribute('cx')?el.getAttribute('cx'):el.hasAttribute('x')?el.getAttribute('x'):dims().width/2;
+    const y=el.hasAttribute('cy')?el.getAttribute('cy'):el.hasAttribute('y')?el.getAttribute('y'):dims().height/2;
+    $('objectX').value=Math.round(+x); $('objectY').value=Math.round(+y);
+    $('objectSize').value=Math.min(400,Math.max(20,Math.round((+(el.getAttribute('r')||el.getAttribute('width')||el.getAttribute('font-size')||100)))));
+  }
+  function changeSelected(fn,msg) { const el=current(); if(!el)return; remember(); fn(el); refreshSelection(); if(msg)say(msg); }
+  document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>add(b.dataset.add)));
+  $('backgroundColor').addEventListener('input',e=>{bg.setAttribute('fill',e.target.value);layer.querySelectorAll('[data-type="yin-yang"]').forEach(g=>{const path=g.querySelector('path');if(path)path.setAttribute('fill',e.target.value);const dot=g.querySelector('circle:nth-of-type(2)');if(dot)dot.setAttribute('fill',e.target.value);});});
+  $('backgroundColor').addEventListener('change',()=>{remember();say('Background colour changed.');});
+  $('objectColor').addEventListener('change',e=>changeSelected(el=>{el.dataset.color=e.target.value;if(el.tagName.toLowerCase()==='g'){el.querySelectorAll('circle').forEach((c,i)=>c.setAttribute('fill',i===0||i===3?e.target.value:bg.getAttribute('fill')));el.querySelectorAll('path').forEach(p=>p.setAttribute('fill',bg.getAttribute('fill')));}else el.setAttribute('fill',e.target.value);},'Element colour updated.'));
+  $('objectText').addEventListener('change',e=>changeSelected(el=>{if(el.tagName.toLowerCase()==='text')el.textContent=e.target.value;},'Text updated.'));
+  function setPos(axis,val){const el=current();if(!el)return;remember();const attr=axis==='x'?(el.hasAttribute('cx')?'cx':'x'):(el.hasAttribute('cy')?'cy':'y');if(el.hasAttribute(attr))el.setAttribute(attr,val);else {const d=dims();el.setAttribute('transform',`translate(${axis==='x'?val-d.width/2:0} ${axis==='y'?val-d.height/2:0})`);}refreshSelection();}
+  $('objectX').addEventListener('change',e=>setPos('x',+e.target.value)); $('objectY').addEventListener('change',e=>setPos('y',+e.target.value));
+  $('objectSize').addEventListener('change',e=>changeSelected(el=>{const v=+e.target.value;if(el.hasAttribute('r'))el.setAttribute('r',v);else if(el.hasAttribute('width'))el.setAttribute('width',v);else if(el.tagName.toLowerCase()==='text')el.setAttribute('font-size',v);else el.setAttribute('transform',(el.getAttribute('transform')||'')+` scale(${v/100})`);},'Element size updated.'));
+  $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',t+' translate(18 18)');layer.append(clone);selected=clone.dataset.id;bindObjects();refreshSelection();say('Element duplicated.');});
+  $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);say('Element brought forward.');}});
+  $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selected=null;refreshSelection();say('Element deleted.');}});
+  $('ratioSelect').addEventListener('change',e=>{remember();const [w,h]=e.target.value.split(',').map(Number);svg.setAttribute('viewBox',`0 0 ${w} ${h}`);bg.setAttribute('width',w);bg.setAttribute('height',h);refreshSelection();say('Flag proportions changed.');});
+  $('undoBtn').addEventListener('click',()=>{if(!undoStack.length)return;redoStack.push(snapshot());restore(undoStack.pop());updateHistoryButtons();say('Undid last change.');});
+  $('redoBtn').addEventListener('click',()=>{if(!redoStack.length)return;undoStack.push(snapshot());restore(redoStack.pop());updateHistoryButtons();say('Redid change.');});
+  $('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('liquindo-flag-maker',JSON.stringify(snapshot()));say('Flag saved in this browser.');}catch(e){say('Could not save in this browser. Use Export SVG or PNG instead.');}});
+  $('loadBtn').addEventListener('click',()=>{try{const s=localStorage.getItem('liquindo-flag-maker');if(!s){say('No saved flag found in this browser yet.');return;}remember();restore(JSON.parse(s));$('backgroundColor').value=bg.getAttribute('fill');say('Saved flag loaded.');}catch(e){say('Could not load the saved flag.');}});
+  function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
+  $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
+  $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
+  bg.addEventListener('click',()=>{selected=null;refreshSelection();});
+  refreshSelection();updateHistoryButtons();
+})();
+</script>
+</body>
+</html>
