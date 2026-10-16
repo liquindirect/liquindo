@@ -165,7 +165,9 @@
           <h3>Shape library</h3>
           <p class="fm-note">Pick a shape to add it to the centre of your flag, then customise it below.</p>
           <div class="fm-field"><label for="shapeLibrarySelect">Shape</label><select id="shapeLibrarySelect">
-            <option value="hstripe">Horizontal stripe</option><option value="vstripe">Vertical stripe</option><option value="circle">Circle</option><option value="star">Star</option><option value="triangle">Triangle</option><option value="cross">Cross</option><option value="crescent">Crescent</option><option value="diamond">Diamond</option><option value="yin-yang">Yin-yang</option><option value="text">Text</option>
+            <option value="hstripe">Horizontal stripe</option><option value="vstripe">Vertical stripe</option><option value="circle">Circle</option><option value="star">Star</option><option value="triangle">Triangle</option><option value="cross">Cross</option><option value="crescent">Crescent</option><option value="diamond">Diamond</option><option value="yin-yang">Yin-yang</option>
+            <optgroup label="More geometry"><option value="pentagon">Pentagon</option><option value="hexagon">Hexagon</option><option value="octagon">Octagon</option><option value="six-star">Six-point star</option><option value="eight-star">Eight-point star</option><option value="ring">Ring</option><option value="arrow">Arrow</option><option value="chevron">Chevron</option><option value="shield">Shield</option><option value="heart">Heart</option><option value="sunburst">Sunburst</option><option value="wave">Wave band</option></optgroup>
+            <option value="text">Text</option>
           </select></div>
           <button class="fm-btn primary" id="addLibraryShapeBtn" type="button">Add shape</button>
         </section>
@@ -181,6 +183,12 @@
             <button class="fm-btn" data-add="crescent" type="button">＋ Crescent</button>
             <button class="fm-btn" data-add="diamond" type="button">＋ Diamond</button>
             <button class="fm-btn" data-add="yin-yang" type="button">＋ Yin-yang</button>
+            <button class="fm-btn" data-add="hexagon" type="button">＋ Hexagon</button>
+            <button class="fm-btn" data-add="pentagon" type="button">＋ Pentagon</button>
+            <button class="fm-btn" data-add="six-star" type="button">＋ Six-point star</button>
+            <button class="fm-btn" data-add="ring" type="button">＋ Ring</button>
+            <button class="fm-btn" data-add="arrow" type="button">＋ Arrow</button>
+            <button class="fm-btn" data-add="shield" type="button">＋ Shield</button>
             <button class="fm-btn" data-add="text" type="button">＋ Text</button>
           </div>
         </section>
@@ -257,6 +265,15 @@
     else if(type==='cross') { const w=d.width*.12,h=d.height*.38; el=make('path',{d:`M ${cx-w/2} ${cy-h/2} H ${cx+w/2} V ${cy-w/2} H ${cx+h/2} V ${cy+w/2} H ${cx+w/2} V ${cy+h/2} H ${cx-w/2} V ${cy+w/2} H ${cx-h/2} V ${cy-w/2} H ${cx-w/2} Z`,fill:color}); }
     else if(type==='crescent') { let r=Math.min(d.width,d.height)*.23; el=make('path',{d:`M ${cx} ${cy-r} A ${r} ${r} 0 1 0 ${cx} ${cy+r} A ${r*.72} ${r*.72} 0 1 1 ${cx} ${cy-r} Z`,fill:color,fillRule:'evenodd'}); }
     else if(type==='yin-yang') { const r=Math.min(d.width,d.height)*.22; el=make('g',{}); el.append(make('circle',{cx,cy,r,fill:color})); el.append(make('path',{d:`M ${cx} ${cy-r} A ${r/2} ${r/2} 0 0 1 ${cx} ${cy} A ${r/2} ${r/2} 0 0 0 ${cx} ${cy+r} A ${r} ${r} 0 0 1 ${cx} ${cy-r} Z`,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy-r/2,r:r/7,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy+r/2,r:r/7,fill:color})); }
+    else if(['pentagon','hexagon','octagon'].includes(type)) { const n=type==='pentagon'?5:type==='hexagon'?6:8,r=Math.min(d.width,d.height)*.23; const pts=Array.from({length:n},(_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return `${cx+Math.cos(a)*r},${cy+Math.sin(a)*r}`;}).join(' ');el=make('polygon',{points:pts,fill:color}); }
+    else if(type==='six-star'||type==='eight-star') { const n=type==='six-star'?6:8,r=Math.min(d.width,d.height)*.24,ri=r*(type==='six-star'?.48:.58);const pts=Array.from({length:n*2},(_,i)=>{const a=-Math.PI/2+i*Math.PI/n,rr=i%2?ri:r;return `${cx+Math.cos(a)*rr},${cy+Math.sin(a)*rr}`;}).join(' ');el=make('polygon',{points:pts,fill:color}); }
+    else if(type==='ring') { const r=Math.min(d.width,d.height)*.24,ri=r*.56;el=make('path',{d:`M ${cx} ${cy-r} A ${r} ${r} 0 1 1 ${cx} ${cy+r} A ${r} ${r} 0 1 1 ${cx} ${cy-r} Z M ${cx} ${cy-ri} A ${ri} ${ri} 0 1 0 ${cx} ${cy+ri} A ${ri} ${ri} 0 1 0 ${cx} ${cy-ri} Z`,fill:color,'fill-rule':'evenodd'}); }
+    else if(type==='arrow') { const rw=d.width*.28,rh=d.height*.22;el=make('polygon',{points:`${cx-rw},${cy-rh*.45} ${cx+rw*.05},${cy-rh*.45} ${cx+rw*.05},${cy-rh} ${cx+rw},${cy} ${cx+rw*.05},${cy+rh} ${cx+rw*.05},${cy+rh*.45} ${cx-rw},${cy+rh*.45}`,fill:color}); }
+    else if(type==='chevron') { const rw=d.width*.27,rh=d.height*.30,th=d.width*.10;el=make('polygon',{points:`${cx-rw},${cy-rh} ${cx-rw+th},${cy-rh} ${cx+rw},${cy} ${cx-rw+th},${cy+rh} ${cx-rw},${cy+rh} ${cx+rw-th},${cy}`,fill:color}); }
+    else if(type==='shield') { const rw=d.width*.23,rh=d.height*.28;el=make('polygon',{points:`${cx-rw},${cy-rh} ${cx+rw},${cy-rh} ${cx+rw*.92},${cy+rh*.35} ${cx},${cy+rh} ${cx-rw*.92},${cy+rh*.35}`,fill:color}); }
+    else if(type==='heart') { const r=Math.min(d.width,d.height)*.22;el=make('path',{d:`M ${cx} ${cy+r*.82} C ${cx-r*1.8} ${cy-r*.2} ${cx-r*1.2} ${cy-r*1.5} ${cx-r*.45} ${cy-r*1.15} C ${cx-r*.1} ${cy-r} ${cx} ${cy-r*.7} ${cx} ${cy-r*.7} C ${cx} ${cy-r*.7} ${cx+r*.1} ${cy-r} ${cx+r*.45} ${cy-r*1.15} C ${cx+r*1.2} ${cy-r*1.5} ${cx+r*1.8} ${cy-r*.2} ${cx} ${cy+r*.82} Z`,fill:color}); }
+    else if(type==='sunburst') { const r=Math.min(d.width,d.height)*.24,ri=r*.62;const pts=Array.from({length:24},(_,i)=>{const a=-Math.PI/2+i*Math.PI/12,rr=i%2?ri:r;return `${cx+Math.cos(a)*rr},${cy+Math.sin(a)*rr}`;}).join(' ');el=make('polygon',{points:pts,fill:color}); }
+    else if(type==='wave') { const x0=cx-d.width*.38,x1=cx+d.width*.38,y0=cy-d.height*.12,y1=cy+d.height*.12;const pts=[];for(let i=0;i<=24;i++){const x=x0+(x1-x0)*i/24;pts.push(`${x},${cy+Math.sin(i*Math.PI/6)*d.height*.09}`);}for(let i=24;i>=0;i--){const x=x0+(x1-x0)*i/24;pts.push(`${x},${cy+d.height*.18+Math.sin(i*Math.PI/6)*d.height*.09}`);}el=make('polygon',{points:pts.join(' '),fill:color});}
     else if(type==='text') { el=make('text',{x:cx,y:cy,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Arial, Helvetica, sans-serif','font-weight':'800','font-size':Math.min(d.width,d.height)*.14,fill:color}); el.textContent='LIQUINDO'; }
     else return;
     el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; el.dataset.name=typeLabel(type); el.dataset.visible='true'; el.dataset.locked='false'; layer.append(el); selected=id; selectedIds=[id]; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
@@ -405,7 +422,7 @@
     $('objectX').value=Math.round((+($('objectX').value)||0)+dx); $('objectY').value=Math.round((+($('objectY').value)||0)+dy);
   }
   function typeLabel(type) {
-    return ({hstripe:'Horizontal stripe',vstripe:'Vertical stripe','yin-yang':'Yin-yang',circle:'Circle',star:'Star',triangle:'Triangle',cross:'Cross',crescent:'Crescent',diamond:'Diamond',text:'Text'})[type]||type;
+    return ({hstripe:'Horizontal stripe',vstripe:'Vertical stripe','yin-yang':'Yin-yang',circle:'Circle',star:'Star',triangle:'Triangle',cross:'Cross',crescent:'Crescent',diamond:'Diamond',text:'Text',pentagon:'Pentagon',hexagon:'Hexagon',octagon:'Octagon','six-star':'Six-point star','eight-star':'Eight-point star',ring:'Ring',arrow:'Arrow',chevron:'Chevron',shield:'Shield',heart:'Heart',sunburst:'Sunburst','wave':'Wave band'})[type]||type;
   }
   function current() { return layer.querySelector('[data-id="'+selected+'"]'); }
   function renderLayers() {
