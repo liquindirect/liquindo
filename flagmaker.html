@@ -42,6 +42,11 @@
     .fm-layer-actions .fm-btn { padding:5px 7px; font-size:.78rem; }
     .fm-layer-swatch { width:15px; height:15px; flex:0 0 15px; border:1px solid #aaa; border-radius:4px; }
     .fm-layer-empty { color:#777; font-size:.85rem; padding:8px 0; }
+    .fm-palette { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .fm-palette-item { display:grid; grid-template-columns:28px auto; align-items:center; gap:5px; border:1px solid #ded9cf; border-radius:9px; padding:5px; background:#fff; }
+    .fm-palette-swatch { width:26px; height:26px; border:1px solid #aaa; border-radius:6px; cursor:pointer; }
+    .fm-palette-remove { border:0; background:transparent; color:#8a3434; font-weight:800; cursor:pointer; padding:3px 5px; }
+    .fm-palette-empty { color:#777; font-size:.85rem; margin:10px 0 0; }
     .fm-group:last-child { border:0; padding:0; }
     .fm-group h3 { font-size:.95rem; color:#24233b; margin:0 0 10px; }
     .fm-field { display:grid; gap:5px; margin:9px 0; }
@@ -98,6 +103,17 @@
           <div class="fm-field"><label for="ratioSelect">Flag proportions</label><select id="ratioSelect"><option value="600,360">5:3 (landscape)</option><option value="600,400">3:2</option><option value="600,300">2:1</option><option value="600,600">1:1 (square)</option><option value="360,600">3:5 (portrait)</option></select></div>
           <div class="fm-field"><label><input id="snapEnabled" type="checkbox" checked> Snap shapes into alignment</label><span class="fm-note">Align to a 10-unit grid, the flag centre, and canvas edges.</span></div>
           <div class="fm-field"><label for="backgroundColor">Background colour</label><input id="backgroundColor" type="color" value="#ffffff"><input id="backgroundHex" type="text" value="#ffffff" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" aria-label="Background colour hex code"></div>
+        </section>
+        <section class="fm-group">
+          <h3>Colour palette</h3>
+          <p class="fm-note">Save reusable colours for this browser. Tap a swatch to apply it to the selected shape, or to the background if no shape is selected.</p>
+          <div class="fm-field"><label for="paletteColor">Add a colour</label><input id="paletteColor" type="color" value="#000032"></div>
+          <div class="fm-toolbar">
+            <button class="fm-btn" id="addPaletteColorBtn" type="button">Add colour</button>
+            <button class="fm-btn" id="saveCurrentColorBtn" type="button">Save current colour</button>
+          </div>
+          <div id="colourPalette" class="fm-palette" aria-label="Saved colour palette"></div>
+          <p id="paletteEmpty" class="fm-palette-empty">No saved colours yet. Add a colour to build your palette.</p>
         </section>
         <section class="fm-group">
           <h3>Layers</h3>
@@ -167,6 +183,12 @@
   const svg = document.getElementById('flagSvg');
   const bg = document.getElementById('flagBackground');
   const layer = document.getElementById('flagObjects');
+  const PALETTE_KEY = 'liquindo-flag-maker-palette';
+  let palette = [];
+  try {
+    const savedPalette = JSON.parse(localStorage.getItem(PALETTE_KEY) || '[]');
+    if (Array.isArray(savedPalette)) palette = savedPalette.filter(v => typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v)).map(v => v.toLowerCase()).slice(0,16);
+  } catch (_) { palette = []; }
   const $ = id => document.getElementById(id);
   const NS = 'http://www.w3.org/2000/svg';
   let selected = null, selectedIds = [], nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null;
@@ -354,6 +376,35 @@
   }
   function changeSelected(fn,msg) { const el=current(); if(!el)return; remember(); fn(el); refreshSelection(); if(msg)say(msg); }
   document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>add(b.dataset.add)));
+  function renderPalette() {
+    const host=$('colourPalette');host.innerHTML='';
+    palette.forEach(colour=>{
+      const item=document.createElement('div');item.className='fm-palette-item';
+      const swatch=document.createElement('button');swatch.type='button';swatch.className='fm-palette-swatch';swatch.style.background=colour;swatch.title='Apply '+colour;swatch.setAttribute('aria-label','Apply colour '+colour);
+      swatch.addEventListener('click',()=>{
+        const el=current();
+        if(el){remember();applyObjectColor(colour);refreshSelection();say('Applied '+colour+' to selected element.');}
+        else {remember();applyBackgroundColor(colour);refreshSelection();say('Applied '+colour+' to background.');}
+      });
+      const remove=document.createElement('button');remove.type='button';remove.className='fm-palette-remove';remove.textContent='×';remove.title='Remove '+colour+' from palette';remove.setAttribute('aria-label','Remove '+colour+' from palette');
+      remove.addEventListener('click',()=>{palette=palette.filter(v=>v!==colour);persistPalette();renderPalette();say('Colour removed from palette.');});
+      item.append(swatch,remove);host.append(item);
+    });
+    $('paletteEmpty').hidden=palette.length>0;
+  }
+  function persistPalette() {
+    try { localStorage.setItem(PALETTE_KEY,JSON.stringify(palette)); }
+    catch (_) { say('Could not save palette in this browser. It may be unavailable in private browsing.'); }
+  }
+  function addPaletteColour(value) {
+    const colour=String(value||'').trim().toLowerCase();
+    if(!/^#[0-9a-f]{6}$/.test(colour)){say('Choose a valid hex colour.');return;}
+    if(palette.includes(colour)){say('That colour is already in your palette.');return;}
+    if(palette.length>=16){say('Palette limit reached (16 colours). Remove a colour before adding another.');return;}
+    palette.push(colour);persistPalette();renderPalette();say('Saved '+colour+' to your palette.');
+  }
+  $('addPaletteColorBtn').addEventListener('click',()=>addPaletteColour($('paletteColor').value));
+  $('saveCurrentColorBtn').addEventListener('click',()=>{const el=current();addPaletteColour(el?(el.dataset.color||$('objectColor').value):bg.getAttribute('fill'));});
   function applyBackgroundColor(value) {
     bg.setAttribute('fill',value);
     $('backgroundColor').value=value;
@@ -441,7 +492,7 @@
       e.preventDefault();$('redoBtn').click();
     }
   });
-  refreshSelection();updateHistoryButtons();
+  refreshSelection();updateHistoryButtons();renderPalette();
 })();
 </script>
 </body>
