@@ -33,6 +33,15 @@
     .fm-btn.danger { color:#9d2828; }
     .fm-controls { display:grid; gap:16px; }
     .fm-group { border-bottom:1px solid #e8e3da; padding-bottom:15px; }
+    .fm-layer-list { display:grid; gap:6px; margin-top:10px; }
+    .fm-layer-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; padding:8px; border:1px solid #e2dfd8; border-radius:9px; background:#fff; }
+    .fm-layer-row.active { border-color:var(--fm-gold); background:#fff9df; }
+    .fm-layer-pick { min-width:0; display:flex; align-items:center; gap:8px; padding:4px; border:0; background:transparent; text-align:left; cursor:pointer; color:#20202c; font-weight:750; }
+    .fm-layer-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .fm-layer-actions { display:flex; flex-wrap:wrap; gap:4px; }
+    .fm-layer-actions .fm-btn { padding:5px 7px; font-size:.78rem; }
+    .fm-layer-swatch { width:15px; height:15px; flex:0 0 15px; border:1px solid #aaa; border-radius:4px; }
+    .fm-layer-empty { color:#777; font-size:.85rem; padding:8px 0; }
     .fm-group:last-child { border:0; padding:0; }
     .fm-group h3 { font-size:.95rem; color:#24233b; margin:0 0 10px; }
     .fm-field { display:grid; gap:5px; margin:9px 0; }
@@ -89,6 +98,15 @@
           <div class="fm-field"><label for="ratioSelect">Flag proportions</label><select id="ratioSelect"><option value="600,360">5:3 (landscape)</option><option value="600,400">3:2</option><option value="600,300">2:1</option><option value="600,600">1:1 (square)</option><option value="360,600">3:5 (portrait)</option></select></div>
           <div class="fm-field"><label><input id="snapEnabled" type="checkbox" checked> Snap shapes into alignment</label><span class="fm-note">Align to a 10-unit grid, the flag centre, and canvas edges.</span></div>
           <div class="fm-field"><label for="backgroundColor">Background colour</label><input id="backgroundColor" type="color" value="#ffffff"><input id="backgroundHex" type="text" value="#ffffff" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" aria-label="Background colour hex code"></div>
+        </section>
+        <section class="fm-group">
+          <h3>Layers</h3>
+          <p class="fm-note">Select a layer, rename it, hide it, lock it or change its stacking order.</p>
+          <div class="fm-toolbar">
+            <button class="fm-btn" id="showAllLayersBtn" type="button">Show all</button>
+            <button class="fm-btn" id="unlockAllLayersBtn" type="button">Unlock all</button>
+          </div>
+          <div id="layerList" class="fm-layer-list" aria-label="Flag layers"></div>
         </section>
         <section class="fm-group">
           <h3>Add elements</h3>
@@ -170,13 +188,13 @@
     else if(type==='yin-yang') { const r=Math.min(d.width,d.height)*.22; el=make('g',{}); el.append(make('circle',{cx,cy,r,fill:color})); el.append(make('path',{d:`M ${cx} ${cy-r} A ${r/2} ${r/2} 0 0 1 ${cx} ${cy} A ${r/2} ${r/2} 0 0 0 ${cx} ${cy+r} A ${r} ${r} 0 0 1 ${cx} ${cy-r} Z`,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy-r/2,r:r/7,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy+r/2,r:r/7,fill:color})); }
     else if(type==='text') { el=make('text',{x:cx,y:cy,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Arial, Helvetica, sans-serif','font-weight':'800','font-size':Math.min(d.width,d.height)*.14,fill:color}); el.textContent='LIQUINDO'; }
     else return;
-    el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; layer.append(el); selected=id; selectedIds=[id]; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
+    el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; el.dataset.name=typeLabel(type); el.dataset.visible='true'; el.dataset.locked='false'; layer.append(el); selected=id; selectedIds=[id]; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
   }
   function bindObjects() {
     layer.querySelectorAll('[data-object]').forEach(el=>{
       el.classList.toggle('selected',selectedIds.includes(el.dataset.id));
       el.onpointerdown=e=>{
-        if(e.button!==0)return;
+        if(e.button!==0||el.dataset.locked==='true')return;
         if(e.shiftKey||e.ctrlKey||e.metaKey){
           if(selectedIds.includes(el.dataset.id)) selectedIds=selectedIds.filter(id=>id!==el.dataset.id);
           else selectedIds.push(el.dataset.id);
@@ -231,7 +249,33 @@
     else { for(const attr of ['cx','x'])if(el.hasAttribute(attr))el.setAttribute(attr,+el.getAttribute(attr)+dx); for(const attr of ['cy','y'])if(el.hasAttribute(attr))el.setAttribute(attr,+el.getAttribute(attr)+dy); if(el.hasAttribute('points'))el.setAttribute('points',el.getAttribute('points').trim().split(/\s+/).map(pair=>{const [x,y]=pair.split(',').map(Number);return (x+dx)+','+(y+dy)}).join(' ')); if(el.hasAttribute('d')){const t=el.getAttribute('transform')||'';el.setAttribute('transform',t+` translate(${dx} ${dy})`);} }
     $('objectX').value=Math.round((+($('objectX').value)||0)+dx); $('objectY').value=Math.round((+($('objectY').value)||0)+dy);
   }
+  function typeLabel(type) {
+    return ({hstripe:'Horizontal stripe',vstripe:'Vertical stripe','yin-yang':'Yin-yang',circle:'Circle',star:'Star',triangle:'Triangle',cross:'Cross',crescent:'Crescent',diamond:'Diamond',text:'Text'})[type]||type;
+  }
   function current() { return layer.querySelector('[data-id="'+selected+'"]'); }
+  function renderLayers() {
+    const list=$('layerList');
+    list.innerHTML='';
+    const items=Array.from(layer.querySelectorAll('[data-object]')).reverse();
+    if(!items.length){const empty=document.createElement('p');empty.className='fm-layer-empty';empty.textContent='No shapes yet. Add an element to create a layer.';list.append(empty);return;}
+    items.forEach(el=>{
+      const row=document.createElement('div');row.className='fm-layer-row'+(selectedIds.includes(el.dataset.id)?' active':'');
+      const pick=document.createElement('button');pick.type='button';pick.className='fm-layer-pick';pick.title='Select '+(el.dataset.name||el.dataset.type);
+      const swatch=document.createElement('span');swatch.className='fm-layer-swatch';swatch.style.background=el.dataset.color||el.getAttribute('fill')||'#ddd';
+      const name=document.createElement('span');name.className='fm-layer-name';name.textContent=el.dataset.name||typeLabel(el.dataset.type);
+      pick.append(swatch,name);pick.addEventListener('click',()=>{selected=el.dataset.id;selectedIds=[selected];refreshSelection();say('Selected '+name.textContent+'.');});
+      const actions=document.createElement('div');actions.className='fm-layer-actions';
+      const makeAction=(label,title,fn,disabled=false)=>{const b=document.createElement('button');b.type='button';b.className='fm-btn';b.textContent=label;b.title=title;b.setAttribute('aria-label',title);b.disabled=disabled;b.addEventListener('click',fn);actions.append(b);};
+      makeAction(el.dataset.visible==='false'?'Show':'Hide',el.dataset.visible==='false'?'Show layer':'Hide layer',()=>{remember();const visible=el.dataset.visible!=='false';el.dataset.visible=visible?'false':'true';el.style.display=visible?'none':'';if(visible&&selectedIds.includes(el.dataset.id)){selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;}refreshSelection();say(visible?'Layer hidden.':'Layer shown.');});
+      makeAction(el.dataset.locked==='true'?'Unlock':'Lock',el.dataset.locked==='true'?'Unlock layer':'Lock layer',()=>{remember();el.dataset.locked=el.dataset.locked==='true'?'false':'true';if(el.dataset.locked==='true'&&selectedIds.includes(el.dataset.id)){selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;}refreshSelection();say(el.dataset.locked==='true'?'Layer locked.':'Layer unlocked.');});
+      const siblings=Array.from(layer.children).filter(n=>n.hasAttribute('data-object'));
+      const idx=siblings.indexOf(el);
+      makeAction('↑','Move layer up',()=>{remember();const next=el.nextElementSibling;if(next)layer.insertBefore(next,el);refreshSelection();say('Layer moved up.');},idx===siblings.length-1);
+      makeAction('↓','Move layer down',()=>{remember();const prev=el.previousElementSibling;if(prev)layer.insertBefore(el,prev);refreshSelection();say('Layer moved down.');},idx===0);
+      makeAction('✎','Rename layer',()=>{const value=prompt('Layer name:',el.dataset.name||typeLabel(el.dataset.type));if(value===null)return;const name=value.trim();if(!name){say('Layer name cannot be empty.');return;}remember();el.dataset.name=name.slice(0,40);refreshSelection();say('Layer renamed.');});
+      row.append(pick,actions);list.append(row);
+    });
+  }
   function objectBounds(el) {
     const box=el.getBBox(), matrix=el.getCTM();
     const corners=[[box.x,box.y],[box.x+box.width,box.y],[box.x+box.width,box.y+box.height],[box.x,box.y+box.height]]
@@ -292,11 +336,12 @@
   function refreshSelection() {
     bindObjects(); const el=current(), disabled=!el;
     ['objectColor','objectText','objectX','objectY','objectSize','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
-    $('selectionHint').textContent=el?'Editing: '+el.dataset.type:'Select an element on the flag or add one to edit its settings.';
+    $('selectionHint').textContent=el?'Editing: '+(el.dataset.name||el.dataset.type)+(el.dataset.locked==='true'?' (locked)':''):'Select an element on the flag or add one to edit its settings.';
     $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected. Shortcuts: Shift-click to add/remove; Delete to remove; Ctrl+A to select all; Esc to clear.';
     document.querySelectorAll('[data-align]').forEach(b=>b.disabled=selectedIds.length<2);
     $('distributeHorizontalBtn').disabled=selectedIds.length<3;
     $('distributeVerticalBtn').disabled=selectedIds.length<3;
+    renderLayers();
     if(!el)return;
     $('objectColor').value=el.dataset.color||'#000032'; $('objectHex').value=el.dataset.color||'#000032'; $('objectText').value=el.tagName.toLowerCase()==='text'?el.textContent:'';
     const x=el.hasAttribute('cx')?el.getAttribute('cx'):el.hasAttribute('x')?el.getAttribute('x'):dims().width/2;
@@ -332,6 +377,7 @@
       el.querySelectorAll('circle').forEach((c,i)=>c.setAttribute('fill',i===0||i===3?value:bg.getAttribute('fill')));
       el.querySelectorAll('path').forEach(p=>p.setAttribute('fill',bg.getAttribute('fill')));
     } else el.setAttribute('fill',value);
+    renderLayers();
   }
   $('objectColor').addEventListener('input',e=>applyObjectColor(e.target.value));
   $('objectColor').addEventListener('change',()=>{remember();say('Element colour updated.');});
@@ -346,7 +392,7 @@
   $('objectX').addEventListener('change',e=>setPos('x',+e.target.value)); $('objectY').addEventListener('change',e=>setPos('y',+e.target.value));
   $('objectSize').addEventListener('change',e=>changeSelected(el=>{const v=+e.target.value;if(el.hasAttribute('r'))el.setAttribute('r',v);else if(el.hasAttribute('width'))el.setAttribute('width',v);else if(el.tagName.toLowerCase()==='text')el.setAttribute('font-size',v);else el.setAttribute('transform',(el.getAttribute('transform')||'')+` scale(${v/100})`);},'Element size updated.'));
   $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',(t+' translate(18 18)').trim());layer.append(clone);selected=clone.dataset.id;selectedIds=[clone.dataset.id];bindObjects();refreshSelection();say('Element duplicated.');});
-  $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);say('Element brought forward.');}});
+  $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);refreshSelection();say('Element brought forward.');}});
   $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('Element deleted.');}});
   $('ratioSelect').addEventListener('change',e=>{remember();const [w,h]=e.target.value.split(',').map(Number);svg.setAttribute('viewBox',`0 0 ${w} ${h}`);bg.setAttribute('width',w);bg.setAttribute('height',h);refreshSelection();say('Flag proportions changed.');});
   $('undoBtn').addEventListener('click',()=>{if(!undoStack.length)return;redoStack.push(snapshot());restore(undoStack.pop());updateHistoryButtons();say('Undid last change.');});
@@ -356,6 +402,8 @@
   function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
   $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
+  $('showAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>{el.dataset.visible='true';el.style.display='';});refreshSelection();say('All layers shown.');});
+  $('unlockAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>el.dataset.locked='false');refreshSelection();say('All layers unlocked.');});
   $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';$('backgroundHex').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
   bg.addEventListener('click',()=>{selected=null;selectedIds=[];refreshSelection();});
   document.addEventListener('keydown',e=>{
