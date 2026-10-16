@@ -106,6 +106,15 @@
           </div>
         </section>
         <section class="fm-group">
+          <h3>Arrange multiple elements</h3>
+          <p class="fm-note">Hold Shift and tap/click shapes to select several, then distribute them evenly.</p>
+          <div class="fm-toolbar">
+            <button class="fm-btn" id="distributeHorizontalBtn" type="button" disabled>Distribute horizontally</button>
+            <button class="fm-btn" id="distributeVerticalBtn" type="button" disabled>Distribute vertically</button>
+          </div>
+          <p id="multiSelectionStatus" class="fm-note">1 element selected</p>
+        </section>
+        <section class="fm-group">
           <h3>Selected element</h3>
           <p id="selectionHint" class="fm-note">Select an element on the flag or add one to edit its settings.</p>
           <div class="fm-field"><label for="objectColor">Colour</label><input id="objectColor" type="color" value="#000032"><input id="objectHex" type="text" value="#000032" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#000032" aria-label="Selected element colour hex code"></div>
@@ -132,10 +141,10 @@
   const layer = document.getElementById('flagObjects');
   const $ = id => document.getElementById(id);
   const NS = 'http://www.w3.org/2000/svg';
-  let selected = null, nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null;
-  const snapshot = () => ({background:bg.getAttribute('fill'), viewBox:svg.getAttribute('viewBox'), objects:layer.innerHTML, selected});
+  let selected = null, selectedIds = [], nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null;
+  const snapshot = () => ({background:bg.getAttribute('fill'), viewBox:svg.getAttribute('viewBox'), objects:layer.innerHTML, selected, selectedIds:[...selectedIds]});
   function remember() { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); redoStack=[]; updateHistoryButtons(); }
-  function restore(s) { bg.setAttribute('fill',s.background); svg.setAttribute('viewBox',s.viewBox); layer.innerHTML=s.objects; selected=s.selected; bindObjects(); refreshSelection(); }
+  function restore(s) { bg.setAttribute('fill',s.background); svg.setAttribute('viewBox',s.viewBox); layer.innerHTML=s.objects; selected=s.selected; selectedIds=s.selectedIds|| (selected?[selected]:[]); bindObjects(); refreshSelection(); }
   function updateHistoryButtons() { $('undoBtn').disabled=!undoStack.length; $('redoBtn').disabled=!redoStack.length; }
   function say(message) { $('status').textContent=message; }
   function dims() { return svg.viewBox.baseVal; }
@@ -155,9 +164,25 @@
     else if(type==='yin-yang') { const r=Math.min(d.width,d.height)*.22; el=make('g',{}); el.append(make('circle',{cx,cy,r,fill:color})); el.append(make('path',{d:`M ${cx} ${cy-r} A ${r/2} ${r/2} 0 0 1 ${cx} ${cy} A ${r/2} ${r/2} 0 0 0 ${cx} ${cy+r} A ${r} ${r} 0 0 1 ${cx} ${cy-r} Z`,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy-r/2,r:r/7,fill:bg.getAttribute('fill')})); el.append(make('circle',{cx,cy:cy+r/2,r:r/7,fill:color})); }
     else if(type==='text') { el=make('text',{x:cx,y:cy,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Arial, Helvetica, sans-serif','font-weight':'800','font-size':Math.min(d.width,d.height)*.14,fill:color}); el.textContent='LIQUINDO'; }
     else return;
-    el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; layer.append(el); selected=id; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
+    el.setAttribute('data-object',''); el.dataset.id=id; el.dataset.type=type; el.dataset.color=color; layer.append(el); selected=id; selectedIds=[id]; bindObjects(); refreshSelection(); say(type+' added. Drag it or use the controls to position it.');
   }
-  function bindObjects() { layer.querySelectorAll('[data-object]').forEach(el=>{el.classList.toggle('selected',el.dataset.id===selected); el.onpointerdown=e=>{ if(e.button!==0)return; selected=el.dataset.id; refreshSelection(); const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault(); }; }); }
+  function bindObjects() {
+    layer.querySelectorAll('[data-object]').forEach(el=>{
+      el.classList.toggle('selected',selectedIds.includes(el.dataset.id));
+      el.onpointerdown=e=>{
+        if(e.button!==0)return;
+        if(e.shiftKey||e.ctrlKey||e.metaKey){
+          if(selectedIds.includes(el.dataset.id)) selectedIds=selectedIds.filter(id=>id!==el.dataset.id);
+          else selectedIds.push(el.dataset.id);
+          selected=selectedIds.includes(el.dataset.id)?el.dataset.id:(selectedIds[selectedIds.length-1]||null);
+          refreshSelection(); e.preventDefault(); return;
+        }
+        if(!selectedIds.includes(el.dataset.id)) selectedIds=[el.dataset.id];
+        selected=el.dataset.id; refreshSelection();
+        const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault();
+      };
+    });
+  }
   function point(e) { const p=svg.createSVGPoint(); p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()); }
   svg.addEventListener('pointermove',e=>{ if(!dragging||!dragStart)return; const p=point(e), dx=p.x-dragStart.x, dy=p.y-dragStart.y; moveElement(dragging,dx,dy); dragStart=p; });
   svg.addEventListener('pointerup',()=>{ if(dragging){const moved=dragging; dragging=null;dragStart=null; if($('snapEnabled').checked){const result=snapElement(moved); remember(); say(result||'Element aligned to the grid.');}else{remember();say('Element moved.');} refreshSelection();} });
@@ -201,10 +226,45 @@
     $('objectX').value=Math.round((+($('objectX').value)||0)+dx); $('objectY').value=Math.round((+($('objectY').value)||0)+dy);
   }
   function current() { return layer.querySelector('[data-id="'+selected+'"]'); }
+  function objectBounds(el) {
+    const box=el.getBBox(), matrix=el.getCTM();
+    const corners=[[box.x,box.y],[box.x+box.width,box.y],[box.x+box.width,box.y+box.height],[box.x,box.y+box.height]]
+      .map(([x,y])=>{const p=svg.createSVGPoint();p.x=x;p.y=y;return p.matrixTransform(matrix);});
+    const xs=corners.map(p=>p.x), ys=corners.map(p=>p.y);
+    return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys)};
+  }
+  function translateObject(el,dx,dy) {
+    if(Math.abs(dx)<0.001&&Math.abs(dy)<0.001)return;
+    const existing=el.getAttribute('transform')||'';
+    el.setAttribute('transform',('translate('+dx+' '+dy+') '+existing).trim());
+  }
+  function distribute(axis) {
+    const items=selectedIds.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean);
+    if(items.length<3)return;
+    remember();
+    const positioned=items.map(el=>({el,b:objectBounds(el)})).sort((a,b)=>axis==='x'?a.b.left-b.b.left:a.b.top-b.b.top);
+    const first=positioned[0].b, last=positioned[positioned.length-1].b;
+    const start=axis==='x'?first.left:first.top, end=axis==='x'?last.right:last.bottom;
+    const occupied=positioned.reduce((sum,item)=>sum+(axis==='x'?item.b.right-item.b.left:item.b.bottom-item.b.top),0);
+    const gap=(end-start-occupied)/(positioned.length-1);
+    let cursor=start;
+    positioned.forEach((item,i)=>{
+      const b=item.b, near=axis==='x'?b.left:b.top, far=axis==='x'?b.right:b.bottom;
+      if(i>0&&i<positioned.length-1)translateObject(item.el,axis==='x'?cursor-near:0,axis==='y'?cursor-near:0);
+      cursor=(i>0&&i<positioned.length-1?cursor:near)+(far-near)+gap;
+    });
+    refreshSelection();
+    say('Distributed '+positioned.length+' elements with equal '+(axis==='x'?'horizontal':'vertical')+' spacing.');
+  }
+  $('distributeHorizontalBtn').addEventListener('click',()=>distribute('x'));
+  $('distributeVerticalBtn').addEventListener('click',()=>distribute('y'));
   function refreshSelection() {
     bindObjects(); const el=current(), disabled=!el;
     ['objectColor','objectText','objectX','objectY','objectSize','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
     $('selectionHint').textContent=el?'Editing: '+el.dataset.type:'Select an element on the flag or add one to edit its settings.';
+    $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected';
+    $('distributeHorizontalBtn').disabled=selectedIds.length<3;
+    $('distributeVerticalBtn').disabled=selectedIds.length<3;
     if(!el)return;
     $('objectColor').value=el.dataset.color||'#000032'; $('objectHex').value=el.dataset.color||'#000032'; $('objectText').value=el.tagName.toLowerCase()==='text'?el.textContent:'';
     const x=el.hasAttribute('cx')?el.getAttribute('cx'):el.hasAttribute('x')?el.getAttribute('x'):dims().width/2;
@@ -255,7 +315,7 @@
   $('objectSize').addEventListener('change',e=>changeSelected(el=>{const v=+e.target.value;if(el.hasAttribute('r'))el.setAttribute('r',v);else if(el.hasAttribute('width'))el.setAttribute('width',v);else if(el.tagName.toLowerCase()==='text')el.setAttribute('font-size',v);else el.setAttribute('transform',(el.getAttribute('transform')||'')+` scale(${v/100})`);},'Element size updated.'));
   $('duplicateBtn').addEventListener('click',()=>{const el=current();if(!el)return;remember();const clone=el.cloneNode(true);clone.dataset.id='obj-'+nextId++;const t=clone.getAttribute('transform')||'';clone.setAttribute('transform',t+' translate(18 18)');layer.append(clone);selected=clone.dataset.id;bindObjects();refreshSelection();say('Element duplicated.');});
   $('frontBtn').addEventListener('click',()=>{const el=current();if(el){remember();layer.append(el);say('Element brought forward.');}});
-  $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selected=null;refreshSelection();say('Element deleted.');}});
+  $('deleteBtn').addEventListener('click',()=>{const el=current();if(el){remember();el.remove();selectedIds=selectedIds.filter(id=>id!==el.dataset.id);selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('Element deleted.');}});
   $('ratioSelect').addEventListener('change',e=>{remember();const [w,h]=e.target.value.split(',').map(Number);svg.setAttribute('viewBox',`0 0 ${w} ${h}`);bg.setAttribute('width',w);bg.setAttribute('height',h);refreshSelection();say('Flag proportions changed.');});
   $('undoBtn').addEventListener('click',()=>{if(!undoStack.length)return;redoStack.push(snapshot());restore(undoStack.pop());updateHistoryButtons();say('Undid last change.');});
   $('redoBtn').addEventListener('click',()=>{if(!redoStack.length)return;undoStack.push(snapshot());restore(redoStack.pop());updateHistoryButtons();say('Redid change.');});
@@ -265,7 +325,7 @@
   $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
   $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
   $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';$('backgroundHex').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
-  bg.addEventListener('click',()=>{selected=null;refreshSelection();});
+  bg.addEventListener('click',()=>{selected=null;selectedIds=[];refreshSelection();});
   refreshSelection();updateHistoryButtons();
 })();
 </script>
