@@ -135,6 +135,15 @@
             <option value="cross">Central cross</option>
             <option value="sun">Sunburst</option>
             <option value="star-canton">Star in canton</option>
+            <option value="horizontal-bicolour">Horizontal bicolour</option>
+            <option value="vertical-bicolour">Vertical bicolour</option>
+            <option value="gold-nordic-cross">Gold Nordic cross</option>
+            <option value="saltire">Diagonal saltire</option>
+            <option value="chevron">Chevron</option>
+            <option value="quartered">Quartered flag</option>
+            <option value="crescent-star">Crescent and star</option>
+            <option value="roundel">Central roundel</option>
+            <option value="canton-stripes">Striped flag with canton</option>
             <option value="plain">Plain background</option>
           </select></div>
           <button class="fm-btn primary" id="applyTemplateBtn" type="button">Apply template</button>
@@ -258,6 +267,24 @@
       applyBackgroundColor('#ffffff'); circle(w/2,h/2,Math.min(w,h)*.23,'#fdbe00','Sun disc'); for(let i=0;i<12;i++){const a=i*Math.PI/6-Math.PI/2, r1=Math.min(w,h)*.27,r2=Math.min(w,h)*.43; poly(`${w/2+Math.cos(a)*r1},${h/2+Math.sin(a)*r1} ${w/2+Math.cos(a-.10)*r2},${h/2+Math.sin(a-.10)*r2} ${w/2+Math.cos(a+.10)*r2},${h/2+Math.sin(a+.10)*r2}`,'#fdbe00','Sun ray');}
     } else if(name==='star-canton'){
       applyBackgroundColor('#c8102e'); addShape('hstripe','rect',{x:0,y:0,width:w*.46,height:h*.58,fill:'#0033a0'},'#0033a0','Canton'); star(w*.23,h*.29,Math.min(w,h)*.15,'#ffffff','Canton star');
+    } else if(name==='horizontal-bicolour'){
+      applyBackgroundColor('#ffffff'); rect(0,0,w,h/2,'#0033a0','Top half'); rect(0,h/2,w,h/2,'#fdbe00','Bottom half');
+    } else if(name==='vertical-bicolour'){
+      applyBackgroundColor('#ffffff'); addShape('vstripe','rect',{x:0,y:0,width:w/2,height:h,fill:'#006a4e'},'#006a4e','Left half'); addShape('vstripe','rect',{x:w/2,y:0,width:w/2,height:h,fill:'#ffffff'},'#ffffff','Right half');
+    } else if(name==='gold-nordic-cross'){
+      applyBackgroundColor('#0033a0'); rect(0,h*.40,w,h*.20,'#fdbe00','Horizontal cross'); addShape('vstripe','rect',{x:w*.30,y:0,width:w*.12,height:h,fill:'#fdbe00'},'#fdbe00','Vertical cross');
+    } else if(name==='saltire'){
+      applyBackgroundColor('#0033a0'); poly(`0,0 ${w*.14},0 ${w},${h*.86} ${w},${h} ${w*.86},${h} 0,${h*.14}`,'#ffffff','Diagonal band'); poly(`0,${h*.86} ${w*.14},${h} ${w},${h*.14} ${w},0 ${w*.86},0`,'#ffffff','Diagonal band'); poly(`0,0 ${w*.065},0 ${w},${h*.935} ${w},${h} ${w*.935},${h} 0,${h*.065}`,'#c8102e','Inner diagonal band'); poly(`0,${h*.935} ${w*.065},${h} ${w},${h*.065} ${w},0 ${w*.935},0`,'#c8102e','Inner diagonal band');
+    } else if(name==='chevron'){
+      applyBackgroundColor('#ffffff'); poly(`0,0 ${w*.48},0 ${w*.78},${h/2} ${w*.48},${h} 0,${h}`,'#c8102e','Chevron'); poly(`0,${h*.18} ${w*.24},${h*.18} ${w*.50},${h/2} ${w*.24},${h*.82} 0,${h*.82}`,'#0033a0','Inner chevron');
+    } else if(name==='quartered'){
+      applyBackgroundColor('#ffffff'); rect(0,0,w/2,h/2,'#c8102e','Upper-left quarter'); addShape('hstripe','rect',{x:w/2,y:0,width:w/2,height:h/2,fill:'#ffffff'},'#ffffff','Upper-right quarter'); addShape('hstripe','rect',{x:0,y:h/2,width:w/2,height:h/2,fill:'#0033a0'},'#0033a0','Lower-left quarter'); addShape('hstripe','rect',{x:w/2,y:h/2,width:w/2,height:h/2,fill:'#fdbe00'},'#fdbe00','Lower-right quarter');
+    } else if(name==='crescent-star'){
+      applyBackgroundColor('#006a4e'); const r=Math.min(w,h)*.23; addShape('crescent','path',{d:`M ${w*.43} ${h/2-r} A ${r} ${r} 0 1 0 ${w*.43} ${h/2+r} A ${r*.72} ${r*.72} 0 1 1 ${w*.43} ${h/2-r} Z`,fill:'#ffffff','fill-rule':'evenodd'},'#ffffff','Crescent'); star(w*.64,h/2,Math.min(w,h)*.10,'#ffffff','Star');
+    } else if(name==='roundel'){
+      applyBackgroundColor('#ffffff'); circle(w/2,h/2,Math.min(w,h)*.30,'#c8102e','Outer roundel'); circle(w/2,h/2,Math.min(w,h)*.21,'#ffffff','Inner roundel'); circle(w/2,h/2,Math.min(w,h)*.12,'#0033a0','Centre roundel');
+    } else if(name==='canton-stripes'){
+      applyBackgroundColor('#ffffff'); rect(0,0,w,h/3,'#c8102e','Top stripe'); rect(0,2*h/3,w,h/3,'#0033a0','Bottom stripe'); addShape('hstripe','rect',{x:0,y:0,width:w*.43,height:h*.55,fill:'#ffffff'},'#ffffff','Canton'); star(w*.215,h*.275,Math.min(w,h)*.12,'#fdbe00','Canton star');
     } else {
       applyBackgroundColor('#ffffff');
     }
