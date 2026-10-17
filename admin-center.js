@@ -70,7 +70,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
    const add=(title,detail,ok)=>{const a=document.createElement("article");a.className="ac-item";const h=document.createElement("h3");h.textContent=(ok?"✓ ":"⚠ ")+title;const p=document.createElement("p");p.className="ac-muted";p.textContent=detail;a.append(h,p);out.append(a);};
    for(let i=0;i<pages.length;i++){
     const response=responses[i];if(!response.ok){add(pages[i],"HTTP "+response.status,false);continue;}
-    const html=await response.text();const keys=[...html.matchAll(/data-i18n(?:-placeholder|-title)?=["']([^"']+)["']/g)].map(m=>m[1]);const missing=[...new Set(keys.filter(k=>!source.includes(k))];
+    const html=await response.text();const keys=[...html.matchAll(/data-i18n(?:-placeholder|-title)?=["']([^"']+)["']/g)].map(m=>m[1]);const missing=[...new Set(keys.filter(k=>!source.includes(k)))];
     add(pages[i]+" translation keys",keys.length+" references; "+missing.length+" not found"+(missing.length?": "+missing.join(", "):""),missing.length===0);
     const hrefs=[...html.matchAll(/(?:href|src)=["']([^"']+)["']/g)].map(m=>m[1]);
     for(const href of hrefs){
