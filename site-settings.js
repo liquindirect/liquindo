@@ -7,10 +7,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   );
   const { data, error } = await db.from("site_settings")
     .select("setting_key,setting_value")
-    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings"]);
+    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings"]);
   if (error || !data) return;
   const settings = Object.fromEntries(data.map(row => [row.setting_key, row.setting_value]));
   const footerSettings = settings.footer_settings || {};
+  const languageSettings = settings.language_settings || {};
+  if (!localStorage.getItem("liquindo-language") && ["en","pt","es","fr","de","it","hr","el","pl","ru","zh"].includes(languageSettings.default)) {
+    window.languageManager?.setLanguage(languageSettings.default);
+  }
   const footerContact = document.querySelector("footer .footer-content p");
   if (footerContact && typeof footerSettings.text === "string" && footerSettings.text.trim()) footerContact.textContent = footerSettings.text;
   const topbar = document.querySelector(".topbar");
