@@ -76,6 +76,12 @@
       @media (max-width: 760px) { body.login-redesign .topbar { padding: 14px 18px; } body.login-redesign .page-title { width: calc(100% - 32px); } body.login-redesign .auth-wrap { margin-bottom: 42px; } }
       @media (prefers-reduced-motion: reduce) { body.login-redesign *, body.login-redesign *::before, body.login-redesign *::after { transition: none !important; } }
     </style>
+  
+    <meta name="theme-color" content="#0b1730" />
+    <meta name="application-name" content="Liquindo" />
+    <link rel="manifest" href="/liquindo/manifest.webmanifest" />
+    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/app-icon.svg" />
   </head>
   <body class="login-redesign">
     <script src="homepage-gate.js"></script>
@@ -230,5 +236,6 @@
   })();
 </script>
   <script type="module" src="visitor-log.js"></script>
+  <script src="/liquindo/app-shell.js" defer></script>
 </body>
 </html>
