@@ -250,7 +250,30 @@
         const empty = document.createElement("p"); empty.textContent = "No shapes match this filter."; shapeAdminList.append(empty); return;
       }
       rows.forEach(row => {
-        const details = document.createElement("details"); details.className = "shape-row";
+        const details = document.createElement("details"); details.className = "shape-row"; details.draggable = true; details.dataset.shapeId = row.shape_id;
+        details.addEventListener("dragstart", event => { event.dataTransfer.setData("text/plain", row.shape_id); event.dataTransfer.effectAllowed = "move"; });
+        details.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; details.style.outline = "2px dashed #b08a13"; });
+        details.addEventListener("dragleave", () => { details.style.outline = ""; });
+        details.addEventListener("drop", async event => {
+          event.preventDefault(); details.style.outline = "";
+          const sourceId = event.dataTransfer.getData("text/plain");
+          if (!sourceId || sourceId === row.shape_id) return;
+          const sourceIndex = shapeAdminRows.findIndex(item => item.shape_id === sourceId);
+          const targetIndex = shapeAdminRows.findIndex(item => item.shape_id === row.shape_id);
+          if (sourceIndex < 0 || targetIndex < 0) return;
+          const [moving] = shapeAdminRows.splice(sourceIndex, 1);
+          shapeAdminRows.splice(targetIndex, 0, moving);
+          shapeStatus("Saving shape order…");
+          try {
+            const results = await Promise.all(shapeAdminRows.map((item, index) =>
+              supabase.from("flagmaker_shapes").update({sort_order:index, updated_at:new Date().toISOString(), updated_by:currentAdminUserId}).eq("shape_id", item.shape_id)
+            ));
+            const failed = results.find(result => result.error);
+            if (failed) throw failed.error;
+            shapeStatus("Shape order saved. Reload Flag Maker to apply the new order.");
+            await loadShapeAdminRows();
+          } catch (error) { shapeStatus(error.message || "Could not save shape order.", true); await loadShapeAdminRows(); }
+        });
         const summary = document.createElement("summary");
         const preview = document.createElement("span"); preview.className = "shape-row-preview"; preview.append(shapePreview(row.path_d, row.shape_id));
         const title = document.createElement("span"); title.textContent = row.label;
