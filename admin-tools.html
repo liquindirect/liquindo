@@ -262,7 +262,7 @@
           const targetIndex = shapeAdminRows.findIndex(item => item.shape_id === row.shape_id);
           if (sourceIndex < 0 || targetIndex < 0) return;
           const [moving] = shapeAdminRows.splice(sourceIndex, 1);
-          shapeAdminRows.splice(targetIndex, 0, moving);
+          shapeAdminRows.splice(sourceIndex < targetIndex ? targetIndex - 1 : targetIndex, 0, moving);
           shapeStatus("Saving shape order…");
           try {
             const results = await Promise.all(shapeAdminRows.map((item, index) =>
