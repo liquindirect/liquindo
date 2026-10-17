@@ -150,6 +150,8 @@
           <label>New shape name
             <input id="shape-admin-new-label" maxlength="80" required placeholder="e.g. Eight-pointed emblem">
           </label>
+          <label>Category<input id="shape-admin-new-category" maxlength="60" value="General" required placeholder="e.g. Emblems"></label>
+          <label>Tags (comma-separated)<input id="shape-admin-new-tags" maxlength="300" placeholder="e.g. star, emblem, national"></label>
           <label class="path-field">SVG path data (required)
             <input id="shape-admin-new-path" maxlength="5000" required value="M20 2 L38 30 L2 30 Z" placeholder="M20 2 L38 30 L2 30 Z" autocomplete="off">
           </label>
@@ -257,18 +259,25 @@
         const body = document.createElement("div"); body.className = "shape-row-body";
         const label = document.createElement("label"); label.textContent = "Display name";
         const nameInput = document.createElement("input"); nameInput.maxLength = 80; nameInput.required = true; nameInput.value = row.label; nameInput.setAttribute("aria-label", "Display name for " + row.shape_id); label.append(nameInput);
+        const categoryLabel = document.createElement("label"); categoryLabel.textContent = "Category";
+        const categoryInput = document.createElement("input"); categoryInput.maxLength = 60; categoryInput.required = true; categoryInput.value = row.category || "General"; categoryLabel.append(categoryInput);
+        const tagsLabel = document.createElement("label"); tagsLabel.textContent = "Tags (comma-separated, up to 20)";
+        const tagsInput = document.createElement("input"); tagsInput.maxLength = 300; tagsInput.value = (row.tags || []).join(", "); tagsLabel.append(tagsInput);
         const pathLabel = document.createElement("label"); pathLabel.textContent = "Custom SVG path data (leave blank to use the built-in geometry)";
         const pathInput = document.createElement("input"); pathInput.maxLength = 5000; pathInput.value = row.path_d || ""; pathInput.autocomplete = "off"; pathInput.setAttribute("aria-label", "SVG path data for " + row.shape_id); pathLabel.append(pathInput);
         const actions = document.createElement("div"); actions.className = "shape-row-actions";
         const save = document.createElement("button"); save.type = "button"; save.className = "primary"; save.textContent = "Save changes";
         save.addEventListener("click", async () => {
           const labelValue = nameInput.value.trim(), pathValue = pathInput.value.trim();
+          const categoryValue = categoryInput.value.trim();
+          const tagsValue = tagsInput.value.split(",").map(tag => tag.trim()).filter(Boolean);
           if (!labelValue || labelValue.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
+          if (!categoryValue || categoryValue.length > 60 || tagsValue.length > 20 || tagsValue.some(tag => tag.length > 40)) { shapeStatus("Use a category of 1–60 characters and up to 20 tags (40 characters each).", true); return; }
           if (pathValue && !validShapePath(pathValue)) { shapeStatus("The SVG path is invalid. Use path commands and numbers only, starting with M.", true); return; }
           save.disabled = true;
           try {
             const { error } = await supabase.from("flagmaker_shapes").update({
-              label: labelValue, path_d: pathValue || null, updated_at: new Date().toISOString(), updated_by: currentAdminUserId
+              label: labelValue, category: categoryValue, tags: tagsValue, path_d: pathValue || null, updated_at: new Date().toISOString(), updated_by: currentAdminUserId
             }).eq("shape_id", row.shape_id);
             if (error) throw error;
             shapeStatus("Saved “" + labelValue + "”. Reload Flag Maker to see the change.");
@@ -303,6 +312,7 @@
             const { error } = await supabase.from("flagmaker_shapes").insert({
               shape_id: "custom-" + crypto.randomUUID(),
               label: duplicateLabel.trim().slice(0, 80),
+              category: row.category || "General", tags: row.tags || [],
               path_d: pathValue,
               is_builtin: false,
               is_active: true,
@@ -332,13 +342,13 @@
           actions.append(remove);
         }
         const idLine = document.createElement("p"); idLine.className = "shape-admin-status"; idLine.textContent = "ID: " + row.shape_id + (row.is_builtin ? " · Built-in shapes can be hidden or restored; their original code remains available." : " · Custom shape");
-        body.append(label, pathLabel, actions, idLine); details.append(body); shapeAdminList.append(details);
+        body.append(label, categoryLabel, tagsLabel, pathLabel, actions, idLine); details.append(body); shapeAdminList.append(details);
       });
     }
     async function loadShapeAdminRows() {
       shapeStatus("Loading shared shape library…");
       try {
-        const { data, error } = await supabase.from("flagmaker_shapes").select("shape_id,label,path_d,is_builtin,is_active,updated_at").order("is_builtin", {ascending:false}).order("label", {ascending:true});
+        const { data, error } = await supabase.from("flagmaker_shapes").select("shape_id,label,path_d,is_builtin,is_active,category,tags,sort_order,updated_at").order("sort_order", {ascending:true, nullsFirst:false}).order("is_builtin", {ascending:false}).order("label", {ascending:true});
         if (error) throw error;
         shapeAdminRows = data || [];
         renderShapeAdminRows();
@@ -355,7 +365,10 @@
       const submit = event.currentTarget.querySelector('button[type="submit"]'); submit.disabled = true;
       try {
         const shape_id = "custom-" + crypto.randomUUID();
-        const { error } = await supabase.from("flagmaker_shapes").insert({shape_id,label,path_d,is_builtin:false,is_active:true,updated_by:currentAdminUserId});
+        const category = document.getElementById("shape-admin-new-category").value.trim() || "General";
+        const tags = document.getElementById("shape-admin-new-tags").value.split(",").map(tag => tag.trim()).filter(Boolean);
+        if (category.length > 60 || tags.length > 20 || tags.some(tag => tag.length > 40)) throw new Error("Category or tags exceed the allowed length.");
+        const { error } = await supabase.from("flagmaker_shapes").insert({shape_id,label,path_d,category,tags,is_builtin:false,is_active:true,updated_by:currentAdminUserId});
         if (error) throw error;
         form.reset();
         document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
