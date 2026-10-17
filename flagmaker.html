@@ -100,7 +100,9 @@
       </div>
       <div class="fm-stage">
         <svg id="flagSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="Your editable flag">
+          <defs><pattern id="editorGridPattern" patternUnits="userSpaceOnUse" width="10" height="10"><path id="editorGridLines" d="M 10 0 L 0 0 0 10" fill="none" stroke="#9b853b" stroke-opacity=".48" stroke-width=".65" vector-effect="non-scaling-stroke"></path></pattern></defs>
           <rect id="flagBackground" x="0" y="0" width="600" height="360" fill="#ffffff"></rect>
+          <rect id="editorGrid" x="0" y="0" width="100%" height="100%" fill="url(#editorGridPattern)" pointer-events="none" style="display:none"></rect>
           <g id="flagObjects"></g>
         </svg>
       </div>
@@ -249,7 +251,7 @@
         <section class="fm-group">
           <h3>Colour tools</h3><div class="fm-toolbar"><button class="fm-btn" id="suggestColoursBtn" type="button">Suggest colour scheme</button><button class="fm-btn" id="contrastCheckBtn" type="button">Check contrast</button></div><p id="colourToolsStatus" class="fm-note" aria-live="polite">Suggestions use your selected colour or background.</p>
         </section>
-        <section class="fm-group"><h3>Keyboard shortcuts</h3><p class="fm-note">Arrows: move 10 units · Shift + arrows: move 1 unit · Ctrl/Cmd + D: duplicate · Ctrl/Cmd + C/V: copy/paste · Ctrl/Cmd + Z: undo · Ctrl/Cmd + Shift + Z: redo · Delete: remove · Esc: clear selection.</p></section>
+        <section class="fm-group"><h3>Keyboard shortcuts</h3><p class="fm-note">Arrows: move one snap-grid step · Shift + arrows: move 1 unit · Ctrl/Cmd + D: duplicate · Ctrl/Cmd + C/V: copy/paste · Ctrl/Cmd + Z: undo · Ctrl/Cmd + Shift + Z: redo · Delete: remove · Esc: clear selection.</p></section>
         <section class="fm-group">
           <h3>Selected element</h3>
           <p id="selectionHint" class="fm-note">Select an element on the flag or add one to edit its settings.</p>
@@ -259,14 +261,14 @@
             <div class="fm-field"><label for="objectX">Left X</label><input id="objectX" type="number" min="-2000" max="2000" step="1" value="0"></div>
             <div class="fm-field"><label for="objectY">Top Y</label><input id="objectY" type="number" min="-2000" max="2000" step="1" value="0"></div>
           </div>
-          <div class="fm-nudge" role="group" aria-label="Move selected element by 10 grid units">
-            <button class="fm-btn" type="button" data-nudge="0,-10" aria-label="Move up" title="Move up 10 units">↑</button>
-            <button class="fm-btn" type="button" data-nudge="-10,0" aria-label="Move left" title="Move left 10 units">←</button>
+          <div class="fm-nudge" role="group" aria-label="Move selected element by one snap-grid step">
+            <button class="fm-btn" type="button" data-nudge="0,-1" aria-label="Move up" title="Move up one snap-grid step">↑</button>
+            <button class="fm-btn" type="button" data-nudge="-1,0" aria-label="Move left" title="Move left one snap-grid step">←</button>
             <span class="fm-nudge-step">10 units</span>
-            <button class="fm-btn" type="button" data-nudge="10,0" aria-label="Move right" title="Move right 10 units">→</button>
-            <button class="fm-btn" type="button" data-nudge="0,10" aria-label="Move down" title="Move down 10 units">↓</button>
+            <button class="fm-btn" type="button" data-nudge="1,0" aria-label="Move right" title="Move right one snap-grid step">→</button>
+            <button class="fm-btn" type="button" data-nudge="0,1" aria-label="Move down" title="Move down one snap-grid step">↓</button>
           </div>
-          <p class="fm-note">Use the arrows or keyboard arrow keys to nudge selected shapes by one 10-unit grid step.</p>
+          <p class="fm-note">Use the arrows or keyboard arrow keys to nudge shapes by the selected snap-grid step. Hold Shift with a keyboard arrow to move 1 unit.</p>
           <div class="fm-row">
             <div class="fm-field"><label for="objectWidth">Width</label><input id="objectWidth" type="number" min="1" max="3000" step="1" value="100"></div>
             <div class="fm-field"><label for="objectHeight">Height</label><input id="objectHeight" type="number" min="1" max="3000" step="1" value="100"></div>
@@ -550,46 +552,45 @@
           selected=selectedIds.includes(el.dataset.id)?el.dataset.id:(selectedIds[selectedIds.length-1]||null);
           refreshSelection(); e.preventDefault(); return;
         }
-        selectedIds=[el.dataset.id];
-        selected=el.dataset.id; refreshSelection();
-        const p=point(e); dragging=el; dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault();
+        if(!selectedIds.includes(el.dataset.id)){selectedIds=[el.dataset.id];selected=el.dataset.id;}
+        else selected=el.dataset.id;
+        refreshSelection();
+        const p=point(e);
+        dragging=(selectedIds.length>1?selectedIds.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(item=>item&&item.dataset.locked!=='true'&&item.dataset.visible!=='false'):[el]);
+        dragStart=p; el.setPointerCapture?.(e.pointerId); e.preventDefault();
       };
     });
   }
-  function point(e) { const p=svg.createSVGPoint(); p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse()); }
-  svg.addEventListener('pointermove',e=>{ if(!dragging||!dragStart)return; const p=point(e), dx=p.x-dragStart.x, dy=p.y-dragStart.y; if(!dragging.dataset.dragRemembered){remember();dragging.dataset.dragRemembered='true';} moveElement(dragging,dx,dy); dragStart=p; });
-  svg.addEventListener('pointerup',()=>{ if(dragging){const moved=dragging; dragging=null;dragStart=null;delete moved.dataset.dragRemembered; if($('snapEnabled').checked){const result=snapElement(moved); say(result||'Element aligned to the grid.');}else say('Element moved.'); refreshSelection();} });
-  svg.addEventListener('pointercancel',()=>{dragging=null;dragStart=null;});
-  function snapElement(el) {
+  function point(e) { const p=svg.createSVGPoint(); p.x=e.clientX;p.y=e.clientY;const m=svg.getScreenCTM();return m?p.matrixTransform(m.inverse()):p; }
+  svg.addEventListener('pointermove',e=>{ if(!dragging||!dragStart)return; const p=point(e), dx=p.x-dragStart.x, dy=p.y-dragStart.y; if(!dragging.some(el=>el.dataset.dragRemembered)){remember();dragging.forEach(el=>el.dataset.dragRemembered='true');} dragging.forEach(el=>moveElement(el,dx,dy)); dragStart=p; });
+  svg.addEventListener('pointerup',()=>{ if(dragging){const moved=dragging; dragging=null;dragStart=null;moved.forEach(el=>delete el.dataset.dragRemembered); if($('snapEnabled').checked){const result=snapElements(moved); say(result);}else say('Element'+(moved.length===1?'':'s')+' moved.'); refreshSelection();} });
+  svg.addEventListener('pointercancel',()=>{if(dragging)dragging.forEach(el=>delete el.dataset.dragRemembered);dragging=null;dragStart=null;});
+  function snapElement(el) { return snapElements([el]); }
+  function snapElements(elements) {
     try {
-      const box=el.getBBox(), matrix=el.getCTM(), d=dims();
-      const corners=[
-        svg.createSVGPoint(),svg.createSVGPoint(),svg.createSVGPoint(),svg.createSVGPoint()
-      ];
-      corners[0].x=box.x; corners[0].y=box.y;
-      corners[1].x=box.x+box.width; corners[1].y=box.y;
-      corners[2].x=box.x+box.width; corners[2].y=box.y+box.height;
-      corners[3].x=box.x; corners[3].y=box.y+box.height;
-      const pts=corners.map(p=>p.matrixTransform(matrix));
-      const left=Math.min(...pts.map(p=>p.x)), right=Math.max(...pts.map(p=>p.x));
-      const top=Math.min(...pts.map(p=>p.y)), bottom=Math.max(...pts.map(p=>p.y));
-      const cx=(left+right)/2, cy=(top+bottom)/2;
-      const gridStep=+$('snapStep').value||10;
-      let dx=Math.round(cx/gridStep)*gridStep-cx, dy=Math.round(cy/gridStep)*gridStep-cy;
-      let message='Element snapped to the '+gridStep+'-unit grid.';
-      const centerX=d.width/2, centerY=d.height/2;
-      if(Math.abs(cx-centerX)<8){dx=centerX-cx;message='Snapped to the vertical centre line.';}
-      if(Math.abs(cy-centerY)<8){dy=centerY-cy;message=message.includes('centre line')?'Snapped to the exact centre of the flag.':'Snapped to the horizontal centre line.';}
-      if(Math.abs(left)<8){dx=-left;message='Snapped to the left edge.';}
-      else if(Math.abs(right-d.width)<8){dx=d.width-right;message='Snapped to the right edge.';}
-      if(Math.abs(top)<8){dy=-top;message='Snapped to the top edge.';}
-      else if(Math.abs(bottom-d.height)<8){dy=d.height-bottom;message='Snapped to the bottom edge.';}
-      if(Math.abs(dx)>.01||Math.abs(dy)>.01){
-        const existing=el.getAttribute('transform')||'';
-        el.setAttribute('transform',`translate(${dx} ${dy}) ${existing}`.trim());
-      }
-      return message;
-    } catch(e) { return 'Element moved. You can enable snapping and try again.'; }
+      const valid=elements.filter(el=>el&&el.isConnected);
+      if(!valid.length)return 'No movable elements to snap.';
+      const bounds=valid.map(objectBounds),d=dims();
+      const left=Math.min(...bounds.map(b=>b.left)),right=Math.max(...bounds.map(b=>b.right));
+      const top=Math.min(...bounds.map(b=>b.top)),bottom=Math.max(...bounds.map(b=>b.bottom));
+      const cx=(left+right)/2,cy=(top+bottom)/2,gridStep=+$('snapStep').value||10;
+      let dx=Math.round(cx/gridStep)*gridStep-cx,dy=Math.round(cy/gridStep)*gridStep-cy;
+      const tolerance=Math.min(8,Math.max(2,gridStep*.45));
+      let xReason='grid',yReason='grid';
+      if(Math.abs(cx-d.width/2)<tolerance){dx=d.width/2-cx;xReason='centre';}
+      if(Math.abs(cy-d.height/2)<tolerance){dy=d.height/2-cy;yReason='centre';}
+      if(Math.abs(left)<tolerance){dx=-left;xReason='left edge';}
+      else if(Math.abs(right-d.width)<tolerance){dx=d.width-right;xReason='right edge';}
+      if(Math.abs(top)<tolerance){dy=-top;yReason='top edge';}
+      else if(Math.abs(bottom-d.height)<tolerance){dy=d.height-bottom;yReason='bottom edge';}
+      if(Math.abs(dx)>.01||Math.abs(dy)>.01)valid.forEach(el=>moveElement(el,dx,dy));
+      if(Math.abs(dx)<=.01&&Math.abs(dy)<=.01)return 'Already aligned to the grid and canvas guides.';
+      const reasons=[];
+      if(Math.abs(dx)>.01)reasons.push(xReason);
+      if(Math.abs(dy)>.01&&yReason!==xReason)reasons.push(yReason);
+      if(!reasons.length)reasons.push(xReason);
+      return 'Snapped '+(valid.length>1?'selection':'element')+' to '+reasons.join(' and ')+'.';
+    } catch(e) { return 'Moved, but snapping failed. Try again with snapping enabled.'; }
   }
   function nudgeSelected(dx,dy) {
     const ids=selectedIds.length?selectedIds:(selected?[selected]:[]);
@@ -599,11 +600,12 @@
     remember();
     movable.forEach(el=>moveElement(el,dx,dy));
     refreshSelection();
-    say('Moved '+movable.length+' selected '+(movable.length===1?'shape':'shapes')+' by '+Math.abs(dx||dy)+' unit'+(Math.abs(dx||dy)===1?'':'s')+'.');
+    say('Moved '+movable.length+' selected '+(movable.length===1?'shape':'shapes')+'.');
   }
+  function updateNudgeStep(){const step=+$('snapStep').value||10;document.querySelector('.fm-nudge-step').textContent=step+' units';document.querySelectorAll('[data-nudge]').forEach(btn=>{const [dx,dy]=btn.dataset.nudge.split(',').map(Number);btn.title='Move '+(dx<0?'left':dx>0?'right':dy<0?'up':'down')+' '+step+' unit'+(step===1?'':'s');});}
   document.querySelectorAll('[data-nudge]').forEach(btn=>btn.addEventListener('click',()=>{
-    const [dx,dy]=btn.dataset.nudge.split(',').map(Number);
-    nudgeSelected(dx,dy);
+    const [dx,dy]=btn.dataset.nudge.split(',').map(Number),step=+$('snapStep').value||10;
+    nudgeSelected(dx*step,dy*step);
   }));
   function moveElement(el,dx,dy) { const t=el.getAttribute('transform')||''; el.setAttribute('transform',('translate('+dx+' '+dy+') '+t).trim()); }
   function typeLabel(type) {
@@ -634,10 +636,12 @@
     });
   }
   function objectBounds(el) {
-    const box=el.getBBox(), matrix=el.getCTM();
+    const box=el.getBBox(),svgScreen=svg.getScreenCTM(),elementScreen=el.getScreenCTM();
+    if(!svgScreen||!elementScreen)throw new Error('SVG transform unavailable');
+    const matrix=svgScreen.inverse().multiply(elementScreen);
     const corners=[[box.x,box.y],[box.x+box.width,box.y],[box.x+box.width,box.y+box.height],[box.x,box.y+box.height]]
       .map(([x,y])=>{const p=svg.createSVGPoint();p.x=x;p.y=y;return p.matrixTransform(matrix);});
-    const xs=corners.map(p=>p.x), ys=corners.map(p=>p.y);
+    const xs=corners.map(p=>p.x),ys=corners.map(p=>p.y);
     return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys)};
   }
   function translateObject(el,dx,dy) {
@@ -781,15 +785,18 @@
   $('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('liquindo-flag-maker',JSON.stringify(snapshot()));say('Flag saved in this browser.');}catch(e){say('Could not save in this browser. Use Export SVG or PNG instead.');}});
   $('loadBtn').addEventListener('click',()=>{try{const s=localStorage.getItem('liquindo-flag-maker');if(!s){say('No saved flag found in this browser yet.');return;}remember();restore(JSON.parse(s));$('backgroundColor').value=bg.getAttribute('fill');$('backgroundHex').value=bg.getAttribute('fill');say('Saved flag loaded.');}catch(e){say('Could not load the saved flag.');}});
   function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-  $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
-  $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
+  $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelector('#editorGrid')?.remove();clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
+  $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelector('#editorGrid')?.remove();clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
   function updateZoom(){svg.style.transform='scale('+zoomLevel+')';svg.style.transformOrigin='center center';say('Canvas zoom '+Math.round(zoomLevel*100)+'%.');}
   function rotateSelected(deg){const items=selectedItems();if(!items.length)return;remember();items.forEach(({el,b})=>{const cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;el.setAttribute('transform',((el.getAttribute('transform')||'')+' rotate('+deg+' '+cx+' '+cy+')').trim());});refreshSelection();say('Rotated selection '+deg+'°.');}
   function flipSelected(axis){const items=selectedItems();if(!items.length)return;remember();items.forEach(({el,b})=>{const cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;el.setAttribute('transform',((el.getAttribute('transform')||'')+' translate('+(axis==='x'?2*cx:0)+' '+(axis==='y'?2*cy:0)+') scale('+(axis==='x'?-1:1)+' '+(axis==='y'?-1:1)+')').trim());});refreshSelection();say('Flipped selection '+(axis==='x'?'horizontally.':'vertically.'));}
   function setPolygonButtons(){$('polygonFinishBtn').disabled=!polygonMode||polygonPoints.length<3;$('polygonCancelBtn').disabled=!polygonMode;$('polygonStartBtn').disabled=polygonMode;$('polygonStatus').textContent=polygonMode?'Drawing: '+polygonPoints.length+' point(s). Tap flag to add points.':'Polygon tool is idle.';}
   function finishPolygon(){if(polygonPoints.length<3){say('A polygon needs at least three points.');return;}remember();const el=make('polygon',{points:polygonPoints.map(p=>p.x+','+p.y).join(' '),fill:$('objectColor').value});el.dataset.id='obj-'+nextId++;el.dataset.type='polygon';el.dataset.name='Custom polygon';el.dataset.color=$('objectColor').value;el.dataset.object='true';el.dataset.visible='true';el.dataset.locked='false';layer.append(el);selected=el.dataset.id;selectedIds=[selected];polygonMode=false;polygonPoints=[];svg.querySelector('#polygonPreview')?.remove();setPolygonButtons();refreshSelection();say('Custom polygon added.');}
   $('zoomInBtn').addEventListener('click',()=>{zoomLevel=Math.min(2.5,+(zoomLevel+.1).toFixed(2));updateZoom();});$('zoomOutBtn').addEventListener('click',()=>{zoomLevel=Math.max(.5,+(zoomLevel-.1).toFixed(2));updateZoom();});$('zoomResetBtn').addEventListener('click',()=>{zoomLevel=1;updateZoom();});
-  $('gridVisible').addEventListener('change',e=>document.querySelector('.fm-stage').classList.toggle('grid-on',e.target.checked));$('snapStep').addEventListener('change',()=>{document.querySelector('.fm-stage').style.setProperty('--snap-step',($('snapStep').value||10)+'px');say('Snap spacing set to '+$('snapStep').value+' units.');});
+  function updateEditorGrid(){const step=+$('snapStep').value||10,pattern=$('editorGridPattern'),lines=$('editorGridLines');pattern.setAttribute('width',step);pattern.setAttribute('height',step);lines.setAttribute('d','M '+step+' 0 L 0 0 0 '+step);$('editorGrid').style.display=$('gridVisible').checked?'':'none';updateNudgeStep();}
+  $('gridVisible').addEventListener('change',()=>{updateEditorGrid();say($('gridVisible').checked?'Grid shown on the flag.':'Grid hidden.');});
+  $('snapStep').addEventListener('change',()=>{updateEditorGrid();say('Snap spacing set to '+$('snapStep').value+' flag units.');});
+  updateEditorGrid();
   document.querySelectorAll('.fm-group > h2, .fm-group > h3').forEach(h=>{const section=h.parentElement;section.classList.add('fm-collapsible');h.setAttribute('tabindex','0');h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{section.classList.toggle('fm-collapsed');h.setAttribute('aria-expanded',String(!section.classList.contains('fm-collapsed')));};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});});
   $('rotateLeftBtn').addEventListener('click',()=>rotateSelected(-15));$('rotateRightBtn').addEventListener('click',()=>rotateSelected(15));$('flipHBtn').addEventListener('click',()=>flipSelected('x'));$('flipVBtn').addEventListener('click',()=>flipSelected('y'));
   $('copyElementBtn').addEventListener('click',()=>{const els=selectedItems().map(i=>i.el);if(els.length)clipboardSvg=els.map(el=>el.outerHTML);say('Copied '+els.length+' element(s).');});
@@ -801,7 +808,7 @@
   $('svgImportInput').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const raw=await file.text();if(raw.length>2000000)throw new Error('SVG file exceeds 2 MB.');const doc=new DOMParser().parseFromString(raw,'image/svg+xml');if(doc.querySelector('parsererror')||doc.documentElement.tagName.toLowerCase()!=='svg')throw new Error('Invalid SVG file.');const nodes=Array.from(doc.documentElement.querySelectorAll('rect,circle,ellipse,polygon,path,text,line,polyline')).slice(0,100);if(!nodes.length)throw new Error('No supported vector shapes found.');remember();const d=dims(),vb=(doc.documentElement.getAttribute('viewBox')||('0 0 '+(doc.documentElement.getAttribute('width')||d.width)+' '+(doc.documentElement.getAttribute('height')||d.height))).trim().split(/[ ,]+/).map(Number);nodes.forEach(node=>{const clone=document.importNode(node,true);Array.from(clone.attributes).forEach(a=>{if(/^on/i.test(a.name)||['href','xlink:href'].includes(a.name))clone.removeAttribute(a.name);});assignFreshIds(clone);clone.dataset.type='imported-'+clone.tagName.toLowerCase();clone.dataset.name='Imported '+clone.tagName.toLowerCase();clone.dataset.object='true';clone.dataset.visible='true';clone.dataset.locked='false';clone.setAttribute('transform',('translate('+(-(vb[0]||0))+' '+(-(vb[1]||0))+') scale('+(d.width/(vb[2]||d.width))+' '+(d.height/(vb[3]||d.height))+') '+(clone.getAttribute('transform')||'')).trim());layer.append(clone);});refreshSelection();say('Imported '+nodes.length+' SVG vector elements.');}catch(err){say('SVG import failed: '+err.message);}finally{e.target.value='';}});
   $('suggestColoursBtn').addEventListener('click',()=>{const base=($('objectColor').value||bg.getAttribute('fill')||'#000032').slice(1),n=parseInt(base,16),r=n>>16&255,g=n>>8&255,b=n&255,hex=(r,g,b)=>'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''),schemes=[hex(255-r,255-g,255-b),hex((r+255)/2,(g+255)/2,(b+255)/2),hex(r*.65,g*.65,b*.65),hex(r*.35+165,g*.35+165,b*.35+165)];const out=$('colourToolsStatus');out.textContent='Suggested colours: ';schemes.forEach(col=>{const btn=document.createElement('button');btn.className='fm-btn';btn.type='button';btn.textContent=col;btn.style.borderLeft='12px solid '+col;btn.addEventListener('click',()=>{if(current()){$('objectColor').value=col;$('objectColor').dispatchEvent(new Event('input',{bubbles:true}));}else{$('backgroundColor').value=col;$('backgroundColor').dispatchEvent(new Event('input',{bubbles:true}));}});out.append(' ',btn);});});
   $('contrastCheckBtn').addEventListener('click',()=>{const a=$('objectColor').value.slice(1),b=(bg.getAttribute('fill')||'#ffffff').slice(1),lum=h=>{const v=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2));return .2126*v[0]+.7152*v[1]+.0722*v[2];},x=lum(a),y=lum(b),ratio=(Math.max(x,y)+.05)/(Math.min(x,y)+.05);$('colourToolsStatus').textContent='Contrast ratio: '+ratio.toFixed(2)+':1 — '+(ratio>=4.5?'strong':ratio>=3?'moderate':'low')+' contrast.';});
-  $('exportFlagOnlyBtn').addEventListener('click',()=>{const scale=+$('exportScale').value||2,clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.style.transform='';if($('transparentPng').checked)clone.querySelector('#flagBackground')?.setAttribute('fill','none');clone.setAttribute('width',dims().width*scale);clone.setAttribute('height',dims().height*scale);const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=dims().width*scale;canvas.height=dims().height*scale;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(b=>{if(b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='liquindo-flag.png';a.click();URL.revokeObjectURL(a.href);say('PNG exported at '+scale+'×.');}URL.revokeObjectURL(url);});};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed.');};img.src=url;});
+  $('exportFlagOnlyBtn').addEventListener('click',()=>{const scale=+$('exportScale').value||2,clone=svg.cloneNode(true);clone.querySelector('#editorGrid')?.remove();clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.style.transform='';if($('transparentPng').checked)clone.querySelector('#flagBackground')?.setAttribute('fill','none');clone.setAttribute('width',dims().width*scale);clone.setAttribute('height',dims().height*scale);const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=dims().width*scale;canvas.height=dims().height*scale;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(b=>{if(b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='liquindo-flag.png';a.click();URL.revokeObjectURL(a.href);say('PNG exported at '+scale+'×.');}URL.revokeObjectURL(url);});};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed.');};img.src=url;});
   $('showAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>{el.dataset.visible='true';el.style.display='';});refreshSelection();say('All layers shown.');});
   $('unlockAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>el.dataset.locked='false');refreshSelection();say('All layers unlocked.');});
   $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';$('backgroundHex').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
@@ -812,7 +819,7 @@
     if(typing)return;
     if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)&&selectedIds.length){
       e.preventDefault();
-      const step=e.shiftKey?1:10;
+      const step=e.shiftKey?1:(+$('snapStep').value||10);
       const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;
       const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;
       nudgeSelected(dx,dy);
