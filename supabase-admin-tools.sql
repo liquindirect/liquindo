@@ -133,3 +133,31 @@ drop trigger if exists audit_wiki_revisions_changes on public.wiki_revisions;
 create trigger audit_wiki_revisions_changes after update or insert or delete on public.wiki_revisions for each row execute function public.log_admin_table_change();
 drop trigger if exists audit_wiki_permissions_changes on public.wiki_permissions;
 create trigger audit_wiki_permissions_changes after update or insert or delete on public.wiki_permissions for each row execute function public.log_admin_table_change();
+
+
+-- Flag Maker history snapshots support restoring previous shape-library states.
+create table if not exists public.flagmaker_shape_history (
+  id bigint generated always as identity primary key,
+  shape_id text not null,
+  action text not null check (action in ('update','delete')),
+  snapshot jsonb not null,
+  changed_by uuid references auth.users(id) on delete set null,
+  changed_at timestamptz not null default now()
+);
+alter table public.flagmaker_shape_history enable row level security;
+drop policy if exists "Admins read shape history" on public.flagmaker_shape_history;
+create policy "Admins read shape history" on public.flagmaker_shape_history for select to authenticated
+using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
+grant select on public.flagmaker_shape_history to authenticated;
+
+create or replace function public.capture_flagmaker_shape_history()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.flagmaker_shape_history(shape_id,action,snapshot,changed_by)
+  values(old.shape_id,lower(tg_op),to_jsonb(old),auth.uid());
+  return case when tg_op = 'DELETE' then old else new end;
+end;
+$$;
+drop trigger if exists capture_flagmaker_shape_history on public.flagmaker_shapes;
+create trigger capture_flagmaker_shape_history after update or delete on public.flagmaker_shapes
+for each row execute function public.capture_flagmaker_shape_history();
