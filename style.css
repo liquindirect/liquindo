@@ -4651,3 +4651,201 @@ body.account-recovery-redesign .page-title h1 {
   font-family: Georgia, "Times New Roman", serif !important;
   letter-spacing: -.04em !important;
 }
+
+
+/* =========================================================
+   LIQUINDO MOBILE APP / PWA SHELL
+   ========================================================= */
+:root {
+  --app-navy: #0b1730;
+  --app-navy-soft: #132443;
+  --app-gold: #e9c76b;
+}
+.liquindo-app-nav,
+.liquindo-install-button { display: none; }
+@media (max-width: 760px) {
+  body.liquindo-app-mode {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.liquindo-app-mode .site-header {
+    position: relative;
+  }
+  body.liquindo-app-mode .topbar {
+    min-height: 58px;
+    padding: 10px 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  body.liquindo-app-mode .brand {
+    font-size: 1.2rem;
+    letter-spacing: .02em;
+  }
+  body.liquindo-app-mode .nav-links {
+    gap: 8px;
+    margin-left: auto;
+  }
+  body.liquindo-app-mode .language-control {
+    margin-left: 0;
+  }
+  body.liquindo-app-mode .language-switcher {
+    max-width: 112px;
+    min-height: 40px;
+  }
+  body.liquindo-app-mode .contents-menu summary {
+    min-height: 42px;
+    padding: 8px 10px;
+  }
+  body.liquindo-app-mode main {
+    width: 100%;
+    max-width: 100%;
+  }
+  body.liquindo-app-mode .content-section,
+  body.liquindo-app-mode main > section {
+    padding-left: clamp(16px, 4vw, 24px);
+    padding-right: clamp(16px, 4vw, 24px);
+  }
+  body.liquindo-app-mode button,
+  body.liquindo-app-mode input,
+  body.liquindo-app-mode select,
+  body.liquindo-app-mode textarea {
+    max-width: 100%;
+  }
+  body.liquindo-app-mode button,
+  body.liquindo-app-mode .button,
+  body.liquindo-app-mode a.button {
+    touch-action: manipulation;
+  }
+  body.liquindo-app-mode .liquindo-app-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 2px;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom, 0px));
+    min-height: 66px;
+    background: rgba(11, 23, 48, .97);
+    border-top: 1px solid rgba(233, 199, 107, .32);
+    box-shadow: 0 -8px 28px rgba(5, 12, 25, .18);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  body.liquindo-app-mode .liquindo-app-nav-item {
+    appearance: none;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: rgba(255,255,255,.76);
+    text-decoration: none;
+    font: inherit;
+    font-size: .68rem;
+    font-weight: 650;
+    line-height: 1.1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  body.liquindo-app-mode .liquindo-app-nav-item.is-active,
+  body.liquindo-app-mode .liquindo-app-nav-item[aria-current="page"] {
+    background: rgba(233, 199, 107, .15);
+    color: var(--app-gold);
+  }
+  body.liquindo-app-mode .app-nav-icon {
+    display: block;
+    font-size: 1.35rem;
+    line-height: 1;
+    font-weight: 500;
+  }
+  body.liquindo-app-mode .app-nav-label {
+    display: block;
+    white-space: nowrap;
+  }
+  body.liquindo-app-mode .liquindo-app-menu-wrap {
+    position: relative;
+    min-width: 0;
+  }
+  body.liquindo-app-mode .liquindo-app-menu-wrap > button {
+    width: 100%;
+  }
+  body.liquindo-app-mode .liquindo-app-more {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 14px);
+    width: min(240px, calc(100vw - 24px));
+    padding: 8px;
+    border: 1px solid rgba(233, 199, 107, .35);
+    border-radius: 16px;
+    background: #101f3b;
+    box-shadow: 0 14px 40px rgba(0,0,0,.3);
+  }
+  body.liquindo-app-mode .liquindo-app-more[hidden] { display: none; }
+  body.liquindo-app-mode .liquindo-app-more a {
+    display: block;
+    padding: 12px 13px;
+    border-radius: 10px;
+    color: #f7f4ee;
+    text-decoration: none;
+    font-weight: 650;
+  }
+  body.liquindo-app-mode .liquindo-app-more a:hover,
+  body.liquindo-app-mode .liquindo-app-more a:focus-visible {
+    background: rgba(233, 199, 107, .15);
+    color: var(--app-gold);
+  }
+  body.liquindo-app-mode .liquindo-install-button {
+    display: block;
+    margin: 10px 16px;
+    padding: 11px 16px;
+    border: 1px solid var(--app-gold);
+    border-radius: 999px;
+    background: var(--app-gold);
+    color: var(--app-navy);
+    font-weight: 800;
+  }
+  body.liquindo-app-mode .hero {
+    min-height: 0;
+    padding-top: clamp(38px, 9vw, 72px);
+    padding-bottom: clamp(42px, 10vw, 78px);
+  }
+  body.liquindo-app-mode .hero h1 {
+    font-size: clamp(2.4rem, 12vw, 4rem);
+    line-height: 1.02;
+    overflow-wrap: anywhere;
+  }
+  body.liquindo-app-mode .hero-content {
+    width: min(100% - 28px, 680px);
+  }
+  body.liquindo-app-mode .homepage-hierarchy-cta {
+    margin: 8px 8px 0 0;
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  body.liquindo-app-mode table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.liquindo-app-mode img,
+  body.liquindo-app-mode canvas,
+  body.liquindo-app-mode svg {
+    max-width: 100%;
+  }
+  body.liquindo-app-mode .contents-panel {
+    max-width: calc(100vw - 24px);
+  }
+}
+@media (display-mode: standalone) {
+  body.liquindo-app-mode .site-header { padding-top: env(safe-area-inset-top, 0px); }
+}
