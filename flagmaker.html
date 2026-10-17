@@ -11,30 +11,30 @@
     :root { --fm-navy:#000032; --fm-gold:#fdbe00; }
     body { background:#f5f3ee; }
     .fm-head { background:var(--fm-navy); color:#fff; border-bottom:4px solid var(--fm-gold); }
-    .fm-top { width:min(1400px,100%); margin:auto; padding:18px 24px; display:flex; gap:16px; align-items:center; justify-content:space-between; }
-    .fm-brand { font-size:1.35rem; font-weight:900; color:#fff; }
+    .fm-top { width:min(1400px,100%); margin:auto; padding:12px 18px; display:flex; gap:10px; align-items:center; justify-content:space-between; }
+    .fm-brand { font-size:1.2rem; font-weight:900; color:#fff; }
     .fm-back { color:var(--fm-gold); font-weight:800; }
-    .fm-intro { width:min(1200px,calc(100% - 32px)); margin:32px auto 22px; }
-    .fm-kicker { color:#816000; text-transform:uppercase; font-weight:900; letter-spacing:.13em; font-size:.78rem; margin:0 0 8px; }
-    .fm-intro h1 { margin:0; color:var(--fm-navy); font-size:clamp(2.2rem,6vw,4rem); letter-spacing:-.04em; line-height:1.05; }
-    .fm-intro p { max-width:760px; color:#52606a; }
-    .fm-app { width:min(1400px,calc(100% - 32px)); margin:0 auto 56px; display:grid; grid-template-columns:minmax(0,1.6fr) minmax(270px,.8fr); gap:20px; align-items:start; }
-    .fm-panel { background:#fff; border:1px solid #ded7ca; border-radius:16px; padding:18px; box-shadow:0 12px 32px #1721260d; min-width:0; }
-    .fm-panel h2 { margin:0 0 14px; color:var(--fm-navy); font-size:1.15rem; }
-    .fm-stage { min-height:340px; display:grid; place-items:center; padding:18px; border:1px solid #e3e3e8; border-radius:12px; background-color:#fafafa; background-image:linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:20px 20px; background-position:0 0,0 10px,10px -10px,-10px 0; }
+    .fm-intro { width:min(1200px,calc(100% - 32px)); margin:18px auto 12px; }
+    .fm-kicker { color:#816000; text-transform:uppercase; font-weight:900; letter-spacing:.1em; font-size:.7rem; margin:0 0 5px; }
+    .fm-intro h1 { margin:0; color:var(--fm-navy); font-size:clamp(1.8rem,4vw,3rem); letter-spacing:-.04em; line-height:1.05; }
+    .fm-intro p { max-width:760px; color:#52606a; margin:7px 0; font-size:.92rem; }
+    .fm-app { width:min(1400px,calc(100% - 24px)); margin:0 auto 28px; display:grid; grid-template-columns:minmax(0,1.6fr) minmax(270px,.8fr); gap:12px; align-items:start; }
+    .fm-panel { background:#fff; border:1px solid #ded7ca; border-radius:12px; padding:12px; box-shadow:0 8px 22px #1721260d; min-width:0; }
+    .fm-panel h2 { margin:0 0 8px; color:var(--fm-navy); font-size:1.05rem; }
+    .fm-stage { min-height:280px; display:grid; place-items:center; padding:10px; border:1px solid #e3e3e8; border-radius:10px; background-color:#fafafa; background-image:linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:20px 20px; background-position:0 0,0 10px,10px -10px,-10px 0; }
     #flagSvg { width:min(100%,850px); height:auto; max-height:62vh; box-shadow:0 10px 28px #0002; touch-action:none; user-select:none; }
     #flagSvg [data-object] { cursor:move; }
     #flagSvg [data-object].selected { stroke:#fdbe00; stroke-width:2; stroke-dasharray:5 4; }
-    .fm-toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
-    .fm-btn { border:1px solid #d5d5dd; border-radius:9px; padding:9px 12px; background:#fff; color:#111638; font-weight:750; cursor:pointer; }
+    .fm-toolbar { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+    .fm-btn { border:1px solid #d5d5dd; border-radius:7px; padding:6px 9px; background:#fff; color:#111638; font-size:.88rem; font-weight:750; cursor:pointer; }
     .fm-btn:hover { border-color:#b28a00; background:#fff9df; }
     .fm-btn.primary { background:var(--fm-navy); color:#fff; border-color:var(--fm-navy); }
     .fm-btn.primary:hover { background:#15155c; }
     .fm-btn.danger { color:#9d2828; }
-    .fm-controls { display:grid; gap:16px; }
-    .fm-group { border-bottom:1px solid #e8e3da; padding-bottom:15px; }
-    .fm-layer-list { display:grid; gap:6px; margin-top:10px; }
-    .fm-layer-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; padding:8px; border:1px solid #e2dfd8; border-radius:9px; background:#fff; }
+    .fm-controls { display:grid; gap:9px; }
+    .fm-group { border-bottom:1px solid #e8e3da; padding-bottom:9px; }
+    .fm-layer-list { display:grid; gap:4px; margin-top:6px; }
+    .fm-layer-row { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:5px; padding:5px; border:1px solid #e2dfd8; border-radius:9px; background:#fff; }
     .fm-layer-row.active { border-color:var(--fm-gold); background:#fff9df; }
     .fm-layer-pick { min-width:0; display:flex; align-items:center; gap:8px; padding:4px; border:0; background:transparent; text-align:left; cursor:pointer; color:#20202c; font-weight:750; }
     .fm-layer-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -42,23 +42,26 @@
     .fm-layer-actions .fm-btn { padding:5px 7px; font-size:.78rem; }
     .fm-layer-swatch { width:15px; height:15px; flex:0 0 15px; border:1px solid #aaa; border-radius:4px; }
     .fm-layer-empty { color:#777; font-size:.85rem; padding:8px 0; }
-    .fm-palette { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .fm-palette { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
     .fm-palette-item { display:grid; grid-template-columns:28px auto; align-items:center; gap:5px; border:1px solid #ded9cf; border-radius:9px; padding:5px; background:#fff; }
     .fm-palette-swatch { width:26px; height:26px; border:1px solid #aaa; border-radius:6px; cursor:pointer; }
     .fm-palette-remove { border:0; background:transparent; color:#8a3434; font-weight:800; cursor:pointer; padding:3px 5px; }
     .fm-palette-empty { color:#777; font-size:.85rem; margin:10px 0 0; }
     .fm-group:last-child { border:0; padding:0; }
-    .fm-group h3 { font-size:.95rem; color:#24233b; margin:0 0 10px; }
-    .fm-field { display:grid; gap:5px; margin:9px 0; }
-    .fm-field label { font-size:.84rem; font-weight:750; color:#4b4b58; }
-    .fm-field input[type="text"], .fm-field input[type="number"], .fm-field select { width:100%; min-width:0; border:1px solid #d5d5dd; border-radius:8px; padding:9px; background:#fff; color:#20202c; }
-    .fm-field input[type="color"] { width:100%; height:38px; padding:3px; border:1px solid #d5d5dd; border-radius:8px; background:white; }
-    .fm-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .fm-note { color:#656575; font-size:.82rem; margin:10px 0 0; }
-    .fm-status { min-height:1.3em; color:#425344; font-size:.84rem; margin:10px 0 0; }
+    .fm-group h3 { font-size:.9rem; color:#24233b; margin:0 0 6px; }
+    .fm-field { display:grid; gap:3px; margin:6px 0; }
+    .fm-field label { font-size:.8rem; font-weight:750; color:#4b4b58; }
+    .fm-field input[type="text"], .fm-field input[type="number"], .fm-field select { width:100%; min-width:0; border:1px solid #d5d5dd; border-radius:7px; padding:6px 7px; background:#fff; color:#20202c; font-size:.9rem; }
+    .fm-field input[type="color"] { width:100%; height:30px; padding:2px; border:1px solid #d5d5dd; border-radius:8px; background:white; }
+    .fm-row { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .fm-nudge { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:center; gap:5px; max-width:330px; margin:7px auto 2px; }
+    .fm-nudge .fm-btn { padding:7px 4px; font-size:1.05rem; line-height:1; min-height:34px; }
+    .fm-nudge-step { text-align:center; font-size:.72rem; color:#656575; white-space:nowrap; }
+    .fm-note { color:#656575; font-size:.77rem; margin:6px 0 0; }
+    .fm-status { min-height:1.2em; color:#425344; font-size:.8rem; margin:6px 0 0; }
     .fm-footer { text-align:center; color:#777; padding:0 16px 30px; font-size:.85rem; }
     @media(max-width:850px) { .fm-app { grid-template-columns:1fr; } .fm-stage { min-height:220px; padding:10px; } #flagSvg { max-height:none; } }
-    @media(max-width:480px) { .fm-panel { padding:12px; } .fm-top { padding:14px 16px; } .fm-toolbar .fm-btn { flex:1 1 auto; } }
+    @media(max-width:480px) { .fm-panel { padding:9px; } .fm-top { padding:10px 12px; } .fm-toolbar .fm-btn { flex:1 1 auto; } .fm-stage { min-height:180px; } }
   </style>
 </head>
 <body>
@@ -216,6 +219,14 @@
             <div class="fm-field"><label for="objectX">Left X</label><input id="objectX" type="number" min="-2000" max="2000" step="1" value="0"></div>
             <div class="fm-field"><label for="objectY">Top Y</label><input id="objectY" type="number" min="-2000" max="2000" step="1" value="0"></div>
           </div>
+          <div class="fm-nudge" role="group" aria-label="Move selected element by 10 grid units">
+            <button class="fm-btn" type="button" data-nudge="0,-10" aria-label="Move up" title="Move up 10 units">↑</button>
+            <button class="fm-btn" type="button" data-nudge="-10,0" aria-label="Move left" title="Move left 10 units">←</button>
+            <span class="fm-nudge-step">10 units</span>
+            <button class="fm-btn" type="button" data-nudge="10,0" aria-label="Move right" title="Move right 10 units">→</button>
+            <button class="fm-btn" type="button" data-nudge="0,10" aria-label="Move down" title="Move down 10 units">↓</button>
+          </div>
+          <p class="fm-note">Use the arrows or keyboard arrow keys to nudge selected shapes by one 10-unit grid step.</p>
           <div class="fm-row">
             <div class="fm-field"><label for="objectWidth">Width</label><input id="objectWidth" type="number" min="1" max="3000" step="1" value="100"></div>
             <div class="fm-field"><label for="objectHeight">Height</label><input id="objectHeight" type="number" min="1" max="3000" step="1" value="100"></div>
@@ -453,6 +464,20 @@
       return message;
     } catch(e) { return 'Element moved. You can enable snapping and try again.'; }
   }
+  function nudgeSelected(dx,dy) {
+    const ids=selectedIds.length?selectedIds:(selected?[selected]:[]);
+    const elements=ids.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean);
+    const movable=elements.filter(el=>el.dataset.locked!=='true'&&el.getAttribute('data-visible')!=='false');
+    if(!movable.length){say('Select an unlocked, visible shape to move.');return;}
+    remember();
+    movable.forEach(el=>moveElement(el,dx,dy));
+    refreshSelection();
+    say('Moved '+movable.length+' selected '+(movable.length===1?'shape':'shapes')+' by '+Math.abs(dx||dy)+' unit'+(Math.abs(dx||dy)===1?'':'s')+'.');
+  }
+  document.querySelectorAll('[data-nudge]').forEach(btn=>btn.addEventListener('click',()=>{
+    const [dx,dy]=btn.dataset.nudge.split(',').map(Number);
+    nudgeSelected(dx,dy);
+  }));
   function moveElement(el,dx,dy) {
     const type=el.dataset.type;
     if(el.tagName==='g'){el.querySelectorAll('*').forEach(child=>{for(const attr of ['cx','x'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dx);for(const attr of ['cy','y'])if(child.hasAttribute(attr))child.setAttribute(attr,+child.getAttribute(attr)+dy);if(child.hasAttribute('d')){const tr=el.getAttribute('transform')||'';el.setAttribute('transform',tr+` translate(${dx} ${dy})`);}}); if(!el.querySelector('[data-moved]'))el.setAttribute('transform',(el.getAttribute('transform')||'')+` translate(${dx} ${dy})`); }
@@ -661,7 +686,13 @@
     const tag=(e.target&&e.target.tagName||'').toLowerCase();
     const typing=['input','textarea','select'].includes(tag)||e.target?.isContentEditable;
     if(typing)return;
-    if((e.key==='Delete'||e.key==='Backspace')&&selectedIds.length){
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)&&selectedIds.length){
+      e.preventDefault();
+      const step=e.shiftKey?1:10;
+      const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;
+      const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;
+      nudgeSelected(dx,dy);
+    } else if((e.key==='Delete'||e.key==='Backspace')&&selectedIds.length){
       e.preventDefault();remember();
       selectedIds.forEach(id=>layer.querySelector('[data-id="'+id+'"]')?.remove());
       selected=null;selectedIds=[];refreshSelection();say('Selected elements deleted.');
