@@ -63,3 +63,18 @@ The earlier debug APK was built before a persistent signing key was configured. 
 - The live `server.url` approach prioritizes immediate website updates but depends on network availability. A production release should consider bundling a tested local site and adopting a supported live-update strategy instead.
 - The wrapper does not change the existing GitHub Pages website, Supabase project, account system, member directory, or wiki.
 - Test login, CAPTCHA, password recovery, file uploads, navigation/back button, and Flag Maker on a physical Android device before relying on the app.
+
+## Publishing an APK update
+
+After the four persistent signing secrets above are configured, updates can be published from GitHub Actions:
+
+1. Open **Actions → Build Liquindo Android APK → Run workflow**.
+2. Select the `main` branch.
+3. Set **Publish a signed APK as a Liquindo update release** to **true**.
+4. Run the workflow and wait for it to finish.
+5. The workflow creates a GitHub Release named `Liquindo Android vN` with the signed APK attached.
+
+Leave the publish option set to **false** for routine test builds. A release is only published when all four signing secrets are present; a debug APK is never published as an update release.
+
+**Current limitation:** this prepares the reliable release/download side of an updater, but the current APK loads the live website remotely and does not yet contain a native APK installer/version-check bridge. Android must still confirm APK installation, and an in-app “Update available” button is a separate implementation step. Do not treat a GitHub Actions build artifact as a published update; artifacts expire.
+
