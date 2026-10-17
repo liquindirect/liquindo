@@ -1,5 +1,6 @@
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import sharp from "sharp";
+import { fileURLToPath } from "node:url";
 
 const root = process.cwd();
 await mkdir(new URL("../www/", import.meta.url), { recursive: true });
@@ -26,6 +27,6 @@ const svg = await readFile(new URL("../app-icon.svg", import.meta.url));
 await sharp(svg, { density: 384 })
   .resize(1024, 1024, { fit: "contain", background: "#071329" })
   .png()
-  .toFile(new URL("../assets/icon-only.png", import.meta.url));
+  .toFile(fileURLToPath(new URL("../assets/icon-only.png", import.meta.url)));
 
 console.log("Prepared Capacitor web fallback and 1024px Liquindo app icon.");
