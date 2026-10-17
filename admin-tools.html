@@ -38,11 +38,48 @@
   <header class="admin-page-header">
     <nav class="topbar" aria-label="Main navigation">
       <a class="brand" href="index.html#home">Liquindo</a>
+      <details class="contents-menu">
+        <summary aria-label="Open site contents" aria-controls="site-contents-panel">
+          <span class="contents-menu-icon" aria-hidden="true">☰</span>
+          <span>Contents</span>
+          <span class="contents-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <button type="button" class="contents-backdrop" aria-label="Close contents menu" tabindex="-1"></button>
+        <div class="contents-panel" id="site-contents-panel">
+          <p class="contents-panel-label">Liquindo · Contents</p>
+          <a href="index.html#home"><span>00</span><span>Introduction</span></a>
+          <a href="index.html#history"><span>01</span><span data-i18n="nav.history">History</span></a>
+          <a href="index.html#ideology"><span>02</span><span data-i18n="nav.ideology">Ideology</span></a>
+          <a href="hierarchy.html"><span>03</span><span>Hierarchy</span></a>
+          <a href="flagmaker.html"><span>04</span><span>Flag Maker</span></a>
+          <a href="members.html"><span>05</span><span data-i18n="nav.members">Members</span></a>
+          <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
+          <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
+          <a href="index.html#contact"><span>08</span><span data-i18n="nav.contact">Contact</span></a>
+          <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
+          <a href="login.html"><span>10</span><span>Account</span></a>
+          <a href="admin-tools.html"><span>11</span><span>Admin Tools</span></a>
+        </div>
+      </details>
       <div class="nav-links">
-        <a href="index.html">Homepage</a>
-        <a href="hierarchy.html">Hierarchy</a>
-        <a href="wiki.html">LiquinWiki</a>
-        <a href="members.html">Members</a>
+        <a href="login.html" id="site-account-link" aria-live="polite">Account</a>
+        <button type="button" class="account-logout" id="site-account-logout" hidden>Log out</button>
+      </div>
+      <div class="language-control">
+        <label class="language-icon" for="language-switcher" aria-label="Change language" title="Change language">文A</label>
+        <select id="language-switcher" class="language-switcher" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="pt">Português</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="hr">Hrvatski</option>
+          <option value="el">Ελληνικά</option>
+          <option value="pl">Polski</option>
+          <option value="ru">Русский</option>
+          <option value="zh">中文</option>
+        </select>
       </div>
     </nav>
     <div class="admin-page-title">
@@ -179,6 +216,22 @@
 
     window.addEventListener("pagehide", () => authSubscription?.unsubscribe());
     initialiseAdminTools();
+  </script>
+  <script src="i18n.js"></script>
+  <script type="module" src="site-account.js"></script>
+  <script>
+    (() => {
+      const menu = document.querySelector(".contents-menu");
+      if (!menu) return;
+      const topbar = menu.closest(".topbar");
+      const backdrop = menu.querySelector(".contents-backdrop");
+      const syncOpenState = () => topbar?.classList.toggle("contents-nav-open", menu.open);
+      menu.addEventListener("toggle", syncOpenState);
+      menu.querySelectorAll(".contents-panel a").forEach(link => link.addEventListener("click", () => { menu.open = false; syncOpenState(); }));
+      backdrop?.addEventListener("click", () => { menu.open = false; syncOpenState(); });
+      document.addEventListener("keydown", event => { if (event.key === "Escape" && menu.open) { menu.open = false; syncOpenState(); } });
+      document.addEventListener("click", event => { if (menu.open && !menu.contains(event.target)) { menu.open = false; syncOpenState(); } });
+    })();
   </script>
 </body>
 </html>
