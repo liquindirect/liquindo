@@ -54,7 +54,13 @@
     .shape-admin-status { margin:.7rem 0; color:#425466; font-size:.9rem; }
     .shape-admin-status.error { color:#b42318; }
   </style>
-</head>
+
+    <meta name="theme-color" content="#0b1730" />
+    <meta name="application-name" content="Liquindo" />
+    <link rel="manifest" href="/liquindo/manifest.webmanifest" />
+    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/app-icon.svg" />
+  </head>
 <body class="admin-tools-page">
   <script src="homepage-gate.js"></script>
   <header class="admin-page-header">
@@ -481,5 +487,6 @@
       document.addEventListener("click", event => { if (menu.open && !menu.contains(event.target)) { menu.open = false; syncOpenState(); } });
     })();
   </script>
+  <script src="/liquindo/app-shell.js" defer></script>
 </body>
 </html>
