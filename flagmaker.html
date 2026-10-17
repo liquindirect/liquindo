@@ -57,6 +57,14 @@
     .fm-nudge { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); align-items:center; gap:5px; max-width:330px; margin:7px auto 2px; }
     .fm-nudge .fm-btn { padding:7px 4px; font-size:1.05rem; line-height:1; min-height:34px; }
     .fm-nudge-step { text-align:center; font-size:.72rem; color:#656575; white-space:nowrap; }
+    .fm-inline-check { display:flex; align-items:center; gap:4px; padding:4px; }
+    .fm-canvas-tools { align-items:center; }
+    #snapStep { border:1px solid #d5d5dd; border-radius:5px; padding:3px; background:#fff; }
+    .fm-stage.grid-on { background-image:linear-gradient(#b3a56d35 1px,transparent 1px),linear-gradient(90deg,#b3a56d35 1px,transparent 1px),linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:10px 10px,10px 10px,20px 20px,20px 20px,20px 20px,20px 20px; }
+    .fm-group.fm-collapsible > h2, .fm-group.fm-collapsible > h3 { cursor:pointer; }
+    .fm-group.fm-collapsible > h2::after, .fm-group.fm-collapsible > h3::after { content:"⌄"; float:right; color:#816000; }
+    .fm-group.fm-collapsible.fm-collapsed > h2::after, .fm-group.fm-collapsible.fm-collapsed > h3::after { content:"›"; }
+    .fm-group.fm-collapsible.fm-collapsed > :not(h2):not(h3) { display:none !important; }
     .fm-note { color:#656575; font-size:.77rem; margin:6px 0 0; }
     .fm-status { min-height:1.2em; color:#425344; font-size:.8rem; margin:6px 0 0; }
     .fm-footer { text-align:center; color:#777; padding:0 16px 30px; font-size:.85rem; }
@@ -79,6 +87,11 @@
   <main class="fm-app">
     <section class="fm-panel" aria-label="Flag preview and canvas">
       <h2>Your flag</h2>
+      <div class="fm-toolbar fm-canvas-tools" role="group" aria-label="Canvas view controls">
+        <button class="fm-btn" id="zoomOutBtn" type="button">− Zoom</button><button class="fm-btn" id="zoomResetBtn" type="button">Fit / reset zoom</button><button class="fm-btn" id="zoomInBtn" type="button">+ Zoom</button>
+        <label class="fm-note fm-inline-check"><input id="gridVisible" type="checkbox"> Show grid</label>
+        <label class="fm-note">Snap grid <select id="snapStep" aria-label="Snap grid spacing"><option value="5">5</option><option value="10" selected>10</option><option value="20">20</option><option value="50">50</option></select> units</label>
+      </div>
       <div class="fm-stage">
         <svg id="flagSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" role="img" aria-label="Your editable flag">
           <rect id="flagBackground" x="0" y="0" width="600" height="360" fill="#ffffff"></rect>
@@ -211,6 +224,26 @@
           <p id="multiSelectionStatus" class="fm-note">1 element selected</p>
         </section>
         <section class="fm-group">
+          <h3>Transform and editing</h3>
+          <div class="fm-toolbar"><button class="fm-btn" id="rotateLeftBtn" type="button" disabled>↶ Rotate −15°</button><button class="fm-btn" id="rotateRightBtn" type="button" disabled>↷ Rotate +15°</button><button class="fm-btn" id="flipHBtn" type="button" disabled>⇋ Flip horizontal</button><button class="fm-btn" id="flipVBtn" type="button" disabled>⇵ Flip vertical</button></div>
+          <div class="fm-toolbar"><button class="fm-btn" id="copyElementBtn" type="button" disabled>Copy</button><button class="fm-btn" id="pasteElementBtn" type="button">Paste</button><button class="fm-btn" id="groupElementsBtn" type="button" disabled>Group selection</button><button class="fm-btn" id="ungroupElementsBtn" type="button" disabled>Ungroup</button></div>
+        </section>
+        <section class="fm-group">
+          <h3>Custom polygon</h3><p class="fm-note">Start drawing, tap/click at least three points on the flag, then finish.</p>
+          <div class="fm-toolbar"><button class="fm-btn" id="polygonStartBtn" type="button">Start polygon</button><button class="fm-btn" id="polygonFinishBtn" type="button" disabled>Finish polygon</button><button class="fm-btn" id="polygonCancelBtn" type="button" disabled>Cancel</button></div><p class="fm-note" id="polygonStatus">Polygon tool is idle.</p>
+        </section>
+        <section class="fm-group">
+          <h3>Import and export options</h3>
+          <div class="fm-field"><label for="svgImportInput">Import SVG artwork</label><input id="svgImportInput" type="file" accept=".svg,image/svg+xml"></div>
+          <div class="fm-field"><label for="exportScale">PNG resolution</label><select id="exportScale"><option value="1">Standard (1×)</option><option value="2" selected>High (2×)</option><option value="3">Very high (3×)</option><option value="4">Maximum (4×)</option></select></div>
+          <div class="fm-field"><label><input id="transparentPng" type="checkbox"> Transparent background</label></div><div class="fm-toolbar"><button class="fm-btn" id="exportFlagOnlyBtn" type="button">Export flag only (PNG)</button></div>
+          <p class="fm-note">SVG import accepts basic vector shapes and strips unsafe attributes.</p>
+        </section>
+        <section class="fm-group">
+          <h3>Colour tools</h3><div class="fm-toolbar"><button class="fm-btn" id="suggestColoursBtn" type="button">Suggest colour scheme</button><button class="fm-btn" id="contrastCheckBtn" type="button">Check contrast</button></div><p id="colourToolsStatus" class="fm-note" aria-live="polite">Suggestions use your selected colour or background.</p>
+        </section>
+        <section class="fm-group"><h3>Keyboard shortcuts</h3><p class="fm-note">Arrows: move 10 units · Shift + arrows: move 1 unit · Ctrl/Cmd + D: duplicate · Ctrl/Cmd + C/V: copy/paste · Ctrl/Cmd + Z: undo · Ctrl/Cmd + Shift + Z: redo · Delete: remove · Esc: clear selection.</p></section>
+        <section class="fm-group">
           <h3>Selected element</h3>
           <p id="selectionHint" class="fm-note">Select an element on the flag or add one to edit its settings.</p>
           <div class="fm-field"><label for="objectColor">Colour</label><input id="objectColor" type="color" value="#000032"><input id="objectHex" type="text" value="#000032" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#000032" aria-label="Selected element colour hex code"></div>
@@ -255,7 +288,7 @@
   } catch (_) { palette = []; }
   const $ = id => document.getElementById(id);
   const NS = 'http://www.w3.org/2000/svg';
-  let selected = null, selectedIds = [], nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null;
+  let selected = null, selectedIds = [], nextId = 1, undoStack = [], redoStack = [], dragging = null, dragStart = null, zoomLevel=1, polygonMode=false, polygonPoints=[], clipboardSvg=null, autosaveTimer=null;
   const snapshot = () => ({background:bg.getAttribute('fill'), viewBox:svg.getAttribute('viewBox'), objects:layer.innerHTML, selected, selectedIds:[...selectedIds]});
   function remember() { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); redoStack=[]; updateHistoryButtons(); }
   function restore(s) { bg.setAttribute('fill',s.background); svg.setAttribute('viewBox',s.viewBox); layer.innerHTML=s.objects; selected=s.selected; selectedIds=s.selectedIds|| (selected?[selected]:[]); bindObjects(); refreshSelection(); }
@@ -448,8 +481,9 @@
       const left=Math.min(...pts.map(p=>p.x)), right=Math.max(...pts.map(p=>p.x));
       const top=Math.min(...pts.map(p=>p.y)), bottom=Math.max(...pts.map(p=>p.y));
       const cx=(left+right)/2, cy=(top+bottom)/2;
-      let dx=Math.round(cx/10)*10-cx, dy=Math.round(cy/10)*10-cy;
-      let message='Element snapped to the 10-unit grid.';
+      const gridStep=+$('snapStep').value||10;
+      let dx=Math.round(cx/gridStep)*gridStep-cx, dy=Math.round(cy/gridStep)*gridStep-cy;
+      let message='Element snapped to the '+gridStep+'-unit grid.';
       const centerX=d.width/2, centerY=d.height/2;
       if(Math.abs(cx-centerX)<8){dx=centerX-cx;message='Snapped to the vertical centre line.';}
       if(Math.abs(cy-centerY)<8){dy=centerY-cy;message=message.includes('centre line')?'Snapped to the exact centre of the flag.':'Snapped to the horizontal centre line.';}
@@ -572,7 +606,8 @@
   $('distributeVerticalBtn').addEventListener('click',()=>distribute('y'));
   function refreshSelection() {
     bindObjects(); const el=current(), disabled=!el;
-    ['objectColor','objectText','objectX','objectY','objectWidth','objectHeight','duplicateBtn','frontBtn','deleteBtn'].forEach(id=>$(id).disabled=disabled);
+    ['objectColor','objectText','objectX','objectY','objectWidth','objectHeight','duplicateBtn','frontBtn','deleteBtn','rotateLeftBtn','rotateRightBtn','flipHBtn','flipVBtn','copyElementBtn','groupElementsBtn','ungroupElementsBtn'].forEach(id=>$(id).disabled=disabled);
+    $('copyElementBtn').disabled=!selectedIds.length;$('groupElementsBtn').disabled=selectedIds.length<2;$('ungroupElementsBtn').disabled=!(el&&el.tagName.toLowerCase()==='g');
     $('selectionHint').textContent=el?'Editing: '+(el.dataset.name||el.dataset.type)+(el.dataset.locked==='true'?' (locked)':''):'Select an element on the flag or add one to edit its settings.';
     $('multiSelectionStatus').textContent=selectedIds.length+' element'+(selectedIds.length===1?'':'s')+' selected. Shortcuts: Shift-click to add/remove; Delete to remove; Ctrl+A to select all; Esc to clear.';
     document.querySelectorAll('[data-align]').forEach(b=>b.disabled=selectedIds.length<2);
@@ -678,6 +713,25 @@
   function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
   $('svgExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone);download(new Blob([source],{type:'image/svg+xml;charset=utf-8'}),'liquindo-flag.svg');say('SVG export created.');});
   $('pngExportBtn').addEventListener('click',()=>{const clone=svg.cloneNode(true);clone.querySelectorAll('.selected').forEach(el=>el.classList.remove('selected'));clone.setAttribute('xmlns',NS);const source=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),img=new Image();img.onload=()=>{const c=document.createElement('canvas'),d=dims();c.width=d.width*2;c.height=d.height*2;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(blob=>{if(blob)download(blob,'liquindo-flag.png');URL.revokeObjectURL(url);say('PNG export created.');},'image/png');};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed. Try exporting SVG instead.');};img.src=url;});
+  function updateZoom(){svg.style.transform='scale('+zoomLevel+')';svg.style.transformOrigin='center center';say('Canvas zoom '+Math.round(zoomLevel*100)+'%.');}
+  function rotateSelected(deg){const items=selectedItems();if(!items.length)return;remember();items.forEach(({el,b})=>{const cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;el.setAttribute('transform',((el.getAttribute('transform')||'')+' rotate('+deg+' '+cx+' '+cy+')').trim());});refreshSelection();say('Rotated selection '+deg+'°.');}
+  function flipSelected(axis){const items=selectedItems();if(!items.length)return;remember();items.forEach(({el,b})=>{const cx=(b.left+b.right)/2,cy=(b.top+b.bottom)/2;el.setAttribute('transform',((el.getAttribute('transform')||'')+' translate('+(axis==='x'?2*cx:0)+' '+(axis==='y'?2*cy:0)+') scale('+(axis==='x'?-1:1)+' '+(axis==='y'?-1:1)+')').trim());});refreshSelection();say('Flipped selection '+(axis==='x'?'horizontally.':'vertically.'));}
+  function setPolygonButtons(){$('polygonFinishBtn').disabled=!polygonMode||polygonPoints.length<3;$('polygonCancelBtn').disabled=!polygonMode;$('polygonStartBtn').disabled=polygonMode;$('polygonStatus').textContent=polygonMode?'Drawing: '+polygonPoints.length+' point(s). Tap flag to add points.':'Polygon tool is idle.';}
+  function finishPolygon(){if(polygonPoints.length<3){say('A polygon needs at least three points.');return;}remember();const el=make('polygon',{points:polygonPoints.map(p=>p.x+','+p.y).join(' '),fill:$('objectColor').value});el.dataset.id='obj-'+nextId++;el.dataset.type='polygon';el.dataset.name='Custom polygon';el.dataset.color=$('objectColor').value;el.dataset.object='true';el.dataset.visible='true';el.dataset.locked='false';layer.append(el);selected=el.dataset.id;selectedIds=[selected];polygonMode=false;polygonPoints=[];svg.querySelector('#polygonPreview')?.remove();setPolygonButtons();refreshSelection();say('Custom polygon added.');}
+  $('zoomInBtn').addEventListener('click',()=>{zoomLevel=Math.min(2.5,+(zoomLevel+.1).toFixed(2));updateZoom();});$('zoomOutBtn').addEventListener('click',()=>{zoomLevel=Math.max(.5,+(zoomLevel-.1).toFixed(2));updateZoom();});$('zoomResetBtn').addEventListener('click',()=>{zoomLevel=1;updateZoom();});
+  $('gridVisible').addEventListener('change',e=>document.querySelector('.fm-stage').classList.toggle('grid-on',e.target.checked));$('snapStep').addEventListener('change',()=>say('Snap spacing set to '+$('snapStep').value+' units.'));
+  document.querySelectorAll('.fm-group > h2, .fm-group > h3').forEach(h=>{const section=h.parentElement;section.classList.add('fm-collapsible');h.setAttribute('tabindex','0');h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{section.classList.toggle('fm-collapsed');h.setAttribute('aria-expanded',String(!section.classList.contains('fm-collapsed')));};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});});
+  $('rotateLeftBtn').addEventListener('click',()=>rotateSelected(-15));$('rotateRightBtn').addEventListener('click',()=>rotateSelected(15));$('flipHBtn').addEventListener('click',()=>flipSelected('x'));$('flipVBtn').addEventListener('click',()=>flipSelected('y'));
+  $('copyElementBtn').addEventListener('click',()=>{const els=selectedItems().map(i=>i.el);if(els.length)clipboardSvg=els.map(el=>el.outerHTML);say('Copied '+els.length+' element(s).');});
+  $('pasteElementBtn').addEventListener('click',()=>{if(!clipboardSvg||!clipboardSvg.length){say('Copy an element first.');return;}remember();const ids=[];clipboardSvg.forEach(markup=>{const doc=new DOMParser().parseFromString(markup,'image/svg+xml'),el=doc.documentElement;if(!['rect','circle','ellipse','polygon','path','text','g','line'].includes(el.tagName.toLowerCase()))return;const clone=document.importNode(el,true);clone.dataset.id='obj-'+nextId++;clone.dataset.object='true';clone.dataset.visible='true';clone.dataset.locked='false';clone.dataset.name=(clone.dataset.name||clone.dataset.type||clone.tagName)+' copy';clone.setAttribute('transform',('translate(10 10) '+(clone.getAttribute('transform')||'')).trim());layer.append(clone);ids.push(clone.dataset.id);});selectedIds=ids;selected=ids[ids.length-1]||null;refreshSelection();say('Pasted '+ids.length+' element(s).');});
+  $('groupElementsBtn').addEventListener('click',()=>{if(selectedIds.length<2)return;remember();const chosen=selectedIds.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean);const g=make('g',{});g.dataset.id='obj-'+nextId++;g.dataset.type='group';g.dataset.name='Group ('+chosen.length+')';g.dataset.object='true';g.dataset.visible='true';g.dataset.locked='false';const first=chosen.reduce((a,b)=>a.compareDocumentPosition(b)&Node.DOCUMENT_POSITION_FOLLOWING?a:b);layer.insertBefore(g,first);chosen.forEach(el=>g.append(el));selected=g.dataset.id;selectedIds=[selected];refreshSelection();say('Grouped selected elements.');});
+  $('ungroupElementsBtn').addEventListener('click',()=>{const g=current();if(!g||g.tagName.toLowerCase()!=='g')return;remember();const children=Array.from(g.children);children.forEach(ch=>{ch.dataset.object='true';layer.insertBefore(ch,g);});const ids=children.map(ch=>ch.dataset.id);g.remove();selectedIds=ids;selected=ids[ids.length-1]||null;refreshSelection();say('Ungrouped elements.');});
+  $('polygonStartBtn').addEventListener('click',()=>{polygonMode=true;polygonPoints=[];setPolygonButtons();say('Tap or click three or more points on the flag.');});$('polygonFinishBtn').addEventListener('click',finishPolygon);$('polygonCancelBtn').addEventListener('click',()=>{polygonMode=false;polygonPoints=[];svg.querySelector('#polygonPreview')?.remove();setPolygonButtons();say('Polygon cancelled.');});
+  svg.addEventListener('click',e=>{if(!polygonMode||e.target.closest('[data-object]'))return;const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const m=svg.getScreenCTM();const q=m?p.matrixTransform(m.inverse()):{x:0,y:0};polygonPoints.push({x:Math.round(q.x),y:Math.round(q.y)});let preview=svg.querySelector('#polygonPreview');if(!preview){preview=make('polyline',{id:'polygonPreview',fill:'none',stroke:'#fdbe00','stroke-width':3,'stroke-dasharray':'5 4','pointer-events':'none'});svg.append(preview);}preview.setAttribute('points',polygonPoints.map(p=>p.x+','+p.y).join(' '));setPolygonButtons();});
+  $('svgImportInput').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const raw=await file.text();if(raw.length>2000000)throw new Error('SVG file exceeds 2 MB.');const doc=new DOMParser().parseFromString(raw,'image/svg+xml');if(doc.querySelector('parsererror')||doc.documentElement.tagName.toLowerCase()!=='svg')throw new Error('Invalid SVG file.');const nodes=Array.from(doc.documentElement.querySelectorAll('rect,circle,ellipse,polygon,path,text,line,polyline')).slice(0,100);if(!nodes.length)throw new Error('No supported vector shapes found.');remember();const d=dims(),vb=(doc.documentElement.getAttribute('viewBox')||('0 0 '+(doc.documentElement.getAttribute('width')||d.width)+' '+(doc.documentElement.getAttribute('height')||d.height))).trim().split(/[ ,]+/).map(Number);nodes.forEach(node=>{const clone=document.importNode(node,false);Array.from(clone.attributes).forEach(a=>{if(/^on/i.test(a.name)||['style','href','xlink:href'].includes(a.name))clone.removeAttribute(a.name);});clone.dataset.id='obj-'+nextId++;clone.dataset.type='imported-'+clone.tagName.toLowerCase();clone.dataset.name='Imported '+clone.tagName.toLowerCase();clone.dataset.object='true';clone.dataset.visible='true';clone.dataset.locked='false';clone.setAttribute('transform',('translate('+(-(vb[0]||0))+' '+(-(vb[1]||0))+') scale('+(d.width/(vb[2]||d.width))+' '+(d.height/(vb[3]||d.height))+') '+(clone.getAttribute('transform')||'')).trim());layer.append(clone);});refreshSelection();say('Imported '+nodes.length+' SVG vector elements.');}catch(err){say('SVG import failed: '+err.message);}finally{e.target.value='';}});
+  $('suggestColoursBtn').addEventListener('click',()=>{const base=($('objectColor').value||bg.getAttribute('fill')||'#000032').slice(1),n=parseInt(base,16),r=n>>16&255,g=n>>8&255,b=n&255,hex=(r,g,b)=>'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''),schemes=[hex(255-r,255-g,255-b),hex((r+255)/2,(g+255)/2,(b+255)/2),hex(r*.65,g*.65,b*.65),hex(r*.35+165,g*.35+165,b*.35+165)];const out=$('colourToolsStatus');out.textContent='Suggested colours: ';schemes.forEach(col=>{const btn=document.createElement('button');btn.className='fm-btn';btn.type='button';btn.textContent=col;btn.style.borderLeft='12px solid '+col;btn.addEventListener('click',()=>{if(current()){$('objectColor').value=col;$('objectColor').dispatchEvent(new Event('input',{bubbles:true}));}else{$('backgroundColor').value=col;$('backgroundColor').dispatchEvent(new Event('input',{bubbles:true}));}});out.append(' ',btn);});});
+  $('contrastCheckBtn').addEventListener('click',()=>{const a=$('objectColor').value.slice(1),b=(bg.getAttribute('fill')||'#ffffff').slice(1),lum=h=>{const v=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255).map(x=>x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2));return .2126*v[0]+.7152*v[1]+.0722*v[2];},x=lum(a),y=lum(b),ratio=(Math.max(x,y)+.05)/(Math.min(x,y)+.05);$('colourToolsStatus').textContent='Contrast ratio: '+ratio.toFixed(2)+':1 — '+(ratio>=4.5?'strong':ratio>=3?'moderate':'low')+' contrast.';});
+  $('exportFlagOnlyBtn').addEventListener('click',()=>{const scale=+$('exportScale').value||2,clone=svg.cloneNode(true);clone.style.transform='';if($('transparentPng').checked)clone.querySelector('#flagBackground')?.setAttribute('fill','none');clone.setAttribute('width',dims().width*scale);clone.setAttribute('height',dims().height*scale);const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=dims().width*scale;canvas.height=dims().height*scale;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(b=>{if(b){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='liquindo-flag.png';a.click();URL.revokeObjectURL(a.href);say('PNG exported at '+scale+'×.');}URL.revokeObjectURL(url);});};img.onerror=()=>{URL.revokeObjectURL(url);say('PNG export failed.');};img.src=url;});
   $('showAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>{el.dataset.visible='true';el.style.display='';});refreshSelection();say('All layers shown.');});
   $('unlockAllLayersBtn').addEventListener('click',()=>{remember();layer.querySelectorAll('[data-object]').forEach(el=>el.dataset.locked='false');refreshSelection();say('All layers unlocked.');});
   $('resetBtn').addEventListener('click',()=>{if(!confirm('Reset the flag and remove all added elements?'))return;remember();bg.setAttribute('fill','#ffffff');$('backgroundColor').value='#ffffff';$('backgroundHex').value='#ffffff';svg.setAttribute('viewBox','0 0 600 360');bg.setAttribute('width',600);bg.setAttribute('height',360);layer.innerHTML='';selected=null;$('ratioSelect').value='600,360';refreshSelection();say('Flag reset.');});
@@ -701,6 +755,8 @@
       selected=selectedIds[selectedIds.length-1]||null;refreshSelection();say('All '+selectedIds.length+' elements selected.');
     } else if(e.key==='Escape'){
       selected=null;selectedIds=[];refreshSelection();say('Selection cleared.');
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='c'&&selectedIds.length){e.preventDefault();$('copyElementBtn').click();
+    } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='v'&&clipboardSvg){e.preventDefault();$('pasteElementBtn').click();
     } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'&&current()){
       e.preventDefault();$('duplicateBtn').click();
     } else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){
@@ -709,7 +765,10 @@
       e.preventDefault();$('redoBtn').click();
     }
   });
-  refreshSelection();updateHistoryButtons();renderPalette();
+  refreshSelection();updateHistoryButtons();renderPalette();setPolygonButtons();
+  document.addEventListener('input',()=>{clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>{try{localStorage.setItem('liquindo-flag-maker-autosave',JSON.stringify({background:bg.getAttribute('fill'),viewBox:svg.getAttribute('viewBox'),objects:layer.innerHTML,updatedAt:new Date().toISOString()}));}catch(_){}},700);});
+  window.addEventListener('beforeunload',()=>{try{localStorage.setItem('liquindo-flag-maker-autosave',JSON.stringify({background:bg.getAttribute('fill'),viewBox:svg.getAttribute('viewBox'),objects:layer.innerHTML,updatedAt:new Date().toISOString()}));}catch(_){}});
+  try{const draft=JSON.parse(localStorage.getItem('liquindo-flag-maker-autosave')||'null');if(draft&&draft.objects&&confirm('A local autosaved flag draft was found. Restore it?')){bg.setAttribute('fill',draft.background||'#ffffff');svg.setAttribute('viewBox',draft.viewBox||'0 0 600 360');layer.innerHTML=draft.objects;bindObjects();refreshSelection();say('Autosaved draft restored.');}}catch(_){}
 })();
 </script>
 </body>
