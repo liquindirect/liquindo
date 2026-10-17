@@ -161,3 +161,34 @@ $$;
 drop trigger if exists capture_flagmaker_shape_history on public.flagmaker_shapes;
 create trigger capture_flagmaker_shape_history after update or delete on public.flagmaker_shapes
 for each row execute function public.capture_flagmaker_shape_history();
+
+
+-- Category, tags and manual ordering for the shared shape library.
+alter table public.flagmaker_shapes
+  add column if not exists category text not null default 'General',
+  add column if not exists tags text[] not null default '{}',
+  add column if not exists sort_order integer;
+alter table public.flagmaker_shapes
+  drop constraint if exists flagmaker_shape_category_length,
+  add constraint flagmaker_shape_category_length check (char_length(category) between 1 and 60),
+  drop constraint if exists flagmaker_shape_tags_limit,
+  add constraint flagmaker_shape_tags_limit check (cardinality(tags) <= 20);
+
+-- Reordering alone does not create a geometry snapshot.
+create or replace function public.capture_flagmaker_shape_history()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if tg_op = 'UPDATE'
+     and old.label is not distinct from new.label
+     and old.path_d is not distinct from new.path_d
+     and old.category is not distinct from new.category
+     and old.tags is not distinct from new.tags
+     and old.is_builtin is not distinct from new.is_builtin
+     and old.is_active is not distinct from new.is_active then
+    return new;
+  end if;
+  insert into public.flagmaker_shape_history(shape_id,action,snapshot,changed_by)
+  values(old.shape_id,lower(tg_op),to_jsonb(old),auth.uid());
+  return case when tg_op = 'DELETE' then old else new end;
+end;
+$$;
