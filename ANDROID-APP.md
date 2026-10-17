@@ -1,8 +1,10 @@
 # Liquindo Android wrapper
 
-This repository builds an Android APK with Capacitor. The wrapper opens the live Liquindo website:
+This repository builds an Android APK with Capacitor. The APK opens a dedicated app-style home screen at:
 
-https://liquindirect.github.io/liquindo/
+https://liquindirect.github.io/liquindo/app.html
+
+From there, choose **App mode** destinations or switch to **Website mode** to use the existing Liquindo website. The switch is stored in the APK WebView's own storage; it does not change the standalone website/PWA interface. Both modes use the same hosted pages and Supabase-backed accounts, so no separate account system is created.
 
 ## Build an APK
 
@@ -58,7 +60,7 @@ The earlier debug APK was built before a persistent signing key was configured. 
 
 ## Other notes
 
-- The app loads the live website, so an internet connection is required to access Liquindo. Website changes published to GitHub Pages appear in the app without rebuilding the APK.
+- The APK starts on the app-style home screen, while its feature pages and website mode load from the live GitHub Pages site. An internet connection is required to access Liquindo. Website changes published to GitHub Pages appear in the app without rebuilding the APK; changes to the native wrapper still require a new APK build.
 - Capacitor is configured to show a bundled retry page if the remote site fails to load. This is an error screen, not offline access to account pages or wiki content; test it with Airplane mode and a temporary site outage.
 - The live `server.url` approach prioritizes immediate website updates but depends on network availability. A production release should consider bundling a tested local site and adopting a supported live-update strategy instead.
 - The wrapper does not change the existing GitHub Pages website, Supabase project, account system, member directory, or wiki.
