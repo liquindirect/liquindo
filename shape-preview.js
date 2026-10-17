@@ -1,10 +1,10 @@
 /* Shared shape preview renderer: the admin library and Flag Maker use the same geometry. */
 (function(){
-  const safeLibraryPath = (value) {
+  function safeLibraryPath(value) {
     const path = String(value || '').trim();
     return path.length > 0 && path.length <= 5000 && /^M/i.test(path) &&
       /^[MmZzLlHhVvCcSsQqTtAa0-9.,+\-\s]+$/.test(path);
-  };
+  }
   function canonicalSymbolBody(type,fill,stroke,background){
     const f=fill||'#b08a13',s=stroke||'#17213b',bg=background||'#ffffff';
     if(type==='anchor') return '<g fill="none" stroke="'+s+'" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="5.2" r="3.1"/><path d="M20 8.5V26M10.5 14.5H29.5M5.2 20.5C6.4 27.2 12 30 20 30S33.6 27.2 34.8 20.5L29.5 23.5M5.2 20.5L10.5 23.5"/><path d="M16.5 26.5L20 30L23.5 26.5"/></g>';
