@@ -1,0 +1,15 @@
+{
+  "appId": "com.liquindo.app",
+  "appName": "Liquindo",
+  "webDir": "www",
+  "server": {
+    "url": "https://liquindirect.github.io/liquindo/",
+    "cleartext": false,
+    "allowNavigation": [
+      "liquindirect.github.io"
+    ]
+  },
+  "android": {
+    "backgroundColor": "#071329"
+  }
+}
