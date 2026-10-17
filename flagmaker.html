@@ -466,7 +466,7 @@
   }
   function nudgeSelected(dx,dy) {
     const ids=selectedIds.length?selectedIds:(selected?[selected]:[]);
-    const elements=ids.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(el=>el&&!el.dataset.locked==='true');
+    const elements=ids.map(id=>layer.querySelector('[data-id="'+id+'"]')).filter(Boolean);
     const movable=elements.filter(el=>el.dataset.locked!=='true'&&el.getAttribute('data-visible')!=='false');
     if(!movable.length){say('Select an unlocked, visible shape to move.');return;}
     remember();
