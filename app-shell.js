@@ -16,6 +16,7 @@
   ];
 
   function currentFile() {
+    if (location.pathname.endsWith("/")) return "index.html";
     const file = location.pathname.split("/").filter(Boolean).pop();
     return file || "index.html";
   }
