@@ -8,9 +8,11 @@ on:
     paths:
       - "capacitor.config.json"
       - "package.json"
+      - "package-lock.json"
       - "scripts/**"
       - "assets/**"
       - "app-icon.svg"
+      - "ANDROID-APP.md"
       - ".github/workflows/android-apk.yml"
 
 permissions:
@@ -46,6 +48,9 @@ jobs:
 
       - name: Install Capacitor dependencies
         run: npm install --no-audit --no-fund
+
+      - name: Verify installed dependency versions
+        run: npm ls --depth=0
 
       - name: Prepare wrapper files
         run: npm run prepare:wrapper
