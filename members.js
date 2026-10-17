@@ -30,6 +30,7 @@ let savedProfileValues = null;
 let currentUser = null;
 let directoryMembers = [];
 let activeLetter = "";
+let showDirectoryBio = true;
 const t = (key, values = {}) => {
   let value = window.languageManager?.get(key) || key;
   for (const [name, replacement] of Object.entries(values)) value = value.replaceAll(`{${name}}`, String(replacement));
@@ -71,7 +72,7 @@ function memberMatches(member) {
   const query = (directorySearch?.value || "").trim().toLocaleLowerCase();
   const role = (directoryRoleFilter?.value || "").toLocaleLowerCase();
   const firstLetter = (member.display_name || "Member").trim().charAt(0).toLocaleUpperCase();
-  const searchText = [member.display_name, member.role, member.bio].filter(Boolean).join(" ").toLocaleLowerCase();
+  const searchText = [member.display_name, member.role, showDirectoryBio ? member.bio : ""].filter(Boolean).join(" ").toLocaleLowerCase();
   return (!query || searchText.includes(query)) &&
     (!role || (member.role || "member").toLocaleLowerCase() === role) &&
     (!activeLetter || firstLetter === activeLetter);
@@ -168,6 +169,10 @@ window.addEventListener("beforeunload", (event) => {
 });
 
 async function loadDirectory() {
+  try {
+    const { data: settingsRow } = await supabase.from("site_settings").select("setting_value").eq("setting_key", "directory_settings").maybeSingle();
+    showDirectoryBio = settingsRow?.setting_value?.show_bio !== false;
+  } catch { showDirectoryBio = true; }
   directory.replaceChildren();
   if (directoryRetry) directoryRetry.hidden = true;
   showStatus(directoryStatus, "dir.loading");
@@ -206,13 +211,14 @@ async function loadDirectory() {
     const bio = document.createElement("p");
     bio.id = `member-bio-${directoryMembers.indexOf(member)}`;
     bio.className = "member-bio";
-    bio.hidden = true;
+    bio.hidden = !showDirectoryBio;
     bio.textContent = member.bio || t("dir.bioEmpty");
     const toggle = document.createElement("button");
     toggle.className = "member-bio-toggle";
     toggle.type = "button";
     toggle.textContent = "↓";
     toggle.setAttribute("aria-expanded", "false");
+    toggle.hidden = !showDirectoryBio;
     toggle.setAttribute("aria-controls", bio.id);
     toggle.setAttribute("aria-label", t("dir.showBio", {name: member.display_name || "member"}));
     toggle.addEventListener("click", () => {
