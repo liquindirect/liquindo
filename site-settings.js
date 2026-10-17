@@ -7,7 +7,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   );
   const { data, error } = await db.from("site_settings")
     .select("setting_key,setting_value")
-    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings"]);
+    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items"]);
   if (error || !data) return;
   const settings = Object.fromEntries(data.map(row => [row.setting_key, row.setting_value]));
   const footerSettings = settings.footer_settings || {};
@@ -23,7 +23,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
     if (document.getElementById("liquindo-public-settings-style")) return;
     const style = document.createElement("style");
     style.id = "liquindo-public-settings-style";
-    style.textContent = ".liquindo-public-notice{padding:.85rem 1rem;margin:.6rem auto;width:min(1120px,calc(100% - 32px));border:1px solid #fdbe00;border-radius:10px;background:#000032;color:#fff8e6;line-height:1.5}.liquindo-public-notice strong{color:#fdbe00}.liquindo-featured{width:min(1120px,calc(100% - 32px));margin:1.5rem auto;padding:1.25rem;border:1px solid rgba(253,190,0,.55);border-radius:14px;background:#000032;color:#fff8e6}.liquindo-featured h2{color:#fdbe00;margin-top:0}.liquindo-featured a{color:#fdbe00;font-weight:800}";
+    style.textContent = ".liquindo-public-notice{padding:.85rem 1rem;margin:.6rem auto;width:min(1120px,calc(100% - 32px));border:1px solid #fdbe00;border-radius:10px;background:#000032;color:#fff8e6;line-height:1.5}.liquindo-public-notice strong{color:#fdbe00}.liquindo-featured{width:min(1120px,calc(100% - 32px));margin:1.5rem auto;padding:1.25rem;border:1px solid rgba(253,190,0,.55);border-radius:14px;background:#000032;color:#fff8e6}.liquindo-featured h2{color:#fdbe00;margin-top:0}.liquindo-featured a{color:#fdbe00;font-weight:800}.liquindo-faqs{width:min(1120px,calc(100% - 32px));margin:1.5rem auto;padding:1.25rem;border:1px solid rgba(253,190,0,.4);border-radius:14px;background:#fff;color:#172033}.liquindo-faqs h2{color:#000032}.liquindo-faqs details{padding:.75rem 0;border-bottom:1px solid #e1e4e8}.liquindo-faqs summary{font-weight:800;cursor:pointer;color:#000032}";
     document.head.append(style);
   };
   const makeNotice = (heading, text) => {
@@ -57,6 +57,26 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
     if (maintenanceNotice) document.body.prepend(maintenanceNotice);
   }
   const featured = settings.homepage_featured || {};
+  const faqSetting = settings.faq_items || {};
+  const faqItems = Array.isArray(faqSetting.items) ? faqSetting.items.filter(item => item && typeof item.question === "string" && typeof item.answer === "string") : [];
+  if (faqItems.length && footer) {
+    addStyle();
+    const section = document.createElement("section");
+    section.className = "liquindo-faqs";
+    const heading = document.createElement("h2");
+    heading.textContent = "Frequently asked questions";
+    section.append(heading);
+    faqItems.slice(0, 20).forEach(item => {
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      summary.textContent = item.question;
+      const answer = document.createElement("p");
+      answer.textContent = item.answer;
+      details.append(summary, answer);
+      section.append(details);
+    });
+    footer.parentNode.insertBefore(section, footer);
+  }
   if (featured.title && footer) {
     addStyle();
     const section = document.createElement("section");
