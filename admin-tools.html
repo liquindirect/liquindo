@@ -159,7 +159,7 @@
         </form>
         <p class="shape-admin-status" id="shape-admin-status" role="status" aria-live="polite">Loading shape library…</p>
         <label for="shape-admin-search">Filter shapes</label>
-        <input id="shape-admin-search" type="search" placeholder="Search by shape name or ID">
+        <input id="shape-admin-search" type="search" placeholder="Search name, ID, category, or tag">
         <div class="shape-admin-list" id="shape-admin-list"></div>
       </section>
     </div>
@@ -245,7 +245,7 @@
     function renderShapeAdminRows() {
       const filter = shapeAdminSearch.value.trim().toLowerCase();
       shapeAdminList.replaceChildren();
-      const rows = shapeAdminRows.filter(row => (row.label + " " + row.shape_id).toLowerCase().includes(filter));
+      const rows = shapeAdminRows.filter(row => (row.label + " " + row.shape_id + " " + (row.category || "") + " " + (row.tags || []).join(" ")).toLowerCase().includes(filter));
       if (!rows.length) {
         const empty = document.createElement("p"); empty.textContent = "No shapes match this filter."; shapeAdminList.append(empty); return;
       }
