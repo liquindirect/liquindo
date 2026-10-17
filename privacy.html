@@ -12,7 +12,13 @@
     .privacy-panel { background:#080f1c; border:1px solid rgba(253,190,0,.35); border-radius:18px; padding:clamp(1rem,4vw,2.5rem); line-height:1.75; }
     h1,h2 { color:#fdbe00; } a { color:#fdbe00; }
   </style>
-</head>
+
+    <meta name="theme-color" content="#0b1730" />
+    <meta name="application-name" content="Liquindo" />
+    <link rel="manifest" href="/liquindo/manifest.webmanifest" />
+    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/app-icon.svg" />
+  </head>
 <body class="privacy-redesign">
   <main class="privacy-wrap">
     <p><a href="index.html">← Back to Liquindo</a></p>
@@ -31,5 +37,6 @@
     </article>
   </main>
   <script type="module" src="visitor-log.js"></script>
+  <script src="/liquindo/app-shell.js" defer></script>
 </body>
 </html>
