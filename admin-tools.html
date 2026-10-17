@@ -183,7 +183,7 @@
     function validShapePath(value) {
       const path = String(value || "").trim();
       return path.length > 0 && path.length <= 5000 && /^M/i.test(path) &&
-        /^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\-\\s]+$/.test(path);
+        /^[MmZzLlHhVvCcSsQqTtAa0-9.,+\-\s]+$/.test(path);
     }
     function shapeStatus(message, isError = false) {
       shapeAdminStatus.textContent = message;
@@ -343,7 +343,12 @@
         }
 
         status.textContent = "Administrator access verified.";
+        currentAdminUserId = session.user.id;
         content.hidden = false;
+        if (shapeAdminPanel.dataset.loaded !== "yes") {
+          shapeAdminPanel.dataset.loaded = "yes";
+          loadShapeAdminRows();
+        }
       } catch {
         if (sequence !== verificationSequence) return;
         status.textContent = "Could not verify administrator access. Please refresh and try again.";
