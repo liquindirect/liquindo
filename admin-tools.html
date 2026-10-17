@@ -267,7 +267,7 @@
           try {
             const now = new Date().toISOString();
             const { error } = await supabase.from("flagmaker_shapes").upsert(
-              shapeAdminRows.map((item, index) => ({shape_id:item.shape_id, sort_order:index, updated_at:now, updated_by:currentAdminUserId})),
+              shapeAdminRows.map((item, index) => ({shape_id:item.shape_id, label:item.label, path_d:item.path_d||null, is_builtin:!!item.is_builtin, is_active:item.is_active!==false, category:item.category||"General", tags:item.tags||[], sort_order:index, updated_at:now, updated_by:currentAdminUserId})),
               { onConflict:"shape_id" }
             );
             if (error) throw error;
