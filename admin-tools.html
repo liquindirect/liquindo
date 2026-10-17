@@ -195,13 +195,36 @@
       shapeAdminStatus.textContent = message;
       shapeAdminStatus.classList.toggle("error", isError);
     }
-    function shapePreview(pathData) {
+    function shapePreview(pathData, shapeId) {
       const svg = document.createElementNS(svgNs, "svg");
       svg.setAttribute("viewBox", "0 0 40 32");
       svg.setAttribute("aria-hidden", "true");
-      if (pathData && validShapePath(pathData)) {
+      const basicPaths = {
+        circle: "M20 3 A13 13 0 1 1 19.99 3 Z",
+        star: "M20 2 L24 11 L35 12 L27 19 L29 30 L20 24 L11 30 L13 19 L5 12 L16 11 Z",
+        triangle: "M20 2 L38 30 L2 30 Z",
+        diamond: "M20 2 L38 16 L20 30 L2 16 Z",
+        cross: "M15 2 H25 V11 H34 V21 H25 V30 H15 V21 H6 V11 H15 Z",
+        crescent: "M27 3 A13 13 0 1 0 36 25 A10 10 0 0 1 27 3 Z",
+        pentagon: "M20 2 L38 13 L31 30 L9 30 L2 13 Z",
+        hexagon: "M10 3 H30 L38 16 L30 29 H10 L2 16 Z",
+        octagon: "M12 2 H28 L38 12 V20 L28 30 H12 L2 20 V12 Z",
+        "six-star": "M20 2 L24 11 L36 5 L29 16 L38 20 L29 24 L36 29 L24 23 L20 31 L16 23 L4 29 L11 20 L2 16 L11 12 L4 5 L16 11 Z",
+        ring: "M20 3 A13 13 0 1 1 20 29 A13 13 0 1 1 20 3 M20 10 A6 6 0 1 0 20 22 A6 6 0 1 0 20 10",
+        ellipse: "M4 16 A16 10 0 1 0 36 16 A16 10 0 1 0 4 16 Z",
+        rectangle: "M3 5 H37 V27 H3 Z",
+        arrow: "M2 11 H23 V3 L38 16 L23 29 V21 H2 Z",
+        shield: "M4 4 H36 V17 Q32 27 20 31 Q8 27 4 17 Z",
+        heart: "M20 29 L5 15 Q1 7 9 4 Q16 2 20 10 Q24 2 31 4 Q39 7 35 15 Z",
+        crown: "M3 9 L12 17 L20 3 L28 17 L37 9 L33 28 H7 Z",
+        mountain: "M2 28 L14 8 L20 17 L25 9 L38 28 Z",
+        lightning: "M23 1 L8 18 H18 L14 31 L32 12 H22 Z",
+        compass: "M20 1 L24 12 L36 16 L24 20 L20 31 L16 20 L4 16 L16 12 Z"
+      };
+      const selectedPath = pathData && validShapePath(pathData) ? pathData : basicPaths[shapeId];
+      if (selectedPath) {
         const path = document.createElementNS(svgNs, "path");
-        path.setAttribute("d", pathData);
+        path.setAttribute("d", selectedPath);
         path.setAttribute("fill", "#b08a13");
         path.setAttribute("stroke", "#17213b");
         path.setAttribute("stroke-width", "1.2");
@@ -212,7 +235,7 @@
         text.setAttribute("x", "20"); text.setAttribute("y", "21");
         text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
         text.setAttribute("font-weight", "800"); text.setAttribute("fill", "#17213b");
-        text.textContent = "FM";
+        text.textContent = String(shapeId || "FM").slice(0, 2).toUpperCase();
         svg.append(text);
       }
       return svg;
@@ -227,7 +250,7 @@
       rows.forEach(row => {
         const details = document.createElement("details"); details.className = "shape-row";
         const summary = document.createElement("summary");
-        const preview = document.createElement("span"); preview.className = "shape-row-preview"; preview.append(shapePreview(row.path_d));
+        const preview = document.createElement("span"); preview.className = "shape-row-preview"; preview.append(shapePreview(row.path_d, row.shape_id));
         const title = document.createElement("span"); title.textContent = row.label;
         const statusLabel = document.createElement("span"); statusLabel.className = "shape-row-status"; statusLabel.textContent = row.is_active ? (row.is_builtin ? "Built-in" : "Custom") : "Hidden";
         summary.append(preview, title, statusLabel); details.append(summary);
