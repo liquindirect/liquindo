@@ -94,7 +94,7 @@
       }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !panel.hidden) {
         panel.hidden = true;
         menuButton.setAttribute("aria-expanded", "false");
         menuButton.focus();
