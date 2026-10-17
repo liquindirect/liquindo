@@ -7,9 +7,22 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   );
   const { data, error } = await db.from("site_settings")
     .select("setting_key,setting_value")
-    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items"]);
+    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items", "custom_nav_links"]);
   if (error || !data) return;
   const settings = Object.fromEntries(data.map(row => [row.setting_key, row.setting_value]));
+  const navSetting = settings.custom_nav_links || {};
+  const contentsPanel = document.querySelector(".contents-panel");
+  const navItems = Array.isArray(navSetting.items) ? navSetting.items.slice(0, 10) : [];
+  if (contentsPanel) navItems.forEach((item, index) => {
+    if (!item || typeof item.label !== "string" || typeof item.url !== "string" || !item.label.trim() ||
+        !/^(https:\/\/|\/|\.\/|\.\.\/|#)/i.test(item.url)) return;
+    const link = document.createElement("a");
+    link.href = item.url;
+    if (/^https:\/\//i.test(item.url)) { link.target = "_blank"; link.rel = "noopener noreferrer"; }
+    const number = document.createElement("span"); number.textContent = String(12 + index).padStart(2, "0");
+    const label = document.createElement("span"); label.textContent = item.label.slice(0, 60);
+    link.append(number, label); contentsPanel.append(link);
+  });
   const footerSettings = settings.footer_settings || {};
   const languageSettings = settings.language_settings || {};
   if (!localStorage.getItem("liquindo-language") && ["en","pt","es","fr","de","it","hr","el","pl","ru","zh"].includes(languageSettings.default)) {
