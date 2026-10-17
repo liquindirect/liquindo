@@ -57,6 +57,7 @@
     async function loadLogs() {
       refresh.disabled = true;
       status.textContent = "Loading logs…";
+      rows.replaceChildren();
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !session) {
@@ -93,9 +94,17 @@
     }
     refresh.addEventListener("click", loadLogs);
     signOut.addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      status.textContent = "Signed out.";
-      rows.replaceChildren();
+      signOut.disabled = true;
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        rows.replaceChildren();
+        status.textContent = "Signed out.";
+        window.location.href = "index.html";
+      } catch {
+        status.textContent = "Could not sign out. Please try again.";
+        signOut.disabled = false;
+      }
     });
     loadLogs();
   </script>
