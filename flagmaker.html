@@ -66,7 +66,7 @@
     .fm-inline-check { display:flex; align-items:center; gap:4px; padding:4px; }
     .fm-canvas-tools { align-items:center; }
     #snapStep { border:1px solid #d5d5dd; border-radius:5px; padding:3px; background:#fff; }
-    .fm-stage.grid-on { background-image:linear-gradient(#b3a56d35 1px,transparent 1px),linear-gradient(90deg,#b3a56d35 1px,transparent 1px),linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:10px 10px,10px 10px,20px 20px,20px 20px,20px 20px,20px 20px; }
+    .fm-stage.grid-on { background-image:linear-gradient(#b3a56d35 1px,transparent 1px),linear-gradient(90deg,#b3a56d35 1px,transparent 1px),linear-gradient(45deg,#ececf0 25%,transparent 25%),linear-gradient(-45deg,#ececf0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ececf0 75%),linear-gradient(-45deg,transparent 75%,#ececf0 75%); background-size:var(--snap-step,10px) var(--snap-step,10px),var(--snap-step,10px) var(--snap-step,10px),20px 20px,20px 20px,20px 20px,20px 20px; }
     .fm-group.fm-collapsible > h2, .fm-group.fm-collapsible > h3 { cursor:pointer; }
     .fm-group.fm-collapsible > h2::after, .fm-group.fm-collapsible > h3::after { content:"⌄"; float:right; color:#816000; }
     .fm-group.fm-collapsible.fm-collapsed > h2::after, .fm-group.fm-collapsible.fm-collapsed > h3::after { content:"›"; }
@@ -747,32 +747,15 @@
     });
   }
   function validHex(value) { return /^#[0-9a-fA-F]{6}$/.test(value); }
-  $('backgroundColor').addEventListener('input',e=>applyBackgroundColor(e.target.value));
-  $('backgroundColor').addEventListener('change',()=>{remember();say('Background colour changed.');});
+  let backgroundEditRemembered=false; $('backgroundColor').addEventListener('pointerdown',()=>{if(!backgroundEditRemembered){remember();backgroundEditRemembered=true;}}); $('backgroundColor').addEventListener('input',e=>{if(!backgroundEditRemembered){remember();backgroundEditRemembered=true;}applyBackgroundColor(e.target.value);}); $('backgroundColor').addEventListener('change',()=>{backgroundEditRemembered=false;say('Background colour changed.');});
   $('backgroundHex').addEventListener('change',e=>{
     const value=e.target.value.trim();
     if(!validHex(value)){e.target.value=$('backgroundColor').value;say('Enter a hex colour in #RRGGBB format, for example #fdbe00.');return;}
-    remember();applyBackgroundColor(value.toLowerCase());say('Background colour changed.');
+    if(!backgroundEditRemembered)remember();backgroundEditRemembered=false;applyBackgroundColor(value.toLowerCase());say('Background colour changed.');
   });
-  function applyObjectColor(value) {
-    const el=current(); if(!el)return;
-    el.dataset.color=value;
-    $('objectColor').value=value;
-    $('objectHex').value=value;
-    if(el.tagName.toLowerCase()==='g'){
-      el.querySelectorAll('circle').forEach((c,i)=>c.setAttribute('fill',i===0||i===3?value:bg.getAttribute('fill')));
-      el.querySelectorAll('path').forEach(p=>p.setAttribute('fill',bg.getAttribute('fill')));
-    } else el.setAttribute('fill',value);
-    renderLayers();
-  }
-  $('objectColor').addEventListener('input',e=>applyObjectColor(e.target.value));
-  $('objectColor').addEventListener('change',()=>{remember();say('Element colour updated.');});
-  $('objectHex').addEventListener('change',e=>{
-    const value=e.target.value.trim();
-    if(!validHex(value)){e.target.value=$('objectColor').value;say('Enter a hex colour in #RRGGBB format, for example #000032.');return;}
-    if(!current())return;
-    remember();applyObjectColor(value.toLowerCase());say('Element colour updated.');
-  });
+  function applyObjectColor(value) { const el=current(); if(!el)return; const background=bg.getAttribute('fill'); el.dataset.color=value; $('objectColor').value=value; $('objectHex').value=value; const recolor=node=>{if(node.hasAttribute('fill')){const fill=node.getAttribute('fill');if(fill!=='none'&&fill!==background)node.setAttribute('fill',value);}if(node.hasAttribute('stroke')&&node.getAttribute('stroke')!=='none')node.setAttribute('stroke',value);}; if(el.tagName.toLowerCase()==='g')el.querySelectorAll('*').forEach(recolor);else recolor(el); renderLayers(); }
+  let colorEditRemembered=false; $('objectColor').addEventListener('pointerdown',()=>{if(!colorEditRemembered){remember();colorEditRemembered=true;}}); $('objectColor').addEventListener('input',e=>{if(!colorEditRemembered){remember();colorEditRemembered=true;}applyObjectColor(e.target.value);}); $('objectColor').addEventListener('change',()=>{colorEditRemembered=false;say('Element colour updated.');});
+  $('objectHex').addEventListener('change',e=>{const value=e.target.value.trim();if(!validHex(value)){e.target.value=$('objectColor').value;say('Enter a hex colour in #RRGGBB format, for example #000032.');return;}if(!current())return;if(!colorEditRemembered)remember();colorEditRemembered=false;applyObjectColor(value.toLowerCase());say('Element colour updated.');});
   $('objectText').addEventListener('change',e=>changeSelected(el=>{if(el.tagName.toLowerCase()==='text')el.textContent=e.target.value;},'Text updated.'));
   function setPos(axis,val){const el=current();if(!el||!Number.isFinite(val))return;const b=objectBounds(el),currentPos=axis==='x'?b.left:b.top,delta=val-currentPos;if(Math.abs(delta)<0.001)return;remember();el.setAttribute('transform',`translate(${axis==='x'?delta:0} ${axis==='y'?delta:0}) ${el.getAttribute('transform')||''}`.trim());refreshSelection();say('Element position updated.');}
   function setDimension(axis,val){
@@ -854,7 +837,7 @@
   refreshSelection();updateHistoryButtons();renderPalette();setPolygonButtons();
   document.addEventListener('input',()=>{clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>{try{localStorage.setItem('liquindo-flag-maker-autosave',JSON.stringify({background:bg.getAttribute('fill'),viewBox:svg.getAttribute('viewBox'),objects:layer.innerHTML,updatedAt:new Date().toISOString()}));}catch(_){}},700);});
   window.addEventListener('beforeunload',()=>{try{localStorage.setItem('liquindo-flag-maker-autosave',JSON.stringify({background:bg.getAttribute('fill'),viewBox:svg.getAttribute('viewBox'),objects:layer.innerHTML,updatedAt:new Date().toISOString()}));}catch(_){}});
-  try{const draft=JSON.parse(localStorage.getItem('liquindo-flag-maker-autosave')||'null');if(draft&&draft.objects&&confirm('A local autosaved flag draft was found. Restore it?')){bg.setAttribute('fill',draft.background||'#ffffff');svg.setAttribute('viewBox',draft.viewBox||'0 0 600 360');layer.innerHTML=draft.objects;bindObjects();refreshSelection();say('Autosaved draft restored.');}}catch(_){}
+  try{const draft=JSON.parse(localStorage.getItem('liquindo-flag-maker-autosave')||'null');if(draft&&draft.objects&&confirm('A local autosaved flag draft was found. Restore it?')){restore({background:draft.background||'#ffffff',viewBox:draft.viewBox||'0 0 600 360',objects:draft.objects,selected:null,selectedIds:[]});say('Autosaved draft restored.');}}catch(_){}
 })();
 </script>
 </body>
