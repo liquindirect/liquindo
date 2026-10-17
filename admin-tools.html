@@ -180,23 +180,28 @@
     }
 
     async function initialiseAdminTools() {
+      let authEventSequence = 0;
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+        authEventSequence += 1;
+        // Defer Supabase calls until after the auth callback returns.
+        Promise.resolve().then(() => verifyAdministrator(nextSession));
+      });
+      authSubscription = subscription;
+
+      const sequenceAtStart = authEventSequence;
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) throw error;
-        await verifyAdministrator(data.session);
+        // An auth event received during session lookup takes precedence.
+        if (sequenceAtStart === authEventSequence) await verifyAdministrator(data.session);
       } catch {
+        if (sequenceAtStart !== authEventSequence) return;
         ++verificationSequence;
         content.hidden = true;
         signOutButton.disabled = false;
         status.textContent = "Could not check your session. Please refresh and try again.";
         status.classList.add("error");
       }
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-        // Defer Supabase calls until after the auth callback returns.
-        Promise.resolve().then(() => verifyAdministrator(nextSession));
-      });
-      authSubscription = subscription;
     }
 
     signOutButton.addEventListener("click", async () => {
