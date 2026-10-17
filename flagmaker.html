@@ -77,7 +77,13 @@
     @media(max-width:850px) { .fm-app { grid-template-columns:1fr; } .fm-stage { min-height:220px; padding:10px; } #flagSvg { max-height:none; } }
     @media(max-width:480px) { .fm-panel { padding:9px; } .fm-top { padding:10px 12px; } .fm-toolbar .fm-btn { flex:1 1 auto; } .fm-stage { min-height:180px; } }
   </style>
-</head>
+
+    <meta name="theme-color" content="#0b1730" />
+    <meta name="application-name" content="Liquindo" />
+    <link rel="manifest" href="/liquindo/manifest.webmanifest" />
+    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/app-icon.svg" />
+  </head>
 <body>
   <header class="fm-head">
     <nav class="fm-top" aria-label="Flag Maker navigation">
@@ -861,5 +867,6 @@
   })();
 </script>
 
+  <script src="/liquindo/app-shell.js" defer></script>
 </body>
 </html>
