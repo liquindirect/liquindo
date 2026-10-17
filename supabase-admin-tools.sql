@@ -47,13 +47,11 @@ begin
   if target_user_id is null then raise exception 'Target account is required'; end if;
   if new_display_name is null or char_length(btrim(new_display_name)) not between 1 and 80 then raise exception 'Display name must be between 1 and 80 characters'; end if;
   if new_bio is null or char_length(new_bio) > 500 then raise exception 'Bio must be 500 characters or fewer'; end if;
-  if new_role not in ('member','admin') then raise exception 'Unsupported account role'; end if;
+  if new_role is null or new_role not in ('member','admin') then raise exception 'Unsupported account role'; end if;
   select role into current_role from public.profiles where id = target_user_id;
   if current_role is null then raise exception 'Profile not found'; end if;
   if target_user_id = auth.uid() and new_role <> current_role then raise exception 'You cannot change your own administrator role'; end if;
   update public.profiles set display_name = btrim(new_display_name), bio = new_bio, role = new_role where id = target_user_id returning * into changed_row;
-  insert into public.admin_audit_log(actor_id,action,target_type,target_id,details)
-  values(auth.uid(),'profile.updated','profile',target_user_id::text,jsonb_build_object('role_before',current_role,'role_after',new_role,'display_name',changed_row.display_name));
   return jsonb_build_object('id',changed_row.id,'display_name',changed_row.display_name,'role',changed_row.role,'bio',changed_row.bio);
 end;
 $$;
