@@ -2,6 +2,12 @@ name: Build Liquindo Android APK
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "Publish a signed APK as a Liquindo update release"
+        required: true
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -16,7 +22,7 @@ on:
       - ".github/workflows/android-apk.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -98,7 +104,7 @@ jobs:
             -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
             -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
 
-      - name: Build debug APK (temporary fallback)
+      - name: Build debug APK (testing fallback)
         if: env.ANDROID_KEYSTORE_BASE64 == '' || env.ANDROID_KEYSTORE_PASSWORD == '' || env.ANDROID_KEY_ALIAS == '' || env.ANDROID_KEY_PASSWORD == ''
         working-directory: android
         run: ./gradlew --no-daemon assembleDebug
@@ -109,7 +115,7 @@ jobs:
           if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
             echo "Persistent release signing was configured. Future builds can update this installation when the same key is retained."
           else
-            echo "::warning::Persistent signing secrets are not configured. This debug APK may not update an APK signed by a different debug key. Follow ANDROID-APP.md to configure the four LIQUINDO_ANDROID_* repository secrets."
+            echo "::warning::Persistent signing secrets are not configured. Debug APKs cannot be relied on for in-place updates. Configure the four LIQUINDO_ANDROID_* repository secrets before publishing releases."
           fi
 
       - name: Upload signed release APK
@@ -120,6 +126,19 @@ jobs:
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Publish signed APK release
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release && env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: liquindo-v${{ github.run_number }}
+          name: Liquindo Android v${{ github.run_number }}
+          body: |
+            Signed Liquindo Android update.
+
+            Install over the existing Liquindo app. Android may ask you to confirm installation.
+          files: android/app/build/outputs/apk/release/app-release.apk
+          make_latest: true
 
       - name: Upload debug APK
         if: env.ANDROID_KEYSTORE_BASE64 == '' || env.ANDROID_KEYSTORE_PASSWORD == '' || env.ANDROID_KEY_ALIAS == '' || env.ANDROID_KEY_PASSWORD == ''
