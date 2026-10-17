@@ -136,6 +136,12 @@
           <p>View member profiles and account roles.</p>
           <span class="open-label">Open directory →</span>
         </a>
+        <a class="admin-tool-card" href="#shape-admin-title">
+          <span class="kicker">Flag Maker</span>
+          <h2>Shape library settings</h2>
+          <p>Add custom shapes, rename or replace built-in geometry, and hide or restore library entries.</p>
+          <span class="open-label">Manage shapes ↓</span>
+        </a>
       </div>
       <section class="shape-admin-panel" aria-labelledby="shape-admin-title">
         <h2 id="shape-admin-title">Flag Maker · Shape Library</h2>
@@ -287,6 +293,7 @@
     }
     document.getElementById("shape-admin-add-form").addEventListener("submit", async event => {
       event.preventDefault();
+      const form = event.currentTarget;
       const label = document.getElementById("shape-admin-new-label").value.trim();
       const path_d = document.getElementById("shape-admin-new-path").value.trim();
       if (!label || label.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
@@ -296,7 +303,7 @@
         const shape_id = "custom-" + crypto.randomUUID();
         const { error } = await supabase.from("flagmaker_shapes").insert({shape_id,label,path_d,is_builtin:false,is_active:true,updated_by:currentAdminUserId});
         if (error) throw error;
-        event.currentTarget.reset();
+        form.reset();
         document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
         shapeStatus("Added “" + label + "”. Reload Flag Maker to use it.");
         await loadShapeAdminRows();
