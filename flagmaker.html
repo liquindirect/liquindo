@@ -333,7 +333,7 @@
     const config = window.liquindoFlagmakerShapeConfig?.[type];
     if (!config?.path_d || !safeLibraryPath(config.path_d)) return null;
     const el = make('svg',{x:cx-size,y:cy-size*.8,width:size*2,height:size*1.6,viewBox:'0 0 40 32',preserveAspectRatio:'xMidYMid meet'});
-    el.append(make('path',{d:config.path_d,fill,stroke:fill,'stroke-width':0.7,'stroke-linejoin':'round'}));
+    el.append(make('path',{d:config.path_d,fill,stroke:fill,'stroke-width':0.7,'stroke-linejoin':'round','fill-rule':'evenodd'}));
     return el;
   }
   function add(type) {
@@ -555,7 +555,7 @@
     };
     const configured = window.liquindoFlagmakerShapeConfig?.[type];
     if(configured?.path_d && safeLibraryPath(configured.path_d)) {
-      return '<svg viewBox="0 0 40 32" aria-hidden="true" focusable="false"><path d="'+configured.path_d+'" fill="'+gold+'" stroke="'+navy+'" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+      return '<svg viewBox="0 0 40 32" aria-hidden="true" focusable="false"><path d="'+configured.path_d+'" fill="'+gold+'" stroke="'+navy+'" stroke-width="1.2" stroke-linejoin="round" fill-rule="evenodd"/></svg>';
     }
     let body=paths[type];
     if(!body){body='<text x="20" y="19" text-anchor="middle" font-size="7" fill="'+navy+'">'+String(type).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').slice(0,12)+'</text>';}
