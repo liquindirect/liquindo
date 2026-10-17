@@ -20,7 +20,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  <section class="ac-panel" id="ac-i18n"><h2>Translation and link checker</h2><p class="ac-muted">Checks translation key references and important page availability. This does not assess translation quality.</p><button class="ac-btn primary" id="ac-i18n-run">Check translations and links</button><div id="ac-i18n-results" class="ac-list"></div><p class="ac-status" id="ac-i18n-status"></p></section>
  <section class="ac-panel"><h2>More administration</h2><div class="ac-grid"><article class="ac-item"><h3>LiquinWiki review</h3><p class="ac-muted">Uses the established approval workflow; admin edits remain exempt from member approval.</p><a href="wiki-editor.html">Review wiki →</a></article><article class="ac-item"><h3>Flag Maker</h3><p class="ac-muted">Manage shared shapes, custom paths and visibility.</p><a href="#shape-admin-title">Manage shapes →</a></article><article class="ac-item"><h3>Wiki permissions</h3><p class="ac-muted">Separate from website roles.</p><a href="wiki-editor.html">Manage permissions →</a></article><article class="ac-item"><h3>Visitor logs</h3><p class="ac-muted">Existing seven-day retention.</p><a href="visitor-logs.html">Open logs →</a></article><article class="ac-item"><h3>Account recovery</h3><p class="ac-muted">Use secure recovery; passwords cannot be viewed.</p><a href="login.html">Account page →</a></article></div></section>
  `;
- const shape=root.querySelector(".shape-admin-panel");if(shape)shape.insertAdjacentElement("afterend",wrap);else root.append(wrap);
+ const shape=root.querySelector(".shape-admin-panel");if(shape)shape.insertAdjacentElement("beforebegin",wrap);else root.append(wrap);
  if(shape){
   const bar=document.createElement("div");bar.className="ac-actions";bar.setAttribute("aria-label","Shape library utilities");
   const exportShapes=document.createElement("button");exportShapes.type="button";exportShapes.className="ac-btn";exportShapes.textContent="Export shape library JSON";
@@ -35,10 +35,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
  }
  const historyPanel=document.createElement("section");historyPanel.className="ac-panel";historyPanel.id="ac-shape-history";
  historyPanel.innerHTML='<h2>Flag Maker change history</h2><p class="ac-muted">Recent edits and deletions keep a snapshot of the previous shape. Restore a snapshot to undo a mistaken library change.</p><button type="button" class="ac-btn primary" id="ac-shape-history-refresh">Refresh shape history</button><div class="ac-list" id="ac-shape-history-list"></div><p class="ac-status" id="ac-shape-history-status"></p>';
- wrap.insertAdjacentElement("beforebegin",historyPanel);
+ if(shape)shape.insertAdjacentElement("afterend",historyPanel);else wrap.insertAdjacentElement("afterend",historyPanel);
  const settingsHistoryPanel=document.createElement("section");settingsHistoryPanel.className="ac-panel";settingsHistoryPanel.id="ac-settings-history";
  settingsHistoryPanel.innerHTML='<h2>Site settings change history</h2><p class="ac-muted">Previous settings values are retained when a setting changes or is deleted. Restore a snapshot to undo a mistaken settings edit.</p><button type="button" class="ac-btn primary" id="ac-settings-history-refresh">Refresh settings history</button><div class="ac-list" id="ac-settings-history-list"></div><p class="ac-status" id="ac-settings-history-status"></p>';
- wrap.insertAdjacentElement("beforebegin",settingsHistoryPanel);
+ historyPanel.insertAdjacentElement("afterend",settingsHistoryPanel);
  const $=id=>document.getElementById(id);let adminId=null,profiles=[],auditRows=[],backup=null,settings={};const langs=["en","pt","es","fr","de","it","hr","el","pl","ru","zh"];
  function say(id,msg,err=false){const e=$(id);if(e){e.textContent=msg;e.classList.toggle("error",err);}}
  function download(name,data){const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
