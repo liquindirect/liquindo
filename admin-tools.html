@@ -31,6 +31,28 @@
     body.admin-tools-page footer { background:#08121d; color:#d5dce3; border-top:1px solid rgba(253,190,0,.25); }
     body.admin-tools-page footer a { color:#fdbe00; }
     @media (prefers-reduced-motion:reduce) { .admin-tool-card { transition:none; } }
+    .shape-admin-panel { margin-top:2rem; padding:clamp(1rem,3vw,1.5rem); border:1px solid #d8dce1; border-radius:16px; background:#fff; }
+    .shape-admin-panel h2 { margin:.1rem 0 .5rem; color:#000032; }
+    .shape-admin-panel p { color:#4c5968; line-height:1.55; }
+    .shape-admin-form { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:.85rem; align-items:end; }
+    .shape-admin-form label,.shape-row label { display:grid; gap:.35rem; color:#263747; font-size:.9rem; font-weight:700; }
+    .shape-admin-form input,.shape-row input { width:100%; min-width:0; padding:.65rem .7rem; border:1px solid #b9c1cb; border-radius:8px; background:#fff; color:#172033; font:inherit; }
+    .shape-admin-form .path-field { grid-column:1/-1; }
+    .shape-admin-list { display:grid; gap:.65rem; margin-top:1rem; }
+    .shape-row { border:1px solid #d8dce1; border-radius:10px; overflow:hidden; }
+    .shape-row summary { display:flex; align-items:center; gap:.65rem; padding:.8rem; cursor:pointer; color:#000032; font-weight:800; overflow-wrap:anywhere; }
+    .shape-row summary .shape-row-preview { display:grid; place-items:center; flex:0 0 42px; width:42px; height:34px; border:1px solid #e0e3e8; border-radius:6px; background:#f8f8fb; }
+    .shape-row-preview svg { width:36px; height:28px; }
+    .shape-row summary .shape-row-status { margin-left:auto; color:#5c6571; font-size:.75rem; font-weight:700; }
+    .shape-row[open] summary { border-bottom:1px solid #e4e7eb; background:#faf9f5; }
+    .shape-row-body { display:grid; gap:.85rem; padding:1rem; }
+    .shape-row-actions { display:flex; flex-wrap:wrap; gap:.55rem; }
+    .shape-row-actions button { padding:.55rem .8rem; border:1px solid #c7cdd5; border-radius:8px; background:#fff; color:#172033; font-weight:700; cursor:pointer; }
+    .shape-row-actions .primary { border-color:#fdbe00; background:#fdbe00; color:#000032; }
+    .shape-row-actions .danger { border-color:#b42318; color:#b42318; }
+    #shape-admin-search { width:100%; max-width:420px; margin-top:1rem; padding:.7rem; border:1px solid #b9c1cb; border-radius:8px; font:inherit; }
+    .shape-admin-status { margin:.7rem 0; color:#425466; font-size:.9rem; }
+    .shape-admin-status.error { color:#b42318; }
   </style>
 </head>
 <body class="admin-tools-page">
@@ -115,6 +137,23 @@
           <span class="open-label">Open directory →</span>
         </a>
       </div>
+      <section class="shape-admin-panel" aria-labelledby="shape-admin-title">
+        <h2 id="shape-admin-title">Flag Maker · Shape Library</h2>
+        <p>Manage the shared shape library used by everyone. Rename or hide built-in shapes, replace their geometry with an SVG path, or add your own custom shape. Changes apply to the Flag Maker after it reloads.</p>
+        <form id="shape-admin-add-form" class="shape-admin-form">
+          <label>New shape name
+            <input id="shape-admin-new-label" maxlength="80" required placeholder="e.g. Eight-pointed emblem">
+          </label>
+          <label class="path-field">SVG path data (required)
+            <input id="shape-admin-new-path" maxlength="5000" required value="M20 2 L38 30 L2 30 Z" placeholder="M20 2 L38 30 L2 30 Z" autocomplete="off">
+          </label>
+          <div class="shape-row-actions"><button class="primary" type="submit">Add shape</button><button id="shape-admin-template" type="button">Insert triangle example</button></div>
+        </form>
+        <p class="shape-admin-status" id="shape-admin-status" role="status" aria-live="polite">Loading shape library…</p>
+        <label for="shape-admin-search">Filter shapes</label>
+        <input id="shape-admin-search" type="search" placeholder="Search by shape name or ID">
+        <div class="shape-admin-list" id="shape-admin-list"></div>
+      </section>
     </div>
   </main>
   <footer>
@@ -134,6 +173,141 @@
     const status = document.getElementById("admin-status");
     const content = document.getElementById("admin-tools-content");
     const signOutButton = document.getElementById("admin-sign-out");
+    const shapeAdminPanel = document.querySelector(".shape-admin-panel");
+    const shapeAdminList = document.getElementById("shape-admin-list");
+    const shapeAdminStatus = document.getElementById("shape-admin-status");
+    const shapeAdminSearch = document.getElementById("shape-admin-search");
+    let currentAdminUserId = null;
+    let shapeAdminRows = [];
+    const svgNs = "http://www.w3.org/2000/svg";
+    function validShapePath(value) {
+      const path = String(value || "").trim();
+      return path.length > 0 && path.length <= 5000 && /^M/i.test(path) &&
+        /^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\\-\\s]+$/.test(path);
+    }
+    function shapeStatus(message, isError = false) {
+      shapeAdminStatus.textContent = message;
+      shapeAdminStatus.classList.toggle("error", isError);
+    }
+    function shapePreview(pathData) {
+      const svg = document.createElementNS(svgNs, "svg");
+      svg.setAttribute("viewBox", "0 0 40 32");
+      svg.setAttribute("aria-hidden", "true");
+      if (pathData && validShapePath(pathData)) {
+        const path = document.createElementNS(svgNs, "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", "#b08a13");
+        path.setAttribute("stroke", "#17213b");
+        path.setAttribute("stroke-width", "1.2");
+        path.setAttribute("stroke-linejoin", "round");
+        svg.append(path);
+      } else {
+        const text = document.createElementNS(svgNs, "text");
+        text.setAttribute("x", "20"); text.setAttribute("y", "21");
+        text.setAttribute("text-anchor", "middle"); text.setAttribute("font-size", "12");
+        text.setAttribute("font-weight", "800"); text.setAttribute("fill", "#17213b");
+        text.textContent = "FM";
+        svg.append(text);
+      }
+      return svg;
+    }
+    function renderShapeAdminRows() {
+      const filter = shapeAdminSearch.value.trim().toLowerCase();
+      shapeAdminList.replaceChildren();
+      const rows = shapeAdminRows.filter(row => (row.label + " " + row.shape_id).toLowerCase().includes(filter));
+      if (!rows.length) {
+        const empty = document.createElement("p"); empty.textContent = "No shapes match this filter."; shapeAdminList.append(empty); return;
+      }
+      rows.forEach(row => {
+        const details = document.createElement("details"); details.className = "shape-row";
+        const summary = document.createElement("summary");
+        const preview = document.createElement("span"); preview.className = "shape-row-preview"; preview.append(shapePreview(row.path_d));
+        const title = document.createElement("span"); title.textContent = row.label;
+        const statusLabel = document.createElement("span"); statusLabel.className = "shape-row-status"; statusLabel.textContent = row.is_active ? (row.is_builtin ? "Built-in" : "Custom") : "Hidden";
+        summary.append(preview, title, statusLabel); details.append(summary);
+        const body = document.createElement("div"); body.className = "shape-row-body";
+        const label = document.createElement("label"); label.textContent = "Display name";
+        const nameInput = document.createElement("input"); nameInput.maxLength = 80; nameInput.required = true; nameInput.value = row.label; nameInput.setAttribute("aria-label", "Display name for " + row.shape_id); label.append(nameInput);
+        const pathLabel = document.createElement("label"); pathLabel.textContent = "Custom SVG path data (leave blank to use the built-in geometry)";
+        const pathInput = document.createElement("input"); pathInput.maxLength = 5000; pathInput.value = row.path_d || ""; pathInput.autocomplete = "off"; pathInput.setAttribute("aria-label", "SVG path data for " + row.shape_id); pathLabel.append(pathInput);
+        const actions = document.createElement("div"); actions.className = "shape-row-actions";
+        const save = document.createElement("button"); save.type = "button"; save.className = "primary"; save.textContent = "Save changes";
+        save.addEventListener("click", async () => {
+          const labelValue = nameInput.value.trim(), pathValue = pathInput.value.trim();
+          if (!labelValue || labelValue.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
+          if (pathValue && !validShapePath(pathValue)) { shapeStatus("The SVG path is invalid. Use path commands and numbers only, starting with M.", true); return; }
+          save.disabled = true;
+          try {
+            const { error } = await supabase.from("flagmaker_shapes").update({
+              label: labelValue, path_d: pathValue || null, updated_at: new Date().toISOString(), updated_by: currentAdminUserId
+            }).eq("shape_id", row.shape_id);
+            if (error) throw error;
+            shapeStatus("Saved “" + labelValue + "”. Reload Flag Maker to see the change.");
+            await loadShapeAdminRows();
+          } catch (error) { shapeStatus(error.message || "Could not save this shape.", true); save.disabled = false; }
+        });
+        const toggle = document.createElement("button"); toggle.type = "button"; toggle.textContent = row.is_active ? "Hide from library" : "Restore to library";
+        toggle.addEventListener("click", async () => {
+          toggle.disabled = true;
+          try {
+            const { error } = await supabase.from("flagmaker_shapes").update({is_active: !row.is_active, updated_at: new Date().toISOString(), updated_by: currentAdminUserId}).eq("shape_id", row.shape_id);
+            if (error) throw error;
+            shapeStatus(row.label + (row.is_active ? " hidden from" : " restored to") + " the library.");
+            await loadShapeAdminRows();
+          } catch (error) { shapeStatus(error.message || "Could not change shape visibility.", true); toggle.disabled = false; }
+        });
+        actions.append(save, toggle);
+        if (!row.is_builtin) {
+          const remove = document.createElement("button"); remove.type = "button"; remove.className = "danger"; remove.textContent = "Delete custom shape";
+          remove.addEventListener("click", async () => {
+            if (!window.confirm("Permanently delete “" + row.label + "” from the shared shape library? Existing flags already using it will keep their saved artwork.")) return;
+            remove.disabled = true;
+            try {
+              const { error } = await supabase.from("flagmaker_shapes").delete().eq("shape_id", row.shape_id).eq("is_builtin", false);
+              if (error) throw error;
+              shapeStatus("Deleted “" + row.label + "”.");
+              await loadShapeAdminRows();
+            } catch (error) { shapeStatus(error.message || "Could not delete this shape.", true); remove.disabled = false; }
+          });
+          actions.append(remove);
+        }
+        const idLine = document.createElement("p"); idLine.className = "shape-admin-status"; idLine.textContent = "ID: " + row.shape_id + (row.is_builtin ? " · Built-in shapes can be hidden or restored; their original code remains available." : " · Custom shape");
+        body.append(label, pathLabel, actions, idLine); details.append(body); shapeAdminList.append(details);
+      });
+    }
+    async function loadShapeAdminRows() {
+      shapeStatus("Loading shared shape library…");
+      try {
+        const { data, error } = await supabase.from("flagmaker_shapes").select("shape_id,label,path_d,is_builtin,is_active,updated_at").order("is_builtin", {ascending:false}).order("label", {ascending:true});
+        if (error) throw error;
+        shapeAdminRows = data || [];
+        renderShapeAdminRows();
+        shapeStatus("Loaded " + shapeAdminRows.length + " shapes. Changes are shared across devices.");
+      } catch (error) { shapeStatus(error.message || "Could not load the shape library. Check the flagmaker_shapes table and administrator permissions.", true); }
+    }
+    document.getElementById("shape-admin-add-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const label = document.getElementById("shape-admin-new-label").value.trim();
+      const path_d = document.getElementById("shape-admin-new-path").value.trim();
+      if (!label || label.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
+      if (!validShapePath(path_d)) { shapeStatus("The SVG path is invalid. Use path commands and numbers only, starting with M.", true); return; }
+      const submit = event.currentTarget.querySelector('button[type="submit"]'); submit.disabled = true;
+      try {
+        const shape_id = "custom-" + crypto.randomUUID();
+        const { error } = await supabase.from("flagmaker_shapes").insert({shape_id,label,path_d,is_builtin:false,is_active:true,updated_by:currentAdminUserId});
+        if (error) throw error;
+        event.currentTarget.reset();
+        document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
+        shapeStatus("Added “" + label + "”. Reload Flag Maker to use it.");
+        await loadShapeAdminRows();
+      } catch (error) { shapeStatus(error.message || "Could not add this shape.", true); }
+      finally { submit.disabled = false; }
+    });
+    document.getElementById("shape-admin-template").addEventListener("click", () => {
+      document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
+    });
+    shapeAdminSearch.addEventListener("input", renderShapeAdminRows);
+
 
     let verificationSequence = 0;
     let authSubscription = null;
