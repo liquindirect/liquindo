@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Administrator shortcuts for the Liquindo website.">
+  <title>Admin Tools · Liquindo</title>
+  <link rel="stylesheet" href="style.css?v=20261013-subpage-consistency-v1">
+  <style>
+    body.admin-tools-page { min-height:100vh; background:#f4f1e9; }
+    .admin-page-header { background:#000032; border-bottom:1px solid rgba(253,190,0,.35); }
+    .admin-page-title { width:min(1120px,calc(100% - 32px)); margin:auto; padding:clamp(2.5rem,7vw,4.5rem) 0 3rem; }
+    .admin-page-title .eyebrow { color:#fdbe00; font-size:.8rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    .admin-page-title h1 { margin:.35rem 0 .7rem; color:#fffaf0; font-size:clamp(2.2rem,5vw,3.5rem); line-height:1.1; }
+    .admin-page-title p { max-width:700px; color:#c5ced7; }
+    .admin-main { width:min(1120px,calc(100% - 32px)); margin:auto; padding:2.5rem 0 4rem; }
+    .admin-status { padding:1rem 1.15rem; margin-bottom:1.5rem; border:1px solid #d8dce1; border-radius:12px; background:#fff; color:#263747; }
+    .admin-status.error { border-color:#b42318; color:#8b1e16; }
+    .admin-tool-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:1rem; }
+    .admin-tool-card { display:flex; flex-direction:column; gap:.55rem; min-height:200px; padding:1.4rem; border:1px solid rgba(253,190,0,.45); border-radius:16px; background:linear-gradient(145deg,#000032,#071440); color:#f5f5ff; text-decoration:none; box-shadow:0 10px 26px rgba(0,0,0,.08); transition:transform .18s ease,border-color .18s ease; }
+    .admin-tool-card:hover,.admin-tool-card:focus-visible { transform:translateY(-2px); border-color:#fdbe00; }
+    .admin-tool-card .kicker { color:#fdbe00; font-size:.78rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    .admin-tool-card h2 { margin:.1rem 0; color:#fdbe00; font-size:1.25rem; }
+    .admin-tool-card p { margin:0; color:rgba(245,245,255,.84); line-height:1.55; }
+    .admin-tool-card .open-label { margin-top:auto; padding-top:.5rem; color:#fdbe00; font-weight:800; }
+    .admin-actions { display:flex; flex-wrap:wrap; gap:.75rem; margin:1.25rem 0 2rem; }
+    .admin-actions button,.admin-actions a { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:.65rem 1rem; border:1px solid #fdbe00; border-radius:999px; background:#fdbe00; color:#000032; font-weight:800; text-decoration:none; cursor:pointer; }
+    .admin-actions .secondary { background:transparent; color:#000032; }
+    #admin-tools-content[hidden] { display:none !important; }
+    body.admin-tools-page footer { background:#08121d; color:#d5dce3; border-top:1px solid rgba(253,190,0,.25); }
+    body.admin-tools-page footer a { color:#fdbe00; }
+    @media (prefers-reduced-motion:reduce) { .admin-tool-card { transition:none; } }
+  </style>
+</head>
+<body class="admin-tools-page">
+  <header class="admin-page-header">
+    <nav class="topbar" aria-label="Main navigation">
+      <a class="brand" href="index.html#home">Liquindo</a>
+      <div class="nav-links"><a href="index.html">Homepage</a></div>
+    </nav>
+    <div class="admin-page-title">
+      <p class="eyebrow">Administration</p>
+      <h1>Admin Tools</h1>
+      <p>Central access to Liquindo’s administrative tools. Access is shown only after your signed-in account is verified as an administrator.</p>
+    </div>
+  </header>
+  <main class="admin-main">
+    <p id="admin-status" class="admin-status" role="status" aria-live="polite">Checking administrator access…</p>
+    <div id="admin-tools-content" hidden>
+      <div class="admin-actions">
+        <a href="index.html">← Back to homepage</a>
+        <button id="admin-sign-out" class="secondary" type="button">Sign out</button>
+      </div>
+      <div class="admin-tool-grid">
+        <a class="admin-tool-card" href="wiki-editor.html">
+          <span class="kicker">LiquinWiki</span>
+          <h2>Wiki editing &amp; review</h2>
+          <p>Edit articles, review pending revisions, and manage wiki permissions.</p>
+          <span class="open-label">Open tool →</span>
+        </a>
+        <a class="admin-tool-card" href="visitor-logs.html">
+          <span class="kicker">Site security</span>
+          <h2>Visitor access logs</h2>
+          <p>Review visitor access records retained for seven days.</p>
+          <span class="open-label">Open tool →</span>
+        </a>
+        <a class="admin-tool-card" href="members.html">
+          <span class="kicker">Community</span>
+          <h2>Members directory</h2>
+          <p>View member profiles and account roles.</p>
+          <span class="open-label">Open directory →</span>
+        </a>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p>Contact: liquindohq@yahoo.com</p>
+      <a href="privacy.html">Privacy notice</a>
+      <a href="index.html#home">Back to homepage</a>
+    </div>
+    <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
+  </footer>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    const supabase = createClient(
+      "https://uivjovkvpskvvazznlyr.supabase.co",
+      "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
+    );
+    const status = document.getElementById("admin-status");
+    const content = document.getElementById("admin-tools-content");
+    const signOutButton = document.getElementById("admin-sign-out");
+
+    async function verifyAdministrator(session) {
+      content.hidden = true;
+      if (!session?.user) {
+        status.textContent = "Please sign in with an administrator account to access Admin Tools.";
+        status.classList.add("error");
+        return;
+      }
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .maybeSingle();
+        if (error || data?.role !== "admin") {
+          status.textContent = "Access denied. This page is available only to verified administrators.";
+          status.classList.add("error");
+          return;
+        }
+        status.textContent = "Administrator access verified.";
+        status.classList.remove("error");
+        content.hidden = false;
+      } catch {
+        status.textContent = "Could not verify administrator access. Please refresh and try again.";
+        status.classList.add("error");
+      }
+    }
+
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) {
+      status.textContent = "Could not check your session. Please refresh and try again.";
+      status.classList.add("error");
+    } else {
+      await verifyAdministrator(session);
+    }
+    supabase.auth.onAuthStateChange((_event, nextSession) => {
+      verifyAdministrator(nextSession);
+    });
+    signOutButton.addEventListener("click", async () => {
+      signOutButton.disabled = true;
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        status.textContent = "Could not sign out. Please try again.";
+        status.classList.add("error");
+        signOutButton.disabled = false;
+        return;
+      }
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
