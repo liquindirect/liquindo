@@ -34,10 +34,16 @@
   </style>
 </head>
 <body class="admin-tools-page">
+  <script src="homepage-gate.js"></script>
   <header class="admin-page-header">
     <nav class="topbar" aria-label="Main navigation">
       <a class="brand" href="index.html#home">Liquindo</a>
-      <div class="nav-links"><a href="index.html">Homepage</a></div>
+      <div class="nav-links">
+        <a href="index.html">Homepage</a>
+        <a href="hierarchy.html">Hierarchy</a>
+        <a href="wiki.html">LiquinWiki</a>
+        <a href="members.html">Members</a>
+      </div>
     </nav>
     <div class="admin-page-title">
       <p class="eyebrow">Administration</p>
@@ -92,54 +98,87 @@
     const content = document.getElementById("admin-tools-content");
     const signOutButton = document.getElementById("admin-sign-out");
 
+    let verificationSequence = 0;
+    let authSubscription = null;
+
     async function verifyAdministrator(session) {
+      const sequence = ++verificationSequence;
       content.hidden = true;
+      signOutButton.disabled = true;
+      status.classList.remove("error");
+      status.textContent = "Checking administrator access…";
+
       if (!session?.user) {
         status.textContent = "Please sign in with an administrator account to access Admin Tools.";
         status.classList.add("error");
+        signOutButton.disabled = false;
         return;
       }
+
       try {
         const { data, error } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", session.user.id)
           .maybeSingle();
+
+        // Ignore stale role checks after a newer auth event has changed the session.
+        if (sequence !== verificationSequence) return;
+
         if (error || data?.role !== "admin") {
           status.textContent = "Access denied. This page is available only to verified administrators.";
           status.classList.add("error");
           return;
         }
+
         status.textContent = "Administrator access verified.";
-        status.classList.remove("error");
         content.hidden = false;
       } catch {
+        if (sequence !== verificationSequence) return;
         status.textContent = "Could not verify administrator access. Please refresh and try again.";
         status.classList.add("error");
+      } finally {
+        if (sequence === verificationSequence) signOutButton.disabled = false;
       }
     }
 
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) {
-      status.textContent = "Could not check your session. Please refresh and try again.";
-      status.classList.add("error");
-    } else {
-      await verifyAdministrator(session);
+    async function initialiseAdminTools() {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        await verifyAdministrator(data.session);
+      } catch {
+        ++verificationSequence;
+        content.hidden = true;
+        signOutButton.disabled = false;
+        status.textContent = "Could not check your session. Please refresh and try again.";
+        status.classList.add("error");
+      }
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+        // Defer Supabase calls until after the auth callback returns.
+        Promise.resolve().then(() => verifyAdministrator(nextSession));
+      });
+      authSubscription = subscription;
     }
-    supabase.auth.onAuthStateChange((_event, nextSession) => {
-      verifyAdministrator(nextSession);
-    });
+
     signOutButton.addEventListener("click", async () => {
       signOutButton.disabled = true;
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {
+      status.textContent = "Signing out…";
+      try {
+        const { error: signOutError } = await supabase.auth.signOut();
+        if (signOutError) throw signOutError;
+        content.hidden = true;
+        window.location.href = "index.html";
+      } catch {
         status.textContent = "Could not sign out. Please try again.";
         status.classList.add("error");
         signOutButton.disabled = false;
-        return;
       }
-      window.location.href = "index.html";
     });
+
+    window.addEventListener("pagehide", () => authSubscription?.unsubscribe());
+    initialiseAdminTools();
   </script>
 </body>
 </html>
