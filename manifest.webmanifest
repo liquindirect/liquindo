@@ -1,0 +1,18 @@
+{
+  "id": "/liquindo/",
+  "name": "Liquindo",
+  "short_name": "Liquindo",
+  "description": "Liquindo community, knowledge and tools.",
+  "start_url": "/liquindo/index.html",
+  "scope": "/liquindo/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#071329",
+  "theme_color": "#0b1730",
+  "categories": ["education", "social", "productivity"],
+  "icons": [
+    { "src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
