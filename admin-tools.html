@@ -265,11 +265,12 @@
           shapeAdminRows.splice(sourceIndex < targetIndex ? targetIndex - 1 : targetIndex, 0, moving);
           shapeStatus("Saving shape order…");
           try {
-            const results = await Promise.all(shapeAdminRows.map((item, index) =>
-              supabase.from("flagmaker_shapes").update({sort_order:index, updated_at:new Date().toISOString(), updated_by:currentAdminUserId}).eq("shape_id", item.shape_id)
-            ));
-            const failed = results.find(result => result.error);
-            if (failed) throw failed.error;
+            const now = new Date().toISOString();
+            const { error } = await supabase.from("flagmaker_shapes").upsert(
+              shapeAdminRows.map((item, index) => ({shape_id:item.shape_id, sort_order:index, updated_at:now, updated_by:currentAdminUserId})),
+              { onConflict:"shape_id" }
+            );
+            if (error) throw error;
             shapeStatus("Shape order saved. Reload Flag Maker to apply the new order.");
             await loadShapeAdminRows();
           } catch (error) { shapeStatus(error.message || "Could not save shape order.", true); await loadShapeAdminRows(); }
