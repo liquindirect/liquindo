@@ -51,6 +51,7 @@ begin
   select role into current_role from public.profiles where id = target_user_id;
   if current_role is null then raise exception 'Profile not found'; end if;
   if target_user_id = auth.uid() and new_role <> current_role then raise exception 'You cannot change your own administrator role'; end if;
+  if current_role = 'admin' and new_role = 'member' and (select count(*) from public.profiles where role = 'admin') <= 1 then raise exception 'Cannot demote the last administrator'; end if;
   update public.profiles set display_name = btrim(new_display_name), bio = new_bio, role = new_role where id = target_user_id returning * into changed_row;
   return jsonb_build_object('id',changed_row.id,'display_name',changed_row.display_name,'role',changed_row.role,'bio',changed_row.bio);
 end;
