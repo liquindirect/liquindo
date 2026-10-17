@@ -45,12 +45,12 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.endsWith(".html") || url.pathname.includes("/rest/") || url.pathname.includes("/auth/")) return;
 
   event.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request).then((response) => {
+    fetch(request).then((response) => {
       if (response.ok && response.type === "basic") {
         const copy = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
       }
       return response;
-    }))
+    }).catch(async () => (await caches.match(request)) || Response.error())
   );
 });
