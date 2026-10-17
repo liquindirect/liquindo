@@ -286,6 +286,37 @@
           } catch (error) { shapeStatus(error.message || "Could not change shape visibility.", true); toggle.disabled = false; }
         });
         actions.append(save, toggle);
+        const duplicate = document.createElement("button");
+        duplicate.type = "button";
+        duplicate.textContent = "Duplicate as custom";
+        duplicate.addEventListener("click", async () => {
+          const pathValue = pathInput.value.trim();
+          if (!validShapePath(pathValue)) {
+            shapeStatus("To duplicate this shape, first provide valid SVG path data in its path field and save it.", true);
+            pathInput.focus();
+            return;
+          }
+          const duplicateLabel = window.prompt("Name for the new custom shape:", row.label + " copy");
+          if (!duplicateLabel || !duplicateLabel.trim()) return;
+          duplicate.disabled = true;
+          try {
+            const { error } = await supabase.from("flagmaker_shapes").insert({
+              shape_id: "custom-" + crypto.randomUUID(),
+              label: duplicateLabel.trim().slice(0, 80),
+              path_d: pathValue,
+              is_builtin: false,
+              is_active: true,
+              updated_by: currentAdminUserId
+            });
+            if (error) throw error;
+            shapeStatus("Created custom copy of “" + row.label + "”.");
+            await loadShapeAdminRows();
+          } catch (error) {
+            shapeStatus(error.message || "Could not duplicate this shape.", true);
+            duplicate.disabled = false;
+          }
+        });
+        actions.append(duplicate);
         if (!row.is_builtin) {
           const remove = document.createElement("button"); remove.type = "button"; remove.className = "danger"; remove.textContent = "Delete custom shape";
           remove.addEventListener("click", async () => {
