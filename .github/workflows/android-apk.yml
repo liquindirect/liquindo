@@ -55,6 +55,11 @@ jobs:
       - name: Prepare wrapper files
         run: npm run prepare:wrapper
 
+      - name: Verify local load-error page
+        run: |
+          test -s www/offline.html
+          node -e "const c = require('./capacitor.config.json'); if (c.server?.errorPath !== 'offline.html') process.exit(1)"
+
       - name: Generate Android project
         run: npx cap add android
 
