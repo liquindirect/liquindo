@@ -32,13 +32,6 @@
       .nav-links .account-logout:disabled { cursor: wait; opacity: 0.7; }
 
       .admin-tools-section[hidden] { display: none !important; }
-      .admin-tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 1rem; }
-      .admin-tool-card { display: flex; flex-direction: column; gap: .55rem; padding: 1.25rem; border: 1px solid rgba(253,190,0,.35); border-radius: 16px; background: linear-gradient(145deg, rgba(0,0,50,.96), rgba(4,13,65,.94)); color: #f5f5ff; text-decoration: none; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
-      .admin-tool-card:hover, .admin-tool-card:focus-visible { transform: translateY(-2px); border-color: #fdbe00; box-shadow: 0 10px 26px rgba(0,0,0,.2); }
-      .admin-tool-card h3 { margin: .1rem 0; color: #fdbe00; }
-      .admin-tool-card p { margin: 0; color: rgba(245,245,255,.82); line-height: 1.55; }
-      .admin-tool-kicker { color: #fdbe00; font-size: .78rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
-      .admin-tool-open { margin-top: auto; padding-top: .5rem; font-weight: 800; color: #fdbe00; }
       #admin-tools-nav[hidden] { display: none !important; }
 
       /* Prominent homepage shortcut, independent of the navigation and feature grid. */
@@ -574,33 +567,6 @@
           </div>
         </div>
       </section>
-      <section class="content-section admin-tools-section" id="admin-tools" hidden aria-labelledby="admin-tools-title">
-        <div>
-          <p class="section-label">Administration</p>
-          <h2 id="admin-tools-title">Admin Tools</h2>
-          <p>Central access to Liquindo's administrative tools.</p>
-        </div>
-        <div class="admin-tools-grid">
-          <a class="admin-tool-card" href="wiki-editor.html">
-            <span class="admin-tool-kicker">LiquinWiki</span>
-            <h3>Wiki editing &amp; review</h3>
-            <p>Edit articles, review pending revisions, and manage wiki permissions.</p>
-            <span class="admin-tool-open">Open tool →</span>
-          </a>
-          <a class="admin-tool-card" href="visitor-logs.html">
-            <span class="admin-tool-kicker">Site security</span>
-            <h3>Visitor access logs</h3>
-            <p>Review recent visitor IP and timestamp records retained for seven days.</p>
-            <span class="admin-tool-open">Open tool →</span>
-          </a>
-          <a class="admin-tool-card" href="members.html">
-            <span class="admin-tool-kicker">Community</span>
-            <h3>Members directory</h3>
-            <p>View member profiles and account roles.</p>
-            <span class="admin-tool-open">Open directory →</span>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer>
@@ -682,12 +648,10 @@
       const homepageLogoutButton = document.getElementById("account-logout-button");
 
       let homepageSession = null;
-      const adminToolsSection = document.getElementById("admin-tools");
       const adminToolsNav = document.getElementById("admin-tools-nav");
       let adminCheckSequence = 0;
       async function updateAdminTools(session) {
         const sequence = ++adminCheckSequence;
-        if (adminToolsSection) adminToolsSection.hidden = true;
         if (adminToolsNav) adminToolsNav.hidden = true;
         if (!session?.user) return;
         try {
@@ -697,7 +661,6 @@
             .eq("id", session.user.id)
             .maybeSingle();
           if (sequence !== adminCheckSequence || error || data?.role !== "admin") return;
-          if (adminToolsSection) adminToolsSection.hidden = false;
           if (adminToolsNav) adminToolsNav.hidden = false;
         } catch {
           // Fail closed: never display admin shortcuts if role verification fails.
