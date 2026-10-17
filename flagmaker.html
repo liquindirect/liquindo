@@ -898,11 +898,16 @@
     ]));
     try {
       const { data, error } = await supabase.from("flagmaker_shapes")
-        .select("shape_id,label,path_d,is_builtin,is_active")
+        .select("shape_id,label,path_d,is_builtin,is_active,category,tags,sort_order")
         .eq("is_active", true);
       if (error) throw error;
       if (!Array.isArray(data) || !data.length) return;
       const rows = data.slice().sort((a, b) => {
+        if (a.sort_order != null || b.sort_order != null) {
+          const ar = a.sort_order == null ? (originalRank.get(a.shape_id) ?? 9999) : a.sort_order;
+          const br = b.sort_order == null ? (originalRank.get(b.shape_id) ?? 9999) : b.sort_order;
+          if (ar !== br) return ar - br;
+        }
         if (a.is_builtin && b.is_builtin) return (originalRank.get(a.shape_id) ?? 9999) - (originalRank.get(b.shape_id) ?? 9999);
         if (a.is_builtin !== b.is_builtin) return a.is_builtin ? -1 : 1;
         return a.label.localeCompare(b.label);
@@ -910,7 +915,8 @@
       window.liquindoFlagmakerShapeConfig = Object.fromEntries(rows.map(row => [row.shape_id, row]));
       const groups = new Map();
       for (const row of rows) {
-        const groupName = row.is_builtin ? (originalGroups.get(row.shape_id) || "More geometry") : "Custom shapes";
+        const customCategory = row.category && row.category !== "General" ? row.category : "";
+        const groupName = customCategory || (row.is_builtin ? (originalGroups.get(row.shape_id) || "More geometry") : "Custom shapes");
         if (!groups.has(groupName)) {
           const group = document.createElement("optgroup");
           group.label = groupName;
