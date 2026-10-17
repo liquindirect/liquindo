@@ -3,7 +3,7 @@
   "appName": "Liquindo",
   "webDir": "www",
   "server": {
-    "url": "https://liquindirect.github.io/liquindo/",
+    "url": "https://liquindirect.github.io/liquindo/app.html",
     "cleartext": false,
     "allowNavigation": [
       "liquindirect.github.io"
