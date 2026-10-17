@@ -17,12 +17,11 @@
 
   function currentFile() {
     if (location.pathname.endsWith("/")) return "index.html";
-    const file = location.pathname.split("/").filter(Boolean).pop();
-    return file || "index.html";
+    return location.pathname.split("/").filter(Boolean).pop() || "index.html";
   }
 
   function addMobileNavigation() {
-    if (document.querySelector(".liquindo-app-nav")) return;
+    if (document.querySelector(".liquindo-app-nav") || !document.body) return;
     const current = currentFile();
     const nav = document.createElement("nav");
     nav.className = "liquindo-app-nav";
@@ -32,7 +31,7 @@
       const a = document.createElement("a");
       a.href = base + item.href;
       a.className = "liquindo-app-nav-item" + (current === item.href ? " is-active" : "");
-      if (current === item.href || (item.id === "home" && current === "")) a.setAttribute("aria-current", "page");
+      if (current === item.href) a.setAttribute("aria-current", "page");
       a.innerHTML = '<span class="app-nav-icon" aria-hidden="true"></span><span class="app-nav-label"></span>';
       a.querySelector(".app-nav-icon").textContent = item.icon;
       a.querySelector(".app-nav-label").textContent = item.label;
@@ -59,15 +58,29 @@
       panel.appendChild(a);
     });
 
-    // The admin shortcut appears only when the existing page exposes its admin navigation.
-    // This is convenience only; the actual admin page must continue enforcing authorization.
-    const adminLink = document.querySelector("#admin-tools-nav:not([hidden])");
-    if (adminLink) {
-      const a = document.createElement("a");
-      a.href = base + "admin-tools.html";
-      a.textContent = "Admin Tools";
-      panel.appendChild(a);
+    // Admin navigation may be revealed asynchronously after Supabase verifies a session.
+    let adminAnchor = null;
+    function syncAdminLink() {
+      const adminLink = document.querySelector("#admin-tools-nav");
+      const shouldShow = !!adminLink && !adminLink.hidden &&
+        getComputedStyle(adminLink).display !== "none";
+      if (shouldShow && !adminAnchor) {
+        adminAnchor = document.createElement("a");
+        adminAnchor.href = base + "admin-tools.html";
+        adminAnchor.textContent = "Admin Tools";
+        panel.appendChild(adminAnchor);
+      } else if (!shouldShow && adminAnchor) {
+        adminAnchor.remove();
+        adminAnchor = null;
+      }
     }
+    syncAdminLink();
+    const adminObserver = new MutationObserver(syncAdminLink);
+    adminObserver.observe(document.documentElement, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["hidden", "class", "style", "aria-hidden"]
+    });
 
     menuButton.addEventListener("click", () => {
       const open = panel.hidden;
@@ -80,31 +93,58 @@
         menuButton.setAttribute("aria-expanded", "false");
       }
     });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        panel.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.focus();
+      }
+    });
+    panel.addEventListener("click", (event) => {
+      if (event.target.closest("a")) {
+        panel.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+      }
+    });
     menuWrap.append(menuButton, panel);
     nav.appendChild(menuWrap);
     document.body.appendChild(nav);
     document.body.classList.add("liquindo-app-mode");
 
-    // Offer native install UI when the browser exposes the install prompt.
+    // Native install prompt is optional: DuckDuckGo and iOS may not expose it.
     let installPrompt = null;
+    let installButton = null;
+    function removeInstallButton() {
+      installButton?.remove();
+      installButton = null;
+    }
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       installPrompt = event;
-      if (!document.querySelector(".liquindo-install-button")) {
-        const install = document.createElement("button");
-        install.type = "button";
-        install.className = "liquindo-install-button";
-        install.textContent = "Install Liquindo";
-        install.addEventListener("click", async () => {
-          if (!installPrompt) return;
-          installPrompt.prompt();
-          await installPrompt.userChoice;
-          installPrompt = null;
-          install.remove();
-        });
-        const header = document.querySelector(".site-header") || document.querySelector("header") || document.body;
-        header.appendChild(install);
-      }
+      if (installButton) return;
+      installButton = document.createElement("button");
+      installButton.type = "button";
+      installButton.className = "liquindo-install-button";
+      installButton.textContent = "Install Liquindo";
+      installButton.addEventListener("click", async () => {
+        if (!installPrompt) return;
+        const promptEvent = installPrompt;
+        installPrompt = null;
+        try {
+          await promptEvent.prompt();
+          const choice = await promptEvent.userChoice;
+          if (choice?.outcome === "accepted") removeInstallButton();
+          else if (installButton) installButton.textContent = "Install Liquindo";
+        } catch (error) {
+          console.warn("Liquindo install prompt was unavailable.", error);
+        }
+      });
+      const header = document.querySelector(".site-header, .page-header, header") || document.body;
+      header.appendChild(installButton);
+    });
+    window.addEventListener("appinstalled", () => {
+      installPrompt = null;
+      removeInstallButton();
     });
   }
 
@@ -114,7 +154,7 @@
       navigator.serviceWorker.register(base + "service-worker.js", { scope: base }).catch((error) => {
         console.warn("Liquindo offline shell could not be registered.", error);
       });
-    });
+    }, { once: true });
   }
 
   if (document.readyState === "loading") {
