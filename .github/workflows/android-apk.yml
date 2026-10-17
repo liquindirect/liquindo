@@ -20,9 +20,14 @@ permissions:
 
 jobs:
   build:
-    name: Build debug APK
+    name: Build Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.LIQUINDO_ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.LIQUINDO_ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.LIQUINDO_ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.LIQUINDO_ANDROID_KEY_PASSWORD }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -69,11 +74,55 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Build APK
+      - name: Set Android version code
+        run: |
+          VERSION_CODE="${GITHUB_RUN_NUMBER}"
+          sed -i -E "s/versionCode[[:space:]]+[0-9]+/versionCode ${VERSION_CODE}/" android/app/build.gradle
+          grep -q "versionCode ${VERSION_CODE}" android/app/build.gradle
+
+      - name: Configure persistent release signing key
+        if: env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != ''
+        run: |
+          mkdir -p "$RUNNER_TEMP/liquindo-signing"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/liquindo-signing/liquindo-release.jks"
+          test -s "$RUNNER_TEMP/liquindo-signing/liquindo-release.jks"
+          echo "ANDROID_SIGNING_STORE_FILE=$RUNNER_TEMP/liquindo-signing/liquindo-release.jks" >> "$GITHUB_ENV"
+
+      - name: Build signed release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != ''
+        working-directory: android
+        run: |
+          ./gradlew --no-daemon assembleRelease \
+            -Pandroid.injected.signing.store.file="$ANDROID_SIGNING_STORE_FILE" \
+            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+
+      - name: Build debug APK (temporary fallback)
+        if: env.ANDROID_KEYSTORE_BASE64 == '' || env.ANDROID_KEYSTORE_PASSWORD == '' || env.ANDROID_KEY_ALIAS == '' || env.ANDROID_KEY_PASSWORD == ''
         working-directory: android
         run: ./gradlew --no-daemon assembleDebug
 
-      - name: Upload APK
+      - name: Explain signing mode
+        if: always()
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            echo "Persistent release signing was configured. Future builds can update this installation when the same key is retained."
+          else
+            echo "::warning::Persistent signing secrets are not configured. This debug APK may not update an APK signed by a different debug key. Follow ANDROID-APP.md to configure the four LIQUINDO_ANDROID_* repository secrets."
+          fi
+
+      - name: Upload signed release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: liquindo-android-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload debug APK
+        if: env.ANDROID_KEYSTORE_BASE64 == '' || env.ANDROID_KEYSTORE_PASSWORD == '' || env.ANDROID_KEY_ALIAS == '' || env.ANDROID_KEY_PASSWORD == ''
         uses: actions/upload-artifact@v4
         with:
           name: liquindo-android-debug-apk
