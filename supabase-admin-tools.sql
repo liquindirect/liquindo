@@ -222,3 +222,5 @@ $$;
 drop trigger if exists capture_site_settings_history on public.site_settings;
 create trigger capture_site_settings_history after update or delete on public.site_settings
 for each row execute function public.capture_site_settings_history();
+
+insert into public.site_settings(setting_key,setting_value) values ('faq_items', jsonb_build_object('items', jsonb_build_array())) on conflict (setting_key) do nothing;
