@@ -19,6 +19,42 @@ const noPermission = $("#editor-no-permission");
 const app = $("#editor-app");
 const articleSelect = $("#article-select");
 const canvas = $("#editor-canvas");
+const sourceEditor = $("#editor-source");
+const sourceToggle = $("#toggle-source-mode");
+const visualToolbar = $("#visual-editor-toolbar");
+let sourceMode = false;
+function currentEditorHtml() {
+  return safeHtml(sourceMode ? sourceEditor.value : canvas.innerHTML);
+}
+function syncEditorViews(html) {
+  const clean = safeHtml(html);
+  canvas.innerHTML = clean;
+  sourceEditor.value = clean;
+}
+function setSourceMode(enabled) {
+  if (enabled === sourceMode) return;
+  if (enabled) {
+    sourceEditor.value = canvas.innerHTML;
+    canvas.classList.add("editor-hidden");
+    sourceEditor.classList.remove("editor-hidden");
+    visualToolbar.classList.add("editor-hidden");
+    sourceToggle.textContent = "Back to visual editor";
+    sourceToggle.setAttribute("aria-pressed", "true");
+    $("#editor-mode-note").textContent = "HTML source mode · edit the markup directly";
+    sourceEditor.focus();
+  } else {
+    canvas.innerHTML = safeHtml(sourceEditor.value);
+    sourceEditor.value = canvas.innerHTML;
+    canvas.classList.remove("editor-hidden");
+    sourceEditor.classList.add("editor-hidden");
+    visualToolbar.classList.remove("editor-hidden");
+    sourceToggle.textContent = "Edit HTML source";
+    sourceToggle.setAttribute("aria-pressed", "false");
+    $("#editor-mode-note").textContent = "Visual mode";
+    canvas.focus();
+  }
+  sourceMode = enabled;
+}
 const status = $("#editor-status");
 const submitButton = $("#submit-revision");
 const pendingPanel = $("#review-panel");
@@ -45,7 +81,7 @@ function draftKey(slug) {
 function saveDraft() {
   if (!user || !activeSlug || !isWikiEditor) return;
   try {
-    const content = safeHtml(canvas.innerHTML);
+    const content = currentEditorHtml();
     if (!content.trim()) return;
     localStorage.setItem(draftKey(activeSlug), JSON.stringify({ content, savedAt: new Date().toISOString() }));
     showMessage("Draft saved on this device · " + new Date().toLocaleTimeString());
@@ -110,12 +146,12 @@ async function loadArticle() {
     if (error) throw error;
     const html = data?.content ?? await baselineContent(slug);
     activeSlug = slug;
-    canvas.innerHTML = safeHtml(html);
+    syncEditorViews(html);
     try {
       const draft = JSON.parse(localStorage.getItem(draftKey(slug)) || "null");
       if (draft?.content && draft.content !== safeHtml(html) &&
           window.confirm("A local draft for this article was saved on " + formatDate(draft.savedAt) + ". Restore it?")) {
-        canvas.innerHTML = safeHtml(draft.content);
+        syncEditorViews(draft.content);
         showMessage(isWikiAdmin ? "Local draft restored. Continue editing; administrator changes publish immediately." : "Local draft restored. Continue editing or submit it for approval.");
         return;
       }
@@ -276,7 +312,7 @@ function addRevisionCard(container, revision, names, showReviewActions, allRevis
     if (draftTimer) { clearTimeout(draftTimer); draftTimer = null; saveDraft(); }
     articleSelect.value = revision.slug;
     activeSlug = revision.slug;
-    canvas.innerHTML = safeHtml(revision.content);
+    syncEditorViews(revision.content);
     showMessage("Loaded an earlier version. Submit it to create a new revision; history will remain intact.");
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
@@ -531,7 +567,16 @@ permissionForm.addEventListener("submit", async (event) => {
 
 $("#load-article").addEventListener("click", loadArticle);
 articleSelect.addEventListener("change", loadArticle);
-canvas.addEventListener("input", scheduleDraftSave);
+canvas.addEventListener("input", () => {
+  sourceEditor.value = canvas.innerHTML;
+  scheduleDraftSave();
+});
+sourceEditor.addEventListener("input", () => {
+  // Keep the visual DOM in sync so draft saving and all existing workflows use the latest source.
+  canvas.innerHTML = sourceEditor.value;
+  scheduleDraftSave();
+});
+sourceToggle.addEventListener("click", () => setSourceMode(!sourceMode));
 window.addEventListener("pagehide", () => {
   if (draftTimer) clearTimeout(draftTimer);
   saveDraft();
@@ -559,7 +604,7 @@ $("#remove-format").addEventListener("click", () => {
 submitButton.addEventListener("click", async () => {
   if (!user || !isWikiEditor) return;
   const slug = articleSelect.value;
-  const content = safeHtml(canvas.innerHTML).trim();
+  const content = currentEditorHtml().trim();
   if (!content) {
     showMessage("Article content cannot be empty.", true);
     return;
