@@ -26,6 +26,62 @@
     return location.pathname.split("/").filter(Boolean).pop() || "index.html";
   }
 
+  function detectPwaDisplayMode() {
+    if (!document.body) return;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+    document.body.classList.toggle("liquindo-installed-pwa", isStandalone);
+    document.body.classList.toggle("liquindo-browser-mode", !isStandalone);
+    document.body.dataset.liquindoDisplayMode = isStandalone ? "standalone" : "browser";
+  }
+
+  function addPwaInstallGuide() {
+    // Keep the installation guide on the homepage only, and never show it inside
+    // an installed Home Screen app or the native Capacitor app.
+    if (currentFile() !== "index.html" || document.querySelector(".liquindo-pwa-install-guide")) return;
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+    const isNativeApp = !!window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform();
+    if (isStandalone || isNativeApp) return;
+
+    const ua = navigator.userAgent || "";
+    const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/i.test(ua);
+    // A browser may fire beforeinstallprompt after this guide is created. In that
+    // case the native browser prompt button replaces the manual instructions.
+    if (!isIOS && !isAndroid && !window.matchMedia("(pointer: coarse)").matches) return;
+
+    const guide = document.createElement("aside");
+    guide.className = "liquindo-pwa-install-guide";
+    guide.setAttribute("aria-label", "Install Liquindo");
+    guide.style.cssText = "position:relative;z-index:10;margin:12px auto;padding:14px 16px;width:min(920px,calc(100% - 24px));border:1px solid rgba(253,190,0,.65);border-radius:14px;background:#071329;color:#f7f4ed;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.12)";
+    const title = document.createElement("strong");
+    title.textContent = "Install Liquindo on your Home Screen";
+    title.style.cssText = "display:block;margin:0 28px 4px 0;color:#fdbe00;font-size:15px";
+    const copy = document.createElement("p");
+    copy.style.cssText = "margin:0;color:#f7f4ed";
+    if (isIOS) {
+      copy.textContent = "On iPhone or iPad, open this page in Safari, tap Share, choose Add to Home Screen, then tap Add. Liquindo will open like an app.";
+    } else if (isAndroid) {
+      copy.textContent = "Use your browser menu and choose Install app or Add to Home screen. If an Install Liquindo button appears, you can use that instead.";
+    } else {
+      copy.textContent = "Use your browser's install option or menu and choose Install app / Add to Home screen.";
+    }
+    const close = document.createElement("button");
+    close.type = "button";
+    close.textContent = "Dismiss";
+    close.setAttribute("aria-label", "Dismiss installation instructions");
+    close.style.cssText = "position:absolute;top:9px;right:10px;padding:4px 8px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:transparent;color:#f7f4ed;font:inherit";
+    close.addEventListener("click", () => guide.remove());
+    guide.append(title, copy, close);
+    const header = document.querySelector(".site-header, .page-header, header");
+    if (header) header.insertAdjacentElement("afterend", guide);
+    else document.body.prepend(guide);
+  }
+
   function addMobileNavigation() {
     if (document.querySelector(".liquindo-app-nav") || !document.body) return;
     const current = currentFile();
@@ -145,6 +201,8 @@
     nav.appendChild(menuWrap);
     document.body.appendChild(nav);
     document.body.classList.add("liquindo-app-mode");
+    detectPwaDisplayMode();
+    addPwaInstallGuide();
 
     // Native install prompt is optional: DuckDuckGo and iOS may not expose it.
     let installPrompt = null;
@@ -156,6 +214,7 @@
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       installPrompt = event;
+      document.querySelector(".liquindo-pwa-install-guide")?.remove();
       if (installButton) return;
       installButton = document.createElement("button");
       installButton.type = "button";
