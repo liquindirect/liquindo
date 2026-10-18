@@ -130,8 +130,14 @@
             <option value="lnf">Liquindo Nationalist Front</option>
             <option value="integralist-front">Liquindian Integralist Front</option>
             <option value="npf">Nuclear Proliferation Faction</option>
+            <option value="__new__">＋ Create a new article</option>
           </select>
           <button id="load-article" class="editor-button" type="button">Load current version</button>
+        </div>
+        <div id="new-article-fields" class="editor-controls editor-hidden" style="margin-top:.75rem">
+          <label for="new-article-title">New article title <input id="new-article-title" type="text" maxlength="120" placeholder="Article title" /></label>
+          <label for="new-article-slug">Article URL slug <input id="new-article-slug" type="text" maxlength="80" placeholder="generated-from-title" /></label>
+          <p class="editor-note">New articles are submitted as drafts and need administrator approval before publication.</p>
         </div>
         <div class="editor-controls" style="margin-top:.75rem">
           <button id="toggle-source-mode" class="editor-button" type="button" aria-pressed="false">Edit HTML source</button>
@@ -173,14 +179,15 @@
 
       <section id="permission-panel" class="editor-panel editor-hidden">
         <h2>Manage wiki permissions</h2>
-        <p class="editor-note">Grant wiki editing access to an existing Liquindo account. This does not change that account's member/admin role.</p>
+        <p class="editor-note">Grant an existing account permission to edit articles, create new articles, or administer LiquinWiki. This does not change that account's member/admin role.</p>
         <form id="permission-form" class="editor-controls">
           <label for="permission-email">Account email
             <input id="permission-email" type="email" autocomplete="off" required />
           </label>
           <label for="permission-choice">Wiki permission
             <select id="permission-choice">
-              <option value="liquinwiki_editor">LiquinWiki editor</option>
+              <option value="liquinwiki_editor">LiquinWiki editor (existing articles)</option>
+              <option value="liquinwiki_creator">Wiki editor + new article creation</option>
               <option value="liquinwiki_admin">LiquinWiki administrator</option>
               <option value="none">Remove wiki access</option>
             </select>
@@ -275,7 +282,7 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261019-article-edit-link-v1"></script>
+  <script type="module" src="wiki-editor.js?v=20261019-article-creation-v1"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
