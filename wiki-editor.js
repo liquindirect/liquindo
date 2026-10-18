@@ -182,7 +182,7 @@ async function loadArticle() {
       showMessage("Loaded article, but the local draft could not be read.", true);
       return;
     }
-    showMessage("Loaded " + articles[slug] + ".");
+    showMessage("Loaded " + (articles[slug] || slug) + ".");
   } catch (error) {
     showMessage(error.message || "Could not load article.", true);
   }
@@ -304,7 +304,7 @@ $("#close-revision-compare").addEventListener("click", () => $("#revision-compar
 
 function addRevisionCard(container, revision, names, showReviewActions, allRevisions) {
   const card = element("article", "revision-card");
-  const heading = element("h3", "", revision.title || articles[revision.slug] || revision.article_slug);
+  const heading = element("h3", "", revision.title || articles[revision.slug] || revision.article_slug || revision.slug);
   card.append(heading);
   const statusLine = element("p", "revision-meta");
   statusLine.textContent = "Status: " + revision.status + " · Submitted by " +
@@ -721,6 +721,18 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin);
+  const { data: existingPages, error: pagesError } = await supabase.from("wiki_pages").select("slug, title");
+  if (pagesError) throw pagesError;
+  for (const page of existingPages || []) {
+    if (!page.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
+    articles[page.slug] = page.title || page.slug;
+    if (![...articleSelect.options].some((option) => option.value === page.slug)) {
+      const option = document.createElement("option");
+      option.value = page.slug;
+      option.textContent = page.title || page.slug;
+      articleSelect.append(option);
+    }
+  }
   const requestedSlug = new URLSearchParams(window.location.search).get("article");
   if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
     articleSelect.value = requestedSlug;
