@@ -14,6 +14,9 @@
     .editor-controls select,.editor-controls input,.editor-controls button,.editor-button{padding:.65rem .8rem}
     .editor-canvas{min-height:420px;border:1px solid var(--border,#bbb);border-radius:8px;padding:1rem;margin-top:.75rem;background:var(--background,#fff);color:var(--text,#222);overflow-wrap:anywhere}
     .editor-canvas:focus{outline:2px solid var(--teal,#167d7a);outline-offset:2px}
+    .editor-source{box-sizing:border-box;width:100%;min-height:420px;margin-top:.75rem;padding:1rem;border:1px solid var(--border,#bbb);border-radius:8px;background:#101827;color:#f4f0e7;font: .92rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}
+    .editor-source:focus{outline:2px solid #fdbe00;outline-offset:2px}
+    .editor-mode-note{margin:.6rem 0;font-size:.92rem;opacity:.85}
     .editor-canvas img{max-width:100%;height:auto}
     .editor-canvas table{border-collapse:collapse;max-width:100%}
     .editor-canvas td,.editor-canvas th{border:1px solid #aaa;padding:.35rem}
@@ -111,7 +114,7 @@
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
         <h2>Submit an article revision</h2>
-        <p class="editor-note">Choose an existing article and edit its content below. Your submission remains pending until an administrator approves it. Use the formatting buttons for headings, lists, links, and emphasis.</p>
+        <p class="editor-note">Choose an existing article and edit its content below. Your submission remains pending until an administrator approves it. Switch between visual editing and HTML source. Source mode lets you directly edit the article markup; changes are sanitized before saving.</p>
         <div class="editor-controls">
           <label for="article-select">Article</label>
           <select id="article-select">
@@ -123,7 +126,11 @@
           </select>
           <button id="load-article" class="editor-button" type="button">Load current version</button>
         </div>
-        <div class="editor-toolbar" aria-label="Formatting tools">
+        <div class="editor-controls" style="margin-top:.75rem">
+          <button id="toggle-source-mode" class="editor-button" type="button" aria-pressed="false">Edit HTML source</button>
+          <span id="editor-mode-note" class="editor-mode-note">Visual mode</span>
+        </div>
+        <div class="editor-toolbar" id="visual-editor-toolbar" aria-label="Formatting tools">
           <button type="button" data-command="bold"><strong>Bold</strong></button>
           <button type="button" data-command="italic"><em>Italic</em></button>
           <button type="button" data-command="formatBlock" data-value="h2">Heading</button>
@@ -134,6 +141,7 @@
           <button type="button" id="remove-format">Clear formatting</button>
         </div>
         <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article content editor" aria-multiline="true"></div>
+        <textarea id="editor-source" class="editor-source editor-hidden" aria-label="Article HTML source" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
         <div class="editor-controls" style="margin-top:1rem">
           <button id="submit-revision" class="editor-button" type="button">Submit for approval</button>
           <span id="editor-status" class="editor-status" role="status" aria-live="polite"></span>
@@ -244,7 +252,7 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261010-full-review-audit"></script>
+  <script type="module" src="wiki-editor.js?v=20261019-html-source-mode-v1"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
