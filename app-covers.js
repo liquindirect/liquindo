@@ -21,27 +21,43 @@ function makeElement(tag, className, text) {
   return node;
 }
 
-function loadImage(url, timeoutMs = 12000) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    let settled = false;
-    const finish = (error) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      image.onload = null;
-      image.onerror = null;
-      if (error) reject(error);
-      else resolve(url);
-    };
-    const timeout = setTimeout(() => {
-      image.src = "";
-      finish(new Error("The cover image request timed out."));
-    }, timeoutMs);
-    image.onload = () => finish();
-    image.onerror = () => finish(new Error("This cover image could not be loaded."));
-    image.src = url;
-  });
+async function downloadCover(path, timeoutMs = 15000) {
+  // Download image bytes from Supabase Storage first, then display a local
+  // object URL. This gives us explicit HTTP errors instead of relying on the
+  // WebView to render a remote image URL silently.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  let objectUrl = "";
+  try {
+    const response = await fetch(publicImageUrl(path), {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal
+    });
+    if (!response.ok) {
+      throw new Error("Supabase Storage returned HTTP " + response.status + ".");
+    }
+    const blob = await response.blob();
+    if (!blob.size || !/^image\//i.test(blob.type || "")) {
+      throw new Error("Supabase returned an empty file or a non-image response.");
+    }
+    objectUrl = URL.createObjectURL(blob);
+    await new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("The downloaded cover is not a displayable image."));
+      image.src = objectUrl;
+    });
+    return objectUrl;
+  } catch (error) {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    if (error?.name === "AbortError") {
+      throw new Error("The cover download timed out. Check the app's internet connection.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function setStatus(node, message, state = "") {
@@ -144,7 +160,7 @@ async function home() {
         button.disabled = true;
         setStatus(status, "Loading cover: " + cover.title + "…");
         try {
-          const imageUrl = await loadImage(publicImageUrl(cover.image_path));
+          const imageUrl = await downloadCover(cover.image_path);
           applyCover(cover, imageUrl);
           if (storageWorks) {
             try {
@@ -159,7 +175,7 @@ async function home() {
             : "Cover applied for this visit, but device storage is blocked so the choice may reset when you reopen the app.",
             storageWorks ? "success" : "warning");
         } catch (error) {
-          setStatus(status, "Could not load " + cover.title + ". The current cover has been kept. Check your connection and try again.", "error");
+          setStatus(status, "Could not load " + cover.title + ": " + (error?.message || "unknown image error") + ". The current cover has been kept.", "error");
           console.error("Could not apply app cover:", cover.title, error);
         } finally {
           button.disabled = false;
@@ -176,7 +192,7 @@ async function home() {
     let selected = null;
     for (const cover of ordered) {
       try {
-        const imageUrl = await loadImage(publicImageUrl(cover.image_path));
+        const imageUrl = await downloadCover(cover.image_path);
         applyCover(cover, imageUrl);
         selected = cover;
         break;
@@ -199,7 +215,7 @@ async function home() {
       }
       buttonsById.forEach((button, id) => button.setAttribute("aria-pressed", String(id === selected.id)));
     } else {
-      setStatus(status, "The cover choices are available, but their images could not be downloaded. The standard design remains active. Check your connection and try again.", "error");
+      setStatus(status, "Cover choices loaded, but all Supabase image downloads failed. Tap a cover to see its specific download error.", "error");
     }
   } catch (error) {
     setStatus(status, "Could not load the cover library. The standard design remains active. Check your connection and reload.", "error");
