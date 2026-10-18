@@ -4661,11 +4661,12 @@ body.account-recovery-redesign .page-title h1 {
   --app-navy-soft: #132443;
   --app-gold: #e9c76b;
 }
+/* The fixed bottom navigation was retired; hide it even if an older cached script injects it. */
 .liquindo-app-nav,
-.liquindo-install-button { display: none; }
+.liquindo-install-button { display: none !important; }
 @media (max-width: 760px) {
   body.liquindo-app-mode {
-    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 0 !important;
     -webkit-tap-highlight-color: transparent;
   }
   body.liquindo-app-mode .site-header {
