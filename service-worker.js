@@ -1,4 +1,4 @@
-const CACHE_NAME = "liquindo-shell-v4";
+const CACHE_NAME = "liquindo-shell-v5";
 const APP_BASE = "/liquindo/";
 const HOME_URL = APP_BASE + "index.html";
 const OFFLINE_URL = APP_BASE + "offline.html";
