@@ -8,6 +8,20 @@ on:
         required: true
         type: boolean
         default: false
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "capacitor.config.json"
+      - "app.html"
+      - "app-shell.js"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/**"
+      - "assets/**"
+      - "app-icon.svg"
+      - "ANDROID-APP.md"
+      - ".github/workflows/android-apk.yml"
   push:
     branches:
       - main
