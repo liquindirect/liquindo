@@ -21,11 +21,25 @@ function makeElement(tag, className, text) {
   return node;
 }
 
-function loadImage(url) {
+function loadImage(url, timeoutMs = 12000) {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.onload = () => resolve(url);
-    image.onerror = () => reject(new Error("This cover image could not be loaded."));
+    let settled = false;
+    const finish = (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      image.onload = null;
+      image.onerror = null;
+      if (error) reject(error);
+      else resolve(url);
+    };
+    const timeout = setTimeout(() => {
+      image.src = "";
+      finish(new Error("The cover image request timed out."));
+    }, timeoutMs);
+    image.onload = () => finish();
+    image.onerror = () => finish(new Error("This cover image could not be loaded."));
     image.src = url;
   });
 }
@@ -88,7 +102,6 @@ async function home() {
 
     const covers = data || [];
     list.replaceChildren();
-
     if (!covers.length) {
       setStatus(status, "No custom covers are available. The standard design remains active.");
       return;
@@ -102,29 +115,15 @@ async function home() {
       storageWorks = false;
     }
 
-    const savedCover = covers.find((cover) => cover.image_path === savedPath);
-    const ordered = savedCover
-      ? [savedCover, ...covers.filter((cover) => cover.id !== savedCover.id)]
-      : covers;
-    let selected = null;
+    const savedCover = covers.find((cover) => cover.image_path === savedPath) || null;
+    const buttonsById = new Map();
 
-    // Preload the saved image before applying it. If it fails, try the remaining
-    // available covers rather than claiming that a broken image was selected.
-    for (const cover of ordered) {
-      try {
-        const imageUrl = await loadImage(publicImageUrl(cover.image_path));
-        applyCover(cover, imageUrl);
-        selected = cover;
-        break;
-      } catch (error) {
-        console.warn("App cover image failed to load:", cover.title, error);
-      }
-    }
-
+    // Render choices before downloading full-size artwork. A stalled image request
+    // must never prevent users from selecting another cover.
     for (const cover of covers) {
       const button = makeElement("button", "cover-choice");
       button.type = "button";
-      button.setAttribute("aria-pressed", String(cover.id === selected?.id));
+      button.setAttribute("aria-pressed", "false");
       button.setAttribute("aria-label", "Use app cover: " + cover.title);
 
       const thumbnail = makeElement("img");
@@ -143,10 +142,9 @@ async function home() {
 
       button.addEventListener("click", async () => {
         button.disabled = true;
-        setStatus(status, "Loading “" + cover.title + "”…");
+        setStatus(status, "Loading cover: " + cover.title + "…");
         try {
           const imageUrl = await loadImage(publicImageUrl(cover.image_path));
-          // Persist only after the actual image has loaded and can be applied.
           applyCover(cover, imageUrl);
           if (storageWorks) {
             try {
@@ -155,42 +153,53 @@ async function home() {
               storageWorks = false;
             }
           }
-          list.querySelectorAll("button.cover-choice").forEach((item) => {
-            item.setAttribute("aria-pressed", String(item === button));
-          });
-          if (!storageWorks) {
-            setStatus(status, "Cover applied for this visit, but this device blocked saving the choice. It may reset when you reopen the app.", "warning");
-          } else {
-            setStatus(status, "Cover “" + cover.title + "” loaded and applied. Your choice is saved on this device.", "success");
-          }
+          buttonsById.forEach((item, id) => item.setAttribute("aria-pressed", String(id === cover.id)));
+          setStatus(status, storageWorks
+            ? "Cover applied: " + cover.title + ". Your choice is saved on this device."
+            : "Cover applied for this visit, but device storage is blocked so the choice may reset when you reopen the app.",
+            storageWorks ? "success" : "warning");
         } catch (error) {
-          setStatus(status, "Could not apply “" + cover.title + "”. The current cover has been kept. Check your connection and try again.", "error");
-          console.error("Could not apply app cover:", error);
+          setStatus(status, "Could not load " + cover.title + ". The current cover has been kept. Check your connection and try again.", "error");
+          console.error("Could not apply app cover:", cover.title, error);
         } finally {
           button.disabled = false;
         }
       });
+
+      buttonsById.set(cover.id, button);
       list.append(button);
+    }
+
+    const ordered = savedCover
+      ? [savedCover, ...covers.filter((cover) => cover.id !== savedCover.id)]
+      : covers;
+    let selected = null;
+    for (const cover of ordered) {
+      try {
+        const imageUrl = await loadImage(publicImageUrl(cover.image_path));
+        applyCover(cover, imageUrl);
+        selected = cover;
+        break;
+      } catch (error) {
+        console.warn("App cover image failed to load:", cover.title, error);
+      }
     }
 
     if (selected) {
       if (storageWorks && savedCover?.id === selected.id) {
-        setStatus(status, "Your saved cover, “" + selected.title + "”, is active.");
+        setStatus(status, "Your saved cover, " + selected.title + ", is active.");
       } else {
         if (storageWorks) {
           try { localStorage.setItem(STORAGE_KEY, selected.image_path); }
           catch { storageWorks = false; }
         }
         setStatus(status, storageWorks
-          ? "Cover “" + selected.title + "” is active. Choose another below."
-          : "Cover “" + selected.title + "” is active for this visit. Device storage is unavailable.");
+          ? "Cover " + selected.title + " is active. Choose another below."
+          : "Cover " + selected.title + " is active for this visit. Device storage is unavailable.");
       }
-      list.querySelectorAll("button.cover-choice").forEach((button, index) => {
-        const cover = covers[index];
-        button.setAttribute("aria-pressed", String(cover.id === selected.id));
-      });
+      buttonsById.forEach((button, id) => button.setAttribute("aria-pressed", String(id === selected.id)));
     } else {
-      setStatus(status, "The cover library loaded, but none of its images could be displayed. The standard design remains active. Check your connection and try again.", "error");
+      setStatus(status, "The cover choices are available, but their images could not be downloaded. The standard design remains active. Check your connection and try again.", "error");
     }
   } catch (error) {
     setStatus(status, "Could not load the cover library. The standard design remains active. Check your connection and reload.", "error");
