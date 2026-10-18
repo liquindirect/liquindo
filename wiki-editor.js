@@ -673,6 +673,10 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin);
+  const requestedSlug = new URLSearchParams(window.location.search).get("article");
+  if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
+    articleSelect.value = requestedSlug;
+  }
   await loadArticle();
   await renderRevisions();
 }
