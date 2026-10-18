@@ -29,3 +29,15 @@ async function loadApprovedArticles() {
   }
 }
 loadApprovedArticles();
+
+
+// Keep the article-level Edit link pointed at the article currently open.
+function updateCurrentArticleEditLink() {
+  const link = document.getElementById("wiki-edit-current");
+  const slug = window.location.hash.slice(1);
+  if (link && /^[a-z0-9-]+$/i.test(slug)) {
+    link.href = "wiki-editor.html?article=" + encodeURIComponent(slug);
+  }
+}
+window.addEventListener("hashchange", updateCurrentArticleEditLink);
+updateCurrentArticleEditLink();
