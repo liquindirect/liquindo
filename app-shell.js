@@ -248,9 +248,11 @@
         if (!release) throw new Error("No published signed APK release was found.");
         const version = release.tag_name.replace(/^liquindo-v/i, "v");
         status.dataset.state = "success";
-        status.textContent = "Latest published Android release: " + version + ". Open the release to review and download the APK.";
-        releaseLink.href = release.html_url || "https://github.com/liquindirect/liquindo/releases/latest";
-        releaseLink.textContent = "View " + version + " release";
+        const apkAsset = release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url);
+        if (!apkAsset) throw new Error("The latest release has no downloadable APK asset.");
+        status.textContent = "Latest published Android APK: " + version + ". Download it, then open the downloaded file and confirm installation in Android.";
+        releaseLink.href = apkAsset.browser_download_url;
+        releaseLink.textContent = "Download " + version + " APK";
         releaseLink.hidden = false;
       } catch (error) {
         status.dataset.state = "error";
