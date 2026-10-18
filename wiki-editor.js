@@ -27,7 +27,7 @@ const newArticleSlug = $("#new-article-slug");
 const articleCreateOption = "__new__";
 let canCreateArticles = false;
 function slugifyArticleTitle(value) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "")
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 }
 function isCreatingArticle() { return articleSelect.value === articleCreateOption; }
@@ -589,6 +589,12 @@ permissionForm.addEventListener("submit", async (event) => {
 });
 
 $("#load-article").addEventListener("click", loadArticle);
+newArticleTitle.addEventListener("input", () => {
+  if (!newArticleSlug.dataset.edited) newArticleSlug.value = slugifyArticleTitle(newArticleTitle.value);
+  const heading = canvas.querySelector(".section-title");
+  if (isCreatingArticle() && heading) heading.textContent = newArticleTitle.value.trim() || "New article";
+});
+newArticleSlug.addEventListener("input", () => { newArticleSlug.dataset.edited = "true"; });
 articleSelect.addEventListener("change", loadArticle);
 canvas.addEventListener("input", () => {
   sourceEditor.value = canvas.innerHTML;
@@ -668,13 +674,15 @@ submitButton.addEventListener("click", async () => {
     const { data: page, error: pageError } = await supabase.from("wiki_pages")
       .select("id").eq("slug", slug).maybeSingle();
     if (pageError) throw pageError;
+    if (creating && page) throw new Error("That article URL already exists. Choose a different slug.");
     const { error } = await supabase.from("wiki_revisions").insert({
       page_id: page?.id ?? null,
       slug,
       title,
       content,
       edited_by: user.id,
-      status: "pending"
+      status: "pending",
+      is_new_article: creating
     });
     if (error) throw error;
     clearDraftIfMatches(slug, content);
@@ -706,6 +714,7 @@ async function initialize() {
   isWikiEditor = isWikiAdmin || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
   submitButton.textContent = isWikiAdmin ? "Publish / submit article" : "Submit for approval";
   articleSelect.querySelector(`option[value="${articleCreateOption}"]`).hidden = !canCreateArticles && !isWikiAdmin;
+  if (!canCreateArticles && !isWikiAdmin && articleSelect.value === articleCreateOption) articleSelect.value = "liquindo";
   if (!isWikiEditor) {
     setAppState("no-permission");
     return;
