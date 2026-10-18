@@ -19,14 +19,58 @@ async function loadApprovedArticles() {
     return;
   }
   for (const articleData of data || []) {
-    const article = document.getElementById(articleData.slug);
+    let article = document.getElementById(articleData.slug);
+    if (!article && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
+      const list = document.querySelector("#wiki-directory .articles-list");
+      const view = document.getElementById("wiki-article-view");
+      if (!list || !view) continue;
+      const card = document.createElement("article");
+      card.className = "article-card";
+      const cardHeading = document.createElement("h3");
+      const cardLink = document.createElement("a");
+      cardLink.href = "wiki.html#" + articleData.slug;
+      cardLink.textContent = articleData.title || articleData.slug;
+      cardHeading.append(cardLink);
+      const description = document.createElement("p");
+      description.className = "article-description";
+      description.textContent = "Community-created LiquinWiki article.";
+      card.append(cardHeading, description);
+      list.append(card);
+
+      article = document.createElement("article");
+      article.id = articleData.slug;
+      article.className = "wiki-article";
+      article.setAttribute("data-wiki-article", "");
+      article.hidden = true;
+      const header = document.createElement("header");
+      header.className = "article-header";
+      const label = document.createElement("p");
+      label.className = "section-label";
+      label.textContent = "Liquinwiki";
+      const heading = document.createElement("h1");
+      heading.className = "article-title";
+      heading.textContent = articleData.title || articleData.slug;
+      header.append(label, heading);
+      article.append(header);
+      view.append(article);
+    }
     if (!article || !article.hasAttribute("data-wiki-article")) continue;
-    article.innerHTML = DOMPurify.sanitize(articleData.content, sanitizeOptions);
-    const title = article.querySelector(".article-title");
-    if (title && window.location.hash === "#" + articleData.slug) {
-      document.title = title.textContent.trim() + " - Liquinwiki";
+    const header = article.querySelector(".article-header");
+    if (header && !header.querySelector(".article-title")) {
+      const heading = document.createElement("h1");
+      heading.className = "article-title";
+      heading.textContent = articleData.title || articleData.slug;
+      header.append(heading);
+    }
+    const existingTitle = article.querySelector(".article-title");
+    if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
+    const headerHtml = header ? header.outerHTML : "";
+    article.innerHTML = headerHtml + DOMPurify.sanitize(articleData.content, sanitizeOptions);
+    if (window.location.hash === "#" + articleData.slug) {
+      document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
   }
+  if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
 loadApprovedArticles();
 
