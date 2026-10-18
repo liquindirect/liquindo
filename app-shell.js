@@ -5,7 +5,7 @@
   // Native APK builds append their own build number to the remote app URL.
   // Persist it across navigation so the update checker can compare like-for-like.
   const apkVersionParam = new URLSearchParams(location.search).get("apkVersion");
-  if (/^\\d+$/.test(apkVersionParam || "")) {
+  if (/^\d+$/.test(apkVersionParam || "")) {
     try { localStorage.setItem("liquindo-apk-version", apkVersionParam); } catch (_) {}
   }
   const links = [
@@ -252,7 +252,7 @@
         );
         const release = candidates[0];
         if (!release) throw new Error("No published signed APK release was found.");
-        const latestNumber = Number((release.tag_name.match(/\\d+$/) || ["0"])[0]);
+        const latestNumber = Number((release.tag_name.match(/\d+$/) || ["0"])[0]);
         const version = "v" + latestNumber;
         const apkAsset = release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url);
         if (!apkAsset) throw new Error("The latest release has no downloadable APK asset.");
@@ -260,7 +260,7 @@
         let installedNumber = null;
         try {
           const savedVersion = localStorage.getItem("liquindo-apk-version");
-          if (/^\\d+$/.test(savedVersion || "")) installedNumber = Number(savedVersion);
+          if (/^\d+$/.test(savedVersion || "")) installedNumber = Number(savedVersion);
         } catch (_) {}
 
         status.dataset.state = "success";
