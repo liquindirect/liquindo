@@ -361,10 +361,16 @@
     }, { once: true });
   }
 
+  // Keep the PWA install guidance and display-mode detection, but do not inject
+  // the fixed bottom navigation bar into the website.
+  function initializePwaGuidance() {
+    detectPwaDisplayMode();
+    addPwaInstallGuide();
+  }
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addMobileNavigation, { once: true });
+    document.addEventListener("DOMContentLoaded", initializePwaGuidance, { once: true });
   } else {
-    addMobileNavigation();
+    initializePwaGuidance();
   }
   registerWorker();
   if (document.readyState === "loading") {
