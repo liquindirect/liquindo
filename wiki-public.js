@@ -20,6 +20,7 @@ async function loadApprovedArticles() {
   }
   for (const articleData of data || []) {
     let article = document.getElementById(articleData.slug);
+    let createdDynamically = false;
     if (!article && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
       const list = document.querySelector("#wiki-directory .articles-list");
       const view = document.getElementById("wiki-article-view");
@@ -42,6 +43,7 @@ async function loadApprovedArticles() {
       article.className = "wiki-article";
       article.setAttribute("data-wiki-article", "");
       article.hidden = true;
+      createdDynamically = true;
       const header = document.createElement("header");
       header.className = "article-header";
       const label = document.createElement("p");
@@ -64,8 +66,8 @@ async function loadApprovedArticles() {
     }
     const existingTitle = article.querySelector(".article-title");
     if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
-    const headerHtml = header ? header.outerHTML : "";
-    article.innerHTML = headerHtml + DOMPurify.sanitize(articleData.content, sanitizeOptions);
+    const safeContent = DOMPurify.sanitize(articleData.content, sanitizeOptions);
+    article.innerHTML = createdDynamically ? ((header ? header.outerHTML : "") + safeContent) : safeContent;
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
