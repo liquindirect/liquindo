@@ -236,13 +236,13 @@
         if (!Array.isArray(releases)) throw new Error("GitHub returned an unexpected release list.");
         const candidates = releases.filter((item) =>
           item && !item.draft && !item.prerelease &&
-          /^liquindo-v\\d+$/i.test(item.tag_name || "") &&
+          /^liquindo-v\d+$/i.test(item.tag_name || "") &&
           Array.isArray(item.assets) &&
           item.assets.some((asset) => asset.name === "app-release.apk" && asset.browser_download_url)
         );
         candidates.sort((a, b) =>
-          Number((b.tag_name.match(/\\d+$/) || ["0"])[0]) -
-          Number((a.tag_name.match(/\\d+$/) || ["0"])[0])
+          Number((b.tag_name.match(/\d+$/) || ["0"])[0]) -
+          Number((a.tag_name.match(/\d+$/) || ["0"])[0])
         );
         const release = candidates[0];
         if (!release) throw new Error("No published signed APK release was found.");
