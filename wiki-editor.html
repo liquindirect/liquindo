@@ -18,6 +18,13 @@
     .editor-source:focus{outline:2px solid #fdbe00;outline-offset:2px}
     .editor-mode-note{margin:.6rem 0;font-size:.92rem;opacity:.85}
     .editor-canvas img{max-width:100%;height:auto}
+    .editor-canvas .article-section{clear:both;margin:1.5rem 0;padding:1.1rem 1.2rem;border:1px solid #d8d0c1;border-radius:10px;background:#fffdf8}
+    .editor-canvas .section-title{margin:0 0 1rem;border-bottom:1px solid #fdbe00;padding-bottom:.5rem;font-size:1.55rem;line-height:1.2}
+    .editor-canvas h2:not(.section-title){margin:0 0 1rem;border-bottom:1px solid #fdbe00;padding-bottom:.5rem;font-size:1.55rem;line-height:1.2}
+    .editor-guide{margin-top:1rem;border:1px solid #d8d0c1;border-radius:10px;background:#fffdf8;color:#172534}
+    .editor-guide summary{padding:.85rem 1rem;font-weight:700;cursor:pointer}
+    .editor-guide-content{padding:0 1rem 1rem}
+    .editor-guide pre{overflow:auto;padding:1rem;border-radius:8px;background:#101827;color:#f4f0e7;font: .88rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}
     .editor-canvas table{border-collapse:collapse;max-width:100%}
     .editor-canvas td,.editor-canvas th{border:1px solid #aaa;padding:.35rem}
     .editor-toolbar{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
@@ -140,6 +147,22 @@
           <button type="button" id="insert-link">Insert link</button>
           <button type="button" id="remove-format">Clear formatting</button>
         </div>
+        <details class="editor-guide">
+          <summary>HTML editing guide — how to match the live LiquinWiki</summary>
+          <div class="editor-guide-content">
+            <p><strong>Quick rule:</strong> use an <code>h2</code> for a main section heading and put the section content inside an <code>article-section</code> block. The live wiki draws a gold line underneath section headings and frames each section.</p>
+            <p><strong>Copy this structure for a new section:</strong></p>
+            <pre><code>&lt;section class="article-section"&gt;
+  &lt;h2 class="section-title"&gt;Section heading&lt;/h2&gt;
+  &lt;p&gt;Write the section text here.&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+            <p><strong>Subheading inside a section:</strong></p>
+            <pre><code>&lt;h3 class="subsection-title"&gt;Subheading&lt;/h3&gt;
+&lt;p&gt;More detail goes here.&lt;/p&gt;</code></pre>
+            <p><strong>Useful HTML:</strong> <code>&lt;p&gt;paragraph&lt;/p&gt;</code> for paragraphs, <code>&lt;strong&gt;bold text&lt;/strong&gt;</code>, <code>&lt;em&gt;italic text&lt;/em&gt;</code>, <code>&lt;ul&gt;&lt;li&gt;item&lt;/li&gt;&lt;/ul&gt;</code> for bullet lists, and <code>&lt;a href="https://example.com"&gt;link text&lt;/a&gt;</code> for links.</p>
+            <p><strong>Important:</strong> edit only the article content, not the page's outer HTML, scripts, or styles. Close every tag you open. Use full <code>https://</code> links, and switch back to the visual editor to check the layout before submitting. Unsafe HTML is removed when content is sanitized.</p>
+          </div>
+        </details>
         <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article content editor" aria-multiline="true"></div>
         <textarea id="editor-source" class="editor-source editor-hidden" aria-label="Article HTML source" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
         <div class="editor-controls" style="margin-top:1rem">
@@ -252,7 +275,7 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261019-html-source-mode-v1"></script>
+  <script type="module" src="wiki-editor.js?v=20261019-html-source-guide-v2"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
