@@ -54,6 +54,26 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Require signing credentials for published releases
+        if: github.event_name == 'workflow_dispatch' && inputs.publish_release
+        env:
+          KEYSTORE_BASE64: ${{ secrets.LIQUINDO_ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.LIQUINDO_ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.LIQUINDO_ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.LIQUINDO_ANDROID_KEY_PASSWORD }}
+        run: |
+          missing=0
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Required signing secret is missing: ${name/KEYSTORE_BASE64/LIQUINDO_ANDROID_KEYSTORE_BASE64}"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Release publishing is blocked until all four LIQUINDO_ANDROID_* signing secrets are configured."
+            exit 1
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -128,6 +148,13 @@ jobs:
         if: env.ANDROID_KEYSTORE_BASE64 == '' || env.ANDROID_KEYSTORE_PASSWORD == '' || env.ANDROID_KEY_ALIAS == '' || env.ANDROID_KEY_PASSWORD == ''
         working-directory: android
         run: ./gradlew --no-daemon assembleDebug
+
+      - name: Verify release APK signature
+        if: env.ANDROID_KEYSTORE_BASE64 != '' && env.ANDROID_KEYSTORE_PASSWORD != '' && env.ANDROID_KEY_ALIAS != '' && env.ANDROID_KEY_PASSWORD != ''
+        run: |
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
 
       - name: Explain signing mode
         if: always()
