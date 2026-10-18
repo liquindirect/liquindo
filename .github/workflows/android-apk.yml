@@ -89,15 +89,7 @@ jobs:
 
       - name: Embed APK build number in remote app URL
         run: |
-          node --input-type=module <<'NODE'
-          import fs from "node:fs";
-          const path = "capacitor.config.json";
-          const config = JSON.parse(fs.readFileSync(path, "utf8"));
-          const url = new URL(config.server.url);
-          url.searchParams.set("apkVersion", process.env.GITHUB_RUN_NUMBER);
-          config.server.url = url.toString();
-          fs.writeFileSync(path, JSON.stringify(config, null, 2) + "\n");
-          NODE
+          node --input-type=module -e 'import fs from "node:fs"; const path = "capacitor.config.json"; const config = JSON.parse(fs.readFileSync(path, "utf8")); const url = new URL(config.server.url); url.searchParams.set("apkVersion", process.env.GITHUB_RUN_NUMBER); config.server.url = url.toString(); fs.writeFileSync(path, JSON.stringify(config, null, 2) + "\\n");'
 
       - name: Generate Android project
         run: npx cap add android
