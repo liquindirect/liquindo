@@ -293,7 +293,9 @@
         // relying on /releases/latest, which can remain stale in intermediary caches.
         const endpoint = "https://api.github.com/repos/liquindirect/liquindo/releases?per_page=100&_=" + Date.now();
         const response = await fetch(endpoint, {
-          headers: { Accept: "application/vnd.github+json", "Cache-Control": "no-cache" },
+          // Avoid Cache-Control request headers: on some WebViews they trigger a
+          // cross-origin preflight that GitHub's API request may not pass.
+          headers: { Accept: "application/vnd.github+json" },
           cache: "no-store"
         });
         if (!response.ok) throw new Error("GitHub returned " + response.status);
