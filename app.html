@@ -28,8 +28,8 @@
     .eyebrow{margin:0 0 9px;color:var(--gold);font-size:.76rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
     h1{font-size:clamp(2.4rem,9vw,4.7rem);line-height:.98;letter-spacing:-.055em;margin:0;max-width:700px}
     .intro{max-width:620px;margin:18px 0 24px;color:var(--muted);font-size:1.02rem}
-    .app-cover-hero{padding:clamp(24px,6vw,46px);margin:0 0 22px;border:1px solid rgba(253,190,0,.35);border-radius:22px;background:linear-gradient(90deg,rgba(7,19,41,.92),rgba(7,19,41,.35)),radial-gradient(ellipse at 80% 15%,rgba(253,190,0,.16),transparent 50%),var(--panel);background-size:cover;background-position:center;min-height:170px;display:flex;flex-direction:column;justify-content:end}
-    .app-cover-hero .cover-label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800}.app-cover-hero .cover-current{margin-top:5px;color:var(--cream);font-size:.92rem}
+    .app-cover-hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(24px,6vw,46px);margin:0 0 22px;border:1px solid rgba(253,190,0,.35);border-radius:22px;background:linear-gradient(90deg,rgba(7,19,41,.92),rgba(7,19,41,.35)),radial-gradient(ellipse at 80% 15%,rgba(253,190,0,.16),transparent 50%),var(--panel);background-size:cover;background-position:center;min-height:170px;display:flex;flex-direction:column;justify-content:end}
+    .app-cover-hero .app-cover-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;border-radius:inherit;pointer-events:none}.app-cover-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,19,41,.90),rgba(7,19,41,.30));z-index:1;pointer-events:none}.app-cover-hero>:not(.app-cover-image){position:relative;z-index:2}.app-cover-hero .cover-label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800}.app-cover-hero .cover-current{margin-top:5px;color:var(--cream);font-size:.92rem}
     .cover-picker{margin:0 0 32px;padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)}
     .cover-picker-intro{color:var(--muted);font-size:.88rem;margin:6px 0 14px}.cover-choice-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
     .cover-choice{display:flex;gap:10px;align-items:center;text-align:left;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--cream);min-width:0}
@@ -132,7 +132,7 @@
       try { localStorage.setItem("liquindo-apk-mode", "website"); } catch (_) {}
     });
   </script>
-  <script type="module" src="app-covers.js?v=20261018-cover-fix2"></script>
+  <script type="module" src="app-covers.js?v=20261018-cover-remote-render1"></script>
   <script src="app-shell.js?v=20261018-update-check-fix1"></script>
 </body>
 </html>
