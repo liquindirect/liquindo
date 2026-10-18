@@ -178,7 +178,11 @@
   }
 
   function addConnectionStatus() {
-    if (!document.body || document.querySelector(".liquindo-connection-banner")) return;
+    // Keep this APK-specific UI out of the ordinary website/PWA experience.
+    const isNativeApp = !!window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform();
+    if (!isNativeApp || !document.body || document.querySelector(".liquindo-connection-banner")) return;
     const banner = document.createElement("div");
     banner.className = "liquindo-connection-banner";
     banner.setAttribute("role", "status");
