@@ -224,19 +224,31 @@
       status.textContent = "Checking GitHub Releases…";
       releaseLink.hidden = true;
       try {
-        const response = await fetch("https://api.github.com/repos/liquindirect/liquindo/releases/latest", {
-          headers: { Accept: "application/vnd.github+json" },
+        // Query the published releases list with a cache-busting parameter instead of
+        // relying on /releases/latest, which can remain stale in intermediary caches.
+        const endpoint = "https://api.github.com/repos/liquindirect/liquindo/releases?per_page=100&_=" + Date.now();
+        const response = await fetch(endpoint, {
+          headers: { Accept: "application/vnd.github+json", "Cache-Control": "no-cache" },
           cache: "no-store"
         });
         if (!response.ok) throw new Error("GitHub returned " + response.status);
-        const release = await response.json();
-        const apk = Array.isArray(release.assets)
-          ? release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url)
-          : null;
-        if (!release.tag_name || !apk) throw new Error("No published signed APK was found in the latest release.");
+        const releases = await response.json();
+        if (!Array.isArray(releases)) throw new Error("GitHub returned an unexpected release list.");
+        const candidates = releases.filter((item) =>
+          item && !item.draft && !item.prerelease &&
+          /^liquindo-v\d+$/i.test(item.tag_name || "") &&
+          Array.isArray(item.assets) &&
+          item.assets.some((asset) => asset.name === "app-release.apk" && asset.browser_download_url)
+        );
+        candidates.sort((a, b) =>
+          Number((b.tag_name.match(/\d+$/) || ["0"])[0]) -
+          Number((a.tag_name.match(/\d+$/) || ["0"])[0])
+        );
+        const release = candidates[0];
+        if (!release) throw new Error("No published signed APK release was found.");
         const version = release.tag_name.replace(/^liquindo-v/i, "v");
         status.dataset.state = "success";
-        status.textContent = "Latest published release: " + version + ". Open the release to review and download the APK.";
+        status.textContent = "Latest published Android release: " + version + ". Open the release to review and download the APK.";
         releaseLink.href = release.html_url || "https://github.com/liquindirect/liquindo/releases/latest";
         releaseLink.textContent = "View " + version + " release";
         releaseLink.hidden = false;
