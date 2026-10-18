@@ -39,11 +39,22 @@ function setStatus(node, message, state = "") {
 function applyCover(cover, imageUrl) {
   const hero = document.querySelector(".app-cover-hero");
   if (!hero) throw new Error("The app cover display area is missing.");
-  hero.style.backgroundImage =
-    'linear-gradient(90deg,rgba(7,19,41,.90),rgba(7,19,41,.30)),url("' +
-    imageUrl.replace(/"/g, "%22") + '")';
-  hero.style.backgroundSize = "cover";
-  hero.style.backgroundPosition = "center";
+
+  // Render the remotely loaded image as a real element instead of relying on
+  // WebView CSS background-image behaviour. The image is fetched from Supabase
+  // before this function is called, so a failed download never replaces the
+  // currently displayed cover.
+  let image = hero.querySelector(".app-cover-image");
+  if (!image) {
+    image = document.createElement("img");
+    image.className = "app-cover-image";
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    image.draggable = false;
+    hero.prepend(image);
+  }
+  image.src = imageUrl;
+  image.dataset.coverId = cover.id;
   hero.dataset.coverId = cover.id;
   const label = hero.querySelector("[data-cover-current]");
   if (label) label.textContent = cover.title;
