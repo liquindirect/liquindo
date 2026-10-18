@@ -64,6 +64,10 @@ The earlier debug APK was built before a persistent signing key was configured. 
 - Capacitor is configured to show a bundled retry page if the remote site fails to load. This is an error screen, not offline access to account pages or wiki content; test it with Airplane mode and a temporary site outage.
 - The live `server.url` approach prioritizes immediate website updates but depends on network availability. A production release should consider bundling a tested local site and adopting a supported live-update strategy instead.
 - The wrapper does not change the existing GitHub Pages website, Supabase project, account system, member directory, or wiki.
+- The app home includes a GitHub Releases checker and an About panel. The checker reports the latest published signed APK release and opens its release page; Android still requires manual confirmation to install. It does not silently install updates or reliably compare the installed APK's version against the release.
+- The app displays a connection warning when the device reports no network. This does not provide offline access to remote account, member, wiki, or editor pages.
+- The app icon and generated splash assets use the navy-and-gold Liquindo visual style. Capacitor's Android back handling remains in place; test it on a physical device, especially from nested pages and after opening external links.
+- The About panel explains that the website's existing authentication system manages sessions. Do not clear WebView storage on app launch; session persistence still needs to be verified with real sign-in, app close/reopen, and sign-out tests.
 - Test login, CAPTCHA, password recovery, file uploads, navigation/back button, and Flag Maker on a physical Android device before relying on the app.
 
 ## Publishing an APK update

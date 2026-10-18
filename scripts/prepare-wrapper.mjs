@@ -63,4 +63,12 @@ await sharp(svg, { density: 384 })
   .png()
   .toFile(fileURLToPath(new URL("../assets/icon-only.png", import.meta.url)));
 
-console.log("Prepared Capacitor web fallback and 1024px Liquindo app icon.");
+// A simple, branded launch image for Capacitor's Android splash-screen assets.
+const splashSvg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+  <rect width="2732" height="2732" fill="#071329"/>
+  <g transform="translate(1106 940) scale(1.015)"><image href="data:image/svg+xml;base64,${svg.toString("base64")}" width="512" height="512"/></g>
+  <text x="1366" y="1600" fill="#fdbe00" font-family="Arial, Helvetica, sans-serif" font-size="100" font-weight="700" letter-spacing="18" text-anchor="middle">LIQUINDO</text>
+</svg>`);
+await sharp(splashSvg).png().toFile(fileURLToPath(new URL("../assets/splash.png", import.meta.url)));
+
+console.log("Prepared Capacitor fallback pages, app icon, and branded splash image.");

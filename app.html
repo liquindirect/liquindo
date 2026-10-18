@@ -43,6 +43,20 @@
     .wide{grid-column:1/-1;min-height:94px;align-items:center}
     .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
     .foot a{color:var(--gold);font-weight:750}
+    .app-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 30px}
+    .tool-card{min-width:0;padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035)}
+    .tool-card h2{margin:0 0 7px;font-size:1rem}
+    .tool-card p{margin:0 0 12px;color:var(--muted);font-size:.88rem}
+    .tool-card .button{min-height:42px;padding:9px 12px;font-size:.9rem}
+    .tool-card .button:disabled{opacity:.65;cursor:wait}
+    .tool-status{min-height:1.4em;margin-top:9px!important;font-size:.82rem!important}
+    .tool-status[data-state="error"]{color:#ffb4a9}
+    .tool-status[data-state="success"]{color:#b8f2c2}
+    .about-panel{margin-top:10px;padding:12px;border-radius:12px;background:rgba(0,0,0,.18);font-size:.88rem}
+    .about-panel[hidden]{display:none}
+    .connection-banner{position:sticky;top:0;z-index:20;padding:10px 16px;text-align:center;background:#7f1d1d;color:#fff;font-weight:700}
+    .connection-banner[hidden]{display:none}
+    .connection-banner button{margin-left:8px;padding:4px 10px;border:1px solid #fff;border-radius:999px;background:transparent;color:#fff}
     @media(min-width:680px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.wide{grid-column:auto;min-height:122px}.tile{flex-direction:column}.tile-icon{margin-bottom:2px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
   </style>
@@ -61,6 +75,27 @@
         <a class="button" href="members.html">Explore members <span aria-hidden="true">→</span></a>
         <button class="button secondary" id="website-mode" type="button">Switch to website mode</button>
       </div>
+    </section>
+    <section class="app-tools" aria-label="App tools">
+      <article class="tool-card">
+        <h2>App updates</h2>
+        <p>Check GitHub for the latest published Liquindo Android release.</p>
+        <button class="button" id="check-updates" type="button">Check for updates</button>
+        <p class="tool-status" id="update-status" role="status" aria-live="polite">Not checked yet.</p>
+        <a class="button secondary" id="latest-release-link" href="https://github.com/liquindirect/liquindo/releases/latest" target="_blank" rel="noopener noreferrer" hidden>View release</a>
+      </article>
+      <article class="tool-card">
+        <h2>About & settings</h2>
+        <p>App information, privacy and account-session guidance.</p>
+        <button class="button secondary" id="about-toggle" type="button" aria-expanded="false" aria-controls="about-panel">About Liquindo</button>
+        <div class="about-panel" id="about-panel" hidden>
+          <p><strong>Liquindo Android</strong></p>
+          <p>This app uses the official Liquindo website and the same Supabase account system. It does not create a separate account.</p>
+          <p>Login sessions are managed by the website's authentication system. Closing the app does not intentionally sign you out. Use Log out on the website when you want to end a session.</p>
+          <p>For privacy information, visit <a href="privacy.html">the Liquindo privacy notice</a>. APK updates are downloaded from GitHub and Android asks you to confirm installation.</p>
+          <p><a href="https://github.com/liquindirect/liquindo/releases/latest" target="_blank" rel="noopener noreferrer">Latest Android release</a> · <a href="https://liquindirect.github.io/liquindo/" target="_blank" rel="noopener noreferrer">Liquindo website</a></p>
+        </div>
+      </article>
     </section>
     <section aria-labelledby="explore-title">
       <div class="section-head"><h2 id="explore-title">Explore Liquindo</h2><span class="section-note">Choose a destination</span></div>

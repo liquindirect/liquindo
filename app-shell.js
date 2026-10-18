@@ -177,6 +177,84 @@
     });
   }
 
+  function addConnectionStatus() {
+    // Keep this APK-specific UI out of the ordinary website/PWA experience.
+    const isNativeApp = !!window.Capacitor &&
+      typeof window.Capacitor.isNativePlatform === "function" &&
+      window.Capacitor.isNativePlatform();
+    if (!isNativeApp || !document.body || document.querySelector(".liquindo-connection-banner")) return;
+    const banner = document.createElement("div");
+    banner.className = "liquindo-connection-banner";
+    banner.setAttribute("role", "status");
+    banner.setAttribute("aria-live", "polite");
+    banner.hidden = navigator.onLine;
+    banner.style.cssText = "position:sticky;top:0;z-index:1000;padding:10px 14px;text-align:center;background:#7f1d1d;color:#fff;font:700 14px/1.4 system-ui,sans-serif";
+    const message = document.createElement("span");
+    message.textContent = "You appear to be offline. Some Liquindo pages need an internet connection.";
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.textContent = "Retry";
+    retry.style.cssText = "margin-left:10px;padding:5px 10px;border:1px solid #fff;border-radius:999px;background:transparent;color:#fff;font:inherit";
+    retry.addEventListener("click", () => location.reload());
+    banner.append(message, retry);
+    document.body.prepend(banner);
+    window.addEventListener("offline", () => { banner.hidden = false; });
+    window.addEventListener("online", () => { banner.hidden = true; });
+  }
+
+  function setupUpdateAndAboutTools() {
+    const checkButton = document.getElementById("check-updates");
+    const status = document.getElementById("update-status");
+    const releaseLink = document.getElementById("latest-release-link");
+    const aboutButton = document.getElementById("about-toggle");
+    const aboutPanel = document.getElementById("about-panel");
+
+    if (aboutButton && aboutPanel) {
+      aboutButton.addEventListener("click", () => {
+        const expanded = aboutButton.getAttribute("aria-expanded") === "true";
+        aboutButton.setAttribute("aria-expanded", String(!expanded));
+        aboutPanel.hidden = expanded;
+      });
+    }
+    if (!checkButton || !status || !releaseLink) return;
+
+    checkButton.addEventListener("click", async () => {
+      checkButton.disabled = true;
+      status.dataset.state = "";
+      status.textContent = "Checking GitHub Releases…";
+      releaseLink.hidden = true;
+      try {
+        const response = await fetch("https://api.github.com/repos/liquindirect/liquindo/releases/latest", {
+          headers: { Accept: "application/vnd.github+json" },
+          cache: "no-store"
+        });
+        if (!response.ok) throw new Error("GitHub returned " + response.status);
+        const release = await response.json();
+        const apk = Array.isArray(release.assets)
+          ? release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url)
+          : null;
+        if (!release.tag_name || !apk) throw new Error("No published signed APK was found in the latest release.");
+        const version = release.tag_name.replace(/^liquindo-v/i, "v");
+        status.dataset.state = "success";
+        status.textContent = "Latest published release: " + version + ". Open the release to review and download the APK.";
+        releaseLink.href = release.html_url || "https://github.com/liquindirect/liquindo/releases/latest";
+        releaseLink.textContent = "View " + version + " release";
+        releaseLink.hidden = false;
+      } catch (error) {
+        status.dataset.state = "error";
+        status.textContent = navigator.onLine
+          ? "Could not check releases right now. Try again later or open GitHub Releases."
+          : "You are offline. Reconnect to check for updates.";
+        releaseLink.href = "https://github.com/liquindirect/liquindo/releases/latest";
+        releaseLink.textContent = "Open GitHub Releases";
+        releaseLink.hidden = false;
+        console.warn("Liquindo update check failed.", error);
+      } finally {
+        checkButton.disabled = false;
+      }
+    });
+  }
+
   function registerWorker() {
     if (!("serviceWorker" in navigator) || !/^https?:$/.test(location.protocol)) return;
     window.addEventListener("load", () => {
@@ -192,4 +270,13 @@
     addMobileNavigation();
   }
   registerWorker();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      addConnectionStatus();
+      setupUpdateAndAboutTools();
+    }, { once: true });
+  } else {
+    addConnectionStatus();
+    setupUpdateAndAboutTools();
+  }
 })();

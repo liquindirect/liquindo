@@ -8,12 +8,27 @@ on:
         required: true
         type: boolean
         default: false
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "capacitor.config.json"
+      - "app.html"
+      - "app-shell.js"
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/**"
+      - "assets/**"
+      - "app-icon.svg"
+      - "ANDROID-APP.md"
+      - ".github/workflows/android-apk.yml"
   push:
     branches:
       - main
     paths:
       - "capacitor.config.json"
       - "app.html"
+      - "app-shell.js"
       - "package.json"
       - "package-lock.json"
       - "scripts/**"
@@ -75,7 +90,7 @@ jobs:
       - name: Generate Android project
         run: npx cap add android
 
-      - name: Generate Liquindo app icons
+      - name: Generate Liquindo app icons and splash screen
         run: npx capacitor-assets generate --android
 
       - name: Sync Capacitor
