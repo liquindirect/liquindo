@@ -2,6 +2,12 @@
   "use strict";
 
   const base = "/liquindo/";
+  // Native APK builds append their own build number to the remote app URL.
+  // Persist it across navigation so the update checker can compare like-for-like.
+  const apkVersionParam = new URLSearchParams(location.search).get("apkVersion");
+  if (/^\\d+$/.test(apkVersionParam || "")) {
+    try { localStorage.setItem("liquindo-apk-version", apkVersionParam); } catch (_) {}
+  }
   const links = [
     { id: "home", label: "Home", href: "index.html", icon: "⌂" },
     { id: "wiki", label: "Wiki", href: "wiki.html", icon: "▤" },
@@ -246,11 +252,27 @@
         );
         const release = candidates[0];
         if (!release) throw new Error("No published signed APK release was found.");
-        const version = release.tag_name.replace(/^liquindo-v/i, "v");
-        status.dataset.state = "success";
+        const latestNumber = Number((release.tag_name.match(/\\d+$/) || ["0"])[0]);
+        const version = "v" + latestNumber;
         const apkAsset = release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url);
         if (!apkAsset) throw new Error("The latest release has no downloadable APK asset.");
-        status.textContent = "Latest published Android APK: " + version + ". Download it, then open the downloaded file and confirm installation in Android.";
+
+        let installedNumber = null;
+        try {
+          const savedVersion = localStorage.getItem("liquindo-apk-version");
+          if (/^\\d+$/.test(savedVersion || "")) installedNumber = Number(savedVersion);
+        } catch (_) {}
+
+        status.dataset.state = "success";
+        if (installedNumber === null) {
+          status.textContent = "Latest published Android APK: " + version + ". The installed version could not be verified; download this APK to ensure you are current.";
+        } else if (installedNumber < latestNumber) {
+          status.textContent = "Update available: " + version + " (installed build v" + installedNumber + "). Download the APK, then open it and confirm installation in Android.";
+        } else if (installedNumber === latestNumber) {
+          status.textContent = "You're up to date: v" + installedNumber + " is the latest published Android APK.";
+        } else {
+          status.textContent = "Installed build v" + installedNumber + " is newer than the latest published release (" + version + "). No newer APK has been published yet.";
+        }
         releaseLink.href = apkAsset.browser_download_url;
         releaseLink.textContent = "Download " + version + " APK";
         releaseLink.hidden = false;
