@@ -23,13 +23,13 @@ grant execute on function public.can_edit_liquinwiki() to authenticated;
 
 create or replace function public.can_create_liquinwiki_articles()
 returns boolean language sql stable security definer set search_path = ''
-as $
+as $$
   select public.can_manage_liquinwiki()
     or exists (
       select 1 from public.wiki_permissions wp
       where wp.user_id = auth.uid() and wp.permission = 'liquinwiki_creator'
     );
-$;
+$$;
 revoke all on function public.can_create_liquinwiki_articles() from public;
 grant execute on function public.can_create_liquinwiki_articles() to authenticated;
 
