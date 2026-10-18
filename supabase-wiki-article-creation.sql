@@ -21,6 +21,30 @@ $$;
 revoke all on function public.can_edit_liquinwiki() from public;
 grant execute on function public.can_edit_liquinwiki() to authenticated;
 
+create or replace function public.can_create_liquinwiki_articles()
+returns boolean language sql stable security definer set search_path = ''
+as $
+  select public.can_manage_liquinwiki()
+    or exists (
+      select 1 from public.wiki_permissions wp
+      where wp.user_id = auth.uid() and wp.permission = 'liquinwiki_creator'
+    );
+$;
+revoke all on function public.can_create_liquinwiki_articles() from public;
+grant execute on function public.can_create_liquinwiki_articles() to authenticated;
+
+drop policy if exists "Wiki editors can submit pending revisions" on public.wiki_revisions;
+create policy "Wiki editors can submit pending revisions" on public.wiki_revisions
+for insert to authenticated
+with check (
+  edited_by = auth.uid()
+  and status = 'pending'
+  and reviewed_by is null
+  and reviewed_at is null
+  and public.can_edit_liquinwiki()
+  and (not is_new_article or public.can_create_liquinwiki_articles())
+);
+
 create or replace function public.set_liquinwiki_permission(p_email text, p_permission text)
 returns void language plpgsql security definer set search_path = ''
 as $$
