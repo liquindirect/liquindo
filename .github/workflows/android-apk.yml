@@ -14,6 +14,7 @@ on:
     paths:
       - "capacitor.config.json"
       - "app.html"
+      - "app-shell.js"
       - "package.json"
       - "package-lock.json"
       - "scripts/**"
@@ -75,7 +76,7 @@ jobs:
       - name: Generate Android project
         run: npx cap add android
 
-      - name: Generate Liquindo app icons
+      - name: Generate Liquindo app icons and splash screen
         run: npx capacitor-assets generate --android
 
       - name: Sync Capacitor
