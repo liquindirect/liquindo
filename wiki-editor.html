@@ -121,7 +121,7 @@
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
         <h2>Submit an article revision</h2>
-        <p class="editor-note">Choose an existing article and edit its content below. Your submission remains pending until an administrator approves it. Switch between visual editing and HTML source. Source mode lets you directly edit the article markup; changes are sanitized before saving.</p>
+        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Make changes in the visual editor or switch to HTML source. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
         <div class="editor-controls">
           <label for="article-select">Article</label>
           <select id="article-select">
@@ -275,7 +275,7 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261019-html-source-guide-v2"></script>
+  <script type="module" src="wiki-editor.js?v=20261019-article-edit-link-v1"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
