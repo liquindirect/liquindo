@@ -21,6 +21,28 @@ const articleSelect = $("#article-select");
 const canvas = $("#editor-canvas");
 const sourceEditor = $("#editor-source");
 const sourceToggle = $("#toggle-source-mode");
+const newArticleFields = $("#new-article-fields");
+const newArticleTitle = $("#new-article-title");
+const newArticleSlug = $("#new-article-slug");
+const articleCreateOption = "__new__";
+let canCreateArticles = false;
+function slugifyArticleTitle(value) {
+  return value.toLowerCase().normalize("NFKD").replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+}
+function isCreatingArticle() { return articleSelect.value === articleCreateOption; }
+function updateArticleMode() {
+  const creating = isCreatingArticle();
+  setVisible(newArticleFields, creating);
+  $("#load-article").classList.toggle("editor-hidden", creating);
+  if (creating) {
+    activeSlug = null;
+    syncEditorViews(`<section class="article-section"><h2 class="section-title">${newArticleTitle.value.trim() || "New article"}</h2><p>Start writing your article here.</p></section>`);
+    showMessage("Draft a new article. It will need administrator approval before it appears on the wiki.");
+  } else {
+    loadArticle();
+  }
+}
 const visualToolbar = $("#visual-editor-toolbar");
 let sourceMode = false;
 function currentEditorHtml() {
@@ -139,6 +161,7 @@ async function loadArticle() {
     saveDraft();
   }
   const slug = articleSelect.value;
+  if (slug === articleCreateOption) return;
   showMessage("Loading article…");
   try {
     const { data, error } = await supabase.from("wiki_pages")
@@ -603,8 +626,22 @@ $("#remove-format").addEventListener("click", () => {
 });
 submitButton.addEventListener("click", async () => {
   if (!user || !isWikiEditor) return;
-  const slug = articleSelect.value;
+  const creating = isCreatingArticle();
+  if (creating && !canCreateArticles && !isWikiAdmin) {
+    showMessage("An administrator must grant you new article creation permission.", true);
+    return;
+  }
+  const title = creating ? newArticleTitle.value.trim() : articles[articleSelect.value];
+  const slug = creating ? (newArticleSlug.value.trim() || slugifyArticleTitle(title)) : articleSelect.value;
   const content = currentEditorHtml().trim();
+  if (creating && (!title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
+    showMessage("Enter a title and a URL slug using lowercase letters, numbers, and single hyphens.", true);
+    return;
+  }
+  if (creating && (Object.prototype.hasOwnProperty.call(articles, slug) || [...articleSelect.options].some(option => option.value === slug))) {
+    showMessage("That slug is reserved for an existing article. Choose another.", true);
+    return;
+  }
   if (!content) {
     showMessage("Article content cannot be empty.", true);
     return;
@@ -614,12 +651,12 @@ submitButton.addEventListener("click", async () => {
     return;
   }
   submitButton.disabled = true;
-  showMessage(isWikiAdmin ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
+  showMessage(isWikiAdmin && !creating ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
   try {
-    if (isWikiAdmin) {
+    if (isWikiAdmin && !creating) {
       const { error } = await supabase.rpc("publish_liquinwiki_admin_revision", {
         p_slug: slug,
-        p_title: articles[slug],
+        p_title: title,
         p_content: content
       });
       if (error) throw error;
@@ -634,14 +671,14 @@ submitButton.addEventListener("click", async () => {
     const { error } = await supabase.from("wiki_revisions").insert({
       page_id: page?.id ?? null,
       slug,
-      title: articles[slug],
+      title,
       content,
       edited_by: user.id,
       status: "pending"
     });
     if (error) throw error;
     clearDraftIfMatches(slug, content);
-    showMessage("Revision submitted. It will go live only after an administrator approves it.");
+    showMessage(creating ? "New article submitted. An administrator must approve it before it appears on the wiki." : "Revision submitted. It will go live only after an administrator approves it.");
     await renderRevisions();
   } catch (error) {
     showMessage(error.message || "Could not submit the revision.", true);
@@ -665,8 +702,10 @@ async function initialize() {
   if (profileError) throw profileError;
   if (permissionError) throw permissionError;
   isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
-  isWikiEditor = isWikiAdmin || permission?.permission === "liquinwiki_editor";
-  submitButton.textContent = isWikiAdmin ? "Publish article immediately" : "Submit revision for approval";
+  canCreateArticles = isWikiAdmin || permission?.permission === "liquinwiki_creator";
+  isWikiEditor = isWikiAdmin || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
+  submitButton.textContent = isWikiAdmin ? "Publish / submit article" : "Submit for approval";
+  articleSelect.querySelector(`option[value="${articleCreateOption}"]`).hidden = !canCreateArticles && !isWikiAdmin;
   if (!isWikiEditor) {
     setAppState("no-permission");
     return;
