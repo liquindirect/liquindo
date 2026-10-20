@@ -32,6 +32,21 @@
       .nav-links .account-logout:disabled { cursor: wait; opacity: 0.7; }
 
       #admin-tools-nav[hidden] { display: none !important; }
+      .contents-panel .contents-group-label {
+        margin: 16px 12px 5px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(253, 190, 0, 0.22);
+        color: #fdbe00;
+        font-size: 0.67rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        line-height: 1.4;
+      }
+      .contents-panel .contents-group-label:first-of-type {
+        margin-top: 5px;
+        padding-top: 0;
+        border-top: 0;
+      }
 
     </style>
 
@@ -55,19 +70,24 @@
           <button type="button" class="contents-backdrop" aria-label="Close contents menu" tabindex="-1"></button>
           <div class="contents-panel" id="site-contents-panel">
             <p class="contents-panel-label">Liquindo · Contents</p>
-            <a href="index.html#home"><span>00</span><span>Introduction</span></a>
-            <a href="index.html#history"><span>01</span><span data-i18n="nav.history">History</span></a>
-            <a href="index.html#ideology"><span>02</span><span data-i18n="nav.ideology">Ideology</span></a>
-            <a href="hierarchy.html"><span>03</span><span>View Liquindo’s Hierarchy</span></a>
-            <a href="flagmaker.html"><span>04</span><span>Flag Maker</span></a>
+            <p class="contents-group-label">EXPLORE</p>
+            <a href="index.html#home"><span>01</span><span>Introduction</span></a>
+            <a href="index.html#history"><span>02</span><span data-i18n="nav.history">History</span></a>
+            <a href="index.html#ideology"><span>03</span><span data-i18n="nav.ideology">Ideology</span></a>
+            <a href="hierarchy.html"><span>04</span><span>Hierarchy</span></a>
+            <p class="contents-group-label">COMMUNITY & KNOWLEDGE</p>
             <a href="members.html"><span>05</span><span data-i18n="nav.members">Members</span></a>
             <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
             <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
-            <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>08</span><span>Merchandise Shop ↗</span></a>
-            <a href="index.html#contact"><span>09</span><span data-i18n="nav.contact">Contact</span></a>
+            <p class="contents-group-label">TOOLS & RESOURCES</p>
+            <a href="flagmaker.html"><span>08</span><span>Flag Maker</span></a>
+            <a href="app.html"><span>09</span><span>Liquindo App · Install / Open</span></a>
             <a href="index.html#finance"><span>10</span><span data-i18n="nav.finance">Finance</span></a>
-            <a href="login.html"><span>11</span><span>Account</span></a>
-            <a href="admin-tools.html" id="admin-tools-nav" hidden><span>12</span><span>Admin Tools</span></a>
+            <p class="contents-group-label">CONTACT & ACCOUNT</p>
+            <a href="index.html#contact"><span>11</span><span data-i18n="nav.contact">Contact</span></a>
+            <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>12</span><span>Merchandise Shop ↗</span></a>
+            <a href="login.html"><span>13</span><span>Account</span></a>
+            <a href="admin-tools.html" id="admin-tools-nav" hidden><span>14</span><span>Admin Tools</span></a>
           </div>
         </details>
         <div class="nav-links">
