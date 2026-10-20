@@ -7,9 +7,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   );
   const { data, error } = await db.from("site_settings")
     .select("setting_key,setting_value")
-    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items", "custom_nav_links"]);
+    .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items", "custom_nav_links", "message_from_liquin"]);
   if (error || !data) return;
   const settings = Object.fromEntries(data.map(row => [row.setting_key, row.setting_value]));
+  const liquinMessage = settings.message_from_liquin || {};
+  const liquinMessageText = document.getElementById("liquin-message-text");
+  if (liquinMessageText && typeof liquinMessage.text === "string" && liquinMessage.text.trim()) {
+    liquinMessageText.textContent = liquinMessage.text.slice(0, 500);
+  }
   const navSetting = settings.custom_nav_links || {};
   const contentsPanel = document.querySelector(".contents-panel");
   const navItems = Array.isArray(navSetting.items) ? navSetting.items.slice(0, 10) : [];
