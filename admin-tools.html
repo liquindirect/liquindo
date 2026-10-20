@@ -31,6 +31,15 @@
     body.admin-tools-page footer { background:#08121d; color:#d5dce3; border-top:1px solid rgba(253,190,0,.25); }
     body.admin-tools-page footer a { color:#fdbe00; }
     @media (prefers-reduced-motion:reduce) { .admin-tool-card { transition:none; } }
+    .message-admin-panel { margin:0 0 2rem; padding:clamp(1rem,3vw,1.5rem); border:1px solid rgba(253,190,0,.65); border-radius:12px; background:#fff; }
+    .message-admin-panel h2 { margin:.1rem 0 .5rem; color:#000032; }
+    .message-admin-panel p { color:#4c5968; line-height:1.55; }
+    .message-admin-panel form { display:grid; gap:.75rem; }
+    .message-admin-panel label { display:grid; gap:.4rem; color:#263747; font-size:.9rem; font-weight:700; }
+    .message-admin-panel textarea { width:100%; min-height:110px; padding:.75rem; border:1px solid #b9c1cb; border-radius:8px; color:#172033; background:#fff; font:inherit; resize:vertical; }
+    .message-admin-panel button { justify-self:start; min-height:42px; padding:.65rem 1rem; border:1px solid #fdbe00; border-radius:999px; background:#fdbe00; color:#000032; font-weight:800; cursor:pointer; }
+    .message-admin-status { margin:.2rem 0 0; color:#425466; font-size:.9rem; }
+    .message-admin-status.error { color:#b42318; }
     .shape-admin-panel { margin-top:2rem; padding:clamp(1rem,3vw,1.5rem); border:1px solid #d8dce1; border-radius:16px; background:#fff; }
     .shape-admin-panel h2 { margin:.1rem 0 .5rem; color:#000032; }
     .shape-admin-panel p { color:#4c5968; line-height:1.55; }
@@ -123,6 +132,17 @@
         <a href="index.html">← Back to homepage</a>
         <button id="admin-sign-out" class="secondary" type="button">Sign out</button>
       </div>
+      <section class="message-admin-panel" id="message-admin-panel" aria-labelledby="message-admin-title">
+        <h2 id="message-admin-title">Homepage · Message from Liquin</h2>
+        <p>Edit the sentence shown underneath the permanent “Message from Liquin” heading. The shop link and heading stay unchanged.</p>
+        <form id="message-admin-form">
+          <label for="message-admin-text">Message text (up to 500 characters)
+            <textarea id="message-admin-text" maxlength="500" required></textarea>
+          </label>
+          <button type="submit" id="message-admin-save">Save homepage message</button>
+          <p class="message-admin-status" id="message-admin-status" role="status" aria-live="polite">Loading current message…</p>
+        </form>
+      </section>
       <div class="admin-tool-grid">
         <a class="admin-tool-card" href="wiki-editor.html">
           <span class="kicker">LiquinWiki</span>
@@ -196,6 +216,56 @@
     let currentAdminUserId = null;
     let shapeAdminRows = [];
     const svgNs = "http://www.w3.org/2000/svg";
+    const messageAdminForm = document.getElementById("message-admin-form");
+    const messageAdminText = document.getElementById("message-admin-text");
+    const messageAdminStatus = document.getElementById("message-admin-status");
+    const messageAdminSave = document.getElementById("message-admin-save");
+    function setMessageAdminStatus(message, isError = false) {
+      messageAdminStatus.textContent = message;
+      messageAdminStatus.classList.toggle("error", isError);
+    }
+    async function loadMessageFromLiquin() {
+      setMessageAdminStatus("Loading current message…");
+      try {
+        const { data, error } = await supabase.from("site_settings")
+          .select("setting_value").eq("setting_key", "message_from_liquin").maybeSingle();
+        if (error) throw error;
+        const value = data?.setting_value?.text;
+        messageAdminText.value = typeof value === "string" ? value : "Check out the Liquindo shop for official merchandise and show your support for the project.";
+        setMessageAdminStatus("Current homepage message loaded.");
+      } catch (error) {
+        setMessageAdminStatus(error.message || "Could not load the homepage message.", true);
+      }
+    }
+    messageAdminForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!currentAdminUserId) {
+        setMessageAdminStatus("Administrator access is required to save this message.", true);
+        return;
+      }
+      const text = messageAdminText.value.trim();
+      if (!text || text.length > 500) {
+        setMessageAdminStatus("Enter a message between 1 and 500 characters.", true);
+        return;
+      }
+      messageAdminSave.disabled = true;
+      setMessageAdminStatus("Saving homepage message…");
+      try {
+        const { error } = await supabase.from("site_settings").upsert({
+          setting_key: "message_from_liquin",
+          setting_value: { text },
+          updated_at: new Date().toISOString(),
+          updated_by: currentAdminUserId
+        }, { onConflict: "setting_key" });
+        if (error) throw error;
+        setMessageAdminStatus("Homepage message saved. It will appear on the homepage after it reloads.");
+      } catch (error) {
+        setMessageAdminStatus(error.message || "Could not save the homepage message.", true);
+      } finally {
+        messageAdminSave.disabled = false;
+      }
+    });
+
     function validShapePath(value) {
       const path = String(value || "").trim();
       return path.length > 0 && path.length <= 5000 && /^M/i.test(path) &&
@@ -419,6 +489,7 @@
           shapeAdminPanel.dataset.loaded = "yes";
           loadShapeAdminRows();
         }
+        await loadMessageFromLiquin();
       } catch {
         if (sequence !== verificationSequence) return;
         status.textContent = "Could not verify administrator access. Please refresh and try again.";
