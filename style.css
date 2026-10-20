@@ -313,6 +313,26 @@ textarea {
   font-size: 0.86rem;
 }
 
+.liquin-message .shop-message-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  border: 1px solid #fdbe00;
+  border-radius: 2px;
+  color: #fdbe00;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.liquin-message .shop-message-link:hover,
+.liquin-message .shop-message-link:focus-visible {
+  background: #fdbe00;
+  color: #000032;
+}
+
 
 /* =========================================================
    HERO
