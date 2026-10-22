@@ -75,6 +75,7 @@ async function loadApprovedArticles() {
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
 async function requireMemberAccess() {
+  document.documentElement.classList.remove("wiki-access-pending");
   const gate = document.getElementById("wiki-access-gate");
   const container = document.querySelector(".wiki-container");
   if (container) container.hidden = true;
