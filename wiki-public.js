@@ -13,7 +13,7 @@ const sanitizeOptions = {
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
-    .select("slug, title, content");
+    .select("slug, title, description, content");
   if (error) {
     console.error("LiquinWiki: could not load approved article revisions.", error.message);
     return;
@@ -34,7 +34,7 @@ async function loadApprovedArticles() {
       cardHeading.append(cardLink);
       const description = document.createElement("p");
       description.className = "article-description";
-      description.textContent = "Community-created LiquinWiki article.";
+      description.textContent = articleData.description || "LiquinWiki article.";
       card.append(cardHeading, description);
       list.append(card);
 
@@ -67,7 +67,7 @@ async function loadApprovedArticles() {
     const existingTitle = article.querySelector(".article-title");
     if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
     const safeContent = DOMPurify.sanitize(articleData.content, sanitizeOptions);
-    article.innerHTML = createdDynamically ? ((header ? header.outerHTML : "") + safeContent) : safeContent;
+    article.innerHTML = createdDynamically && !/class=["\']article-header["\']/.test(safeContent) ? ((header ? header.outerHTML : "") + safeContent) : safeContent;
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
@@ -75,10 +75,10 @@ async function loadApprovedArticles() {
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
 async function requireMemberAccess() {
-  document.documentElement.classList.remove("wiki-access-pending");
   const gate = document.getElementById("wiki-access-gate");
-  const container = document.querySelector(".wiki-container");
+  const container = document.querySelector("main.wiki-container");
   if (container) container.hidden = true;
+  document.documentElement.classList.remove("wiki-access-pending");
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) throw sessionError;
