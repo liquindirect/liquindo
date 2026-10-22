@@ -13,6 +13,8 @@
   <title>Liquinwiki - Encyclopedia of Liquindo</title>
 
   <link rel="stylesheet" href="style.css?v=20261019-hide-sticky-nav1" />
+  <style>html.wiki-access-pending .wiki-container{display:none!important}#wiki-access-gate{max-width:46rem;margin:2rem auto;padding:1.5rem;border:1px solid var(--border,#bbb);border-radius:12px}#wiki-access-gate[hidden]{display:none!important}</style>
+  <script>document.documentElement.classList.add("wiki-access-pending");</script>
 
     <meta name="theme-color" content="#0b1730" />
     <meta name="application-name" content="Liquindo" />
@@ -83,6 +85,8 @@
     </div>
   </header>
 
+
+  <section id="wiki-access-gate" class="wiki-container" role="status" aria-live="polite"><h2>Checking membership…</h2><p>LiquinWiki is available to signed-in Liquindo members.</p></section>
 
   <main class="wiki-container">
 
