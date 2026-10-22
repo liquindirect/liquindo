@@ -2600,12 +2600,61 @@ class LanguageManager {
       console.warn("[Liquindo i18n] Language preference storage is unavailable.");
     }
 
-    this.currentLanguage =
-      translations[savedLanguage]
-        ? savedLanguage
-        : "en";
+    this.hasSavedLanguage = Boolean(translations[savedLanguage]);
+    this.currentLanguage = this.hasSavedLanguage
+      ? savedLanguage
+      : this.getBrowserLanguage() || "en";
 
     this.init();
+    if (!this.hasSavedLanguage) this.detectLanguageFromIP();
+  }
+
+  getBrowserLanguage() {
+    const preferred = String(navigator.language || "").toLowerCase().split("-")[0];
+    return translations[preferred] ? preferred : null;
+  }
+
+  async detectLanguageFromIP() {
+    // GitHub Pages cannot read the visitor's IP-country header server-side,
+    // so use a public IP-geolocation endpoint. If it fails, keep the browser
+    // language (or English) rather than blocking the page.
+    const countryLanguage = {
+      pt: ["PT", "BR"],
+      es: ["ES", "MX", "AR", "BO", "CL", "CO", "CR", "CU", "DO", "EC", "SV", "GQ", "GT", "HN", "NI", "PA", "PY", "PE", "PR", "UY", "VE"],
+      fr: ["FR", "BE", "LU", "MC", "SN", "CI", "CD", "CM", "MG", "HT"],
+      de: ["DE", "AT", "CH", "LI"],
+      it: ["IT", "SM", "VA"],
+      hr: ["HR"],
+      el: ["GR", "CY"],
+      pl: ["PL"],
+      ru: ["RU", "BY", "KZ", "KG"],
+      zh: ["CN", "TW", "HK", "MO", "SG"]
+    };
+
+    try {
+      const response = await fetch("https://ipapi.co/json/", {
+        headers: { "Accept": "application/json" },
+        cache: "no-store",
+        signal: AbortSignal.timeout(3500)
+      });
+      if (!response.ok) return;
+      const location = await response.json();
+      const countryCode = String(location.country_code || "").toUpperCase();
+      const detectedLanguage = Object.entries(countryLanguage)
+        .find(([, countries]) => countries.includes(countryCode))?.[0];
+      if (!detectedLanguage || !translations[detectedLanguage]) return;
+
+      // Do not override a language chosen manually while the lookup was running.
+      try {
+        if (localStorage.getItem("liquindo-language")) return;
+      } catch (error) {
+        // Continue with the detected language if storage is unavailable.
+      }
+      this.currentLanguage = detectedLanguage;
+      this.updatePageLanguage();
+    } catch (error) {
+      // IP lookup can be blocked or rate-limited; the site remains usable.
+    }
   }
 
   setLanguage(lang) {
