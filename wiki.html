@@ -257,6 +257,7 @@
         !selectedArticle ||
         !selectedArticle.hasAttribute("data-wiki-article")
       ) {
+        if (!window.wikiArticlesLoaded) return;
         history.replaceState(
           null,
           "",
@@ -309,12 +310,12 @@
     document.addEventListener("DOMContentLoaded", () => {
       const searchInput = document.getElementById("wiki-article-search");
       const searchStatus = document.getElementById("wiki-search-status");
-      const cards = [...document.querySelectorAll("#wiki-directory .article-card")];
       if (!searchInput || !searchStatus) return;
 
       function filterArticleCards() {
         const query = searchInput.value.trim().toLocaleLowerCase();
         let visibleCount = 0;
+        const cards = [...document.querySelectorAll("#wiki-directory .article-card")];
         cards.forEach((card) => {
           const matches = card.textContent.toLocaleLowerCase().includes(query);
           card.hidden = !matches;
