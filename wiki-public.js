@@ -16,6 +16,10 @@ async function loadApprovedArticles() {
     .select("slug, title, description, content");
   if (error) {
     console.error("LiquinWiki: could not load approved article revisions.", error.message);
+    const status = document.getElementById("wiki-search-status");
+    if (status) status.textContent = "Articles could not be loaded. Please try again later.";
+    window.wikiArticlesLoaded = true;
+    if (typeof window.updateWikiPage === "function") window.updateWikiPage();
     return;
   }
   for (const articleData of data || []) {
@@ -72,6 +76,9 @@ async function loadApprovedArticles() {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
   }
+  window.wikiArticlesLoaded = true;
+  const searchStatus = document.getElementById("wiki-search-status");
+  if (searchStatus) searchStatus.textContent = "Showing all " + document.querySelectorAll("#wiki-directory .article-card").length + " articles.";
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
 async function requireMemberAccess() {
