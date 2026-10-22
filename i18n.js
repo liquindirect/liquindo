@@ -728,15 +728,15 @@ const translations = {
 
     "ideology.q4": "Welche wirtschaftlichen Ideen hat Liquindo?",
     "ideology.a4":
-      "Einige liquindianische Ideen beruhen auf historischen korporatistischen Wirtschaftstheorien, in denen Berufs- und Wirtschaftsgruppen an organisierten Institutionen beteiligt sind.",
+      "Einige liquindische Ideen beruhen auf historischen korporatistischen Wirtschaftstheorien, in denen Berufs- und Wirtschaftsgruppen an organisierten Institutionen beteiligt sind.",
 
     "ideology.q5": "Welche Rolle hat der Staat?",
     "ideology.a5":
-      "Das liquindianische politische Denken befürwortet im Allgemeinen einen starken Zentralstaat, der Institutionen, Entwicklung und nationale Politik koordinieren kann.",
+      "Das liquindische politische Denken befürwortet im Allgemeinen einen starken Zentralstaat, der Institutionen, Entwicklung und nationale Politik koordinieren kann.",
 
     "ideology.q6": "Wie steht Liquindo zur Demokratie?",
     "ideology.a6":
-      "Das liquindianische Denken hat bestimmte Formen liberaler repräsentativer Demokratie kritisiert und legt mehr Wert auf administrative Kontinuität und langfristige Planung.",
+      "Das liquindische Denken hat bestimmte Formen liberaler repräsentativer Demokratie kritisiert und legt mehr Wert auf administrative Kontinuität und langfristige Planung.",
 
     "ideology.q7": "Wie steht Liquindo zu Steuern?",
     "ideology.a7":
@@ -746,7 +746,7 @@ const translations = {
     "ideology.a8":
       "Die Staatsbürgerschaft betont die Beteiligung an kollektiven Institutionen, öffentliche Verantwortung, bürgerschaftliche Organisation und die Anerkennung staatlicher Autorität.",
 
-    "ideology.q9": "Was beeinflusste die liquindianische Ideologie?",
+    "ideology.q9": "Was beeinflusste die liquindische Ideologie?",
     "ideology.a9":
       "Zu den Einflüssen gehören Mikronationsprojekte, korporatistisches Denken, antiliberale politische Theorie und Formen des Nationalismus.",
 
