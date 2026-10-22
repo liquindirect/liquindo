@@ -2619,6 +2619,7 @@ class LanguageManager {
     // so use a public IP-geolocation endpoint. If it fails, keep the browser
     // language (or English) rather than blocking the page.
     const countryLanguage = {
+      en: ["GB", "US", "CA", "AU", "NZ", "IE", "ZA", "IN", "NG", "GH", "KE", "PH", "SG", "JM", "TT", "BZ", "BW", "ZW"],
       pt: ["PT", "BR"],
       es: ["ES", "MX", "AR", "BO", "CL", "CO", "CR", "CU", "DO", "EC", "SV", "GQ", "GT", "HN", "NI", "PA", "PY", "PE", "PR", "UY", "VE"],
       fr: ["FR", "BE", "LU", "MC", "SN", "CI", "CD", "CM", "MG", "HT"],
