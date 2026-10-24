@@ -26,7 +26,8 @@ async function loadApprovedArticles() {
     const status = document.getElementById("wiki-search-status");
     if (status) status.textContent = "Articles could not be loaded. Please try again later.";
     window.wikiArticlesLoaded = true;
-    if (typeof window.updateWikiPage === "function") window.updateWikiPage();
+    if (typeof window.filterWikiDirectory === "function") window.filterWikiDirectory();
+  if (typeof window.updateWikiPage === "function") window.updateWikiPage();
     return;
   }
   window.wikiTitleSlugs = Object.fromEntries((data || []).map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
