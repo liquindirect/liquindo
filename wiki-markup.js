@@ -112,6 +112,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
   let paragraph = [];
   let listType = null;
   let listDepth = 0;
+  const usedHeadingIds = new Set();
 
   const flushParagraph = () => {
     if (paragraph.length) {
