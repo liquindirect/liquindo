@@ -48,8 +48,12 @@ function updateArticleMode() {
 const visualToolbar = $("#visual-editor-toolbar");
 let sourceMode = false;
 let wikiMarkupMode = false;
+function renderEditorWikiMarkup(source) {
+  const titleToSlug = Object.fromEntries(Object.entries(articles).map(([slug, title]) => [String(title).trim().toLocaleLowerCase(), slug]));
+  return renderWikiMarkup(source, titleToSlug);
+}
 function currentEditorHtml() {
-  if (wikiMarkupMode) return safeHtml(renderWikiMarkup(sourceEditor.value));
+  if (wikiMarkupMode) return safeHtml(renderEditorWikiMarkup(sourceEditor.value));
   return safeHtml(sourceMode ? sourceEditor.value : canvas.innerHTML);
 }
 function syncEditorViews(html) {
@@ -654,7 +658,7 @@ canvas.addEventListener("input", () => {
 });
 sourceEditor.addEventListener("input", () => {
   // Keep the preview and draft in sync; preview is read-only while source mode is active.
-  canvas.innerHTML = safeHtml(wikiMarkupMode ? renderWikiMarkup(sourceEditor.value) : sourceEditor.value);
+  canvas.innerHTML = safeHtml(wikiMarkupMode ? renderEditorWikiMarkup(sourceEditor.value) : sourceEditor.value);
   scheduleDraftSave();
 });
 sourceToggle.addEventListener("click", () => setSourceMode(!sourceMode));
