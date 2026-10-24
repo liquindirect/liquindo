@@ -142,7 +142,6 @@ let isWikiAdmin = false;
 let isWikiEditor = false;
 let activeSlug = null;
 let loadedArticleContent = null;
-let loadedArticleUpdatedAt = null;
 let draftTimer = null;
 let allLoadedRevisions = [];
 let allPendingRevisions = [];
@@ -217,11 +216,10 @@ async function loadArticle() {
   showMessage("Loading article…");
   try {
     const { data, error } = await supabase.from("wiki_pages")
-      .select("content, updated_at").eq("slug", slug).maybeSingle();
+      .select("content").eq("slug", slug).maybeSingle();
     if (error) throw error;
     const html = data?.content ?? await baselineContent(slug);
     loadedArticleContent = data?.content ?? null;
-    loadedArticleUpdatedAt = data?.updated_at ?? null;
     activeSlug = slug;
     syncEditorViews(html);
     try {
@@ -717,7 +715,7 @@ submitButton.addEventListener("click", async () => {
         .select("content, updated_at").eq("slug", slug).maybeSingle();
       if (latestError) throw latestError;
       const hasConflict = latest
-        ? loadedArticleContent === null || safeHtml(latest.content) !== safeHtml(loadedArticleContent)
+        ? loadedArticleContent === null || latest.content !== loadedArticleContent
         : loadedArticleContent !== null;
       if (hasConflict && !window.confirm("This article changed after you loaded it. Submitting your version may overwrite newer work if you publish it. Continue anyway? Review the current article and compare revisions first if you are unsure.")) {
         showMessage("Submission cancelled because the live article changed. Reload the latest version before continuing.", true);
