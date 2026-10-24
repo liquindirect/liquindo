@@ -21,7 +21,13 @@ begin
     raise exception 'Only LiquinWiki administrators can publish directly';
   end if;
 
-  if p_slug is null or p_slug !~ '^[a-z0-9]+(-[a-z0-9]+)*
+  if p_slug is null or p_slug !~ '^[a-z0-9]+(-[a-z0-9]+)*$' or length(p_slug) > 80 then
+    raise exception 'Invalid article URL slug';
+  end if;
+
+  if p_title is null or length(trim(p_title)) = 0 or length(p_title) > 120 then
+    raise exception 'Article title must contain 1-120 characters';
+  end if;
 
   if p_content is null or length(trim(p_content)) = 0 then
     raise exception 'Article content cannot be empty';
