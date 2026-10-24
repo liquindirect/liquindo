@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import DOMPurify from "https://esm.sh/dompurify@3";
-import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js?v=20261024-markup-v3";
+import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js?v=20261024-markup-v4";
 
 const supabase = createClient(
   "https://uivjovkvpskvvazznlyr.supabase.co",
