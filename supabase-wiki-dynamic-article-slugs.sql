@@ -1,9 +1,9 @@
 -- LiquinWiki: allow administrators to publish newly created articles.
--- Fixes the old hard-coded five-slug whitelist while preserving review and page-ID safeguards.
--- Safe to run in Supabase SQL Editor; it does not alter existing articles or revisions.
+-- Removes the original five-slug restriction while retaining URL validation and page-ID safeguards.
+-- Applying this function does not alter existing article or revision rows.
 create or replace function public.review_liquinwiki_revision(p_revision_id bigint, p_decision text, p_note text default null)
 returns void language plpgsql security definer set search_path = ''
-as $
+as $$
 declare
   v_revision public.wiki_revisions%rowtype;
   v_page_id bigint;
@@ -16,11 +16,8 @@ begin
   if v_revision.status <> 'pending' then raise exception 'This revision has already been reviewed'; end if;
 
   if p_decision = 'approved' then
-    -- Permit any valid new article slug, not only the original five hard-coded pages.
-    -- The slug is still constrained to lowercase URL-safe words separated by single hyphens.
+    -- Permit new article slugs while enforcing URL-safe formatting.
     if v_revision.slug is null or v_revision.slug !~ '^[a-z0-9]+(-[a-z0-9]+)*
-
-    if v_revision.page_id is not null then
       -- A revision must never be able to publish to a different page than its slug.
       select id into v_page_id
       from public.wiki_pages
@@ -65,11 +62,9 @@ begin
       review_note = left(coalesce(p_note,''),2000)
   where id = p_revision_id;
 end;
-$;
+$$;
 revoke all on function public.review_liquinwiki_revision(bigint,text,text) from public;
-grant execute on function public.review_liquinwiki_revision(bigint,text,text) to authenticated;
-
- or length(v_revision.slug) > 80 then
+grant execute on function public.review_liquinwiki_revision(bigint,text,text) to authenticated; or length(v_revision.slug) > 80 then
       raise exception 'This revision has an invalid article slug';
     end if;
 
@@ -118,8 +113,6 @@ grant execute on function public.review_liquinwiki_revision(bigint,text,text) to
       review_note = left(coalesce(p_note,''),2000)
   where id = p_revision_id;
 end;
-$;
+$$;
 revoke all on function public.review_liquinwiki_revision(bigint,text,text) from public;
 grant execute on function public.review_liquinwiki_revision(bigint,text,text) to authenticated;
-
-
