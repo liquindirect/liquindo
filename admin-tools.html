@@ -88,7 +88,6 @@
           <a href="index.html#history"><span>01</span><span data-i18n="nav.history">History</span></a>
           <a href="index.html#ideology"><span>02</span><span data-i18n="nav.ideology">Ideology</span></a>
           <a href="hierarchy.html"><span>03</span><span>Hierarchy</span></a>
-          <a href="flagmaker.html"><span>04</span><span>Flag Maker</span></a>
           <a href="members.html"><span>05</span><span data-i18n="nav.members">Members</span></a>
           <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
           <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
@@ -163,32 +162,7 @@
           <p>View member profiles and account roles.</p>
           <span class="open-label">Open directory →</span>
         </a>
-        <a class="admin-tool-card" href="#shape-admin-title">
-          <span class="kicker">Flag Maker</span>
-          <h2>Shape library settings</h2>
-          <p>Add custom shapes, rename or replace built-in geometry, and hide or restore library entries.</p>
-          <span class="open-label">Manage shapes ↓</span>
-        </a>
       </div>
-      <section class="shape-admin-panel" aria-labelledby="shape-admin-title">
-        <h2 id="shape-admin-title">Flag Maker · Shape Library</h2>
-        <p>Manage the shared shape library used by everyone. Rename or hide built-in shapes, replace geometry, add categories and tags, drag rows to reorder the library, duplicate custom paths, and import or export JSON backups. Shape history lets you restore earlier geometry or visibility. Changes apply to Flag Maker after it reloads.</p>
-        <form id="shape-admin-add-form" class="shape-admin-form">
-          <label>New shape name
-            <input id="shape-admin-new-label" maxlength="80" required placeholder="e.g. Eight-pointed emblem">
-          </label>
-          <label>Category<input id="shape-admin-new-category" maxlength="60" value="General" required placeholder="e.g. Emblems"></label>
-          <label>Tags (comma-separated)<input id="shape-admin-new-tags" maxlength="300" placeholder="e.g. star, emblem, national"></label>
-          <label class="path-field">SVG path data (required)
-            <input id="shape-admin-new-path" maxlength="5000" required value="M20 2 L38 30 L2 30 Z" placeholder="M20 2 L38 30 L2 30 Z" autocomplete="off">
-          </label>
-          <div class="shape-row-actions"><button class="primary" type="submit">Add shape</button><button id="shape-admin-template" type="button">Insert triangle example</button></div>
-        </form>
-        <p class="shape-admin-status" id="shape-admin-status" role="status" aria-live="polite">Loading shape library…</p>
-        <label for="shape-admin-search">Filter shapes</label>
-        <input id="shape-admin-search" type="search" placeholder="Search name, ID, category, or tag">
-        <div class="shape-admin-list" id="shape-admin-list"></div>
-      </section>
     </div>
   </main>
   <footer>
@@ -199,7 +173,6 @@
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script src="shape-preview.js"></script>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
     const supabase = createClient(
@@ -209,13 +182,7 @@
     const status = document.getElementById("admin-status");
     const content = document.getElementById("admin-tools-content");
     const signOutButton = document.getElementById("admin-sign-out");
-    const shapeAdminPanel = document.querySelector(".shape-admin-panel");
-    const shapeAdminList = document.getElementById("shape-admin-list");
-    const shapeAdminStatus = document.getElementById("shape-admin-status");
-    const shapeAdminSearch = document.getElementById("shape-admin-search");
     let currentAdminUserId = null;
-    let shapeAdminRows = [];
-    const svgNs = "http://www.w3.org/2000/svg";
     const messageAdminForm = document.getElementById("message-admin-form");
     const messageAdminText = document.getElementById("message-admin-text");
     const messageAdminStatus = document.getElementById("message-admin-status");
@@ -266,189 +233,6 @@
       }
     });
 
-    function validShapePath(value) {
-      const path = String(value || "").trim();
-      return path.length > 0 && path.length <= 5000 && /^M/i.test(path) &&
-        /^[MmZzLlHhVvCcSsQqTtAa0-9.,+\-\s]+$/.test(path);
-    }
-    function shapeStatus(message, isError = false) {
-      shapeAdminStatus.textContent = message;
-      shapeAdminStatus.classList.toggle("error", isError);
-    }
-    function shapePreview(pathData, shapeId) {
-      const holder = document.createElement("span");
-      holder.innerHTML = window.liquindoShapePreviewMarkup
-        ? window.liquindoShapePreviewMarkup(shapeId, pathData || null)
-        : '<svg viewBox="0 0 40 32" aria-hidden="true"><text x="20" y="20" text-anchor="middle">?</text></svg>';
-      const svg = holder.firstElementChild;
-      if (svg) { svg.style.width = "40px"; svg.style.height = "32px"; svg.setAttribute("aria-hidden", "true"); }
-      return svg || document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    }
-    function renderShapeAdminRows() {
-      const filter = shapeAdminSearch.value.trim().toLowerCase();
-      shapeAdminList.replaceChildren();
-      const rows = shapeAdminRows.filter(row => (row.label + " " + row.shape_id + " " + (row.category || "") + " " + (row.tags || []).join(" ")).toLowerCase().includes(filter));
-      if (!rows.length) {
-        const empty = document.createElement("p"); empty.textContent = "No shapes match this filter."; shapeAdminList.append(empty); return;
-      }
-      rows.forEach(row => {
-        const details = document.createElement("details"); details.className = "shape-row"; details.draggable = true; details.dataset.shapeId = row.shape_id;
-        details.addEventListener("dragstart", event => { event.dataTransfer.setData("text/plain", row.shape_id); event.dataTransfer.effectAllowed = "move"; });
-        details.addEventListener("dragover", event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; details.style.outline = "2px dashed #b08a13"; });
-        details.addEventListener("dragleave", () => { details.style.outline = ""; });
-        details.addEventListener("drop", async event => {
-          event.preventDefault(); details.style.outline = "";
-          const sourceId = event.dataTransfer.getData("text/plain");
-          if (!sourceId || sourceId === row.shape_id) return;
-          const sourceIndex = shapeAdminRows.findIndex(item => item.shape_id === sourceId);
-          const targetIndex = shapeAdminRows.findIndex(item => item.shape_id === row.shape_id);
-          if (sourceIndex < 0 || targetIndex < 0) return;
-          const [moving] = shapeAdminRows.splice(sourceIndex, 1);
-          shapeAdminRows.splice(sourceIndex < targetIndex ? targetIndex - 1 : targetIndex, 0, moving);
-          shapeStatus("Saving shape order…");
-          try {
-            const now = new Date().toISOString();
-            const { error } = await supabase.from("flagmaker_shapes").upsert(
-              shapeAdminRows.map((item, index) => ({shape_id:item.shape_id, label:item.label, path_d:item.path_d||null, is_builtin:!!item.is_builtin, is_active:item.is_active!==false, category:item.category||"General", tags:item.tags||[], sort_order:index, updated_at:now, updated_by:currentAdminUserId})),
-              { onConflict:"shape_id" }
-            );
-            if (error) throw error;
-            shapeStatus("Shape order saved. Reload Flag Maker to apply the new order.");
-            await loadShapeAdminRows();
-          } catch (error) { shapeStatus(error.message || "Could not save shape order.", true); await loadShapeAdminRows(); }
-        });
-        const summary = document.createElement("summary");
-        const preview = document.createElement("span"); preview.className = "shape-row-preview"; preview.append(shapePreview(row.path_d, row.shape_id));
-        const title = document.createElement("span"); title.textContent = row.label;
-        const statusLabel = document.createElement("span"); statusLabel.className = "shape-row-status"; statusLabel.textContent = row.is_active ? (row.is_builtin ? "Built-in" : "Custom") : "Hidden";
-        summary.append(preview, title, statusLabel); details.append(summary);
-        const body = document.createElement("div"); body.className = "shape-row-body";
-        const label = document.createElement("label"); label.textContent = "Display name";
-        const nameInput = document.createElement("input"); nameInput.maxLength = 80; nameInput.required = true; nameInput.value = row.label; nameInput.setAttribute("aria-label", "Display name for " + row.shape_id); label.append(nameInput);
-        const categoryLabel = document.createElement("label"); categoryLabel.textContent = "Category";
-        const categoryInput = document.createElement("input"); categoryInput.maxLength = 60; categoryInput.required = true; categoryInput.value = row.category || "General"; categoryLabel.append(categoryInput);
-        const tagsLabel = document.createElement("label"); tagsLabel.textContent = "Tags (comma-separated, up to 20)";
-        const tagsInput = document.createElement("input"); tagsInput.maxLength = 300; tagsInput.value = (row.tags || []).join(", "); tagsLabel.append(tagsInput);
-        const pathLabel = document.createElement("label"); pathLabel.textContent = "Custom SVG path data (leave blank to use the built-in geometry)";
-        const pathInput = document.createElement("input"); pathInput.maxLength = 5000; pathInput.value = row.path_d || ""; pathInput.autocomplete = "off"; pathInput.setAttribute("aria-label", "SVG path data for " + row.shape_id); pathLabel.append(pathInput);
-        const actions = document.createElement("div"); actions.className = "shape-row-actions";
-        const save = document.createElement("button"); save.type = "button"; save.className = "primary"; save.textContent = "Save changes";
-        save.addEventListener("click", async () => {
-          const labelValue = nameInput.value.trim(), pathValue = pathInput.value.trim();
-          const categoryValue = categoryInput.value.trim();
-          const tagsValue = tagsInput.value.split(",").map(tag => tag.trim()).filter(Boolean);
-          if (!labelValue || labelValue.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
-          if (!categoryValue || categoryValue.length > 60 || tagsValue.length > 20 || tagsValue.some(tag => tag.length > 40)) { shapeStatus("Use a category of 1–60 characters and up to 20 tags (40 characters each).", true); return; }
-          if (pathValue && !validShapePath(pathValue)) { shapeStatus("The SVG path is invalid. Use path commands and numbers only, starting with M.", true); return; }
-          save.disabled = true;
-          try {
-            const { error } = await supabase.from("flagmaker_shapes").update({
-              label: labelValue, category: categoryValue, tags: tagsValue, path_d: pathValue || null, updated_at: new Date().toISOString(), updated_by: currentAdminUserId
-            }).eq("shape_id", row.shape_id);
-            if (error) throw error;
-            shapeStatus("Saved “" + labelValue + "”. Reload Flag Maker to see the change.");
-            await loadShapeAdminRows();
-          } catch (error) { shapeStatus(error.message || "Could not save this shape.", true); save.disabled = false; }
-        });
-        const toggle = document.createElement("button"); toggle.type = "button"; toggle.textContent = row.is_active ? "Hide from library" : "Restore to library";
-        toggle.addEventListener("click", async () => {
-          toggle.disabled = true;
-          try {
-            const { error } = await supabase.from("flagmaker_shapes").update({is_active: !row.is_active, updated_at: new Date().toISOString(), updated_by: currentAdminUserId}).eq("shape_id", row.shape_id);
-            if (error) throw error;
-            shapeStatus(row.label + (row.is_active ? " hidden from" : " restored to") + " the library.");
-            await loadShapeAdminRows();
-          } catch (error) { shapeStatus(error.message || "Could not change shape visibility.", true); toggle.disabled = false; }
-        });
-        actions.append(save, toggle);
-        const duplicate = document.createElement("button");
-        duplicate.type = "button";
-        duplicate.textContent = "Duplicate as custom";
-        duplicate.addEventListener("click", async () => {
-          const pathValue = pathInput.value.trim();
-          if (!validShapePath(pathValue)) {
-            shapeStatus("To duplicate this shape, first provide valid SVG path data in its path field and save it.", true);
-            pathInput.focus();
-            return;
-          }
-          const duplicateLabel = window.prompt("Name for the new custom shape:", row.label + " copy");
-          if (!duplicateLabel || !duplicateLabel.trim()) return;
-          duplicate.disabled = true;
-          try {
-            const { error } = await supabase.from("flagmaker_shapes").insert({
-              shape_id: "custom-" + crypto.randomUUID(),
-              label: duplicateLabel.trim().slice(0, 80),
-              category: row.category || "General", tags: row.tags || [],
-              path_d: pathValue,
-              is_builtin: false,
-              is_active: true,
-              updated_by: currentAdminUserId
-            });
-            if (error) throw error;
-            shapeStatus("Created custom copy of “" + row.label + "”.");
-            await loadShapeAdminRows();
-          } catch (error) {
-            shapeStatus(error.message || "Could not duplicate this shape.", true);
-            duplicate.disabled = false;
-          }
-        });
-        actions.append(duplicate);
-        if (!row.is_builtin) {
-          const remove = document.createElement("button"); remove.type = "button"; remove.className = "danger"; remove.textContent = "Delete custom shape";
-          remove.addEventListener("click", async () => {
-            if (!window.confirm("Permanently delete “" + row.label + "” from the shared shape library? Existing flags already using it will keep their saved artwork.")) return;
-            remove.disabled = true;
-            try {
-              const { error } = await supabase.from("flagmaker_shapes").delete().eq("shape_id", row.shape_id).eq("is_builtin", false);
-              if (error) throw error;
-              shapeStatus("Deleted “" + row.label + "”.");
-              await loadShapeAdminRows();
-            } catch (error) { shapeStatus(error.message || "Could not delete this shape.", true); remove.disabled = false; }
-          });
-          actions.append(remove);
-        }
-        const idLine = document.createElement("p"); idLine.className = "shape-admin-status"; idLine.textContent = "ID: " + row.shape_id + (row.is_builtin ? " · Built-in shapes can be hidden or restored; their original code remains available." : " · Custom shape");
-        body.append(label, categoryLabel, tagsLabel, pathLabel, actions, idLine); details.append(body); shapeAdminList.append(details);
-      });
-    }
-    async function loadShapeAdminRows() {
-      shapeStatus("Loading shared shape library…");
-      try {
-        const { data, error } = await supabase.from("flagmaker_shapes").select("shape_id,label,path_d,is_builtin,is_active,category,tags,sort_order,updated_at").order("sort_order", {ascending:true, nullsFirst:false}).order("is_builtin", {ascending:false}).order("label", {ascending:true});
-        if (error) throw error;
-        shapeAdminRows = data || [];
-        renderShapeAdminRows();
-        shapeStatus("Loaded " + shapeAdminRows.length + " shapes. Changes are shared across devices.");
-      } catch (error) { shapeStatus(error.message || "Could not load the shape library. Check the flagmaker_shapes table and administrator permissions.", true); }
-    }
-    document.getElementById("shape-admin-add-form").addEventListener("submit", async event => {
-      event.preventDefault();
-      const form = event.currentTarget;
-      const label = document.getElementById("shape-admin-new-label").value.trim();
-      const path_d = document.getElementById("shape-admin-new-path").value.trim();
-      if (!label || label.length > 80) { shapeStatus("Enter a shape name between 1 and 80 characters.", true); return; }
-      if (!validShapePath(path_d)) { shapeStatus("The SVG path is invalid. Use path commands and numbers only, starting with M.", true); return; }
-      const submit = event.currentTarget.querySelector('button[type="submit"]'); submit.disabled = true;
-      try {
-        const shape_id = "custom-" + crypto.randomUUID();
-        const category = document.getElementById("shape-admin-new-category").value.trim() || "General";
-        const tags = document.getElementById("shape-admin-new-tags").value.split(",").map(tag => tag.trim()).filter(Boolean);
-        if (category.length > 60 || tags.length > 20 || tags.some(tag => tag.length > 40)) throw new Error("Category or tags exceed the allowed length.");
-        const { error } = await supabase.from("flagmaker_shapes").insert({shape_id,label,path_d,category,tags,is_builtin:false,is_active:true,updated_by:currentAdminUserId});
-        if (error) throw error;
-        form.reset();
-        document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
-        shapeStatus("Added “" + label + "”. Reload Flag Maker to use it.");
-        await loadShapeAdminRows();
-      } catch (error) { shapeStatus(error.message || "Could not add this shape.", true); }
-      finally { submit.disabled = false; }
-    });
-    document.getElementById("shape-admin-template").addEventListener("click", () => {
-      document.getElementById("shape-admin-new-path").value = "M20 2 L38 30 L2 30 Z";
-    });
-    shapeAdminSearch.addEventListener("input", renderShapeAdminRows);
-
-
     let verificationSequence = 0;
     let authSubscription = null;
 
@@ -485,10 +269,6 @@
         status.textContent = "Administrator access verified.";
         currentAdminUserId = session.user.id;
         content.hidden = false;
-        if (shapeAdminPanel.dataset.loaded !== "yes") {
-          shapeAdminPanel.dataset.loaded = "yes";
-          loadShapeAdminRows();
-        }
         await loadMessageFromLiquin();
       } catch {
         if (sequence !== verificationSequence) return;
