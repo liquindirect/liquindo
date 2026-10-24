@@ -268,6 +268,8 @@ html.wiki-access-pending .wiki-container{display:none!important}
       <div class="wiki-search" role="search" style="margin:1rem 0">
         <label for="wiki-article-search" style="display:block;margin-bottom:.4rem">Search articles</label>
         <input id="wiki-article-search" type="search" placeholder="Search article titles, descriptions and content…" autocomplete="off" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.75rem;border:1px solid var(--border,#bbb);border-radius:8px;font:inherit" />
+        <label for="wiki-category-filter" style="display:block;margin:.75rem 0 .35rem">Browse by category</label>
+        <select id="wiki-category-filter" aria-label="Filter articles by category" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.65rem;border:1px solid var(--border,#bbb);border-radius:6px;font:inherit;background:#fff"><option value="">All categories</option></select>
         <p id="wiki-search-status" class="article-description" role="status" aria-live="polite">Showing all articles.</p>
       </div>
 
@@ -496,22 +498,38 @@ html.wiki-access-pending .wiki-container{display:none!important}
       const searchStatus = document.getElementById("wiki-search-status");
       if (!searchInput || !searchStatus) return;
 
+      const categoryFilter = document.getElementById("wiki-category-filter");
       function filterArticleCards() {
         const query = searchInput.value.trim().toLocaleLowerCase();
+        const category = categoryFilter ? categoryFilter.value : "";
         let visibleCount = 0;
         const cards = [...document.querySelectorAll("#wiki-directory .article-card")];
-        cards.forEach((card) => {
+        const ranked = cards.map((card, index) => {
+          const title = (card.dataset.title || card.querySelector("h3")?.textContent || "").toLocaleLowerCase();
+          const categories = (card.dataset.categories || "").split("|").filter(Boolean);
           const searchable = (card.textContent + " " + (card.dataset.searchContent || "")).toLocaleLowerCase();
-          const matches = searchable.includes(query);
+          const matches = (!query || searchable.includes(query)) && (!category || categories.includes(category));
+          const rank = !query ? 0 : title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : 3;
+          return { card, index, matches, rank };
+        });
+        ranked.sort((a, b) => (a.matches && b.matches ? a.rank - b.rank || a.index - b.index : a.index - b.index));
+        const list = document.querySelector("#wiki-directory .articles-list");
+        ranked.forEach(({card, matches}) => {
           card.hidden = !matches;
           if (matches) visibleCount++;
+          list.append(card);
         });
-        searchStatus.textContent = query
-          ? (visibleCount === 1 ? "1 article found." : visibleCount + " articles found.")
-          : "Showing all " + cards.length + " articles.";
+        if (query || category) {
+          const label = categoryFilter?.selectedOptions[0]?.textContent || "category";
+          searchStatus.textContent = visibleCount + " article" + (visibleCount === 1 ? "" : "s") + " found" + (category ? " in " + label : "") + ".";
+        } else {
+          searchStatus.textContent = "Showing all " + cards.length + " articles.";
+        }
       }
 
       searchInput.addEventListener("input", filterArticleCards);
+      if (categoryFilter) categoryFilter.addEventListener("change", filterArticleCards);
+      filterArticleCards();
     });
 
     document.addEventListener(
