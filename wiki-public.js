@@ -13,7 +13,7 @@ const sanitizeOptions = {
 };
 
 function renderStoredContent(content) {
-  const source = looksLikeWikiMarkup(content) ? renderWikiMarkup(content) : (content || "");
+  const source = looksLikeWikiMarkup(content) ? renderWikiMarkup(content, window.wikiTitleSlugs || {}) : (content || "");
   return DOMPurify.sanitize(source, sanitizeOptions);
 }
 function safeContentForSearch(content) { return renderStoredContent(content); }
@@ -29,6 +29,7 @@ async function loadApprovedArticles() {
     if (typeof window.updateWikiPage === "function") window.updateWikiPage();
     return;
   }
+  window.wikiTitleSlugs = Object.fromEntries((data || []).map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
   for (const articleData of data || []) {
     let article = document.getElementById(articleData.slug);
     let createdDynamically = false;
