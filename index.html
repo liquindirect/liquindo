@@ -11,7 +11,7 @@
 
     <title>Liquindo</title>
 
-    <link rel="stylesheet" href="style.css?v=20261024-open-sections1" />
+    <link rel="stylesheet" href="style.css?v=20261024-home-contents-sidebar-v2" />
 
     <style>
       .nav-links .account-logout {
@@ -69,7 +69,11 @@
           </summary>
           <button type="button" class="contents-backdrop" aria-label="Close contents menu" tabindex="-1"></button>
           <div class="contents-panel" id="site-contents-panel">
-            <p class="contents-panel-label">Liquindo · Contents</p>
+            <p class="contents-panel-label">Liquindo <span aria-hidden="true">/</span> Contents</p>
+            <p class="contents-panel-intro">Explore the project, community and resources.</p>
+            <label class="contents-search-label" for="contents-search">Find a page</label>
+            <input id="contents-search" class="contents-search" type="search" placeholder="Search contents…" autocomplete="off" />
+            <p class="contents-search-status" id="contents-search-status" aria-live="polite"></p>
             <p class="contents-group-label">EXPLORE</p>
             <a href="index.html#home"><span>01</span><span>Introduction</span></a>
             <a href="index.html#history"><span>02</span><span data-i18n="nav.history">History</span></a>
@@ -80,13 +84,13 @@
             <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
             <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
             <p class="contents-group-label">TOOLS & RESOURCES</p>
-            <a href="app.html"><span>09</span><span>Liquindo Web App · PWA install</span></a>
-            <a href="index.html#finance"><span>10</span><span data-i18n="nav.finance">Finance</span></a>
+            <a href="app.html"><span>08</span><span>Liquindo Web App · PWA install</span></a>
+            <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
             <p class="contents-group-label">CONTACT & ACCOUNT</p>
-            <a href="index.html#contact"><span>11</span><span data-i18n="nav.contact">Contact</span></a>
-            <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>12</span><span>Merchandise Shop ↗</span></a>
-            <a href="login.html"><span>13</span><span>Account</span></a>
-            <a href="admin-tools.html" id="admin-tools-nav" hidden><span>14</span><span>Admin Tools</span></a>
+            <a href="index.html#contact"><span>10</span><span data-i18n="nav.contact">Contact</span></a>
+            <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>11</span><span>Merchandise Shop ↗</span></a>
+            <a href="login.html"><span>12</span><span>Account</span></a>
+            <a href="admin-tools.html" id="admin-tools-nav" hidden><span>13</span><span>Admin Tools</span></a>
           </div>
         </details>
         <div class="nav-links">
@@ -749,9 +753,35 @@
       if (topbar) topbar.classList.toggle("contents-nav-open", menu.open);
     };
     menu.addEventListener("toggle", syncOpenState);
-    menu.querySelectorAll(".contents-panel a").forEach((link) => {
+    const contentsLinks = [...menu.querySelectorAll(".contents-panel a")];
+    const contentsSearch = menu.querySelector("#contents-search");
+    const contentsSearchStatus = menu.querySelector("#contents-search-status");
+    const updateContentsSearch = () => {
+      const query = (contentsSearch?.value || "").trim().toLocaleLowerCase();
+      let visible = 0;
+      contentsLinks.forEach((link) => {
+        const match = !query || link.textContent.toLocaleLowerCase().includes(query);
+        link.hidden = !match;
+        if (match) visible++;
+      });
+      menu.querySelectorAll(".contents-group-label").forEach((heading) => {
+        let next = heading.nextElementSibling;
+        let hasVisibleLink = false;
+        while (next && !next.classList.contains("contents-group-label")) {
+          if (next.matches("a") && !next.hidden) hasVisibleLink = true;
+          next = next.nextElementSibling;
+        }
+        heading.hidden = !!query && !hasVisibleLink;
+      });
+      if (contentsSearchStatus) {
+        contentsSearchStatus.textContent = query ? (visible + " page" + (visible === 1 ? "" : "s") + " found") : "";
+      }
+    };
+    if (contentsSearch) contentsSearch.addEventListener("input", updateContentsSearch);
+    contentsLinks.forEach((link) => {
       link.addEventListener("click", () => { menu.open = false; syncOpenState(); });
     });
+    updateContentsSearch();
     if (backdrop) backdrop.addEventListener("click", () => { menu.open = false; syncOpenState(); });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && menu.open) {
