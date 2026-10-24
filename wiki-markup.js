@@ -113,6 +113,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
   let listType = null;
   let listDepth = 0;
   const usedHeadingIds = new Set();
+  const usedHeadingIds = new Set();
 
   const flushParagraph = () => {
     if (paragraph.length) {
@@ -129,7 +130,11 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
   };
   const addHeading = (level, text) => {
     const safe = renderInline(text, titleToSlug, refs);
-    const id = slugifyWikiTitle(text.replace(/'''|''/g, ""));
+    const baseId = slugifyWikiTitle(text.replace(/'''|''/g, ""));
+    let id = baseId;
+    let suffix = 2;
+    while (usedHeadingIds.has(id)) id = baseId + "-" + suffix++;
+    usedHeadingIds.add(id);
     output.push('<h' + level + ' id="' + id + '">' + safe + '</h' + level + '>');
   };
 
@@ -265,6 +270,9 @@ export function htmlToWikiMarkup(html) {
 
 export function looksLikeWikiMarkup(source) {
   const text = String(source ?? "").trim();
-  if (!text || /<\/?[a-z][^>]*>/i.test(text)) return false;
-  return /^(?:={2,6}\s|#(?:REDIRECT|redirect)\s|\{\{(?:Infobox|Short description|See also|Disambiguation)|\[\[|[*#]+\s|\{\||----)/im.test(text) || /\[\[Category:/im.test(text);
+  if (!text) return false;
+  // Treat real HTML content as HTML, but allow MediaWiki's <ref> tags in markup.
+  if (/<\/?(?:p|div|section|table|img|h[1-6]|ul|ol|li|strong|em|a|blockquote|figure)\b[^>]*>/i.test(text)) return false;
+  return /^(?:={2,6}\s|#(?:REDIRECT|redirect)\s|\{\{(?:Infobox|Short description|See also|Disambiguation)|\[\[|[*#]+\s|\{\||----)/im.test(text) ||
+    /\[\[Category:|<\/?ref(?:\s|>|\/)|<references\s*\//im.test(text);
 }
