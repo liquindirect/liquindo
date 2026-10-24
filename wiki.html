@@ -1096,3 +1096,48 @@ html.wiki-access-pending .wiki-container{display:none!important}
   border-top: 1px solid #c8ccd1 !important;
   padding: .55rem 0 !important;
 }
+
+/* Mobile readability fix: the site-wide navy article-card rules were still styling
+   individual wiki sections. Force a plain encyclopedia article presentation. */
+body.wiki-redesign #wiki-article-view .article-section,
+body.wiki-redesign #wiki-article-view .wiki-reading-content .article-section {
+  background: #fff !important;
+  background-image: none !important;
+  color: #202122 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 1.25rem 0 !important;
+  padding: 0 !important;
+}
+body.wiki-redesign #wiki-article-view .article-section p,
+body.wiki-redesign #wiki-article-view .article-section li,
+body.wiki-redesign #wiki-article-view .article-section div,
+body.wiki-redesign #wiki-article-view .article-section span,
+body.wiki-redesign #wiki-article-view .article-section strong,
+body.wiki-redesign #wiki-article-view .article-section em,
+body.wiki-redesign #wiki-article-view .article-section h2,
+body.wiki-redesign #wiki-article-view .article-section h3,
+body.wiki-redesign #wiki-article-view .article-section h4 {
+  color: #202122 !important;
+}
+body.wiki-redesign #wiki-article-view .infobox,
+body.wiki-redesign #wiki-article-view .infobox tbody,
+body.wiki-redesign #wiki-article-view .infobox tr,
+body.wiki-redesign #wiki-article-view .infobox th,
+body.wiki-redesign #wiki-article-view .infobox td {
+  color: #202122 !important;
+  background: #fff !important;
+  background-image: none !important;
+}
+body.wiki-redesign #wiki-article-view .infobox caption {
+  background: #000032 !important;
+  color: #fdbe00 !important;
+}
+body.wiki-redesign #wiki-article-view .infobox th,
+body.wiki-redesign #wiki-article-view .infobox td {
+  border-color: #d1d5db !important;
+}
+body.wiki-redesign #wiki-article-view .article-section a {
+  color: #0645ad !important;
+}
