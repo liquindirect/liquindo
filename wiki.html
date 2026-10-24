@@ -546,7 +546,7 @@ html.wiki-access-pending .wiki-container{display:none!important}
           const rank = !query ? 0 : title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : 3;
           return { card, index, matches, rank };
         });
-        ranked.sort((a, b) => (a.matches && b.matches ? a.rank - b.rank || a.index - b.index : a.index - b.index));
+        ranked.sort((a, b) => Number(b.matches) - Number(a.matches) || a.rank - b.rank || a.index - b.index);
         const list = document.querySelector("#wiki-directory .articles-list");
         ranked.forEach(({card, matches}) => {
           card.hidden = !matches;
