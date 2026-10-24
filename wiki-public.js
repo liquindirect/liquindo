@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import DOMPurify from "https://esm.sh/dompurify@3";
-import { looksLikeWikiMarkup, renderWikiMarkup } from "./wiki-markup.js";
+import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js";
 
 const supabase = createClient(
   "https://uivjovkvpskvvazznlyr.supabase.co",
@@ -85,7 +85,7 @@ async function loadApprovedArticles() {
     const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (cardForArticle) {
       cardForArticle.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
-      cardForArticle.dataset.categories = categoryNames.map(name => name.toLocaleLowerCase()).join("|");
+      cardForArticle.dataset.categories = categoryNames.map(name => slugifyWikiTitle(name)).join("|");
       cardForArticle.dataset.searchContent = parsedContent.body.textContent || "";
     }
     window.wikiCategoryIndex = window.wikiCategoryIndex || {};
@@ -103,7 +103,7 @@ async function loadApprovedArticles() {
     for (const name of categories) {
       if ([...categoryFilter.options].some(option => option.textContent === name)) continue;
       const option = document.createElement("option");
-      option.value = name.toLocaleLowerCase();
+      option.value = slugifyWikiTitle(name);
       option.textContent = name;
       categoryFilter.append(option);
     }
