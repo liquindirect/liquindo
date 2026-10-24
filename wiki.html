@@ -577,6 +577,7 @@ html.wiki-access-pending .wiki-container{display:none!important}
         }
       }
 
+      window.filterWikiDirectory = filterArticleCards;
       searchInput.addEventListener("input", filterArticleCards);
       if (categoryFilter) categoryFilter.addEventListener("change", filterArticleCards);
       filterArticleCards();
