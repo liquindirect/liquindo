@@ -628,7 +628,6 @@ canvas.addEventListener("input", () => {
   scheduleDraftSave();
 });
 markupEditor.addEventListener("input", () => {
-  if (wikiMarkupMode) canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
   scheduleDraftSave();
 });
 wikiMarkupToggle.addEventListener("click", () => setWikiMarkupMode(!wikiMarkupMode));
