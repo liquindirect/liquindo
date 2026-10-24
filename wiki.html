@@ -12,7 +12,7 @@
 
   <title>Liquinwiki - Encyclopedia of Liquindo</title>
 
-  <link rel="stylesheet" href="style.css?v=20261024-wiki-text-contrast-fix-v4" />
+  <link rel="stylesheet" href="style.css?v=20261024-wiki-yellow-links-v5" />
   <style>
 html.wiki-access-pending .wiki-container{display:none!important}
 #wiki-access-gate{max-width:46rem;margin:2rem auto;padding:1.5rem;border:1px solid var(--border,#bbb);border-radius:12px}
@@ -1121,6 +1121,48 @@ body.wiki-redesign #wiki-article-view blockquote {
   border: 0 !important;
   border-left: 3px solid #c7a451 !important;
   padding: .2rem 0 .2rem .8rem !important;
+}
+
+/* High-contrast LiquinWiki links: yellow on navy in every link state. */
+body.wiki-redesign #wiki-article-view a,
+body.wiki-redesign #wiki-article-view a:link,
+body.wiki-redesign #wiki-article-view a:visited,
+body.wiki-redesign #wiki-directory a,
+body.wiki-redesign #wiki-directory a:link,
+body.wiki-redesign #wiki-directory a:visited,
+body.wiki-redesign .wiki-contents-rail a,
+body.wiki-redesign .wiki-reading-content a,
+body.wiki-redesign .wiki-toolbar a,
+body.wiki-redesign .section-link,
+body.wiki-redesign .back-link {
+  color: #ffcc00 !important;
+  text-decoration-color: #ffcc00 !important;
+  text-underline-offset: .15em;
+}
+body.wiki-redesign #wiki-article-view a:hover,
+body.wiki-redesign #wiki-article-view a:focus-visible,
+body.wiki-redesign #wiki-directory a:hover,
+body.wiki-redesign #wiki-directory a:focus-visible,
+body.wiki-redesign .wiki-contents-rail a:hover,
+body.wiki-redesign .wiki-contents-rail a:focus-visible,
+body.wiki-redesign .wiki-reading-content a:hover,
+body.wiki-redesign .wiki-reading-content a:focus-visible,
+body.wiki-redesign .wiki-toolbar a:hover,
+body.wiki-redesign .wiki-toolbar a:focus-visible,
+body.wiki-redesign .section-link:hover,
+body.wiki-redesign .section-link:focus-visible,
+body.wiki-redesign .back-link:hover,
+body.wiki-redesign .back-link:focus-visible {
+  color: #fff1b8 !important;
+  text-decoration-color: #fff1b8 !important;
+}
+body.wiki-redesign #wiki-article-view a:focus-visible,
+body.wiki-redesign #wiki-directory a:focus-visible,
+body.wiki-redesign .wiki-contents-rail a:focus-visible,
+body.wiki-redesign .wiki-reading-content a:focus-visible,
+body.wiki-redesign .wiki-toolbar a:focus-visible {
+  outline: 2px solid #ffcc00 !important;
+  outline-offset: 3px;
 }
 </style>
 
