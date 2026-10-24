@@ -395,6 +395,34 @@ html.wiki-access-pending .wiki-container{display:none!important}
   .wiki-redesign #wiki-article-view .wiki-contents-rail [data-wiki-toc]{font-size:.92rem}
 }
 
+
+
+/* Remove pale blue/grey box treatments from article support sections. */
+.wiki-redesign #wiki-article-view [data-wiki-toc],
+.wiki-redesign #wiki-article-view .wiki-categories,
+.wiki-redesign #wiki-article-view .wiki-see-also,
+.wiki-redesign #wiki-article-view .wiki-disambiguation,
+.wiki-redesign #wiki-article-view .wiki-stub,
+.wiki-redesign #wiki-article-view blockquote {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.wiki-redesign #wiki-article-view [data-wiki-toc] {
+  border: 0 !important;
+  border-left: 1px solid #c8ccd1 !important;
+  padding-left: .8rem !important;
+}
+.wiki-redesign #wiki-article-view .wiki-categories,
+.wiki-redesign #wiki-article-view .wiki-see-also,
+.wiki-redesign #wiki-article-view .wiki-disambiguation,
+.wiki-redesign #wiki-article-view .wiki-stub {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 </style>
   <script>document.documentElement.classList.add("wiki-access-pending");</script>
 
