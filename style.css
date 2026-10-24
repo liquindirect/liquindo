@@ -4870,3 +4870,43 @@ body.account-recovery-redesign .page-title h1 {
 @media (display-mode: standalone) {
   body.liquindo-app-mode .site-header { padding-top: env(safe-area-inset-top, 0px); }
 }
+
+
+/* Homepage refinement: remove the blue boxed-card treatment. Keep the navy
+   page background and gold accents, but let sections read as open editorial
+   content with subtle separators rather than individual blue panels. */
+body.homepage-redesign .home-feature-card,
+body.homepage-redesign .timeline article,
+body.homepage-redesign .faq-item,
+body.homepage-redesign .contact-card,
+body.homepage-redesign .unavailable-panel,
+body.homepage-redesign .countdown-panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+body.homepage-redesign .home-feature-card {
+  border-bottom: 1px solid rgba(223,191,112,.28);
+}
+body.homepage-redesign .home-feature-card:hover {
+  border-color: #fdbe00;
+  background: rgba(253,190,0,.045);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+body.homepage-redesign .timeline article,
+body.homepage-redesign .faq-item,
+body.homepage-redesign .contact-card,
+body.homepage-redesign .countdown-panel {
+  border-top: 1px solid rgba(223,191,112,.24);
+}
+body.homepage-redesign .unavailable-panel {
+  border-top: 1px dashed rgba(223,191,112,.4);
+}
+body.homepage-redesign .faq-items { gap: 0; }
+body.homepage-redesign .faq-item { padding: 20px 0; }
+body.homepage-redesign .contact-card { padding: 26px 0; }
+body.homepage-redesign .timeline { gap: 24px; }
+body.homepage-redesign .timeline article { padding: 24px 0; }
+body.homepage-redesign .countdown-panel { padding: 26px 0; }
