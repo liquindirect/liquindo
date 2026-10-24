@@ -86,6 +86,13 @@ async function loadApprovedArticles() {
     const categoryNames = [...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent.trim()).filter(Boolean);
     const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (cardForArticle) {
+      const cardLink = cardForArticle.querySelector("h3 a");
+      if (cardLink) {
+        cardLink.textContent = articleData.title || articleData.slug;
+        cardLink.href = "wiki.html#" + articleData.slug;
+      }
+      const cardDescription = cardForArticle.querySelector(".article-description");
+      if (cardDescription) cardDescription.textContent = articleData.description || "LiquinWiki article.";
       cardForArticle.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
       cardForArticle.dataset.categories = categoryNames.map(name => slugifyWikiTitle(name)).join("|");
       cardForArticle.dataset.searchContent = parsedContent.body.textContent || "";
