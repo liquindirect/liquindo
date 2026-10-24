@@ -92,7 +92,7 @@ async function loadApprovedArticles() {
     }
     window.wikiCategoryIndex = window.wikiCategoryIndex || {};
     window.wikiCategoryIndex[articleData.slug] = categoryNames;
-    article.innerHTML = createdDynamically && !/class=["\']article-header["\']/.test(safeContent) ? ((header ? header.outerHTML : "") + safeContent) : safeContent;
+    article.innerHTML = header && !/class=["\']article-header["\']/.test(safeContent) ? header.outerHTML + safeContent : safeContent;
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
