@@ -78,7 +78,7 @@
  .editor-controls button,.editor-button{width:100%;min-height:2.9rem}
  .editor-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
  .editor-toolbar button{min-width:0;min-height:2.8rem;padding:.55rem .4rem}
- .editor-source{min-height:52vh;height:52vh;font-size:16px;line-height:1.55;padding:.8rem;border-radius:8px}
+ .editor-markup{min-height:52vh;height:52vh;font-size:16px;line-height:1.55;padding:.8rem;border-radius:8px}
  .editor-canvas{min-height:45vh;padding:.8rem;font-size:16px}
  .editor-guide-content pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem}
  #submit-revision{position:sticky;bottom:.5rem;z-index:5;box-shadow:0 3px 14px #0002}
@@ -103,7 +103,7 @@ body.wiki-editor-redesign .editor-note{color:#54595d}
 body.wiki-editor-redesign .editor-button,body.wiki-editor-redesign .editor-toolbar button,body.wiki-editor-redesign .editor-controls button{border:1px solid #a2a9b1;border-radius:2px;background:#f8f9fa;color:#202122;padding:.55rem .8rem}
 body.wiki-editor-redesign .editor-button:hover,body.wiki-editor-redesign .editor-toolbar button:hover,body.wiki-editor-redesign .editor-controls button:hover{background:#eaecf0}
 body.wiki-editor-redesign .editor-canvas,body.wiki-editor-redesign .revision-diff{background:#fff;color:#202122;border:1px solid #a2a9b1;border-radius:2px}
-body.wiki-editor-redesign .editor-source{background:#f8f9fa;color:#202122;border:1px solid #a2a9b1;border-radius:2px}
+body.wiki-editor-redesign .editor-markup{background:#f8f9fa;color:#202122;border:1px solid #a2a9b1;border-radius:2px}
 body.wiki-editor-redesign input,body.wiki-editor-redesign textarea,body.wiki-editor-redesign select{border:1px solid #a2a9b1;border-radius:2px;background:#fff;color:#202122}
 body.wiki-editor-redesign footer{background:#f8f9fa;color:#202122;border-top:1px solid #a2a9b1}
 body.wiki-editor-redesign footer a{color:#0645ad}
@@ -116,14 +116,14 @@ body.wiki-editor-redesign footer a{color:#0645ad}
 .revision-card{border-radius:2px;border-color:#a2a9b1}
 .editor-toolbar{gap:.35rem}
 .editor-toolbar button{min-height:2.5rem}
-.editor-source.editor-hidden{display:none!important}
+.editor-markup.editor-hidden{display:none!important}
 .editor-canvas.editor-live-preview{float:right;width:calc(50% - .5rem);height:55vh;min-height:420px;margin-top:.75rem;overflow:auto;pointer-events:none;background:#fff}
-.editor-source:not(.editor-hidden){float:left;width:calc(50% - .5rem);height:55vh;min-height:420px;white-space:pre;overflow:auto;overflow-wrap:normal}
+.editor-markup:not(.editor-hidden){float:left;width:calc(50% - .5rem);height:55vh;min-height:420px;white-space:pre;overflow:auto;overflow-wrap:normal}
 .editor-panel:has(.editor-live-preview)::after{content:'';display:block;clear:both}
 .editor-panel:has(.editor-live-preview) .editor-controls:last-child{clear:both;padding-top:1rem}
 .editor-mode-note{color:#54595d}
 @media(max-width:850px){#editor-app{display:block}body.wiki-editor-redesign .editor-wrap{width:calc(100% - 1.5rem)}}
-@media(max-width:640px){body.wiki-editor-redesign .editor-wrap{width:100%;padding:0 .5rem;margin:.75rem auto}body.wiki-editor-redesign .editor-panel{padding:.85rem;margin:.7rem 0}body.wiki-editor-redesign .page-title{width:calc(100% - 1.5rem);padding:1.5rem 0 1rem}.editor-canvas.editor-live-preview,.editor-source:not(.editor-hidden){float:none;width:100%;height:38vh;min-height:240px;margin-top:.6rem}.editor-source:not(.editor-hidden){white-space:pre-wrap;overflow-wrap:anywhere}.editor-canvas.editor-live-preview{pointer-events:none}.editor-panel:has(.editor-live-preview)::after{clear:both}}
+@media(max-width:640px){body.wiki-editor-redesign .editor-wrap{width:100%;padding:0 .5rem;margin:.75rem auto}body.wiki-editor-redesign .editor-panel{padding:.85rem;margin:.7rem 0}body.wiki-editor-redesign .page-title{width:calc(100% - 1.5rem);padding:1.5rem 0 1rem}.editor-canvas.editor-live-preview,.editor-markup:not(.editor-hidden){float:none;width:100%;height:38vh;min-height:240px;margin-top:.6rem}.editor-markup:not(.editor-hidden){white-space:pre-wrap;overflow-wrap:anywhere}.editor-canvas.editor-live-preview{pointer-events:none}.editor-panel:has(.editor-live-preview)::after{clear:both}}
 
 /* Markup-mode preview components */
 .editor-canvas .infobox{float:right;max-width:45%;margin:0 0 1rem 1rem;border-collapse:collapse;background:#f8f9fa}
