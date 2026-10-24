@@ -57,7 +57,7 @@ function updateArticleMode() {
   }
 }
 const visualToolbar = $("#visual-editor-toolbar");
-let wikiMarkupMode = true;
+let wikiMarkupMode = false;
 function renderEditorWikiMarkup(source) {
   const titleToSlug = Object.fromEntries(Object.entries(articles).map(([slug, title]) => [String(title).trim().toLocaleLowerCase(), slug]));
   return renderWikiMarkup(source, titleToSlug);
