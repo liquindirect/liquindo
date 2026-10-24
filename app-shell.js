@@ -11,7 +11,6 @@
   const links = [
     { id: "home", label: "Home", href: "index.html", icon: "⌂" },
     { id: "wiki", label: "Wiki", href: "wiki.html", icon: "▤" },
-    { id: "flagmaker", label: "Flag Maker", href: "flagmaker.html", icon: "⚑" },
     { id: "members", label: "Members", href: "members.html", icon: "♙" }
   ];
   const extraLinks = [
