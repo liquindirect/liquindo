@@ -14,6 +14,18 @@ const articles = {
   "npf": "Nuclear Proliferation Faction"
 };
 const $ = (selector) => document.querySelector(selector);
+
+function withTimeout(promise, label, milliseconds = 15000) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(
+        label + " timed out after 15 seconds. Check your connection and try again."
+      )), milliseconds);
+    })
+  ]).finally(() => clearTimeout(timer));
+}
 const loading = $("#editor-loading");
 const signedOut = $("#editor-signed-out");
 const noPermission = $("#editor-no-permission");
@@ -729,17 +741,17 @@ submitButton.addEventListener("click", async () => {
 });
 
 async function initialize() {
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  const { data: { session }, error: sessionError } = await withTimeout(supabase.auth.getSession(), "Account verification");
   if (sessionError) throw sessionError;
   if (!session?.user) {
     setAppState("signed-out");
     return;
   }
   user = session.user;
-  const [{ data: profile, error: profileError }, { data: permission, error: permissionError }] = await Promise.all([
+  const [{ data: profile, error: profileError }, { data: permission, error: permissionError }] = await withTimeout(Promise.all([
     supabase.from("profiles").select("role").eq("id", user.id).maybeSingle(),
     supabase.from("wiki_permissions").select("permission").eq("user_id", user.id).maybeSingle()
-  ]);
+  ]), "Account permissions check");
   if (profileError) throw profileError;
   if (permissionError) throw permissionError;
   isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
@@ -754,7 +766,7 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin);
-  const { data: existingPages, error: pagesError } = await supabase.from("wiki_pages").select("slug, title");
+  const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title"), "Wiki article list");
   if (pagesError) throw pagesError;
   for (const page of existingPages || []) {
     if (!page.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
@@ -778,8 +790,8 @@ async function initialize() {
   if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
     articleSelect.value = requestedSlug;
   }
-  await loadArticle();
-  await renderRevisions();
+  await withTimeout(loadArticle(), "Wiki article loading");
+  await withTimeout(renderRevisions(), "Wiki revision history");
   if (params.get("tab") === "history") {
     const historyFilter = $("#history-article-filter");
     if (historyFilter && requestedSlug && [...historyFilter.options].some(option => option.value === requestedSlug)) {
@@ -793,7 +805,10 @@ try {
   await initialize();
 } catch (error) {
   setAppState("no-permission");
+  const heading = noPermission.querySelector("h2");
   const explanation = noPermission.querySelector("p");
-  explanation.textContent = error.message || "Could not initialize the editor. Check that the Supabase SQL setup has been run.";
+  const timedOut = /timed out after 15 seconds/i.test(error?.message || "");
+  if (heading) heading.textContent = timedOut ? "Account verification timed out" : "LiquinWiki could not be opened";
+  explanation.textContent = error?.message || "Could not initialize the editor. Check your connection and account permissions, then try again.";
   explanation.style.color = "#b42318";
 }
