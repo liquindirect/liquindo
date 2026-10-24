@@ -57,7 +57,7 @@ function updateArticleMode() {
   }
 }
 const visualToolbar = $("#visual-editor-toolbar");
-let wikiMarkupMode = false;
+let wikiMarkupMode = true;
 function renderEditorWikiMarkup(source) {
   const titleToSlug = Object.fromEntries(Object.entries(articles).map(([slug, title]) => [String(title).trim().toLocaleLowerCase(), slug]));
   return renderWikiMarkup(source, titleToSlug);
@@ -789,6 +789,7 @@ async function initialize() {
     articleSelect.value = requestedSlug;
   }
   await withTimeout(loadArticle(), "Wiki article loading");
+  setWikiMarkupMode(true);
   await withTimeout(renderRevisions(), "Wiki revision history");
   if (params.get("tab") === "history") {
     const historyFilter = $("#history-article-filter");
