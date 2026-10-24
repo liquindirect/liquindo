@@ -624,7 +624,7 @@ newArticleTitle.addEventListener("input", () => {
   if (isCreatingArticle() && heading) heading.textContent = newArticleTitle.value.trim() || "New article";
 });
 newArticleSlug.addEventListener("input", () => { newArticleSlug.dataset.edited = "true"; });
-articleSelect.addEventListener("change", loadArticle);
+articleSelect.addEventListener("change", updateArticleMode);
 canvas.addEventListener("input", () => {
   scheduleDraftSave();
 });
@@ -701,9 +701,9 @@ submitButton.addEventListener("click", async () => {
     }
   }
   submitButton.disabled = true;
-  showMessage(isWikiAdmin && !creating ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
+  showMessage(isWikiAdmin ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
   try {
-    if (isWikiAdmin && !creating) {
+    if (isWikiAdmin) {
       const { error } = await supabase.rpc("publish_liquinwiki_admin_revision", {
         p_slug: slug,
         p_title: title,
@@ -712,7 +712,7 @@ submitButton.addEventListener("click", async () => {
       if (error) throw error;
       clearDraftIfMatches(slug, content);
       loadedArticleContent = content;
-      showMessage("Article published immediately. A revision was recorded in history.");
+      showMessage(creating ? "New article published immediately. A revision was recorded in history." : "Article published immediately. A revision was recorded in history.");
       await renderRevisions();
       return;
     }
@@ -757,7 +757,7 @@ async function initialize() {
   isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
   canCreateArticles = isWikiAdmin || permission?.permission === "liquinwiki_creator";
   isWikiEditor = isWikiAdmin || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
-  submitButton.textContent = isWikiAdmin ? "Publish / submit article" : "Submit for approval";
+  submitButton.textContent = isWikiAdmin ? "Publish article" : "Submit for approval";
   articleSelect.querySelector(`option[value="${articleCreateOption}"]`).hidden = !canCreateArticles && !isWikiAdmin;
   if (!canCreateArticles && !isWikiAdmin && articleSelect.value === articleCreateOption) articleSelect.value = "liquindo";
   if (!isWikiEditor) {
