@@ -97,10 +97,6 @@ begin
       detail_json := jsonb_build_object('role_before',old.role,'role_after',new.role,
         'display_name_changed',old.display_name is distinct from new.display_name,'bio_changed',old.bio is distinct from new.bio);
     else detail_json := jsonb_build_object('operation',verb); end if;
-  elsif tg_table_name = 'flagmaker_shapes' then
-    target_key := coalesce((case when tg_op = 'DELETE' then old.shape_id else new.shape_id end),'unknown');
-    detail_json := jsonb_build_object('operation',verb,'label',case when tg_op = 'DELETE' then old.label else new.label end,
-      'builtin',case when tg_op = 'DELETE' then old.is_builtin else new.is_builtin end);
   elsif tg_table_name = 'site_settings' then
     target_key := coalesce((case when tg_op = 'DELETE' then old.setting_key else new.setting_key end),'unknown');
     detail_json := jsonb_build_object('operation',verb);
@@ -124,8 +120,6 @@ $$;
 
 drop trigger if exists audit_profiles_changes on public.profiles;
 create trigger audit_profiles_changes after update or insert or delete on public.profiles for each row execute function public.log_admin_table_change();
-drop trigger if exists audit_flagmaker_shapes_changes on public.flagmaker_shapes;
-create trigger audit_flagmaker_shapes_changes after update or insert or delete on public.flagmaker_shapes for each row execute function public.log_admin_table_change();
 drop trigger if exists audit_site_settings_changes on public.site_settings;
 create trigger audit_site_settings_changes after update or insert or delete on public.site_settings for each row execute function public.log_admin_table_change();
 drop trigger if exists audit_wiki_pages_changes on public.wiki_pages;
@@ -134,65 +128,6 @@ drop trigger if exists audit_wiki_revisions_changes on public.wiki_revisions;
 create trigger audit_wiki_revisions_changes after update or insert or delete on public.wiki_revisions for each row execute function public.log_admin_table_change();
 drop trigger if exists audit_wiki_permissions_changes on public.wiki_permissions;
 create trigger audit_wiki_permissions_changes after update or insert or delete on public.wiki_permissions for each row execute function public.log_admin_table_change();
-
-
--- Flag Maker history snapshots support restoring previous shape-library states.
-create table if not exists public.flagmaker_shape_history (
-  id bigint generated always as identity primary key,
-  shape_id text not null,
-  action text not null check (action in ('update','delete')),
-  snapshot jsonb not null,
-  changed_by uuid references auth.users(id) on delete set null,
-  changed_at timestamptz not null default now()
-);
-alter table public.flagmaker_shape_history enable row level security;
-drop policy if exists "Admins read shape history" on public.flagmaker_shape_history;
-create policy "Admins read shape history" on public.flagmaker_shape_history for select to authenticated
-using (exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin'));
-grant select on public.flagmaker_shape_history to authenticated;
-
-create or replace function public.capture_flagmaker_shape_history()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  insert into public.flagmaker_shape_history(shape_id,action,snapshot,changed_by)
-  values(old.shape_id,lower(tg_op),to_jsonb(old),auth.uid());
-  return case when tg_op = 'DELETE' then old else new end;
-end;
-$$;
-drop trigger if exists capture_flagmaker_shape_history on public.flagmaker_shapes;
-create trigger capture_flagmaker_shape_history after update or delete on public.flagmaker_shapes
-for each row execute function public.capture_flagmaker_shape_history();
-
-
--- Category, tags and manual ordering for the shared shape library.
-alter table public.flagmaker_shapes
-  add column if not exists category text not null default 'General',
-  add column if not exists tags text[] not null default '{}',
-  add column if not exists sort_order integer;
-alter table public.flagmaker_shapes
-  drop constraint if exists flagmaker_shape_category_length,
-  add constraint flagmaker_shape_category_length check (char_length(category) between 1 and 60),
-  drop constraint if exists flagmaker_shape_tags_limit,
-  add constraint flagmaker_shape_tags_limit check (cardinality(tags) <= 20);
-
--- Reordering alone does not create a geometry snapshot.
-create or replace function public.capture_flagmaker_shape_history()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  if tg_op = 'UPDATE'
-     and old.label is not distinct from new.label
-     and old.path_d is not distinct from new.path_d
-     and old.category is not distinct from new.category
-     and old.tags is not distinct from new.tags
-     and old.is_builtin is not distinct from new.is_builtin
-     and old.is_active is not distinct from new.is_active then
-    return new;
-  end if;
-  insert into public.flagmaker_shape_history(shape_id,action,snapshot,changed_by)
-  values(old.shape_id,lower(tg_op),to_jsonb(old),auth.uid());
-  return case when tg_op = 'DELETE' then old else new end;
-end;
-$$;
 
 
 -- Site-settings history snapshots support undoing configuration mistakes.
