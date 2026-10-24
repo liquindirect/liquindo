@@ -11,6 +11,8 @@ const sanitizeOptions = {
   FORBID_TAGS: ["script", "style", "iframe", "form", "input", "button", "object", "embed", "svg", "math"]
 };
 
+async function safeContentForSearch(content) { return DOMPurify.sanitize(content || "", sanitizeOptions); }
+
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
     .select("slug, title, description, content");
@@ -40,6 +42,7 @@ async function loadApprovedArticles() {
       description.className = "article-description";
       description.textContent = articleData.description || "LiquinWiki article.";
       card.append(cardHeading, description);
+      card.dataset.searchContent = new DOMParser().parseFromString(safeContentForSearch(articleData.content), "text/html").body.textContent || "";
       list.append(card);
 
       article = document.createElement("article");
