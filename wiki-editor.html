@@ -57,7 +57,34 @@
     body.wiki-editor-redesign button { border-color:#fdbe00; }
     body.wiki-editor-redesign footer { background:#080f1c; color:#d5dce3; border-top:1px solid rgba(253,190,0,.25); }
     body.wiki-editor-redesign footer a { color:#fdbe00; }
-  </style>
+  
+/* Mobile-first editing: generous touch targets, readable source, and less horizontal scrolling. */
+.editor-wrap{width:min(100% - 1rem,1100px);box-sizing:border-box}
+.editor-panel{min-width:0}
+.editor-controls label{display:flex;flex-direction:column;gap:.35rem;flex:1 1 12rem;min-width:0}
+.editor-controls input,.editor-controls select{box-sizing:border-box;max-width:100%;min-height:2.75rem;font-size:16px}
+.editor-button,.editor-toolbar button,.editor-controls button{min-height:2.75rem;touch-action:manipulation}
+.editor-source{box-sizing:border-box;white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:hidden;tab-size:2}
+.editor-canvas{overflow-wrap:anywhere;word-break:normal}
+@media(max-width:640px){
+ .editor-wrap{margin:.75rem auto;padding:0 .5rem;width:100%}
+ .editor-panel{padding:.85rem;border-radius:10px;margin:.7rem 0}
+ .editor-controls{align-items:stretch;gap:.55rem}
+ .editor-controls>*{max-width:100%}
+ .editor-controls label{flex-basis:100%}
+ .editor-controls button,.editor-button{width:100%;min-height:2.9rem}
+ .editor-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+ .editor-toolbar button{min-width:0;min-height:2.8rem;padding:.55rem .4rem}
+ .editor-source{min-height:52vh;height:52vh;font-size:16px;line-height:1.55;padding:.8rem;border-radius:8px}
+ .editor-canvas{min-height:45vh;padding:.8rem;font-size:16px}
+ .editor-guide-content pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82rem}
+ #submit-revision{position:sticky;bottom:.5rem;z-index:5;box-shadow:0 3px 14px #0002}
+ #editor-status{flex-basis:100%;overflow-wrap:anywhere}
+ .revision-actions{display:grid;grid-template-columns:1fr}
+ .revision-actions button{width:100%;min-height:2.8rem}
+ .revision-card{padding:.75rem}
+}
+</style>
 
     <meta name="theme-color" content="#0b1730" />
     <meta name="application-name" content="Liquindo" />
