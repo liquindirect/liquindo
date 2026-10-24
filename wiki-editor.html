@@ -156,12 +156,28 @@
         <details class="editor-guide">
           <summary>HTML editing guide — how to match the live LiquinWiki</summary>
           <div class="editor-guide-content">
-            <p><strong>Quick rule:</strong> use an <code>h2</code> for a main section heading and put the section content inside an <code>article-section</code> block. The live wiki draws a gold line underneath section headings and frames each section.</p>
-            <p><strong>Copy this structure for a new section:</strong></p>
-            <pre><code>&lt;section class="article-section"&gt;
-  &lt;h2 class="section-title"&gt;Section heading&lt;/h2&gt;
-  &lt;p&gt;Write the section text here.&lt;/p&gt;
-&lt;/section&gt;</code></pre>
+            <p><strong>Quick rule:</strong> use <code>h2</code> for main section headings and <code>h3</code> for subsections. LiquinWiki uses a clean encyclopaedia layout, blue links, a generated contents box, and optional infoboxes, references and categories.</p>
+            <p><strong>Section headings:</strong></p>
+            <pre><code>&lt;h2&gt;History&lt;/h2&gt;
+&lt;p&gt;Write the section text here.&lt;/p&gt;
+&lt;h3&gt;Origins&lt;/h3&gt;
+&lt;p&gt;More detailed information here.&lt;/p&gt;</code></pre>
+            <p><strong>Infobox (place near the start of the article):</strong></p>
+            <pre><code>&lt;table class="infobox"&gt;
+  &lt;caption&gt;Article subject&lt;/caption&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope="row"&gt;Founded&lt;/th&gt;&lt;td&gt;2026&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope="row"&gt;Type&lt;/th&gt;&lt;td&gt;Example&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            <p><strong>References and categories:</strong></p>
+            <pre><code>&lt;h2&gt;References&lt;/h2&gt;
+&lt;ol class="reference-list"&gt;
+  &lt;li&gt;&lt;a href="https://example.com"&gt;Source title&lt;/a&gt; (accessed 2026).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="wiki-categories"&gt;Categories:
+  &lt;a href="wiki.html#liquindo"&gt;Liquindo&lt;/a&gt;
+&lt;/div&gt;</code></pre>
             <p><strong>Subheading inside a section:</strong></p>
             <pre><code>&lt;h3 class="subsection-title"&gt;Subheading&lt;/h3&gt;
 &lt;p&gt;More detail goes here.&lt;/p&gt;</code></pre>
