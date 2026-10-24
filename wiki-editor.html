@@ -14,8 +14,8 @@
     .editor-controls select,.editor-controls input,.editor-controls button,.editor-button{padding:.65rem .8rem}
     .editor-canvas{min-height:420px;border:1px solid var(--border,#bbb);border-radius:8px;padding:1rem;margin-top:.75rem;background:var(--background,#fff);color:var(--text,#222);overflow-wrap:anywhere}
     .editor-canvas:focus{outline:2px solid var(--teal,#167d7a);outline-offset:2px}
-    .editor-source{box-sizing:border-box;width:100%;min-height:420px;margin-top:.75rem;padding:1rem;border:1px solid var(--border,#bbb);border-radius:8px;background:#101827;color:#f4f0e7;font: .92rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}
-    .editor-source:focus{outline:2px solid #fdbe00;outline-offset:2px}
+    .editor-markup{box-sizing:border-box;width:100%;min-height:420px;margin-top:.75rem;padding:1rem;border:1px solid var(--border,#bbb);border-radius:8px;background:#101827;color:#f4f0e7;font:.92rem/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}
+    .editor-markup:focus{outline:2px solid #fdbe00;outline-offset:2px}
     .editor-mode-note{margin:.6rem 0;font-size:.92rem;opacity:.85}
     .editor-canvas img{max-width:100%;height:auto}
     .editor-canvas .article-section{clear:both;margin:1.5rem 0;padding:1.1rem 1.2rem;border:1px solid #d8d0c1;border-radius:10px;background:#fffdf8}
@@ -197,7 +197,7 @@ body.wiki-editor-redesign footer a{color:#0645ad}
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
         <h2>Submit an article revision</h2>
-        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Make changes in the visual editor or switch to HTML source. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
+        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Make changes in the visual editor or switch to wiki markup. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
         <div class="editor-controls">
           <label for="article-select">Article</label>
           <select id="article-select">
@@ -216,7 +216,6 @@ body.wiki-editor-redesign footer a{color:#0645ad}
           <p class="editor-note">New articles are submitted as drafts and need administrator approval before publication.</p>
         </div>
         <div class="editor-controls" style="margin-top:.75rem">
-          <button id="toggle-source-mode" class="editor-button" type="button" aria-pressed="false">Edit HTML source</button>
           <button id="toggle-wiki-markup" class="editor-button" type="button" aria-pressed="false">Edit wiki markup</button>
           <span id="editor-mode-note" class="editor-mode-note">Visual mode</span>
         </div>
@@ -231,7 +230,7 @@ body.wiki-editor-redesign footer a{color:#0645ad}
           <button type="button" id="remove-format">Clear formatting</button>
         </div>
         <details class="editor-guide">
-          <summary>Editing guide — HTML and wiki markup</summary>
+          <summary>LiquinWiki markup guide</summary>
           <div class="editor-guide-content">
             <p><strong>Wiki markup mode:</strong> choose “Edit wiki markup” for simpler article text. The preview updates as you type. LiquinWiki now supports headings, formatting, internal/external links, nested lists, categories, citations, infoboxes, simple tables, redirects, “See also” boxes and disambiguation notices. It is a practical subset of MediaWiki, not a complete MediaWiki installation.</p>
             <p><strong>Citations:</strong> place <code>&lt;ref&gt;Source details or [https://example.com source link]&lt;/ref&gt;</code> after a sentence. Reuse a named citation with <code>&lt;ref name="source" /&gt;</code>. A References section is generated automatically.</p>
@@ -253,7 +252,7 @@ body.wiki-editor-redesign footer a{color:#0645ad}
 {{Short description|A short summary shown below the title}}
 {{See also|Liquindo|Liquin's Plan}}
 [[Category:History]]</code></pre>
-            <p><strong>Other supported patterns:</strong> <code>#REDIRECT [[Article title]]</code> for a redirect page, <code>{{Disambiguation}}</code> for a disambiguation notice, <code>----</code> for a horizontal rule, and leading spaces for a block quote. Use HTML source mode for complex image galleries or advanced tables.</p>
+            <p><strong>Other supported patterns:</strong> <code>#REDIRECT [[Article title]]</code> for a redirect page, <code>{{Disambiguation}}</code> for a disambiguation notice, <code>----</code> for a horizontal rule, and leading spaces for a block quote. Use the visual editor for complex image galleries or advanced layouts.</p>
             <pre><code>== History ==
 Liquindo was founded in '''2026'''.
 
@@ -265,38 +264,25 @@ See [[Liquindo Nationalist Front|the related article]].
 
 [https://example.com External source]
 [[Category:History]]</code></pre>
-            <p><strong>Important:</strong> switching an existing article with tables, images or advanced HTML to wiki markup may simplify those elements. Keep HTML source mode for complex layouts.</p>
-            <p><strong>HTML mode:</strong> use <code>h2</code> for main section headings and <code>h3</code> for subsections. LiquinWiki uses a clean encyclopaedia layout, blue links, a generated contents box, and optional infoboxes, references and categories.</p>
-            <p><strong>Section headings:</strong></p>
-            <pre><code>&lt;h2&gt;History&lt;/h2&gt;
-&lt;p&gt;Write the section text here.&lt;/p&gt;
-&lt;h3&gt;Origins&lt;/h3&gt;
-&lt;p&gt;More detailed information here.&lt;/p&gt;</code></pre>
-            <p><strong>Infobox (place near the start of the article):</strong></p>
-            <pre><code>&lt;table class="infobox"&gt;
-  &lt;caption&gt;Article subject&lt;/caption&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;&lt;th scope="row"&gt;Founded&lt;/th&gt;&lt;td&gt;2026&lt;/td&gt;&lt;/tr&gt;
-    &lt;tr&gt;&lt;th scope="row"&gt;Type&lt;/th&gt;&lt;td&gt;Example&lt;/td&gt;&lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;</code></pre>
-            <p><strong>References and categories:</strong></p>
-            <pre><code>&lt;h2&gt;References&lt;/h2&gt;
-&lt;ol class="reference-list"&gt;
-  &lt;li&gt;&lt;a href="https://example.com"&gt;Source title&lt;/a&gt; (accessed 2026).&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="wiki-categories"&gt;Categories:
-  &lt;a href="wiki.html#liquindo"&gt;Liquindo&lt;/a&gt;
-&lt;/div&gt;</code></pre>
-            <p><strong>Subheading inside a section:</strong></p>
-            <pre><code>&lt;h3 class="subsection-title"&gt;Subheading&lt;/h3&gt;
-&lt;p&gt;More detail goes here.&lt;/p&gt;</code></pre>
-            <p><strong>Useful HTML:</strong> <code>&lt;p&gt;paragraph&lt;/p&gt;</code> for paragraphs, <code>&lt;strong&gt;bold text&lt;/strong&gt;</code>, <code>&lt;em&gt;italic text&lt;/em&gt;</code>, <code>&lt;ul&gt;&lt;li&gt;item&lt;/li&gt;&lt;/ul&gt;</code> for bullet lists, and <code>&lt;a href="https://example.com"&gt;link text&lt;/a&gt;</code> for links.</p>
-            <p><strong>Important:</strong> edit only the article content, not the page's outer HTML, scripts, or styles. Close every tag you open. Use full <code>https://</code> links, and switch back to the visual editor to check the layout before submitting. Unsafe HTML is removed when content is sanitized.</p>
-          </div>
+            <p><strong>Important:</strong> switching an existing article with tables, images or advanced HTML to wiki markup may simplify those elements. Use the visual editor for complex layouts.</p>
+            <h3>Quick reference</h3>
+            <table class="wikitable editor-guide-table"><thead><tr><th>What you want</th><th>Write this</th></tr></thead><tbody>
+              <tr><td>Main heading</td><td><code>== History ==</code></td></tr>
+              <tr><td>Subheading</td><td><code>=== Origins ===</code></td></tr>
+              <tr><td>Bold</td><td><code>\'\'\'important\'\'\'</code></td></tr>
+              <tr><td>Italic</td><td><code>\'\'emphasis\'\'</code></td></tr>
+              <tr><td>Internal link</td><td><code>[[Article title]]</code></td></tr>
+              <tr><td>Link with label</td><td><code>[[Article title|shown text]]</code></td></tr>
+              <tr><td>Bullet list</td><td><code>* List item</code></td></tr>
+              <tr><td>Numbered list</td><td><code># List item</code></td></tr>
+              <tr><td>Category</td><td><code>[[Category:History]]</code></td></tr>
+              <tr><td>Reference</td><td><code>&lt;ref&gt;Source details&lt;/ref&gt;</code></td></tr>
+            </tbody></table>
+            <p><strong>How to edit:</strong> choose “Edit wiki markup” to write the syntax and see a live preview, or stay in the visual editor for direct formatting. Submit your revision when the preview looks right. LiquinWiki supports a useful subset of MediaWiki, not every MediaWiki feature.</p>
+</div>
         </details>
-        <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article content editor" aria-multiline="true"></div>
-        <textarea id="editor-source" class="editor-source editor-hidden" aria-label="Article HTML source" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
+        <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article visual editor" aria-multiline="true"></div>
+        <textarea id="editor-markup" class="editor-markup editor-hidden" aria-label="Article wiki markup" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
         <div class="editor-controls" style="margin-top:1rem">
           <button id="submit-revision" class="editor-button" type="button">Submit for approval</button>
           <span id="editor-status" class="editor-status" role="status" aria-live="polite"></span>
