@@ -84,6 +84,43 @@
  .revision-actions button{width:100%;min-height:2.8rem}
  .revision-card{padding:.75rem}
 }
+
+/* MediaWiki-like editor skin and desktop workspace layout */
+body.wiki-editor-redesign{background:#fff;color:#202122}
+body.wiki-editor-redesign .page-header{background:#fff;color:#202122;border-bottom:1px solid #a2a9b1}
+body.wiki-editor-redesign .topbar{background:#fff;border-bottom:1px solid #eaecf0}
+body.wiki-editor-redesign .brand{color:#202122}
+body.wiki-editor-redesign .page-title{padding-top:2rem;padding-bottom:1.5rem}
+body.wiki-editor-redesign .page-title h1{font:400 clamp(2rem,4vw,2.5rem)/1.2 Georgia,'Times New Roman',serif;letter-spacing:0}
+body.wiki-editor-redesign .page-title p{color:#54595d}
+body.wiki-editor-redesign .editor-wrap{width:min(calc(100% - 3rem),1400px);max-width:1400px;margin:1.5rem auto}
+body.wiki-editor-redesign .editor-panel{background:#fff;color:#202122;border:1px solid #a2a9b1;border-radius:2px;box-shadow:none;padding:1.25rem;margin:1rem 0;min-width:0}
+body.wiki-editor-redesign .editor-panel h2{font:400 1.55rem/1.3 Georgia,'Times New Roman',serif;border-bottom:1px solid #a2a9b1;padding-bottom:.45rem}
+body.wiki-editor-redesign .editor-note{color:#54595d}
+body.wiki-editor-redesign .editor-button,body.wiki-editor-redesign .editor-toolbar button,body.wiki-editor-redesign .editor-controls button{border:1px solid #a2a9b1;border-radius:2px;background:#f8f9fa;color:#202122;padding:.55rem .8rem}
+body.wiki-editor-redesign .editor-button:hover,body.wiki-editor-redesign .editor-toolbar button:hover,body.wiki-editor-redesign .editor-controls button:hover{background:#eaecf0}
+body.wiki-editor-redesign .editor-canvas,body.wiki-editor-redesign .revision-diff{background:#fff;color:#202122;border:1px solid #a2a9b1;border-radius:2px}
+body.wiki-editor-redesign .editor-source{background:#f8f9fa;color:#202122;border:1px solid #a2a9b1;border-radius:2px}
+body.wiki-editor-redesign input,body.wiki-editor-redesign textarea,body.wiki-editor-redesign select{border:1px solid #a2a9b1;border-radius:2px;background:#fff;color:#202122}
+body.wiki-editor-redesign footer{background:#f8f9fa;color:#202122;border-top:1px solid #a2a9b1}
+body.wiki-editor-redesign footer a{color:#0645ad}
+#editor-app{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 1.25rem;align-items:start}
+#editor-app>.editor-panel:first-child{grid-column:1/-1}
+#editor-app>#permission-panel{grid-column:1/-1}
+#editor-app>#review-panel,#editor-app>#revision-compare-panel{grid-column:1/-1}
+#editor-app>.editor-panel:last-child{min-width:0}
+#revision-history,#pending-revisions,#revision-compare-result{min-width:0;overflow-wrap:anywhere}
+.revision-card{border-radius:2px;border-color:#a2a9b1}
+.editor-toolbar{gap:.35rem}
+.editor-toolbar button{min-height:2.5rem}
+.editor-source.editor-hidden{display:none!important}
+.editor-canvas.editor-live-preview{float:right;width:calc(50% - .5rem);height:55vh;min-height:420px;margin-top:.75rem;overflow:auto;pointer-events:none;background:#fff}
+.editor-source:not(.editor-hidden){float:left;width:calc(50% - .5rem);height:55vh;min-height:420px;white-space:pre;overflow:auto;overflow-wrap:normal}
+.editor-panel:has(.editor-live-preview)::after{content:'';display:block;clear:both}
+.editor-panel:has(.editor-live-preview) .editor-controls:last-child{clear:both;padding-top:1rem}
+.editor-mode-note{color:#54595d}
+@media(max-width:850px){#editor-app{display:block}body.wiki-editor-redesign .editor-wrap{width:calc(100% - 1.5rem)}}
+@media(max-width:640px){body.wiki-editor-redesign .editor-wrap{width:100%;padding:0 .5rem;margin:.75rem auto}body.wiki-editor-redesign .editor-panel{padding:.85rem;margin:.7rem 0}body.wiki-editor-redesign .page-title{width:calc(100% - 1.5rem);padding:1.5rem 0 1rem}.editor-canvas.editor-live-preview,.editor-source:not(.editor-hidden){float:none;width:100%;height:38vh;min-height:240px;margin-top:.6rem}.editor-source:not(.editor-hidden){white-space:pre-wrap;overflow-wrap:anywhere}.editor-canvas.editor-live-preview{pointer-events:none}.editor-panel:has(.editor-live-preview)::after{clear:both}}
 </style>
 
     <meta name="theme-color" content="#0b1730" />
