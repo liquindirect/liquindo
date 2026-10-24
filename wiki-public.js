@@ -116,11 +116,16 @@ requireMemberAccess();
 
 // Keep the article-level Edit link pointed at the article currently open.
 function updateCurrentArticleEditLink() {
-  const link = document.getElementById("wiki-edit-current");
+  const editLink = document.getElementById("wiki-edit-current");
+  const historyLink = document.getElementById("wiki-history-current");
+  const articleLink = document.getElementById("wiki-tab-article");
   const slug = window.location.hash.slice(1);
-  if (link && /^[a-z0-9-]+$/i.test(slug)) {
-    link.href = "wiki-editor.html?article=" + encodeURIComponent(slug);
-  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return;
+  const encoded = encodeURIComponent(slug);
+  if (editLink) editLink.href = "wiki-editor.html?article=" + encoded;
+  if (historyLink) historyLink.href = "wiki-editor.html?article=" + encoded + "&tab=history#revision-history";
+  if (articleLink) articleLink.href = "wiki.html#" + encoded;
 }
 window.addEventListener("hashchange", updateCurrentArticleEditLink);
+document.addEventListener("DOMContentLoaded", updateCurrentArticleEditLink);
 updateCurrentArticleEditLink();
