@@ -238,8 +238,8 @@ body.wiki-editor-redesign footer a{color:#0645ad}
           <p class="editor-note">New articles are submitted as drafts and need administrator approval before publication.</p>
         </div>
         <div class="editor-controls" style="margin-top:.75rem">
-          <button id="toggle-wiki-markup" class="editor-button" type="button" aria-pressed="false">Edit wiki markup</button>
-          <span id="editor-mode-note" class="editor-mode-note">Visual mode</span>
+          <button id="toggle-wiki-markup" class="editor-button" type="button" aria-pressed="true">Back to visual editor</button>
+          <span id="editor-mode-note" class="editor-mode-note">Wiki markup editor</span>
         </div>
         <div class="editor-toolbar" id="visual-editor-toolbar" aria-label="Formatting tools">
           <button type="button" data-command="bold"><strong>Bold</strong></button>
@@ -303,8 +303,8 @@ See [[Liquindo Nationalist Front|the related article]].
             <p><strong>How to edit:</strong> choose “Edit wiki markup” to write the syntax, or stay in the visual editor for direct formatting. Only one editor is shown at a time. Submit your revision when the preview looks right. LiquinWiki supports a useful subset of MediaWiki, not every MediaWiki feature.</p>
 </div>
         </details>
-        <div id="editor-canvas" class="editor-canvas wiki-article" contenteditable="true" role="textbox" aria-label="Article visual editor" aria-multiline="true"></div>
-        <textarea id="editor-markup" class="editor-markup editor-hidden" aria-label="Article wiki markup" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
+        <div id="editor-canvas" class="editor-canvas wiki-article editor-hidden" contenteditable="false" role="textbox" aria-label="Article visual editor (inactive)" aria-multiline="true"></div>
+        <textarea id="editor-markup" class="editor-markup" aria-label="Article wiki markup" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
         <div class="editor-controls" style="margin-top:1rem">
           <button id="submit-revision" class="editor-button" type="button">Submit for approval</button>
           <span id="editor-status" class="editor-status" role="status" aria-live="polite"></span>
