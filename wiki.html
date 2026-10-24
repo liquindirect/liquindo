@@ -583,5 +583,13 @@ html.wiki-access-pending .wiki-container{display:none!important}
 </script>
   <script type="module" src="visitor-log.js"></script>
   <script src="/liquindo/app-shell.js?v=20261019-hide-sticky-nav1" defer></script>
+
+<script>
+  document.addEventListener('click', function (event) {
+    const button = event.target.closest('#wiki-print-page');
+    if (!button) return;
+    window.print();
+  });
+</script>
 </body>
 </html>
