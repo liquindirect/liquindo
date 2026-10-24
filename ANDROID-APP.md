@@ -68,7 +68,7 @@ The earlier debug APK was built before a persistent signing key was configured. 
 - The app displays a connection warning when the device reports no network. This does not provide offline access to remote account, member, wiki, or editor pages.
 - The app icon and generated splash assets use the navy-and-gold Liquindo visual style. Capacitor's Android back handling remains in place; test it on a physical device, especially from nested pages and after opening external links.
 - The About panel explains that the website's existing authentication system manages sessions. Do not clear WebView storage on app launch; session persistence still needs to be verified with real sign-in, app close/reopen, and sign-out tests.
-- Test login, CAPTCHA, password recovery, file uploads, navigation/back button, and Flag Maker on a physical Android device before relying on the app.
+- Test login, CAPTCHA, password recovery, file uploads, and navigation/back button on a physical Android device before relying on the app.
 
 ## Publishing an APK update
 
