@@ -733,13 +733,29 @@ async function initialize() {
       option.textContent = page.title || page.slug;
       articleSelect.append(option);
     }
+    const historyFilter = $("#history-article-filter");
+    if (historyFilter && ![...historyFilter.options].some(option => option.value === page.slug)) {
+      const historyOption = document.createElement("option");
+      historyOption.value = page.slug;
+      historyOption.textContent = page.title || page.slug;
+      historyFilter.append(historyOption);
+    }
   }
-  const requestedSlug = new URLSearchParams(window.location.search).get("article");
+  const params = new URLSearchParams(window.location.search);
+  const requestedSlug = params.get("article");
   if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
     articleSelect.value = requestedSlug;
   }
   await loadArticle();
   await renderRevisions();
+  if (params.get("tab") === "history") {
+    const historyFilter = $("#history-article-filter");
+    if (historyFilter && requestedSlug && [...historyFilter.options].some(option => option.value === requestedSlug)) {
+      historyFilter.value = requestedSlug;
+      renderFilteredHistory();
+    }
+    $("#revision-history")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 try {
   await initialize();
