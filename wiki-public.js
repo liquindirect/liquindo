@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import DOMPurify from "https://esm.sh/dompurify@3";
+import { looksLikeWikiMarkup, renderWikiMarkup } from "./wiki-markup.js";
 
 const supabase = createClient(
   "https://uivjovkvpskvvazznlyr.supabase.co",
@@ -11,7 +12,11 @@ const sanitizeOptions = {
   FORBID_TAGS: ["script", "style", "iframe", "form", "input", "button", "object", "embed", "svg", "math"]
 };
 
-function safeContentForSearch(content) { return DOMPurify.sanitize(content || "", sanitizeOptions); }
+function renderStoredContent(content) {
+  const source = looksLikeWikiMarkup(content) ? renderWikiMarkup(content) : (content || "");
+  return DOMPurify.sanitize(source, sanitizeOptions);
+}
+function safeContentForSearch(content) { return renderStoredContent(content); }
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
@@ -43,6 +48,7 @@ async function loadApprovedArticles() {
       description.textContent = articleData.description || "LiquinWiki article.";
       card.append(cardHeading, description);
       card.dataset.searchContent = new DOMParser().parseFromString(safeContentForSearch(articleData.content), "text/html").body.textContent || "";
+      card.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
       list.append(card);
 
       article = document.createElement("article");
@@ -73,7 +79,17 @@ async function loadApprovedArticles() {
     }
     const existingTitle = article.querySelector(".article-title");
     if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
-    const safeContent = DOMPurify.sanitize(articleData.content, sanitizeOptions);
+    const safeContent = renderStoredContent(articleData.content);
+    const parsedContent = new DOMParser().parseFromString(safeContent, "text/html");
+    const categoryNames = [...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent.trim()).filter(Boolean);
+    const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
+    if (cardForArticle) {
+      cardForArticle.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
+      cardForArticle.dataset.categories = categoryNames.map(name => name.toLocaleLowerCase()).join("|");
+      cardForArticle.dataset.searchContent = parsedContent.body.textContent || "";
+    }
+    window.wikiCategoryIndex = window.wikiCategoryIndex || {};
+    window.wikiCategoryIndex[articleData.slug] = categoryNames;
     article.innerHTML = createdDynamically && !/class=["\']article-header["\']/.test(safeContent) ? ((header ? header.outerHTML : "") + safeContent) : safeContent;
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
@@ -81,7 +97,21 @@ async function loadApprovedArticles() {
   }
   window.wikiArticlesLoaded = true;
   const searchStatus = document.getElementById("wiki-search-status");
-  if (searchStatus) searchStatus.textContent = "Showing all " + document.querySelectorAll("#wiki-directory .article-card").length + " articles.";
+  const categoryFilter = document.getElementById("wiki-category-filter");
+  if (categoryFilter) {
+    const categories = [...new Set(Object.values(window.wikiCategoryIndex || {}).flat())].sort((a, b) => a.localeCompare(b));
+    for (const name of categories) {
+      if ([...categoryFilter.options].some(option => option.textContent === name)) continue;
+      const option = document.createElement("option");
+      option.value = name.toLocaleLowerCase();
+      option.textContent = name;
+      categoryFilter.append(option);
+    }
+    const requestedCategory = new URLSearchParams(window.location.search).get("category");
+    if (requestedCategory && [...categoryFilter.options].some(option => option.value === requestedCategory.toLocaleLowerCase())) categoryFilter.value = requestedCategory.toLocaleLowerCase();
+    categoryFilter.dispatchEvent(new Event("change"));
+  }
+  if (searchStatus && !categoryFilter) searchStatus.textContent = "Showing all " + document.querySelectorAll("#wiki-directory .article-card").length + " articles.";
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
 async function requireMemberAccess() {
