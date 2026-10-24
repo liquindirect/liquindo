@@ -121,6 +121,18 @@ body.wiki-editor-redesign footer a{color:#0645ad}
 .editor-mode-note{color:#54595d}
 @media(max-width:850px){#editor-app{display:block}body.wiki-editor-redesign .editor-wrap{width:calc(100% - 1.5rem)}}
 @media(max-width:640px){body.wiki-editor-redesign .editor-wrap{width:100%;padding:0 .5rem;margin:.75rem auto}body.wiki-editor-redesign .editor-panel{padding:.85rem;margin:.7rem 0}body.wiki-editor-redesign .page-title{width:calc(100% - 1.5rem);padding:1.5rem 0 1rem}.editor-canvas.editor-live-preview,.editor-source:not(.editor-hidden){float:none;width:100%;height:38vh;min-height:240px;margin-top:.6rem}.editor-source:not(.editor-hidden){white-space:pre-wrap;overflow-wrap:anywhere}.editor-canvas.editor-live-preview{pointer-events:none}.editor-panel:has(.editor-live-preview)::after{clear:both}}
+
+/* Markup-mode preview components */
+.editor-canvas .infobox{float:right;max-width:45%;margin:0 0 1rem 1rem;border-collapse:collapse;background:#f8f9fa}
+.editor-canvas .infobox caption{padding:.5rem;font-weight:700;background:#eaecf0}
+.editor-canvas .infobox th,.editor-canvas .infobox td,.editor-canvas .wikitable th,.editor-canvas .wikitable td{border:1px solid #a2a9b1;padding:.4rem .55rem;text-align:left;vertical-align:top}
+.editor-canvas .wikitable{border-collapse:collapse;max-width:100%;background:#fff}
+.editor-canvas .wikitable th{background:#eaecf0}
+.editor-canvas .wiki-references{clear:both;border-top:1px solid #a2a9b1;margin-top:1.5rem;padding-top:.5rem}
+.editor-canvas .wiki-see-also,.editor-canvas .wiki-disambiguation{padding:.7rem;border:1px solid #a2a9b1;background:#f8f9fa;margin:1rem 0}
+.editor-canvas .wiki-short-description{color:#54595d;font-size:.92rem}
+@media(max-width:640px){.editor-canvas .infobox{float:none;max-width:100%;width:100%;margin:1rem 0}.editor-canvas .wikitable{display:block;overflow-x:auto}}
+
 </style>
 
     <meta name="theme-color" content="#0b1730" />
@@ -221,7 +233,27 @@ body.wiki-editor-redesign footer a{color:#0645ad}
         <details class="editor-guide">
           <summary>Editing guide — HTML and wiki markup</summary>
           <div class="editor-guide-content">
-            <p><strong>Wiki markup mode:</strong> choose “Edit wiki markup” for simpler article text. It supports headings, bold, italic, internal links, external links, bullet/numbered lists and categories. The preview updates as you type. This is a lightweight LiquinWiki format, not the full MediaWiki parser.</p>
+            <p><strong>Wiki markup mode:</strong> choose “Edit wiki markup” for simpler article text. The preview updates as you type. LiquinWiki now supports headings, formatting, internal/external links, nested lists, categories, citations, infoboxes, simple tables, redirects, “See also” boxes and disambiguation notices. It is a practical subset of MediaWiki, not a complete MediaWiki installation.</p>
+            <p><strong>Citations:</strong> place <code>&lt;ref&gt;Source details or [https://example.com source link]&lt;/ref&gt;</code> after a sentence. Reuse a named citation with <code>&lt;ref name="source" /&gt;</code>. A References section is generated automatically.</p>
+            <pre><code>{{Infobox country
+| name = Liquindo
+| status = Example
+| founded = 2026
+}}
+
+{| class="wikitable"
+|-
+! Topic !! Detail
+|-
+| Language || Liquindian
+|-
+| Founded || 2026
+|}
+
+{{Short description|A short summary shown below the title}}
+{{See also|Liquindo|Liquin's Plan}}
+[[Category:History]]</code></pre>
+            <p><strong>Other supported patterns:</strong> <code>#REDIRECT [[Article title]]</code> for a redirect page, <code>{{Disambiguation}}</code> for a disambiguation notice, <code>----</code> for a horizontal rule, and leading spaces for a block quote. Use HTML source mode for complex image galleries or advanced tables.</p>
             <pre><code>== History ==
 Liquindo was founded in '''2026'''.
 
@@ -376,7 +408,7 @@ See [[Liquindo Nationalist Front|the related article]].
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261024-wiki-markup-v2"></script>
+  <script type="module" src="wiki-editor.js?v=20261024-wiki-markup-v3"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
