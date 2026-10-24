@@ -72,7 +72,9 @@ function renderInfobox(lines, titleToSlug, refs) {
       : renderInline(value, titleToSlug, refs);
     return '<tr><th scope="row">' + renderInline(key, titleToSlug, refs) + '</th><td>' + cell + '</td></tr>';
   }).join("");
-  return '<table class="infobox"><caption>' + renderInline(kind, titleToSlug, refs) + '</caption><tbody>' + rows + '</tbody></table>';
+  const captionField = fields.find(field => /^(name|title)$/i.test(field.key));
+  const caption = captionField ? renderInline(captionField.value, titleToSlug, refs) : renderInline(kind, titleToSlug, refs);
+  return '<table class="infobox"><caption>' + caption + '</caption><tbody>' + rows + '</tbody></table>';
 }
 
 function renderTable(lines, titleToSlug, refs) {
@@ -194,7 +196,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
     }
     const heading = line.match(/^(={2,6})\s*(.*?)\s*\1$/);
     const list = line.match(/^([*#]+)\s+(.+)$/);
-    const quote = line.startsWith(" ") && rawLine.startsWith(" ");
+    const quote = rawLine.startsWith(" ");
     if (!line || heading || list || quote) flushParagraph();
     if (!line) { closeList(); continue; }
     if (heading) {
