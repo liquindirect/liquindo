@@ -163,6 +163,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
       output.push('<div class="wiki-see-also"><strong>See also:</strong> ' + seeAlso[1].split("|").map(item => internalLink(item.trim(), null, titleToSlug)).join(" · ") + '</div>');
       continue;
     }
+    if (/^<references\s*\/\s*>$/i.test(line)) { flushParagraph(); closeList(); output.push("__WIKI_REFERENCES_MARKER__"); continue; }
     if (/^\{\{Infobox(?:\s+[^}]*)?$/i.test(line)) {
       flushParagraph(); closeList();
       const block = [line];
@@ -221,12 +222,12 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
       '</ol></div>'
     : "";
   if (referenceMarkup) {
-    const marker = output.findIndex(item => /<references\s*\/\s*>/i.test(item));
+    const marker = output.findIndex(item => item === "__WIKI_REFERENCES_MARKER__");
     if (marker >= 0) output.splice(marker, 1, referenceMarkup);
     else output.push(referenceMarkup);
   } else {
     for (let i = output.length - 1; i >= 0; i--) {
-      if (/<references\s*\/\s*>/i.test(output[i])) output.splice(i, 1);
+      if (output[i] === "__WIKI_REFERENCES_MARKER__") output.splice(i, 1);
     }
   }
 
