@@ -615,7 +615,6 @@ newArticleTitle.addEventListener("input", () => {
 newArticleSlug.addEventListener("input", () => { newArticleSlug.dataset.edited = "true"; });
 articleSelect.addEventListener("change", loadArticle);
 canvas.addEventListener("input", () => {
-  markupEditor.value = canvas.innerHTML;
   scheduleDraftSave();
 });
 markupEditor.addEventListener("input", () => {
