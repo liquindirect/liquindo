@@ -11,7 +11,7 @@ const sanitizeOptions = {
   FORBID_TAGS: ["script", "style", "iframe", "form", "input", "button", "object", "embed", "svg", "math"]
 };
 
-async function safeContentForSearch(content) { return DOMPurify.sanitize(content || "", sanitizeOptions); }
+function safeContentForSearch(content) { return DOMPurify.sanitize(content || "", sanitizeOptions); }
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
