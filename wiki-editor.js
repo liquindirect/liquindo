@@ -93,7 +93,7 @@ function setWikiMarkupMode(enabled) {
   if (enabled === wikiMarkupMode) return;
   if (enabled) {
     if (sourceMode) setSourceMode(false);
-    const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
+    const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
     if (hasAdvancedMarkup && !window.confirm("This article contains tables, images, references or other advanced HTML that the basic wiki-markup editor cannot fully convert. Continuing may simplify those elements. Cancel to keep editing in HTML source.")) return;
     sourceEditor.value = htmlToWikiMarkup(canvas.innerHTML);
     wikiMarkupMode = true;
