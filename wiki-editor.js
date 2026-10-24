@@ -57,17 +57,24 @@ function setSourceMode(enabled) {
   if (enabled === sourceMode) return;
   if (enabled) {
     sourceEditor.value = canvas.innerHTML;
-    canvas.classList.add("editor-hidden");
+    // Keep a live, read-only preview visible beside source on desktop and below it on mobile.
+    canvas.classList.remove("editor-hidden");
+    canvas.classList.add("editor-live-preview");
+    canvas.setAttribute("contenteditable", "false");
+    canvas.setAttribute("aria-label", "Read-only live article preview");
     sourceEditor.classList.remove("editor-hidden");
     visualToolbar.classList.add("editor-hidden");
     sourceToggle.textContent = "Back to visual editor";
     sourceToggle.setAttribute("aria-pressed", "true");
-    $("#editor-mode-note").textContent = "HTML source mode · edit the markup directly";
+    $("#editor-mode-note").textContent = "HTML source + live preview · preview updates as you type";
     sourceEditor.focus();
   } else {
     canvas.innerHTML = safeHtml(sourceEditor.value);
     sourceEditor.value = canvas.innerHTML;
+    canvas.classList.remove("editor-live-preview");
     canvas.classList.remove("editor-hidden");
+    canvas.setAttribute("contenteditable", "true");
+    canvas.setAttribute("aria-label", "Article content editor");
     sourceEditor.classList.add("editor-hidden");
     visualToolbar.classList.remove("editor-hidden");
     sourceToggle.textContent = "Edit HTML source";
@@ -602,8 +609,8 @@ canvas.addEventListener("input", () => {
   scheduleDraftSave();
 });
 sourceEditor.addEventListener("input", () => {
-  // Keep the visual DOM in sync so draft saving and all existing workflows use the latest source.
-  canvas.innerHTML = sourceEditor.value;
+  // Keep the preview and draft in sync; preview is read-only while source mode is active.
+  canvas.innerHTML = safeHtml(sourceEditor.value);
   scheduleDraftSave();
 });
 sourceToggle.addEventListener("click", () => setSourceMode(!sourceMode));
