@@ -112,9 +112,9 @@ function setWikiMarkupMode(enabled) {
     wikiMarkupToggle.setAttribute("aria-pressed", "true");
     $("#editor-mode-note").textContent = "Wiki markup + live preview · basic syntax";
     sourceEditor.focus();
-    canvas.innerHTML = safeHtml(renderWikiMarkup(sourceEditor.value));
+    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(sourceEditor.value));
   } else {
-    canvas.innerHTML = safeHtml(renderWikiMarkup(sourceEditor.value));
+    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(sourceEditor.value));
     sourceEditor.value = canvas.innerHTML;
     wikiMarkupMode = false;
     canvas.classList.remove("editor-live-preview");
