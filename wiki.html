@@ -452,16 +452,21 @@ html.wiki-access-pending .wiki-container{display:none!important}
         const summary = document.createElement("summary");
         summary.textContent = "Contents";
         const list = document.createElement("ol");
+        const usedHeadingIds = new Set(
+          [...selectedArticle.querySelectorAll("[id]")]
+            .filter((node) => !headings.includes(node))
+            .map((node) => node.id)
+            .filter(Boolean)
+        );
         headings.forEach((heading) => {
           const base = (heading.textContent || "section").toLowerCase()
             .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "section";
-          if (!heading.id) heading.id = base;
+          let candidate = heading.id || base;
           let suffix = 2;
-          while (selectedArticle.querySelectorAll("[id]").length > 0 &&
-                 [...selectedArticle.querySelectorAll("[id]")].filter(node => node.id === heading.id).length > 1) {
-            heading.id = base + "-" + suffix++;
-          }
+          while (usedHeadingIds.has(candidate)) candidate = base + "-" + suffix++;
+          heading.id = candidate;
+          usedHeadingIds.add(candidate);
           const item = document.createElement("li");
           if (heading.tagName === "H3") item.style.marginLeft = "1rem";
           const link = document.createElement("a");
