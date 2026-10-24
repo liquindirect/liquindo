@@ -136,6 +136,25 @@ body.wiki-editor-redesign footer a{color:#0645ad}
 .editor-canvas .wiki-short-description{color:#54595d;font-size:.92rem}
 @media(max-width:640px){.editor-canvas .infobox{float:none;max-width:100%;width:100%;margin:1rem 0}.editor-canvas .wikitable{display:block;overflow-x:auto}}
 
+
+/* Keep the article editor single-view: visual mode is the default, markup is an alternative. */
+#editor-app{display:block!important}
+#editor-app>.editor-panel{grid-column:auto!important}
+.editor-canvas.editor-live-preview,
+.editor-markup:not(.editor-hidden){
+  float:none!important;
+  width:100%!important;
+  height:auto;
+  min-height:420px;
+  margin-top:.75rem;
+  pointer-events:auto;
+}
+.editor-canvas.editor-live-preview{display:none!important}
+.editor-markup:not(.editor-hidden){white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:hidden}
+@media(max-width:640px){
+  .editor-markup:not(.editor-hidden){height:52vh;min-height:52vh}
+  .editor-canvas.editor-live-preview{display:none!important}
+}
 </style>
 
     <meta name="theme-color" content="#0b1730" />
