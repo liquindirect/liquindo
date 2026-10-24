@@ -73,29 +73,28 @@ function syncEditorViews(html) {
 function setWikiMarkupMode(enabled) {
   if (enabled === wikiMarkupMode) return;
   if (enabled) {
-    const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
+    const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
     if (hasAdvancedMarkup && !window.confirm("This article contains tables, images, references or other advanced formatting. Converting it to wiki markup may simplify some elements. Continue?")) return;
     markupEditor.value = htmlToWikiMarkup(canvas.innerHTML);
     wikiMarkupMode = true;
-    markupEditor.classList.remove("editor-hidden");
-    canvas.classList.remove("editor-hidden");
-    canvas.classList.add("editor-live-preview");
+    canvas.classList.add("editor-hidden");
+    canvas.classList.remove("editor-live-preview");
     canvas.setAttribute("contenteditable", "false");
-    canvas.setAttribute("aria-label", "Read-only wiki markup preview");
+    canvas.setAttribute("aria-label", "Article visual editor (inactive)");
+    markupEditor.classList.remove("editor-hidden");
     visualToolbar.classList.add("editor-hidden");
     wikiMarkupToggle.textContent = "Back to visual editor";
     wikiMarkupToggle.setAttribute("aria-pressed", "true");
-    $("#editor-mode-note").textContent = "Wiki markup with live preview";
-    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
+    $("#editor-mode-note").textContent = "Wiki markup editor";
     markupEditor.focus();
   } else {
     canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
     wikiMarkupMode = false;
-    canvas.classList.remove("editor-live-preview");
+    markupEditor.classList.add("editor-hidden");
     canvas.classList.remove("editor-hidden");
+    canvas.classList.remove("editor-live-preview");
     canvas.setAttribute("contenteditable", "true");
     canvas.setAttribute("aria-label", "Article content editor");
-    markupEditor.classList.add("editor-hidden");
     visualToolbar.classList.remove("editor-hidden");
     wikiMarkupToggle.textContent = "Edit wiki markup";
     wikiMarkupToggle.setAttribute("aria-pressed", "false");
