@@ -77,6 +77,7 @@ function setSourceMode(enabled) {
   }
   sourceMode = enabled;
 }
+setSourceMode(true);
 const status = $("#editor-status");
 const submitButton = $("#submit-revision");
 const pendingPanel = $("#review-panel");
