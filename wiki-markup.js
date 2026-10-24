@@ -8,12 +8,16 @@ export function slugifyWikiTitle(value) {
     .replace(/^-+|-+$/g, "") || "article";
 }
 
-function renderInline(source) {
+function renderInline(source, titleToSlug = {}) {
   let text = escapeHtml(source);
-  text = text.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, (_, target, label) =>
-    '<a href="wiki.html#' + encodeURIComponent(slugifyWikiTitle(target)) + '">' + label + "</a>");
-  text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) =>
-    '<a href="wiki.html#' + encodeURIComponent(slugifyWikiTitle(target)) + '">' + escapeHtml(target.trim()) + "</a>");
+  text = text.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, (_, target, label) => {
+    const slug = titleToSlug[target.trim().toLocaleLowerCase()] || slugifyWikiTitle(target);
+    return '<a href="wiki.html#' + encodeURIComponent(slug) + '">' + label + "</a>";
+  });
+  text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) => {
+    const slug = titleToSlug[target.trim().toLocaleLowerCase()] || slugifyWikiTitle(target);
+    return '<a href="wiki.html#' + encodeURIComponent(slug) + '">' + escapeHtml(target.trim()) + "</a>";
+  });
   text = text.replace(/\[(https?:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/g, (_, url, label) =>
     '<a href="' + url + '" rel="nofollow noopener noreferrer" target="_blank">' + (label || url) + "</a>");
   text = text.replace(/'''(.+?)'''/g, "<strong>$1</strong>");
@@ -21,7 +25,7 @@ function renderInline(source) {
   return text;
 }
 
-export function renderWikiMarkup(source) {
+export function renderWikiMarkup(source, titleToSlug = {}) {
   const categories = [];
   const lines = String(source ?? "").replace(/\r\n?/g, "\n").split("\n");
   const output = [];
@@ -30,7 +34,7 @@ export function renderWikiMarkup(source) {
 
   const flushParagraph = () => {
     if (paragraph.length) {
-      output.push("<p>" + paragraph.map(renderInline).join("<br>") + "</p>");
+      output.push("<p>" + paragraph.map(line => renderInline(line, titleToSlug)).join("<br>") + "</p>");
       paragraph = [];
     }
   };
@@ -56,13 +60,13 @@ export function renderWikiMarkup(source) {
     if (heading) {
       closeList();
       const level = Math.min(4, Math.max(2, heading[1].length));
-      output.push("<h" + level + ">" + renderInline(heading[2]) + "</h" + level + ">");
+      output.push("<h" + level + ">" + renderInline(heading[2], titleToSlug) + "</h" + level + ">");
       continue;
     }
     if (list) {
       const nextType = list[1] === "*" ? "ul" : "ol";
       if (listType !== nextType) { closeList(); output.push("<" + nextType + ">"); listType = nextType; }
-      output.push("<li>" + renderInline(list[2]) + "</li>");
+      output.push("<li>" + renderInline(list[2], titleToSlug) + "</li>");
       continue;
     }
     closeList();
