@@ -20,8 +20,7 @@ const noPermission = $("#editor-no-permission");
 const app = $("#editor-app");
 const articleSelect = $("#article-select");
 const canvas = $("#editor-canvas");
-const sourceEditor = $("#editor-source");
-const sourceToggle = $("#toggle-source-mode");
+const markupEditor = $("#editor-markup");
 const wikiMarkupToggle = $("#toggle-wiki-markup");
 const newArticleFields = $("#new-article-fields");
 const newArticleTitle = $("#new-article-title");
@@ -46,91 +45,54 @@ function updateArticleMode() {
   }
 }
 const visualToolbar = $("#visual-editor-toolbar");
-let sourceMode = false;
+const wikiMarkupToggle = $("#toggle-wiki-markup");
 let wikiMarkupMode = false;
 function renderEditorWikiMarkup(source) {
   const titleToSlug = Object.fromEntries(Object.entries(articles).map(([slug, title]) => [String(title).trim().toLocaleLowerCase(), slug]));
   return renderWikiMarkup(source, titleToSlug);
 }
 function currentEditorHtml() {
-  if (wikiMarkupMode) return safeHtml(renderEditorWikiMarkup(sourceEditor.value));
-  return safeHtml(sourceMode ? sourceEditor.value : canvas.innerHTML);
+  return wikiMarkupMode ? safeHtml(renderEditorWikiMarkup(markupEditor.value)) : safeHtml(canvas.innerHTML);
 }
 function syncEditorViews(html) {
   const clean = safeHtml(html);
   canvas.innerHTML = clean;
-  sourceEditor.value = clean;
-}
-function setSourceMode(enabled) {
-  if (wikiMarkupMode) setWikiMarkupMode(false);
-  if (enabled === sourceMode) return;
-  if (enabled) {
-    sourceEditor.value = canvas.innerHTML;
-    // Keep a live, read-only preview visible beside source on desktop and below it on mobile.
-    canvas.classList.remove("editor-hidden");
-    canvas.classList.add("editor-live-preview");
-    canvas.setAttribute("contenteditable", "false");
-    canvas.setAttribute("aria-label", "Read-only live article preview");
-    sourceEditor.classList.remove("editor-hidden");
-    visualToolbar.classList.add("editor-hidden");
-    sourceToggle.textContent = "Back to visual editor";
-    sourceToggle.setAttribute("aria-pressed", "true");
-    $("#editor-mode-note").textContent = "HTML source + live preview · preview updates as you type";
-    sourceEditor.focus();
-  } else {
-    canvas.innerHTML = safeHtml(sourceEditor.value);
-    sourceEditor.value = canvas.innerHTML;
-    canvas.classList.remove("editor-live-preview");
-    canvas.classList.remove("editor-hidden");
-    canvas.setAttribute("contenteditable", "true");
-    canvas.setAttribute("aria-label", "Article content editor");
-    sourceEditor.classList.add("editor-hidden");
-    visualToolbar.classList.remove("editor-hidden");
-    sourceToggle.textContent = "Edit HTML source";
-    sourceToggle.setAttribute("aria-pressed", "false");
-    $("#editor-mode-note").textContent = "Visual mode";
-    canvas.focus();
-  }
-  sourceMode = enabled;
+  markupEditor.value = wikiMarkupMode ? htmlToWikiMarkup(clean) : "";
 }
 function setWikiMarkupMode(enabled) {
   if (enabled === wikiMarkupMode) return;
   if (enabled) {
-    if (sourceMode) setSourceMode(false);
     const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
-    if (hasAdvancedMarkup && !window.confirm("This article contains tables, images, references or other advanced HTML that the basic wiki-markup editor cannot fully convert. Continuing may simplify those elements. Cancel to keep editing in HTML source.")) return;
-    sourceEditor.value = htmlToWikiMarkup(canvas.innerHTML);
+    if (hasAdvancedMarkup && !window.confirm("This article contains tables, images, references or other advanced formatting. Converting it to wiki markup may simplify some elements. Continue?")) return;
+    markupEditor.value = htmlToWikiMarkup(canvas.innerHTML);
     wikiMarkupMode = true;
-    sourceEditor.classList.remove("editor-hidden");
+    markupEditor.classList.remove("editor-hidden");
     canvas.classList.remove("editor-hidden");
     canvas.classList.add("editor-live-preview");
     canvas.setAttribute("contenteditable", "false");
     canvas.setAttribute("aria-label", "Read-only wiki markup preview");
     visualToolbar.classList.add("editor-hidden");
-    sourceToggle.classList.add("editor-hidden");
     wikiMarkupToggle.textContent = "Back to visual editor";
     wikiMarkupToggle.setAttribute("aria-pressed", "true");
-    $("#editor-mode-note").textContent = "Wiki markup + live preview · basic syntax";
-    sourceEditor.focus();
-    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(sourceEditor.value));
+    $("#editor-mode-note").textContent = "Wiki markup with live preview";
+    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
+    markupEditor.focus();
   } else {
-    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(sourceEditor.value));
-    sourceEditor.value = canvas.innerHTML;
+    canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
     wikiMarkupMode = false;
     canvas.classList.remove("editor-live-preview");
     canvas.classList.remove("editor-hidden");
     canvas.setAttribute("contenteditable", "true");
     canvas.setAttribute("aria-label", "Article content editor");
-    sourceEditor.classList.add("editor-hidden");
+    markupEditor.classList.add("editor-hidden");
     visualToolbar.classList.remove("editor-hidden");
-    sourceToggle.classList.remove("editor-hidden");
     wikiMarkupToggle.textContent = "Edit wiki markup";
     wikiMarkupToggle.setAttribute("aria-pressed", "false");
-    $("#editor-mode-note").textContent = "Visual mode";
+    $("#editor-mode-note").textContent = "Visual editor";
+    markupEditor.value = "";
     canvas.focus();
   }
 }
-setSourceMode(true);
 const status = $("#editor-status");
 const submitButton = $("#submit-revision");
 const pendingPanel = $("#review-panel");
@@ -653,15 +615,13 @@ newArticleTitle.addEventListener("input", () => {
 newArticleSlug.addEventListener("input", () => { newArticleSlug.dataset.edited = "true"; });
 articleSelect.addEventListener("change", loadArticle);
 canvas.addEventListener("input", () => {
-  sourceEditor.value = canvas.innerHTML;
+  markupEditor.value = canvas.innerHTML;
   scheduleDraftSave();
 });
-sourceEditor.addEventListener("input", () => {
-  // Keep the preview and draft in sync; preview is read-only while source mode is active.
-  canvas.innerHTML = safeHtml(wikiMarkupMode ? renderEditorWikiMarkup(sourceEditor.value) : sourceEditor.value);
+markupEditor.addEventListener("input", () => {
+  if (wikiMarkupMode) canvas.innerHTML = safeHtml(renderEditorWikiMarkup(markupEditor.value));
   scheduleDraftSave();
 });
-sourceToggle.addEventListener("click", () => setSourceMode(!sourceMode));
 wikiMarkupToggle.addEventListener("click", () => setWikiMarkupMode(!wikiMarkupMode));
 window.addEventListener("pagehide", () => {
   if (draftTimer) clearTimeout(draftTimer);
