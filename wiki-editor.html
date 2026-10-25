@@ -278,6 +278,11 @@ body.wiki-editor-redesign footer {
 }
 body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
 
+
+.wiki-completion-tag{display:inline-flex;align-items:center;margin:.35rem .5rem .35rem 0;padding:.2rem .55rem;border:1px solid #a2a9b1;border-radius:3px;font:600 .78rem/1.35 Arial,Helvetica,sans-serif;letter-spacing:.01em;color:#202122;background:#f8f9fa}
+.wiki-completion-tag[data-status="complete"]{border-color:#14804a;background:#eaf7ef;color:#125b36}
+.wiki-completion-tag[data-status="needs_work"]{border-color:#b7791f;background:#fff7e6;color:#744210}
+.wiki-completion-tag[data-status="incomplete"]{border-color:#a2a9b1;background:#f8f9fa;color:#54595d}
 </style>
 
     <meta name="theme-color" content="#0b1730" />
@@ -453,6 +458,23 @@ See [[Liquindo Nationalist Front|the related article]].
           <button id="permission-save" class="editor-button" type="submit">Save permission</button>
         </form>
         <p id="permission-status" class="editor-status" role="status" aria-live="polite"></p>
+        <hr />
+        <h2>Article completion tag</h2>
+        <p class="editor-note">Assign a status label to any published article. The label appears on the article and in the article directory.</p>
+        <form id="article-status-form" class="editor-controls">
+          <label for="article-status-slug">Article
+            <select id="article-status-slug" required><option value="">Choose an article…</option></select>
+          </label>
+          <label for="article-status-choice">Status
+            <select id="article-status-choice" required>
+              <option value="complete">Complete</option>
+              <option value="needs_work">Needs work</option>
+              <option value="incomplete">Incomplete</option>
+            </select>
+          </label>
+          <button id="article-status-save" class="editor-button" type="submit">Save article tag</button>
+        </form>
+        <p id="article-status-message" class="editor-status" role="status" aria-live="polite"></p>
       </section>
 
       <section id="review-panel" class="editor-panel editor-hidden">
@@ -540,7 +562,7 @@ See [[Liquindo Nationalist Front|the related article]].
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261025-trusted-editor1"></script>
+  <script type="module" src="wiki-editor.js?v=20261025-article-status1"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
