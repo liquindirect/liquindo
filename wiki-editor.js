@@ -115,6 +115,7 @@ const pendingContainer = $("#pending-revisions");
 const historyContainer = $("#revision-history");
 let user = null;
 let isWikiAdmin = false;
+const adminToolsMode = new URLSearchParams(window.location.search).get("admin") === "1";
 let isWikiEditor = false;
 let activeSlug = null;
 let loadedArticleContent = null;
@@ -512,7 +513,7 @@ $("#pending-review-reset")?.addEventListener("click", () => {
 
 async function renderRevisions() {
   historyContainer.replaceChildren(element("p", "", "Loading revision history…"));
-  if (isWikiAdmin) {
+  if (isWikiAdmin && adminToolsMode) {
     pendingPanel.classList.remove("editor-hidden");
     pendingContainer.replaceChildren(element("p", "", "Loading pending revisions…"));
   } else {
@@ -520,7 +521,7 @@ async function renderRevisions() {
   }
   try {
     const revisions = await fetchRevisions();
-    const pending = isWikiAdmin ? await fetchPendingRevisions() : [];
+    const pending = isWikiAdmin && adminToolsMode ? await fetchPendingRevisions() : [];
     const comparisonRevisions = [...new Map([...revisions, ...pending].map(revision => [revision.id, revision])).values()];
     const names = await profileNames(comparisonRevisions.flatMap(r => [r.edited_by, r.reviewed_by]));
     allLoadedRevisions = revisions;
@@ -763,7 +764,7 @@ async function initialize() {
     return;
   }
   setAppState("ready");
-  setVisible(permissionPanel, isWikiAdmin);
+  setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
   const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title"), "Wiki article list");
   if (pagesError) throw pagesError;
   for (const page of existingPages || []) {
