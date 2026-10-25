@@ -137,7 +137,7 @@ body.wiki-editor-redesign footer a{color:#0645ad}
 @media(max-width:640px){.editor-canvas .infobox{float:none;max-width:100%;width:100%;margin:1rem 0}.editor-canvas .wikitable{display:block;overflow-x:auto}}
 
 
-/* Keep the article editor single-view: visual mode is the default, markup is an alternative. */
+/* Keep the article editor single-view; wiki markup is the default mode. */
 #editor-app{display:block!important}
 #editor-app>.editor-panel{grid-column:auto!important}
 .editor-canvas.editor-live-preview,
@@ -347,7 +347,7 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
         <h2>Submit an article revision</h2>
-        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Make changes in the visual editor or switch to wiki markup. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
+        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Wiki markup is selected by default; switch to the visual editor whenever you prefer. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
         <div class="editor-controls">
           <label for="article-select">Article</label>
           <select id="article-select">
@@ -414,7 +414,6 @@ See [[Liquindo Nationalist Front|the related article]].
 
 [https://example.com External source]
 [[Category:History]]</code></pre>
-            <p><strong>Important:</strong> switching an existing article with complex tables, images or advanced formatting to wiki markup may simplify those elements. Use the visual editor for complex layouts.</p>
             <h3>Quick reference</h3>
             <table class="wikitable editor-guide-table"><thead><tr><th>What you want</th><th>Write this</th></tr></thead><tbody>
               <tr><td>Main heading</td><td><code>== History ==</code></td></tr>
