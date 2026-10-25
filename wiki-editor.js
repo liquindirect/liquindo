@@ -599,6 +599,11 @@ async function reviewRevision(id, decision, names = {}) {
   }
 }
 
+articleStatusSlug?.addEventListener("change", () => {
+  const option = articleStatusSlug.selectedOptions[0];
+  articleStatusChoice.value = option?.dataset.status || "incomplete";
+});
+
 articleStatusForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!isWikiAdmin) return;
@@ -802,7 +807,7 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
-  const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title"), "Wiki article list");
+  const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title, article_status"), "Wiki article list");
   if (pagesError) throw pagesError;
   for (const page of existingPages || []) {
     if (!page.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
