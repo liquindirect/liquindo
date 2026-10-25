@@ -583,6 +583,11 @@ body.wiki-redesign #wiki-article-view > [data-wiki-article] .wiki-disambiguation
   border-color: #72809a !important;
 }
 
+
+.wiki-completion-tag{display:inline-flex;align-items:center;margin:.35rem .5rem .35rem 0;padding:.2rem .55rem;border:1px solid #a2a9b1;border-radius:3px;font:600 .78rem/1.35 Arial,Helvetica,sans-serif;letter-spacing:.01em;color:#202122;background:#f8f9fa}
+.wiki-completion-tag[data-status="complete"]{border-color:#14804a;background:#eaf7ef;color:#125b36}
+.wiki-completion-tag[data-status="needs_work"]{border-color:#b7791f;background:#fff7e6;color:#744210}
+.wiki-completion-tag[data-status="incomplete"]{border-color:#a2a9b1;background:#f8f9fa;color:#54595d}
 </style>
   <script>document.documentElement.classList.add("wiki-access-pending");</script>
 
@@ -1021,7 +1026,7 @@ body.wiki-redesign #wiki-article-view > [data-wiki-article] .wiki-disambiguation
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261024-directory-fixes-v4"></script>
+  <script type="module" src="wiki-public.js?v=20261025-article-status1"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
