@@ -73,8 +73,6 @@ function syncEditorViews(html) {
 function setWikiMarkupMode(enabled) {
   if (enabled === wikiMarkupMode) return;
   if (enabled) {
-    const hasAdvancedMarkup = /<(table|img|blockquote|figure|sup|ol|ul|dl|video|audio)\b|class=["'](?:infobox|reference-list|wiki-categories)/i.test(canvas.innerHTML);
-    if (hasAdvancedMarkup && !window.confirm("This article contains tables, images, references or other advanced formatting. Converting it to wiki markup may simplify some elements. Continue?")) return;
     markupEditor.value = htmlToWikiMarkup(canvas.innerHTML);
     wikiMarkupMode = true;
     canvas.classList.add("editor-hidden");
