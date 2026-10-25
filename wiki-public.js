@@ -103,13 +103,20 @@ async function loadApprovedArticles() {
     const statusLabels = { complete: "Complete", needs_work: "Needs work", incomplete: "Incomplete" };
     const statusValue = statusLabels[articleData.article_status] ? articleData.article_status : "incomplete";
     const labelText = statusLabels[statusValue];
-    const articleHeader = article.querySelector(".article-header");
-    if (articleHeader) {
-      let badge = articleHeader.querySelector(".wiki-completion-tag");
-      if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; articleHeader.append(badge); }
-      badge.dataset.status = statusValue;
-      badge.textContent = labelText;
+    let articleHeader = article.querySelector(".article-header");
+    if (!articleHeader) {
+      articleHeader = document.createElement("header");
+      articleHeader.className = "article-header";
+      const heading = document.createElement("h1");
+      heading.className = "article-title";
+      heading.textContent = articleData.title || articleData.slug;
+      articleHeader.append(heading);
+      article.prepend(articleHeader);
     }
+    let articleBadge = articleHeader.querySelector(".wiki-completion-tag");
+    if (!articleBadge) { articleBadge = document.createElement("span"); articleBadge.className = "wiki-completion-tag"; articleHeader.append(articleBadge); }
+    articleBadge.dataset.status = statusValue;
+    articleBadge.textContent = labelText;
     const currentCard = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (currentCard) {
       let badge = currentCard.querySelector(".wiki-completion-tag");
