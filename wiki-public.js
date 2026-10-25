@@ -20,7 +20,7 @@ function safeContentForSearch(content) { return renderStoredContent(content); }
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
-    .select("slug, title, description, content");
+    .select("slug, title, description, content, article_status");
   if (error) {
     console.error("LiquinWiki: could not load approved article revisions.", error.message);
     const status = document.getElementById("wiki-search-status");
@@ -100,6 +100,23 @@ async function loadApprovedArticles() {
     window.wikiCategoryIndex = window.wikiCategoryIndex || {};
     window.wikiCategoryIndex[articleData.slug] = categoryNames;
     article.innerHTML = header && !/class=["\']article-header["\']/.test(safeContent) ? header.outerHTML + safeContent : safeContent;
+    const statusLabels = { complete: "Complete", needs_work: "Needs work", incomplete: "Incomplete" };
+    const statusValue = statusLabels[articleData.article_status] ? articleData.article_status : "incomplete";
+    const labelText = statusLabels[statusValue];
+    const articleHeader = article.querySelector(".article-header");
+    if (articleHeader) {
+      let badge = articleHeader.querySelector(".wiki-completion-tag");
+      if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; articleHeader.append(badge); }
+      badge.dataset.status = statusValue;
+      badge.textContent = labelText;
+    }
+    const currentCard = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
+    if (currentCard) {
+      let badge = currentCard.querySelector(".wiki-completion-tag");
+      if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; currentCard.append(badge); }
+      badge.dataset.status = statusValue;
+      badge.textContent = labelText;
+    }
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
     }
