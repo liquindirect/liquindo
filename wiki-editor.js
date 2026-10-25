@@ -111,6 +111,10 @@ const permissionForm = $("#permission-form");
 const permissionEmail = $("#permission-email");
 const permissionChoice = $("#permission-choice");
 const permissionStatus = $("#permission-status");
+const articleStatusForm = $("#article-status-form");
+const articleStatusSlug = $("#article-status-slug");
+const articleStatusChoice = $("#article-status-choice");
+const articleStatusMessage = $("#article-status-message");
 const pendingContainer = $("#pending-revisions");
 const historyContainer = $("#revision-history");
 let user = null;
@@ -194,7 +198,11 @@ async function loadArticle() {
   showMessage("Loading article…");
   try {
     const { data, error } = await supabase.from("wiki_pages")
-      .select("content").eq("slug", slug).maybeSingle();
+      .select("content, article_status").eq("slug", slug).maybeSingle();
+    if (!error && data && articleStatusSlug) {
+      articleStatusSlug.value = slug;
+      articleStatusChoice.value = data.article_status || "incomplete";
+    }
     if (error) throw error;
     const html = data?.content ?? await baselineContent(slug);
     loadedArticleContent = data?.content ?? null;
@@ -591,6 +599,32 @@ async function reviewRevision(id, decision, names = {}) {
   }
 }
 
+articleStatusForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!isWikiAdmin) return;
+  const slug = articleStatusSlug.value;
+  const value = articleStatusChoice.value;
+  const button = $("#article-status-save");
+  button.disabled = true;
+  articleStatusMessage.textContent = "Saving article tag…";
+  articleStatusMessage.style.color = "";
+  try {
+    const { error } = await supabase.rpc("set_liquinwiki_article_status", {
+      p_slug: slug,
+      p_status: value
+    });
+    if (error) throw error;
+    const selected = articleStatusSlug.selectedOptions[0];
+    if (selected) selected.dataset.status = value;
+    articleStatusMessage.textContent = "Article tag saved. Refresh LiquinWiki to see the updated label.";
+  } catch (error) {
+    articleStatusMessage.textContent = error.message || "Could not save article tag.";
+    articleStatusMessage.style.color = "#b42318";
+  } finally {
+    button.disabled = false;
+  }
+});
+
 permissionForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!isWikiAdmin) return;
@@ -773,6 +807,13 @@ async function initialize() {
   for (const page of existingPages || []) {
     if (!page.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
     articles[page.slug] = page.title || page.slug;
+    if (articleStatusSlug && ![...articleStatusSlug.options].some(option => option.value === page.slug)) {
+      const statusOption = document.createElement("option");
+      statusOption.value = page.slug;
+      statusOption.textContent = page.title || page.slug;
+      statusOption.dataset.status = page.article_status || "incomplete";
+      articleStatusSlug.append(statusOption);
+    }
     if (![...articleSelect.options].some((option) => option.value === page.slug)) {
       const option = document.createElement("option");
       option.value = page.slug;
