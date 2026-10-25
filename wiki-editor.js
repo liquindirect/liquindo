@@ -51,7 +51,7 @@ function updateArticleMode() {
   if (creating) {
     activeSlug = null;
     syncEditorViews(`<section class="article-section"><h2 class="section-title">${newArticleTitle.value.trim() || "New article"}</h2><p>Start writing your article here.</p></section>`);
-    showMessage("Draft a new article. It will need administrator approval before it appears on the wiki.");
+    showMessage(isWikiAdmin || isTrustedEditor ? "Draft a new article. Publishing will make it live immediately." : "Draft a new article. It will need administrator approval before it appears on the wiki.");
   } else {
     loadArticle();
   }
@@ -115,6 +115,7 @@ const pendingContainer = $("#pending-revisions");
 const historyContainer = $("#revision-history");
 let user = null;
 let isWikiAdmin = false;
+let isTrustedEditor = false;
 const adminToolsMode = new URLSearchParams(window.location.search).get("admin") === "1";
 let isWikiEditor = false;
 let activeSlug = null;
@@ -204,7 +205,7 @@ async function loadArticle() {
       if (draft?.content && draft.content !== safeHtml(html) &&
           window.confirm("A local draft for this article was saved on " + formatDate(draft.savedAt) + ". Restore it?")) {
         syncEditorViews(draft.content);
-        showMessage(isWikiAdmin ? "Local draft restored. Continue editing; administrator changes publish immediately." : "Local draft restored. Continue editing or submit it for approval.");
+        showMessage(isWikiAdmin || isTrustedEditor ? "Local draft restored. Continue editing; your changes publish immediately." : "Local draft restored. Continue editing or submit it for approval.");
         return;
       }
     } catch (error) {
@@ -659,7 +660,7 @@ $("#remove-format").addEventListener("click", () => {
 submitButton.addEventListener("click", async () => {
   if (!user || !isWikiEditor) return;
   const creating = isCreatingArticle();
-  if (creating && !canCreateArticles && !isWikiAdmin) {
+  if (creating && !canCreateArticles && !isWikiAdmin && !isTrustedEditor) {
     showMessage("An administrator must grant you new article creation permission.", true);
     return;
   }
@@ -700,10 +701,11 @@ submitButton.addEventListener("click", async () => {
     }
   }
   submitButton.disabled = true;
-  showMessage(isWikiAdmin ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
+  showMessage(isWikiAdmin || isTrustedEditor ? "Publishing article and recording revision history…" : "Submitting revision for approval…");
   try {
-    if (isWikiAdmin) {
-      const { error } = await supabase.rpc("publish_liquinwiki_admin_revision", {
+    if (isWikiAdmin || isTrustedEditor) {
+      const publishFunction = isWikiAdmin ? "publish_liquinwiki_admin_revision" : "publish_liquinwiki_trusted_editor_revision";
+      const { error } = await supabase.rpc(publishFunction, {
         p_slug: slug,
         p_title: title,
         p_content: content
@@ -754,9 +756,10 @@ async function initialize() {
   if (profileError) throw profileError;
   if (permissionError) throw permissionError;
   isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
-  canCreateArticles = isWikiAdmin || permission?.permission === "liquinwiki_creator";
-  isWikiEditor = isWikiAdmin || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
-  submitButton.textContent = isWikiAdmin ? "Publish article" : "Submit for approval";
+  isTrustedEditor = permission?.permission === "liquinwiki_trusted_editor";
+  canCreateArticles = isWikiAdmin || isTrustedEditor || permission?.permission === "liquinwiki_creator";
+  isWikiEditor = isWikiAdmin || isTrustedEditor || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
+  submitButton.textContent = isWikiAdmin || isTrustedEditor ? "Publish article" : "Submit for approval";
   articleSelect.querySelector(`option[value="${articleCreateOption}"]`).hidden = !canCreateArticles && !isWikiAdmin;
   if (!canCreateArticles && !isWikiAdmin && articleSelect.value === articleCreateOption) articleSelect.value = "liquindo";
   if (!isWikiEditor) {
