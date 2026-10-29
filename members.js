@@ -21,7 +21,6 @@ const directoryStatus = document.querySelector("#directory-status");
 const directory = document.querySelector("#member-directory");
 const directorySearch = document.querySelector("#directory-search");
 const directorySearchClear = document.querySelector("#directory-search-clear");
-const directoryRoleFilter = document.querySelector("#directory-role-filter");
 const directoryCount = document.querySelector("#directory-count");
 const directoryRetry = document.querySelector("#directory-retry");
 const bioCharacterCount = document.querySelector("#bio-character-count");
@@ -69,18 +68,8 @@ async function loadProfile() {
 }
 function memberMatches(member) {
   const query = (directorySearch?.value || "").trim().toLocaleLowerCase();
-  const role = (directoryRoleFilter?.value || "").toLocaleLowerCase();
   const searchText = [member.display_name, member.role, showDirectoryBio ? member.bio : ""].filter(Boolean).join(" ").toLocaleLowerCase();
   return !query || searchText.includes(query);
-}
-function renderRoleOptions() {
-  if (!directoryRoleFilter) return;
-  const selectedRole = directoryRoleFilter.value;
-  const roles = [...new Set(directoryMembers.map(member => (member.role || "member").trim()))]
-    .filter(Boolean).sort((a, b) => a.localeCompare(b));
-  directoryRoleFilter.replaceChildren(new Option(t("dir.allRoles"), ""));
-  for (const role of roles) directoryRoleFilter.add(new Option(role.charAt(0).toLocaleUpperCase() + role.slice(1), role.toLocaleLowerCase()));
-  if (roles.some(role => role.toLocaleLowerCase() === selectedRole)) directoryRoleFilter.value = selectedRole;
 }
 function filterDirectory() {
   const items = [...directory.children].filter(item => !item.classList.contains("directory-empty"));
@@ -105,10 +94,8 @@ directoryRetry?.addEventListener("click", async () => {
   finally { directoryRetry.disabled = false; }
 });
 directorySearch?.addEventListener("input", filterDirectory);
-directoryRoleFilter?.addEventListener("change", filterDirectory);
 directorySearchClear?.addEventListener("click", () => {
   if (directorySearch) directorySearch.value = "";
-  if (directoryRoleFilter) directoryRoleFilter.value = "";
   filterDirectory();
   directorySearch?.focus();
 });
@@ -162,7 +149,6 @@ async function loadDirectory() {
     if (directoryCount) directoryCount.textContent = t("dir.count", {shown: 0, total: 0});
     return;
   }
-  renderRoleOptions();
   for (const member of directoryMembers) {
     const item = document.createElement("li");
     item.className = "member-item";
@@ -182,6 +168,7 @@ async function loadDirectory() {
     bio.className = "member-bio";
     bio.hidden = !showDirectoryBio;
     bio.textContent = member.bio || t("dir.bioEmpty");
+    bio.classList.toggle("member-bio-empty", !member.bio);
     const toggle = document.createElement("button");
     toggle.className = "member-bio-toggle";
     toggle.type = "button";
@@ -271,12 +258,13 @@ document.addEventListener("liquindo-language-changed", () => {
     element.textContent = t(element.dataset.i18nMessageKey, values);
   });
   if (bioCharacterCount) bioCharacterCount.textContent = t("dir.bioCount", {count: bioInput.value.length});
-  if (directoryMembers.length) { renderRoleOptions(); filterDirectory(); }
+  if (directoryMembers.length) { filterDirectory(); }
   directory.querySelectorAll(".member-item").forEach((item) => {
     const member = directoryMembers.find((candidate) => candidate.id === item.dataset.memberId);
     const bio = item.querySelector(".member-bio");
     const toggle = item.querySelector(".member-bio-toggle");
     if (member && bio && !member.bio) bio.textContent = t("dir.bioEmpty");
+    if (member && bio) bio.classList.toggle("member-bio-empty", !member.bio);
     if (member && toggle) toggle.setAttribute("aria-label", t(bio?.hidden ? "dir.showBio" : "dir.hideBio", {name: member.display_name || "member"}));
   });
 });
