@@ -22,10 +22,6 @@
       .directory-search input, .directory-role-filter select { width: 100%; box-sizing: border-box; min-height: 46px; padding: .7rem .8rem; border: 1px solid var(--border, #ddd); border-radius: 9px; background: #fff; color: var(--ink); }
       .directory-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .65rem; margin: .75rem 0; }
       .directory-count { margin: 0; color: var(--muted); font-size: .95rem; font-weight: 700; }
-      .directory-letters { display: flex; flex-wrap: wrap; gap: .35rem; margin: .85rem 0 1rem; }
-      .directory-letter { min-width: 36px; min-height: 36px; padding: .3rem .55rem; border: 1px solid var(--border, #ddd); border-radius: 8px; background: #fff; color: var(--ink); font-weight: 700; cursor: pointer; }
-      .directory-letter[aria-pressed="true"] { background: var(--teal); color: #fff; border-color: var(--teal); }
-      .directory-letter:disabled { opacity: .35; cursor: not-allowed; }
       .member-directory { list-style: none; padding: 0; margin: .75rem 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: .85rem; }
       .member-item { display: flex; align-items: flex-start; gap: .85rem; min-width: 0; padding: 1rem; border: 1px solid var(--border, #ddd); border-radius: 14px; background: linear-gradient(145deg, #fff 0%, #fbfcfc 100%); box-shadow: 0 3px 10px rgba(23,33,38,.035); transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
       .member-item:hover, .member-item:focus-within { border-color: rgba(14,124,123,.55); box-shadow: 0 8px 22px rgba(23,33,38,.08); }
@@ -69,9 +65,6 @@
       body.members-redesign .members-button { border-color: #fdbe00; background: #f3ead5; color: #263447; border-radius: 10px; transition: background .18s ease, transform .18s ease, border-color .18s ease; }
       body.members-redesign .members-button:hover:not(:disabled) { background: #fdbe00; border-color: #fdbe00; color: #172534; transform: translateY(-1px); }
       body.members-redesign .directory-count { color: #3d4c5c; }
-      body.members-redesign .directory-letters { gap: .4rem; }
-      body.members-redesign .directory-letter { background: #fffdf8; border-color: #d8d0c1; color: #263447; border-radius: 9px; }
-      body.members-redesign .directory-letter[aria-pressed="true"] { background: #101c36; color: #fdbe00; border-color: #101c36; }
       body.members-redesign .member-directory { gap: 1rem; }
       body.members-redesign .member-item { background: linear-gradient(145deg, #fffdf8 0%, #f1ece1 100%); border-color: #ded5c5; border-radius: 15px; padding: 1.1rem; box-shadow: 0 5px 15px rgba(23,37,52,.055); }
       body.members-redesign .member-item:hover, body.members-redesign .member-item:focus-within { border-color: #fdbe00; box-shadow: 0 10px 24px rgba(23,37,52,.11); }
@@ -176,9 +169,8 @@
           </div>
           <div class="directory-toolbar">
             <p id="directory-count" class="directory-count" aria-live="polite" data-i18n="dir.loadingCount">Loading member count…</p>
-            <button id="directory-search-clear" class="members-button" type="button" data-i18n="dir.reset">Reset filters</button>
+            <button id="directory-search-clear" class="members-button" type="button" data-i18n="dir.reset">Clear search</button>
           </div>
-          <nav id="directory-letters" class="directory-letters" aria-label="Filter members alphabetically" data-i18n-aria-label="dir.alphabet"></nav>
           <p id="directory-status" class="members-status" aria-live="polite" data-i18n="dir.loading">Loading members…</p>
           <button id="directory-retry" class="members-button" type="button" data-i18n="dir.retry" hidden>Try again</button>
           <ul id="member-directory" class="member-directory"></ul>
