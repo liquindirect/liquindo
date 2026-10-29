@@ -132,14 +132,17 @@
       <section class="auth-card" aria-labelledby="auth-heading">
         <div id="auth-form-panel">
           <h1 id="auth-heading" data-i18n="auth.welcome">Welcome</h1>
-          <p class="auth-intro" data-i18n="auth.useEmail">Use your email address and a password to continue.</p>
+          <p class="auth-intro">Use your username or email to log in. Email is optional when creating an account and is used for password recovery.</p>
           <div class="auth-tabs" aria-label="Account action">
             <button type="button" id="login-tab" aria-pressed="true" data-i18n="auth.login">Log in</button>
             <button type="button" id="signup-tab" aria-pressed="false" data-i18n="auth.create">Create account</button>
           </div>
           <form id="auth-form">
-            <label class="auth-field" for="email" data-i18n="auth.email">Email address
-              <input id="email" name="email" type="email" autocomplete="email" required />
+            <label class="auth-field" for="email" id="login-identifier-label">Username or email address
+              <input id="email" name="identifier" type="text" autocomplete="username" required />
+            </label>
+            <label class="auth-field auth-hidden" id="recovery-email-field" for="recovery-email">Recovery email (optional)
+              <input id="recovery-email" name="recovery-email" type="email" autocomplete="email" />
             </label>
             <label class="auth-field" for="password" data-i18n="auth.password">Password
               <div class="password-wrap">
@@ -183,7 +186,7 @@
     </footer>
     <script id="turnstile-script" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     <script src="i18n.js"></script>
-    <script type="module" src="auth.js?v=20261013-turnstile-v1"></script>
+    <script type="module" src="auth.js?v=20261029-username-auth-v1"></script>
     <script type="module" src="site-account.js"></script>
     <script>
       const passwordToggles = [
