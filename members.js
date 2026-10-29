@@ -29,6 +29,7 @@ const bioCharacterCount = document.querySelector("#bio-character-count");
 let savedProfileValues = null;
 let currentUser = null;
 let directoryMembers = [];
+let directoryLoadRequest = 0;
 let activeLetter = "";
 let showDirectoryBio = true;
 const t = (key, values = {}) => {
@@ -169,6 +170,7 @@ window.addEventListener("beforeunload", (event) => {
 });
 
 async function loadDirectory() {
+  const requestId = ++directoryLoadRequest;
   try {
     const { data: settingsRow } = await supabase.from("site_settings").select("setting_value").eq("setting_key", "directory_settings").maybeSingle();
     showDirectoryBio = settingsRow?.setting_value?.show_bio !== false;
@@ -179,13 +181,18 @@ async function loadDirectory() {
   if (directoryCount) directoryCount.textContent = t("dir.loadingCount");
   const { data, error } = await supabase.from("profiles")
     .select("id, display_name, role, bio").order("display_name", { ascending: true });
+  // Multiple auth events or retries can overlap. Only the newest request may render.
+  if (requestId !== directoryLoadRequest) return;
   if (error) {
     if (directoryRetry) directoryRetry.hidden = false;
     showStatus(directoryStatus, "dir.loadError", true);
     if (directoryCount) directoryCount.textContent = t("dir.loadError");
     return;
   }
-  directoryMembers = data || [];
+  // A profile is identified by its auth/profile UUID, never by its display name.
+  // Deduplicate defensively in case overlapping requests or legacy data returns repeats.
+  directoryMembers = [...new Map((data || []).filter(member => member?.id).map(member => [member.id, member])).values()];
+  directory.replaceChildren();
   if (!directoryMembers.length) {
     showStatus(directoryStatus, "dir.noMembers");
     if (directoryCount) directoryCount.textContent = t("dir.count", {shown: 0, total: 0});
