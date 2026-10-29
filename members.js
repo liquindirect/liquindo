@@ -22,7 +22,6 @@ const directory = document.querySelector("#member-directory");
 const directorySearch = document.querySelector("#directory-search");
 const directorySearchClear = document.querySelector("#directory-search-clear");
 const directoryRoleFilter = document.querySelector("#directory-role-filter");
-const directoryLetters = document.querySelector("#directory-letters");
 const directoryCount = document.querySelector("#directory-count");
 const directoryRetry = document.querySelector("#directory-retry");
 const bioCharacterCount = document.querySelector("#bio-character-count");
@@ -30,7 +29,6 @@ let savedProfileValues = null;
 let currentUser = null;
 let directoryMembers = [];
 let directoryLoadRequest = 0;
-let activeLetter = "";
 let showDirectoryBio = true;
 const t = (key, values = {}) => {
   let value = window.languageManager?.get(key) || key;
@@ -72,40 +70,8 @@ async function loadProfile() {
 function memberMatches(member) {
   const query = (directorySearch?.value || "").trim().toLocaleLowerCase();
   const role = (directoryRoleFilter?.value || "").toLocaleLowerCase();
-  const firstLetter = (member.display_name || "Member").trim().charAt(0).toLocaleUpperCase();
   const searchText = [member.display_name, member.role, showDirectoryBio ? member.bio : ""].filter(Boolean).join(" ").toLocaleLowerCase();
-  return (!query || searchText.includes(query)) &&
-    (!role || (member.role || "member").toLocaleLowerCase() === role) &&
-    (!activeLetter || firstLetter === activeLetter);
-}
-function renderAlphabet() {
-  if (!directoryLetters) return;
-  directoryLetters.replaceChildren();
-  const letters = [...new Set(directoryMembers.map(member =>
-    (member.display_name || "Member").trim().charAt(0).toLocaleUpperCase()
-  ))].filter(letter => /^[A-Z]$/.test(letter)).sort();
-  const allButton = document.createElement("button");
-  allButton.type = "button";
-  allButton.className = "directory-letter";
-  allButton.textContent = t("dir.allLetters");
-  allButton.setAttribute("aria-pressed", String(!activeLetter));
-  allButton.addEventListener("click", () => { activeLetter = ""; renderAlphabet(); filterDirectory(); });
-  directoryLetters.append(allButton);
-  for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "directory-letter";
-    button.textContent = letter;
-    button.disabled = !letters.includes(letter);
-    button.setAttribute("aria-pressed", String(activeLetter === letter));
-    button.setAttribute("aria-label", t("dir.showLetter", {letter}));
-    button.addEventListener("click", () => {
-      activeLetter = activeLetter === letter ? "" : letter;
-      renderAlphabet();
-      filterDirectory();
-    });
-    directoryLetters.append(button);
-  }
+  return !query || searchText.includes(query);
 }
 function renderRoleOptions() {
   if (!directoryRoleFilter) return;
@@ -143,8 +109,6 @@ directoryRoleFilter?.addEventListener("change", filterDirectory);
 directorySearchClear?.addEventListener("click", () => {
   if (directorySearch) directorySearch.value = "";
   if (directoryRoleFilter) directoryRoleFilter.value = "";
-  activeLetter = "";
-  renderAlphabet();
   filterDirectory();
   directorySearch?.focus();
 });
@@ -196,11 +160,9 @@ async function loadDirectory() {
   if (!directoryMembers.length) {
     showStatus(directoryStatus, "dir.noMembers");
     if (directoryCount) directoryCount.textContent = t("dir.count", {shown: 0, total: 0});
-    if (directoryLetters) directoryLetters.replaceChildren();
     return;
   }
   renderRoleOptions();
-  renderAlphabet();
   for (const member of directoryMembers) {
     const item = document.createElement("li");
     item.className = "member-item";
@@ -309,7 +271,7 @@ document.addEventListener("liquindo-language-changed", () => {
     element.textContent = t(element.dataset.i18nMessageKey, values);
   });
   if (bioCharacterCount) bioCharacterCount.textContent = t("dir.bioCount", {count: bioInput.value.length});
-  if (directoryMembers.length) { renderRoleOptions(); renderAlphabet(); filterDirectory(); }
+  if (directoryMembers.length) { renderRoleOptions(); filterDirectory(); }
   directory.querySelectorAll(".member-item").forEach((item) => {
     const member = directoryMembers.find((candidate) => candidate.id === item.dataset.memberId);
     const bio = item.querySelector(".member-bio");
