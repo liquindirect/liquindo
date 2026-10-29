@@ -19,7 +19,7 @@ begin
          new.display_name is distinct from old.display_name
          or new.bio is distinct from old.bio
        ) then
-      raise exception 'Administrators cannot edit another member\'s display name or bio';
+      raise exception 'Administrators cannot edit another member''s display name or bio';
     end if;
   end if;
 
