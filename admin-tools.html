@@ -213,8 +213,19 @@
     let verificationSequence = 0;
     let authSubscription = null;
 
+    function withTimeout(promise, label, milliseconds = 12000) {
+      let timer;
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          timer = window.setTimeout(() => reject(new Error(label + " timed out. Please refresh and try again.")), milliseconds);
+        })
+      ]).finally(() => window.clearTimeout(timer));
+    }
+
     async function verifyAdministrator(session) {
       const sequence = ++verificationSequence;
+      currentAdminUserId = null;
       content.hidden = true;
       signOutButton.disabled = true;
       status.classList.remove("error");
@@ -228,17 +239,20 @@
       }
 
       try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", session.user.id)
-          .maybeSingle();
+        const { data, error } = await withTimeout(
+          supabase.from("profiles").select("role").eq("id", session.user.id).maybeSingle(),
+          "Administrator role lookup"
+        );
 
-        // Ignore stale role checks after a newer auth event has changed the session.
         if (sequence !== verificationSequence) return;
 
-        if (error || data?.role !== "admin") {
-          status.textContent = "Access denied. This page is available only to verified administrators.";
+        if (error) {
+          status.textContent = "Could not read your administrator role: " + error.message;
+          status.classList.add("error");
+          return;
+        }
+        if (data?.role !== "admin") {
+          status.textContent = "Access denied. Your signed-in profile does not have the website administrator role.";
           status.classList.add("error");
           return;
         }
@@ -247,9 +261,9 @@
         currentAdminUserId = session.user.id;
         content.hidden = false;
         await loadMessageFromLiquin();
-      } catch {
+      } catch (error) {
         if (sequence !== verificationSequence) return;
-        status.textContent = "Could not verify administrator access. Please refresh and try again.";
+        status.textContent = error?.message || "Could not verify administrator access. Please refresh and try again.";
         status.classList.add("error");
       } finally {
         if (sequence === verificationSequence) signOutButton.disabled = false;
@@ -267,16 +281,16 @@
 
       const sequenceAtStart = authEventSequence;
       try {
-        const { data, error } = await supabase.auth.getSession();
+        const { data, error } = await withTimeout(supabase.auth.getSession(), "Session lookup");
         if (error) throw error;
-        // An auth event received during session lookup takes precedence.
         if (sequenceAtStart === authEventSequence) await verifyAdministrator(data.session);
-      } catch {
+      } catch (error) {
         if (sequenceAtStart !== authEventSequence) return;
         ++verificationSequence;
+        currentAdminUserId = null;
         content.hidden = true;
         signOutButton.disabled = false;
-        status.textContent = "Could not check your session. Please refresh and try again.";
+        status.textContent = error?.message || "Could not check your session. Please refresh and try again.";
         status.classList.add("error");
       }
     }
