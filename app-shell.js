@@ -443,12 +443,17 @@
       }
     }
     syncAdminLink();
-    const adminObserver = new MutationObserver(syncAdminLink);
-    adminObserver.observe(document.documentElement, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["hidden", "class", "style", "aria-hidden"]
-    });
+    // Watch only the administrator link. Observing every attribute change in
+    // the entire document causes needless work on pages with dynamic content.
+    const adminLink = document.querySelector("#admin-tools-nav");
+    if (adminLink) {
+      const adminObserver = new MutationObserver(syncAdminLink);
+      adminObserver.observe(adminLink, {
+        attributes: true,
+        attributeFilter: ["hidden", "class", "style", "aria-hidden"]
+      });
+      window.addEventListener("pagehide", () => adminObserver.disconnect(), { once: true });
+    }
 
     menuButton.addEventListener("click", () => {
       const open = panel.hidden;
