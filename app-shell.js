@@ -278,18 +278,24 @@
       };
 
       import("https://esm.sh/@supabase/supabase-js@2")
-        .then(({ createClient }) => {
+        .then(async ({ createClient }) => {
           const client = createClient(
             "https://uivjovkvpskvvazznlyr.supabase.co",
             "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
           );
-          client.auth.onAuthStateChange((_event, session) => applySession(session));
-          return client.auth.getSession().then(({ data, error }) => {
-            if (error) throw error;
-            return applySession(data.session);
+
+          // Never run a profile query inside Supabase's auth callback: doing so
+          // can wait on the same auth lock and leave the navigation hidden.
+          client.auth.onAuthStateChange((_event, session) => {
+            Promise.resolve().then(() => applySession(session));
           });
+
+          const { data, error } = await client.auth.getSession();
+          if (error) throw error;
+          await applySession(data.session);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.warn("Liquindo administrator navigation check failed.", error);
           adminLink.hidden = true;
           adminLink.setAttribute("aria-hidden", "true");
         });
