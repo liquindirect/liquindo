@@ -653,12 +653,34 @@
           Math.ceil(distance / week).toLocaleString();
       }
 
-      updateCountdown();
+      // Do not keep a one-second timer running while the homepage is in
+      // the background. Android browsers can aggressively suspend and restore
+      // tabs; refresh the countdown once when the page becomes active again.
+      let countdownTimer = null;
 
-      setInterval(
-        updateCountdown,
-        1000
-      );
+      function startCountdown() {
+        updateCountdown();
+        if (countdownTimer === null && !document.hidden) {
+          countdownTimer = window.setInterval(updateCountdown, 1000);
+        }
+      }
+
+      function stopCountdown() {
+        if (countdownTimer !== null) {
+          window.clearInterval(countdownTimer);
+          countdownTimer = null;
+        }
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopCountdown();
+        else startCountdown();
+      });
+
+      window.addEventListener("pagehide", stopCountdown);
+      window.addEventListener("pageshow", startCountdown);
+
+      startCountdown();
     </script>
 <script type="module">
       import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
