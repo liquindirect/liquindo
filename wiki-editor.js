@@ -180,6 +180,10 @@ function watchPermissionChanges() {
       event: "*", schema: "public", table: "wiki_permissions",
       filter: "user_id=eq." + user.id
     }, refresh)
+    .on("postgres_changes", {
+      event: "*", schema: "public", table: "profiles",
+      filter: "id=eq." + user.id
+    }, refresh)
     .subscribe();
   window.addEventListener("focus", refresh);
   document.addEventListener("visibilitychange", () => {
