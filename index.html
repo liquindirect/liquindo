@@ -672,25 +672,6 @@
       const homepageLogoutButton = document.getElementById("account-logout-button");
 
       let homepageSession = null;
-      const adminToolsNav = document.getElementById("admin-tools-nav");
-      let adminCheckSequence = 0;
-      async function updateAdminTools(session) {
-        const sequence = ++adminCheckSequence;
-        if (adminToolsNav) adminToolsNav.hidden = true;
-        if (!session?.user) return;
-        try {
-          const { data, error } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", session.user.id)
-            .maybeSingle();
-          if (sequence !== adminCheckSequence || error || data?.role !== "admin") return;
-          if (adminToolsNav) adminToolsNav.hidden = false;
-        } catch {
-          // Fail closed: never display admin shortcuts if role verification fails.
-        }
-      }
-
       function updateAccountLink(session) {
         homepageSession = session || null;
         const signedIn = Boolean(session?.user);
@@ -736,10 +717,8 @@
 
       const { data: { session } } = await supabase.auth.getSession();
       updateAccountLink(session);
-      updateAdminTools(session);
       supabase.auth.onAuthStateChange((_event, nextSession) => {
         updateAccountLink(nextSession);
-        updateAdminTools(nextSession);
       });
       document.addEventListener("liquindo-language-changed", () => {
         updateAccountLink(homepageSession);
