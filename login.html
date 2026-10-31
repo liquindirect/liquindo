@@ -36,6 +36,15 @@
       .auth-message { min-height: 1.5em; margin: 16px 0 0; overflow-wrap: anywhere; }
       .auth-account { padding: 16px; background: #f0f5f2; border-radius: 12px; overflow-wrap: anywhere; }
       .auth-hidden { display: none !important; }
+      .account-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid #ded5c5; }
+      .account-section h2 { margin: 0 0 12px; color: #000032; font-size: 1.15rem; }
+      .account-details { margin: 0; }
+      .account-details > div { display: grid; grid-template-columns: minmax(105px, .7fr) 1.3fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e5ddcf; }
+      .account-details dt { color: #596572; font-weight: 700; }
+      .account-details dd { margin: 0; overflow-wrap: anywhere; color: #172534; }
+      .account-section form { margin: 0; }
+      .account-section .auth-submit { margin-top: 2px; }
+      @media (max-width: 420px) { .account-details > div { grid-template-columns: 1fr; gap: 3px; } }
       .auth-back { display: inline-block; margin-top: 24px; color: var(--teal); font-weight: 700; }
 
       /* Account screen: match Liquindo's navy-and-gold editorial homepage. */
@@ -164,14 +173,46 @@
           <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
         </div>
         <div id="auth-account-panel" class="auth-hidden">
-          <h1 id="account-heading" data-i18n="auth.signed">You're signed in</h1>
-          <p class="auth-intro" data-i18n="auth.current">Current account</p>
-          <p class="auth-account" id="account-email"></p>
-          <button class="auth-submit" id="logout-button" type="button" data-i18n="auth.logout">Log out</button>
+          <h1 id="account-heading" data-i18n="auth.signed">Account</h1>
+          <p class="auth-intro">Your Liquindo account information and security settings.</p>
+          <section class="account-section" aria-labelledby="account-information-heading">
+            <h2 id="account-information-heading">Account information</h2>
+            <dl class="account-details">
+              <div><dt>Username</dt><dd id="account-username">—</dd></div>
+              <div><dt>Email address</dt><dd id="account-email">—</dd></div>
+              <div><dt>Display name</dt><dd id="account-display-name">—</dd></div>
+              <div><dt>Account role</dt><dd id="account-role">—</dd></div>
+              <div><dt>Member since</dt><dd id="account-created">—</dd></div>
+            </dl>
+          </section>
+          <section class="account-section" aria-labelledby="change-username-heading">
+            <h2 id="change-username-heading">Change username</h2>
+            <form id="change-username-form">
+              <label class="auth-field" for="new-username">New username<input id="new-username" name="username" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" required /></label>
+              <button class="auth-submit" type="submit">Save username</button>
+            </form>
+          </section>
+          <section class="account-section" aria-labelledby="change-email-heading">
+            <h2 id="change-email-heading">Change email address</h2>
+            <p class="auth-intro">A confirmation message may be sent to your new email address. Your email changes after confirmation.</p>
+            <form id="change-email-form">
+              <label class="auth-field" for="new-email">New email address<input id="new-email" name="email" type="email" autocomplete="email" required /></label>
+              <button class="auth-submit" type="submit">Update email</button>
+            </form>
+          </section>
+          <section class="account-section" aria-labelledby="change-password-heading">
+            <h2 id="change-password-heading">Change password</h2>
+            <form id="change-password-form">
+              <label class="auth-field" for="new-password">New password<input id="new-password" name="password" type="password" autocomplete="new-password" minlength="6" required /></label>
+              <label class="auth-field" for="confirm-new-password">Confirm new password<input id="confirm-new-password" name="confirm-password" type="password" autocomplete="new-password" minlength="6" required /></label>
+              <button class="auth-submit" type="submit">Update password</button>
+            </form>
+          </section>
           <nav class="auth-account-links" aria-label="Account destinations" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px">
             <a href="members.html" data-i18n="auth.directory">Members directory</a>
             <a href="wiki.html" data-i18n="auth.wiki">LiquinWiki</a>
           </nav>
+          <button class="auth-secondary" id="logout-button" type="button" data-i18n="auth.logout" style="width:100%;margin-top:20px">Log out</button>
           <p id="account-message" class="auth-message" role="status" aria-live="polite"></p>
         </div>
       </section>
@@ -186,7 +227,7 @@
     </footer>
     <script id="turnstile-script" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     <script src="i18n.js"></script>
-    <script type="module" src="auth.js?v=20261029-username-auth-v1"></script>
+    <script type="module" src="auth.js?v=20261031-account-dashboard-v1"></script>
     <script type="module" src="site-account.js"></script>
     <script>
       const passwordToggles = [
