@@ -25,6 +25,179 @@
     return location.pathname.split("/").filter(Boolean).pop() || "index.html";
   }
 
+  // One shared Contents menu is rendered on every website page. Existing
+  // page-specific copies are replaced so the links, grouping, search and
+  // mobile behaviour stay identical across the site.
+  function initializeUniversalContentsMenu() {
+    if (!document.body || document.querySelector("[data-liquindo-contents-ready]")) return;
+
+    const menuMarkup = `
+      <details class="contents-menu liquindo-universal-contents" data-liquindo-contents-ready>
+        <summary aria-label="Open site contents" aria-controls="site-contents-panel">
+          <span class="contents-menu-icon" aria-hidden="true">☰</span>
+          <span>Contents</span>
+          <span class="contents-chevron" aria-hidden="true">⌄</span>
+        </summary>
+        <button type="button" class="contents-backdrop" aria-label="Close contents menu" tabindex="-1"></button>
+        <div class="contents-panel" id="site-contents-panel">
+          <p class="contents-panel-label">Liquindo <span aria-hidden="true">/</span> Contents</p>
+          <p class="contents-panel-intro">Explore the project, community and resources.</p>
+          <label class="contents-search-label" for="contents-search">Find a page</label>
+          <input id="contents-search" class="contents-search" type="search" placeholder="Search contents…" autocomplete="off">
+          <p class="contents-search-status" id="contents-search-status" aria-live="polite"></p>
+          <p class="contents-group-label">EXPLORE</p>
+          <a href="index.html#home"><span>01</span><span>Introduction</span></a>
+          <a href="index.html#history"><span>02</span><span data-i18n="nav.history">History</span></a>
+          <a href="index.html#ideology"><span>03</span><span data-i18n="nav.ideology">Ideology</span></a>
+          <a href="hierarchy.html"><span>04</span><span>Hierarchy</span></a>
+          <p class="contents-group-label">COMMUNITY &amp; KNOWLEDGE</p>
+          <a href="members.html"><span>05</span><span data-i18n="nav.members">Members</span></a>
+          <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
+          <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
+          <p class="contents-group-label">TOOLS &amp; RESOURCES</p>
+          <a href="app.html"><span>08</span><span>Liquindo Web App · PWA install</span></a>
+          <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
+          <p class="contents-group-label">CONTACT &amp; ACCOUNT</p>
+          <a href="index.html#contact"><span>10</span><span data-i18n="nav.contact">Contact</span></a>
+          <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>11</span><span>Merchandise Shop ↗</span></a>
+          <a href="login.html"><span>12</span><span>Account</span></a>
+          <a href="admin-tools.html" id="admin-tools-nav" hidden><span>13</span><span>Admin Tools</span></a>
+        </div>
+      </details>`;
+
+    const oldMenus = [...document.querySelectorAll(".contents-menu")];
+    const host = document.querySelector(".topbar") ||
+      document.querySelector(".topline") ||
+      null;
+    const wrapper = document.createElement("nav");
+    wrapper.className = "liquindo-contents-host";
+    wrapper.setAttribute("aria-label", "Site contents");
+    wrapper.innerHTML = menuMarkup;
+    const menu = wrapper.firstElementChild;
+
+    oldMenus.forEach((oldMenu) => oldMenu.remove());
+    if (host) {
+      host.insertBefore(menu, host.firstChild);
+      host.classList.add("liquindo-contents-hosted");
+    } else {
+      document.body.insertBefore(wrapper, document.body.firstChild);
+    }
+
+    if (!document.getElementById("liquindo-universal-contents-styles")) {
+      const style = document.createElement("style");
+      style.id = "liquindo-universal-contents-styles";
+      style.textContent = `
+        .liquindo-universal-contents { position: static !important; z-index: 1001 !important; flex: 0 0 auto; }
+        .liquindo-universal-contents > summary {
+          position: fixed !important; top: 14px !important; left: 14px !important; z-index: 1003 !important;
+          display: inline-flex !important; align-items: center; justify-content: center; gap: 9px;
+          min-height: 44px; padding: 9px 13px; border: 1px solid rgba(223,191,112,.58);
+          border-radius: 2px; background: #000032 !important; color: #f4f0e5 !important;
+          box-shadow: 0 5px 20px rgba(0,0,0,.2); cursor: pointer; list-style: none;
+          font-size: .9rem; font-weight: 750; letter-spacing: .025em;
+        }
+        .liquindo-universal-contents > summary::-webkit-details-marker { display: none; }
+        .liquindo-universal-contents > summary:hover,
+        .liquindo-universal-contents[open] > summary { border-color: #fdbe00; color: #fff0c5 !important; }
+        .liquindo-universal-contents .contents-menu-icon,
+        .liquindo-universal-contents .contents-chevron { color: #fdbe00; }
+        .liquindo-universal-contents .contents-chevron { margin-left: 3px; transition: transform .18s ease; }
+        .liquindo-universal-contents[open] .contents-chevron { transform: rotate(180deg); }
+        .liquindo-universal-contents:not([open]) > .contents-backdrop,
+        .liquindo-universal-contents:not([open]) > .contents-panel { display: none !important; }
+        .liquindo-universal-contents .contents-backdrop {
+          display: block; position: fixed; inset: 0; z-index: 1000; width: 100%; height: 100%;
+          margin: 0; padding: 0; border: 0; border-radius: 0; background: rgba(0,0,30,.64); cursor: default;
+        }
+        .liquindo-universal-contents .contents-panel {
+          display: block; position: fixed; inset: 0 auto 0 0; z-index: 1002;
+          width: min(360px,88vw); height: 100vh; height: 100dvh; max-height: none;
+          overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+          padding: 76px 20px 28px; border: 0; border-right: 1px solid rgba(223,191,112,.42);
+          border-radius: 0; background: #000032; color: #e9e5da;
+          box-shadow: 18px 0 48px rgba(0,0,0,.28); animation: liquindo-contents-enter .2s ease-out;
+        }
+        .liquindo-universal-contents .contents-panel-label {
+          margin: 0 0 10px; padding: 0 0 14px; border-bottom: 1px solid rgba(223,191,112,.32);
+          color: #fdbe00; font-size: .72rem; font-weight: 800; letter-spacing: .16em; line-height: 1.5; text-transform: uppercase;
+        }
+        .liquindo-universal-contents .contents-panel-intro { margin: 0 0 16px; color: #cbd3e0; font-size: .86rem; }
+        .liquindo-universal-contents .contents-search-label { display: block; margin: 0 0 .35rem; color: #fdbe00; font-size: .75rem; font-weight: 750; }
+        .liquindo-universal-contents .contents-search {
+          display: block; box-sizing: border-box; width: 100%; min-height: 42px; margin: 0; padding: .65rem .75rem;
+          border: 1px solid rgba(253,190,0,.48); border-radius: 2px; background: #08083d; color: #fff; font: inherit; font-size: .92rem;
+        }
+        .liquindo-universal-contents .contents-search::placeholder { color: #b7bfd0; opacity: 1; }
+        .liquindo-universal-contents .contents-search-status { min-height: 1rem; margin: .35rem 0 .2rem; color: #cbd3e0; font-size: .76rem; }
+        .liquindo-universal-contents .contents-group-label {
+          margin: 1.15rem 0 .25rem; padding-top: .8rem; border-top: 1px solid rgba(253,190,0,.25);
+          color: #fdbe00; font-size: .68rem; font-weight: 800; letter-spacing: .14em;
+        }
+        .liquindo-universal-contents .contents-group-label:first-of-type { margin-top: .5rem; padding-top: 0; border-top: 0; }
+        .liquindo-universal-contents .contents-panel a {
+          display: grid; grid-template-columns: 2.2rem minmax(0,1fr); align-items: baseline; gap: 10px;
+          padding: 13px 2px; border: 0; border-bottom: 1px solid rgba(223,191,112,.16);
+          border-radius: 0; background: transparent; color: #e9e5da; font-size: .96rem; line-height: 1.4;
+          text-decoration: none; box-shadow: none; transform: none; transition: color .16s ease,padding-left .16s ease;
+        }
+        .liquindo-universal-contents .contents-panel a > span:first-child { color: #fdbe00; font-size: .76rem; font-variant-numeric: tabular-nums; }
+        .liquindo-universal-contents .contents-panel a:hover,
+        .liquindo-universal-contents .contents-panel a:focus-visible { padding-left: 7px; background: transparent; color: #fff0c5; }
+        .liquindo-universal-contents [hidden] { display: none !important; }
+        .liquindo-universal-contents > summary:focus-visible,
+        .liquindo-universal-contents .contents-panel a:focus-visible { outline: 2px solid #fdbe00; outline-offset: 3px; }
+        .liquindo-contents-hosted > .brand,
+        .liquindo-contents-hosted .wordmark { margin-left: 58px !important; }
+        .liquindo-contents-host { position: relative; z-index: 1001; min-height: 58px; }
+        .liquindo-contents-host > .contents-menu { position: static; }
+        @keyframes liquindo-contents-enter { from { opacity: .65; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+        @media (max-width:780px) { .liquindo-universal-contents > summary { top: 10px !important; left: 10px !important; } .liquindo-universal-contents .contents-panel { width: min(340px,88vw); } }
+        @media (max-width:520px) { .liquindo-universal-contents > summary { min-height: 42px; padding: 8px 10px; } .liquindo-universal-contents .contents-panel { width: min(320px,88vw); padding: 70px 18px 24px; } }
+        @media (prefers-reduced-motion:reduce) { .liquindo-universal-contents .contents-panel { animation: none; } .liquindo-universal-contents .contents-chevron,.liquindo-universal-contents .contents-panel a { transition: none; } }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const topbar = menu.closest(".topbar");
+    const backdrop = menu.querySelector(".contents-backdrop");
+    const links = [...menu.querySelectorAll(".contents-panel a")];
+    const search = menu.querySelector("#contents-search");
+    const status = menu.querySelector("#contents-search-status");
+    const syncOpenState = () => {
+      if (topbar) topbar.classList.toggle("contents-nav-open", menu.open);
+    };
+    const updateSearch = () => {
+      const query = (search.value || "").trim().toLocaleLowerCase();
+      let visible = 0;
+      links.forEach((link) => {
+        const match = !query || link.textContent.toLocaleLowerCase().includes(query);
+        link.hidden = !match;
+        if (match) visible += 1;
+      });
+      menu.querySelectorAll(".contents-group-label").forEach((heading) => {
+        let next = heading.nextElementSibling;
+        let hasVisibleLink = false;
+        while (next && !next.classList.contains("contents-group-label")) {
+          if (next.matches("a") && !next.hidden) hasVisibleLink = true;
+          next = next.nextElementSibling;
+        }
+        heading.hidden = !!query && !hasVisibleLink;
+      });
+      status.textContent = query ? visible + " page" + (visible === 1 ? "" : "s") + " found" : "";
+    };
+    menu.addEventListener("toggle", syncOpenState);
+    search.addEventListener("input", updateSearch);
+    links.forEach((link) => link.addEventListener("click", () => { menu.open = false; syncOpenState(); }));
+    backdrop.addEventListener("click", () => { menu.open = false; syncOpenState(); });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) { menu.open = false; syncOpenState(); }
+    });
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target)) { menu.open = false; syncOpenState(); }
+    });
+    updateSearch();
+  }
+
   function detectPwaDisplayMode() {
     if (!document.body) return;
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches ||
@@ -362,6 +535,8 @@
 
   // Keep the PWA install guidance and display-mode detection, but do not inject
   // the fixed bottom navigation bar into the website.
+  initializeUniversalContentsMenu();
+
   function initializePwaGuidance() {
     detectPwaDisplayMode();
     addPwaInstallGuide();
