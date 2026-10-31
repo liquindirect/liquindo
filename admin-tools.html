@@ -252,20 +252,22 @@
       }
 
       try {
-        const { data, error } = await withTimeout(
-          supabase.from("profiles").select("role").eq("id", session.user.id).maybeSingle(),
-          "Administrator role lookup"
+        // Use the database-owned SECURITY DEFINER check instead of relying on
+        // direct browser SELECT access to the protected profiles table.
+        const { data: isAdministrator, error } = await withTimeout(
+          supabase.rpc("is_admin"),
+          "Administrator verification"
         );
 
         if (sequence !== verificationSequence) return;
 
         if (error) {
-          status.textContent = "Could not read your administrator role: " + error.message;
+          status.textContent = "Administrator verification failed: " + error.message;
           status.classList.add("error");
           return;
         }
-        if (data?.role !== "admin") {
-          status.textContent = "Access denied. Your signed-in profile does not have the website administrator role.";
+        if (isAdministrator !== true) {
+          status.textContent = "Access denied. This signed-in account is not a website administrator.";
           status.classList.add("error");
           return;
         }
