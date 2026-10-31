@@ -103,6 +103,18 @@
   </header>
   <main class="admin-main">
     <p id="admin-status" class="admin-status" role="status" aria-live="polite">Checking administrator access…</p>
+    <script>
+      // A module import can fail before its own timeout logic starts (for
+      // example, if the Supabase CDN is unavailable). Keep a classic-script
+      // watchdog so the page never remains on the loading message forever.
+      window.__liquindoAdminBootWatchdog = window.setTimeout(() => {
+        const status = document.getElementById("admin-status");
+        if (status && status.textContent.trim() === "Checking administrator access…") {
+          status.textContent = "Administrator verification did not start. The authentication library may not have loaded; check your connection and reload this page.";
+          status.classList.add("error");
+        }
+      }, 20000);
+    </script>
     <div id="admin-tools-content" hidden>
       <div class="admin-actions">
         <a href="index.html">← Back to homepage</a>
@@ -152,6 +164,10 @@
   </footer>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    if (window.__liquindoAdminBootWatchdog) {
+      window.clearTimeout(window.__liquindoAdminBootWatchdog);
+      window.__liquindoAdminBootWatchdog = null;
+    }
     const supabase = createClient(
       "https://uivjovkvpskvvazznlyr.supabase.co",
       "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
