@@ -104,8 +104,65 @@
   <main class="admin-main">
     <p id="admin-status" class="admin-status" role="status" aria-live="polite">Checking administrator access…</p>
     <script>
-    // Keep the access check independent of external JavaScript module CDNs.
-    // Supabase stores the signed-in session in this project-scoped localStorage key.
+      // A module import can fail before its own timeout logic starts (for
+      // example, if the Supabase CDN is unavailable). Keep a classic-script
+      // watchdog so the page never remains on the loading message forever.
+      window.__liquindoAdminBootWatchdog = window.setTimeout(() => {
+        const status = document.getElementById("admin-status");
+        if (status && status.textContent.trim() === "Checking administrator access…") {
+          status.textContent = "Administrator verification did not start. The authentication library may not have loaded; check your connection and reload this page.";
+          status.classList.add("error");
+        }
+      }, 10000);
+    </script>
+    <div id="admin-tools-content" hidden>
+      <div class="admin-actions">
+        <a href="index.html">← Back to homepage</a>
+        <button id="admin-sign-out" class="secondary" type="button">Sign out</button>
+      </div>
+      <section class="message-admin-panel" id="message-admin-panel" aria-labelledby="message-admin-title">
+        <h2 id="message-admin-title">Homepage · Message from Liquin</h2>
+        <p>Edit the sentence shown underneath the permanent “Message from Liquin” heading. The shop link and heading stay unchanged.</p>
+        <form id="message-admin-form">
+          <label for="message-admin-text">Message text (up to 500 characters)
+            <textarea id="message-admin-text" maxlength="500" required></textarea>
+          </label>
+          <button type="submit" id="message-admin-save">Save homepage message</button>
+          <p class="message-admin-status" id="message-admin-status" role="status" aria-live="polite">Loading current message…</p>
+        </form>
+      </section>
+      <div class="admin-tool-grid">
+        <a class="admin-tool-card" href="wiki-editor.html?admin=1">
+          <span class="kicker">LiquinWiki</span>
+          <h2>Wiki editing &amp; review</h2>
+          <p>Edit articles, review pending revisions, assign independent Editor, Creator, Trusted Editor and Wiki Administrator permissions, and inspect permission-change history.</p>
+          <span class="open-label">Manage wiki access →</span>
+        </a>
+        <a class="admin-tool-card" href="app-cover-admin.html"><span class="kicker">Android app</span><h2>App Cover Library</h2><p>Upload cover artwork and control which designs are available to users on the app home screen.</p><span class="open-label">Manage covers →</span></a>
+        <a class="admin-tool-card" href="visitor-logs.html">
+          <span class="kicker">Site security</span>
+          <h2>Visitor access logs</h2>
+          <p>Review visitor access records retained for seven days.</p>
+          <span class="open-label">Open tool →</span>
+        </a>
+        <a class="admin-tool-card" href="members.html">
+          <span class="kicker">Community</span>
+          <h2>Members directory</h2>
+          <p>View member profiles and account roles.</p>
+          <span class="open-label">Open directory →</span>
+        </a>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-content">
+      <p>Contact: liquindohq@yahoo.com</p>
+      <a href="privacy.html">Privacy notice</a>
+      <a href="index.html#home">Back to homepage</a>
+    </div>
+    <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
+  </footer>
+  <script>
     (() => {
       const SUPABASE_URL = "https://uivjovkvpskvvazznlyr.supabase.co";
       const SUPABASE_KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
@@ -113,183 +170,152 @@
       const status = document.getElementById("admin-status");
       const content = document.getElementById("admin-tools-content");
       const signOutButton = document.getElementById("admin-sign-out");
-      const messageForm = document.getElementById("message-admin-form");
-      const messageText = document.getElementById("message-admin-text");
+      const form = document.getElementById("message-admin-form");
+      const textarea = document.getElementById("message-admin-text");
       const messageStatus = document.getElementById("message-admin-status");
-      const messageSave = document.getElementById("message-admin-save");
-      let currentAdminUserId = null;
-      let activeSession = null;
+      const saveButton = document.getElementById("message-admin-save");
+      let session = null;
+      let adminUserId = null;
 
-      function setStatus(message, isError = false) {
-        status.textContent = message;
-        status.classList.toggle("error", isError);
-      }
-      function setMessageStatus(message, isError = false) {
-        messageStatus.textContent = message;
-        messageStatus.classList.toggle("error", isError);
-      }
-      function readStoredSession() {
+      const showStatus = (text, error = false) => {
+        status.textContent = text;
+        status.classList.toggle("error", error);
+      };
+      const showMessageStatus = (text, error = false) => {
+        messageStatus.textContent = text;
+        messageStatus.classList.toggle("error", error);
+      };
+      function readSession() {
         let raw;
         try { raw = localStorage.getItem(STORAGE_KEY); }
-        catch { throw new Error("This browser is blocking saved sign-in data. Enable site storage and sign in again."); }
+        catch { throw new Error("Browser storage is unavailable. Enable site storage, sign in again, and reload."); }
         if (!raw) return null;
-        let stored;
-        try { stored = JSON.parse(raw); }
-        catch { localStorage.removeItem(STORAGE_KEY); return null; }
-        return stored?.currentSession || stored;
+        let saved;
+        try { saved = JSON.parse(raw); }
+        catch { throw new Error("The saved sign-in data is damaged. Sign out and sign in again."); }
+        return saved?.currentSession || saved;
       }
-      function saveStoredSession(session) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-      }
-      async function request(path, options = {}, timeoutMs = 12000) {
+      async function api(path, options = {}, timeout = 12000) {
         const controller = new AbortController();
-        const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+        const timer = setTimeout(() => controller.abort(), timeout);
         try {
           const response = await fetch(SUPABASE_URL + path, {
-            ...options,
-            signal: controller.signal,
+            ...options, signal: controller.signal,
             headers: {
               apikey: SUPABASE_KEY,
-              ...(activeSession?.access_token ? { Authorization: "Bearer " + activeSession.access_token } : {}),
+              ...(session?.access_token ? { Authorization: "Bearer " + session.access_token } : {}),
               ...(options.headers || {})
             }
           });
-          const body = await response.text();
+          const raw = await response.text();
           let data = null;
-          try { data = body ? JSON.parse(body) : null; } catch { data = body; }
+          try { data = raw ? JSON.parse(raw) : null; } catch { data = raw; }
           if (!response.ok) {
-            const detail = data?.msg || data?.message || data?.error_description || data?.error || (typeof data === "string" ? data : "");
+            const detail = data?.msg || data?.message || data?.error_description || data?.error || "";
             throw new Error(detail || "Supabase returned HTTP " + response.status + ".");
           }
           return data;
         } catch (error) {
-          if (error.name === "AbortError") throw new Error("The Supabase request timed out. Check your connection and reload Admin Tools.");
-          if (error instanceof TypeError) throw new Error("Could not reach Supabase. Check your connection and try again.");
+          if (error.name === "AbortError") throw new Error("Supabase did not respond within 12 seconds. Check your connection and retry.");
+          if (error instanceof TypeError) throw new Error("Could not connect to Supabase. Check your internet connection and retry.");
           throw error;
-        } finally {
-          window.clearTimeout(timer);
-        }
+        } finally { clearTimeout(timer); }
       }
-      async function refreshSessionIfNeeded() {
-        if (!activeSession?.access_token || !activeSession?.refresh_token) return;
-        const expiresAt = Number(activeSession.expires_at || 0);
-        if (expiresAt && expiresAt > Math.floor(Date.now() / 1000) + 60) return;
+      async function refreshSession() {
+        if (!session?.refresh_token) throw new Error("Your sign-in has expired. Please sign in again.");
+        const expiresAt = Number(session.expires_at || 0);
+        if (expiresAt > Math.floor(Date.now() / 1000) + 60) return;
         const controller = new AbortController();
-        const timer = window.setTimeout(() => controller.abort(), 12000);
+        const timer = setTimeout(() => controller.abort(), 12000);
         try {
           const response = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token", {
-            method: "POST",
-            signal: controller.signal,
+            method: "POST", signal: controller.signal,
             headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh_token: activeSession.refresh_token })
+            body: JSON.stringify({ refresh_token: session.refresh_token })
           });
           const data = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(data.msg || data.message || data.error_description || "Your sign-in has expired. Please sign in again.");
-          activeSession = data;
-          saveStoredSession(data);
+          if (!response.ok) throw new Error(data.msg || data.message || data.error_description || "Your sign-in expired. Please sign in again.");
+          session = data;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         } catch (error) {
           if (error.name === "AbortError") throw new Error("Refreshing your sign-in timed out. Please sign in again.");
           throw error;
-        } finally {
-          window.clearTimeout(timer);
-        }
+        } finally { clearTimeout(timer); }
       }
       async function loadMessage() {
-        setMessageStatus("Loading current message…");
+        showMessageStatus("Loading current message…");
         try {
-          const rows = await request("/rest/v1/site_settings?select=setting_value&setting_key=eq.message_from_liquin");
+          const rows = await api("/rest/v1/site_settings?select=setting_value&setting_key=eq.message_from_liquin");
           const value = rows?.[0]?.setting_value?.text;
-          messageText.value = typeof value === "string" ? value : "Check out the Liquindo shop for official merchandise and show your support for the project.";
-          setMessageStatus("Current homepage message loaded.");
-        } catch (error) {
-          setMessageStatus(error.message || "Could not load the homepage message.", true);
-        }
+          textarea.value = typeof value === "string" ? value : "Check out the Liquindo shop for official merchandise and show your support for the project.";
+          showMessageStatus("Current homepage message loaded.");
+        } catch (error) { showMessageStatus(error.message || "Could not load the homepage message.", true); }
       }
-      async function verifyAdministrator() {
-        setStatus("Reading your saved sign-in…");
+      async function verify() {
+        showStatus("Reading your saved sign-in…");
         content.hidden = true;
         signOutButton.disabled = true;
         try {
-          activeSession = readStoredSession();
-          if (!activeSession?.access_token || !activeSession?.user?.id) {
-            setStatus("No active sign-in was found. Sign in with your administrator account, then reopen Admin Tools.", true);
+          session = readSession();
+          if (!session?.access_token || !session?.user?.id) {
+            showStatus("No active sign-in was found. Sign in with your administrator account, then reopen this page.", true);
             return;
           }
-          await refreshSessionIfNeeded();
-          setStatus("Checking administrator permissions with Supabase…");
-          const isAdministrator = await request("/rest/v1/rpc/is_admin", {
+          await refreshSession();
+          showStatus("Checking administrator permissions with Supabase…");
+          const result = await api("/rest/v1/rpc/is_admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: "{}"
           });
-          if (isAdministrator !== true) {
-            setStatus("Access denied. This signed-in account is not a website administrator.", true);
+          if (result !== true) {
+            showStatus("Access denied: this account is not a website administrator.", true);
             return;
           }
-          currentAdminUserId = activeSession.user.id;
-          document.documentElement.dataset.liquindoAdminUserId = currentAdminUserId;
-          setStatus("Administrator access verified.");
+          adminUserId = session.user.id;
+          document.documentElement.dataset.liquindoAdminUserId = adminUserId;
+          showStatus("Administrator access verified.");
           content.hidden = false;
-          document.dispatchEvent(new CustomEvent("liquindo-admin-verified", { detail: { userId: currentAdminUserId } }));
+          document.dispatchEvent(new CustomEvent("liquindo-admin-verified", { detail: { userId: adminUserId } }));
+          if (window.__liquindoAdminBootWatchdog) clearTimeout(window.__liquindoAdminBootWatchdog);
           await loadMessage();
         } catch (error) {
-          setStatus(error.message || "Administrator verification failed. Please sign in again and retry.", true);
-        } finally {
-          signOutButton.disabled = false;
-        }
+          showStatus(error.message || "Administrator verification failed.", true);
+        } finally { signOutButton.disabled = false; }
       }
-
-      messageForm.addEventListener("submit", async event => {
+      form.addEventListener("submit", async event => {
         event.preventDefault();
-        if (!currentAdminUserId) {
-          setMessageStatus("Administrator access is required to save this message.", true);
-          return;
-        }
-        const text = messageText.value.trim();
-        if (!text || text.length > 500) {
-          setMessageStatus("Enter a message between 1 and 500 characters.", true);
-          return;
-        }
-        messageSave.disabled = true;
-        setMessageStatus("Saving homepage message…");
+        if (!adminUserId) { showMessageStatus("Administrator access is required to save this message.", true); return; }
+        const text = textarea.value.trim();
+        if (!text || text.length > 500) { showMessageStatus("Enter a message between 1 and 500 characters.", true); return; }
+        saveButton.disabled = true;
+        showMessageStatus("Saving homepage message…");
         try {
-          await request("/rest/v1/site_settings?on_conflict=setting_key", {
+          await api("/rest/v1/site_settings?on_conflict=setting_key", {
             method: "POST",
             headers: { "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
-            body: JSON.stringify({
-              setting_key: "message_from_liquin",
-              setting_value: { text },
-              updated_at: new Date().toISOString(),
-              updated_by: currentAdminUserId
-            })
+            body: JSON.stringify({ setting_key:"message_from_liquin", setting_value:{text}, updated_at:new Date().toISOString(), updated_by:adminUserId })
           });
-          setMessageStatus("Homepage message saved. It will appear on the homepage after it reloads.");
-        } catch (error) {
-          setMessageStatus(error.message || "Could not save the homepage message.", true);
-        } finally {
-          messageSave.disabled = false;
-        }
+          showMessageStatus("Homepage message saved. It will appear on the homepage after it reloads.");
+        } catch (error) { showMessageStatus(error.message || "Could not save the homepage message.", true); }
+        finally { saveButton.disabled = false; }
       });
-
       signOutButton.addEventListener("click", async () => {
         signOutButton.disabled = true;
-        setStatus("Signing out…");
+        showStatus("Signing out…");
         try {
-          if (activeSession?.access_token) {
-            await request("/auth/v1/logout", { method: "POST" });
-          }
+          if (session?.access_token) await api("/auth/v1/logout", { method:"POST" });
           localStorage.removeItem(STORAGE_KEY);
-          currentAdminUserId = null;
+          adminUserId = null;
           content.hidden = true;
           delete document.documentElement.dataset.liquindoAdminUserId;
           window.location.href = "index.html";
         } catch (error) {
-          setStatus(error.message || "Could not sign out. Please try again.", true);
+          showStatus(error.message || "Could not sign out. Please try again.", true);
           signOutButton.disabled = false;
         }
       });
-
-      verifyAdministrator();
+      verify();
     })();
   </script>
   <script type="module" src="admin-center.js"></script>
