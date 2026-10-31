@@ -183,11 +183,11 @@ function showSession(session) {
       setAccountMessage("Some profile information could not be loaded. Refresh and try again.", true);
       return;
     }
-    accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
+    accountUsername.textContent = user.user_metadata?.username || "Not set";
     accountDisplayName.textContent = profile?.display_name || "Not set";
     accountRole.textContent = profile?.role === "admin" ? "Administrator" : profile?.role === "member" ? "Member" : profile?.role || "Not assigned";
     if (accountAdminToolsLink) accountAdminToolsLink.hidden = profile?.role !== "admin";
-    document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
+    document.querySelector("#new-username").value = user.user_metadata?.username || "";
   }, 0);
 }
 confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
