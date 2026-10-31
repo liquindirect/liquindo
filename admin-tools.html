@@ -113,7 +113,7 @@
           status.textContent = "Administrator verification did not start. The authentication library may not have loaded; check your connection and reload this page.";
           status.classList.add("error");
         }
-      }, 10000);
+      }, 6000);
     </script>
     <div id="admin-tools-content" hidden>
       <div class="admin-actions">
@@ -292,8 +292,9 @@
       let authEventSequence = 0;
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
         authEventSequence += 1;
-        // Defer Supabase calls until after the auth callback returns.
-        Promise.resolve().then(() => verifyAdministrator(nextSession));
+        // A macrotask is required here: a microtask can run while the
+        // Supabase auth lock is still held and deadlock getSession/RPC calls.
+        window.setTimeout(() => verifyAdministrator(nextSession), 0);
       });
       authSubscription = subscription;
 
@@ -330,7 +331,14 @@
     });
 
     window.addEventListener("pagehide", () => authSubscription?.unsubscribe());
-    initialiseAdminTools();
+    initialiseAdminTools().catch(error => {
+      ++verificationSequence;
+      currentAdminUserId = null;
+      content.hidden = true;
+      signOutButton.disabled = false;
+      status.textContent = "Administrator tools could not start: " + (error?.message || "Unknown startup error.");
+      status.classList.add("error");
+    });
   </script>
   <script type="module" src="admin-center.js"></script>
   <script src="i18n.js"></script>
