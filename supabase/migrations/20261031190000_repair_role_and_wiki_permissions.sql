@@ -246,14 +246,19 @@ for each row execute function public.audit_liquinwiki_permission_change();
 -- Enable permission-change notifications for active sessions when Realtime is available.
 do $$
 begin
-  if exists (select 1 from pg_publication where pubname = 'supabase_realtime')
-     and not exists (
-       select 1 from pg_publication_tables
-       where pubname = 'supabase_realtime'
-         and schemaname = 'public'
-         and tablename = 'wiki_permissions'
-     ) then
-    alter publication supabase_realtime add table public.wiki_permissions;
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'wiki_permissions'
+    ) then
+      alter publication supabase_realtime add table public.wiki_permissions;
+    end if;
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'profiles'
+    ) then
+      alter publication supabase_realtime add table public.profiles;
+    end if;
   end if;
 end;
 $$;
