@@ -91,6 +91,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   }catch(e){say("ac-i18n-status",e.message,true);}
  }
  $("ac-account-filter").addEventListener("input",renderProfiles);$("ac-refresh").onclick=()=>{overview();loadProfiles();loadSettings();};$("ac-audit-refresh").onclick=audit;$("ac-audit-export").onclick=()=>download("liquindo-audit.json",auditRows);$("ac-health-run").onclick=health;$("ac-i18n-run").onclick=i18nCheck;
- async function start(){try{const s=await db.auth.getSession();if(s.error)throw s.error;if(!s.data.session?.user)return;const id=s.data.session.user.id,p=await db.from("profiles").select("role").eq("id",id).maybeSingle();if(p.error||p.data?.role!=="admin")return;adminId=id;await Promise.allSettled([overview(),loadProfiles(),loadSettings(),audit(),incidents(),loadShapeHistory(),loadSettingsHistory()]);}catch(e){say("admin-status","Admin control centre failed: "+e.message,true);}}
- start();
+ async function start(id){if(!id||adminId===id)return;adminId=id;try{await Promise.allSettled([overview(),loadProfiles(),loadSettings(),audit(),incidents(),loadShapeHistory(),loadSettingsHistory()]);}catch(e){say("admin-status","Admin control centre failed: "+e.message,true);}}
+ const verifiedId=document.documentElement.dataset.liquindoAdminUserId;
+ if(verifiedId)start(verifiedId);
+ document.addEventListener("liquindo-admin-verified",event=>start(event.detail?.userId));
 })();
