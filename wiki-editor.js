@@ -38,7 +38,6 @@ const newArticleFields = $("#new-article-fields");
 const newArticleTitle = $("#new-article-title");
 const newArticleSlug = $("#new-article-slug");
 const articleCreateOption = "__new__";
-let canCreateArticles = false;
 function slugifyArticleTitle(value) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
@@ -55,6 +54,9 @@ function updateArticleMode() {
   } else {
     loadArticle();
   }
+  submitButton.disabled = !creating && !canEditExistingArticles;
+  markupEditor.disabled = !creating && !canEditExistingArticles;
+  if (!wikiMarkupMode) canvas.setAttribute("contenteditable", String(creating || canEditExistingArticles));
 }
 const visualToolbar = $("#visual-editor-toolbar");
 let wikiMarkupMode = false;
@@ -896,6 +898,8 @@ async function initialize() {
   }
   await withTimeout(loadArticle(), "Wiki article loading");
   setWikiMarkupMode(true);
+  submitButton.disabled = !canEditExistingArticles;
+  markupEditor.disabled = !canEditExistingArticles;
   await withTimeout(renderRevisions(), "Wiki revision history");
   if (params.get("tab") === "history") {
     const historyFilter = $("#history-article-filter");
