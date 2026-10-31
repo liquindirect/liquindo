@@ -1,7 +1,12 @@
--- Liquindo Admin Tools additions.
--- Applied to the connected Supabase project as migrations:
--- admin_tools_control_center and admin_audit_triggers_and_incidents.
--- Safe to re-run: tables and policies are created/replaced without dropping data.
+-- Legacy Liquindo Admin Tools bootstrap for installations predating the 2026-10-31 role repairs.
+-- The versioned Supabase migrations are authoritative on upgraded projects.
+do $
+begin
+  if to_regprocedure('public.can_edit_existing_liquinwiki()') is not null then
+    raise exception 'This legacy bootstrap is superseded on upgraded projects. Do not rerun it; use the versioned Supabase migrations.';
+  end if;
+end;
+$;
 
 create table if not exists public.site_settings (
   setting_key text primary key check (setting_key ~ '^[a-z][a-z0-9_]{0,79}$'),
