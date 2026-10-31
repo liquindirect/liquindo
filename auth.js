@@ -25,6 +25,7 @@ const accountDisplayName = document.querySelector("#account-display-name");
 const accountRole = document.querySelector("#account-role");
 const accountCreated = document.querySelector("#account-created");
 const accountAdminToolsLink = document.querySelector("#account-admin-tools-link");
+let accountProfileRequest = 0;
 const changeUsernameForm = document.querySelector("#change-username-form");
 const changeEmailForm = document.querySelector("#change-email-form");
 const changePasswordForm = document.querySelector("#change-password-form");
@@ -161,6 +162,7 @@ document.addEventListener("liquindo-language-changed", () => {
   if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
 });
 function showSession(session) {
+  const profileRequest = ++accountProfileRequest;
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
   accountPanel.classList.toggle("auth-hidden", !signedIn);
@@ -173,7 +175,8 @@ function showSession(session) {
   accountRole.textContent = "Loading…";
   accountCreated.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—";
   window.setTimeout(async () => {
-    const { data: profile, error } = await supabase.from("profiles").select("username, display_name, role, created_at").eq("id", user.id).maybeSingle();
+    const { data: profile, error } = await supabase.from("profiles").select("display_name, role").eq("id", user.id).maybeSingle();
+    if (profileRequest !== accountProfileRequest) return;
     if (error) {
       accountDisplayName.textContent = "Unavailable";
       accountRole.textContent = "Unavailable";
@@ -182,9 +185,8 @@ function showSession(session) {
     }
     accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
     accountDisplayName.textContent = profile?.display_name || "Not set";
-    accountRole.textContent = profile?.role || "Not assigned";
+    accountRole.textContent = profile?.role === "admin" ? "Administrator" : profile?.role === "member" ? "Member" : profile?.role || "Not assigned";
     if (accountAdminToolsLink) accountAdminToolsLink.hidden = profile?.role !== "admin";
-    if (profile?.created_at) accountCreated.textContent = new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
     document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
   }, 0);
 }
