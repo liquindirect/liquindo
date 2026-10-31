@@ -1,3 +1,13 @@
+-- Legacy setup script. Once the role-repair migration is applied, do not rerun this file.
+-- It is retained for historical installations; the newer migration is authoritative.
+do $$
+begin
+  if to_regprocedure('public.can_edit_existing_liquinwiki()') is not null then
+    raise exception 'This legacy LiquinWiki setup script is superseded by supabase/migrations/20261031190000_repair_role_and_wiki_permissions.sql';
+  end if;
+end;
+$$;
+
 -- LiquinWiki: permission-gated new article creation.
 -- Run this script in Supabase SQL Editor after the website code is deployed.
 -- Existing pages, revisions, member/admin roles, and editor permissions are preserved.
