@@ -144,13 +144,12 @@ async function refreshCurrentPermissions() {
   if (profileError) throw profileError;
   if (permissionError) throw permissionError;
   const permissions = new Set((permissionRows || []).map(row => row.permission));
+  const trusted = permissions.has("liquinwiki_trusted_editor");
   const next = {
-    admin: profile?.role === "admin" || permissions.has("liquinwiki_admin"),
-    trusted: permissions.has("liquinwiki_trusted_editor"),
-    edit: profile?.role === "admin" || permissions.has("liquinwiki_admin") ||
-      permissions.has("liquinwiki_editor") || permissions.has("liquinwiki_trusted_editor"),
-    create: profile?.role === "admin" || permissions.has("liquinwiki_admin") ||
-      permissions.has("liquinwiki_creator") || permissions.has("liquinwiki_trusted_editor")
+    admin: profile?.role === "admin" || trusted,
+    trusted,
+    edit: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor"),
+    create: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor")
   };
   const changed = next.admin !== isWikiAdmin || next.trusted !== isTrustedEditor ||
     next.edit !== canEditExistingArticles || next.create !== canCreateArticles;
@@ -816,11 +815,11 @@ submitButton.addEventListener("click", async () => {
   if (!user || !isWikiEditor) return;
   const creating = isCreatingArticle();
   if (creating && !canCreateArticles) {
-    showMessage("An administrator must grant you new article creation permission.", true);
+    showMessage("You need Wiki Editor or Trusted Editor permission to create a new article.", true);
     return;
   }
   if (!creating && !canEditExistingArticles) {
-    showMessage("Your account can create new articles but cannot edit existing articles.", true);
+    showMessage("Your account does not have permission to edit this article.", true);
     return;
   }
   const title = creating ? newArticleTitle.value.trim() : articles[articleSelect.value];
