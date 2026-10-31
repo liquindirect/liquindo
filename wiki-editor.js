@@ -146,7 +146,7 @@ async function refreshCurrentPermissions() {
   const permissions = new Set((permissionRows || []).map(row => row.permission));
   const trusted = permissions.has("liquinwiki_trusted_editor");
   const next = {
-    admin: profile?.role === "admin" || trusted,
+    admin: profile?.role === "admin",
     trusted,
     edit: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor"),
     create: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor")
