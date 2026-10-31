@@ -108,6 +108,7 @@ const permissionPanel = $("#permission-panel");
 const permissionForm = $("#permission-form");
 const permissionEmail = $("#permission-email");
 const permissionChoice = $("#permission-choice");
+const permissionAction = $("#permission-action");
 const permissionStatus = $("#permission-status");
 const articleStatusForm = $("#article-status-form");
 const articleStatusSlug = $("#article-status-slug");
@@ -118,6 +119,9 @@ const historyContainer = $("#revision-history");
 let user = null;
 let isWikiAdmin = false;
 let isTrustedEditor = false;
+let canEditExistingArticles = false;
+let canCreateArticles = false;
+let permissionChannel = null;
 const adminToolsMode = new URLSearchParams(window.location.search).get("admin") === "1";
 let isWikiEditor = false;
 let activeSlug = null;
@@ -127,6 +131,59 @@ let allLoadedRevisions = [];
 let allPendingRevisions = [];
 let allComparisonRevisions = [];
 let loadedRevisionNames = {};
+
+async function refreshCurrentPermissions() {
+  if (!user) return false;
+  const [{ data: profile, error: profileError }, { data: permissionRows, error: permissionError }] = await withTimeout(Promise.all([
+    supabase.from("profiles").select("role").eq("id", user.id).maybeSingle(),
+    supabase.from("wiki_permissions").select("permission").eq("user_id", user.id)
+  ]), "Account permissions check");
+  if (profileError) throw profileError;
+  if (permissionError) throw permissionError;
+  const permissions = new Set((permissionRows || []).map(row => row.permission));
+  const next = {
+    admin: profile?.role === "admin" || permissions.has("liquinwiki_admin"),
+    trusted: permissions.has("liquinwiki_trusted_editor"),
+    edit: profile?.role === "admin" || permissions.has("liquinwiki_admin") ||
+      permissions.has("liquinwiki_editor") || permissions.has("liquinwiki_trusted_editor"),
+    create: profile?.role === "admin" || permissions.has("liquinwiki_admin") ||
+      permissions.has("liquinwiki_creator") || permissions.has("liquinwiki_trusted_editor")
+  };
+  const changed = next.admin !== isWikiAdmin || next.trusted !== isTrustedEditor ||
+    next.edit !== canEditExistingArticles || next.create !== canCreateArticles;
+  isWikiAdmin = next.admin;
+  isTrustedEditor = next.trusted;
+  canEditExistingArticles = next.edit;
+  canCreateArticles = next.create;
+  isWikiEditor = canEditExistingArticles || canCreateArticles;
+  submitButton.textContent = isWikiAdmin || isTrustedEditor ? "Publish article" : "Submit for approval";
+  const createOption = articleSelect.querySelector(`option[value="${articleCreateOption}"]`);
+  if (createOption) createOption.hidden = !canCreateArticles;
+  if (!canCreateArticles && isCreatingArticle()) articleSelect.value = "liquindo";
+  setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
+  return changed;
+}
+
+function watchPermissionChanges() {
+  if (!user || permissionChannel) return;
+  const refresh = async () => {
+    try {
+      if (await refreshCurrentPermissions()) window.location.reload();
+    } catch (error) {
+      console.error("Could not refresh LiquinWiki permissions:", error);
+    }
+  };
+  permissionChannel = supabase.channel("wiki-permissions-" + user.id)
+    .on("postgres_changes", {
+      event: "*", schema: "public", table: "wiki_permissions",
+      filter: "user_id=eq." + user.id
+    }, refresh)
+    .subscribe();
+  window.addEventListener("focus", refresh);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) refresh();
+  });
+}
 
 function draftKey(slug) {
   return "liquinwiki-draft:" + user.id + ":" + slug;
@@ -632,7 +689,10 @@ permissionForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!isWikiAdmin) return;
   const email = permissionEmail.value.trim();
-  const permission = permissionChoice.value;
+  const selectedPermission = permissionChoice.value;
+  const action = permissionAction?.value || "assign";
+  const permission = action === "clear" ? "none" :
+    action === "remove" ? "revoke:" + selectedPermission : selectedPermission;
   const button = $("#permission-save");
   button.disabled = true;
   permissionStatus.textContent = "Saving permission…";
@@ -643,9 +703,14 @@ permissionForm.addEventListener("submit", async (event) => {
       p_permission: permission
     });
     if (error) throw error;
-    permissionStatus.textContent = permission === "none"
-      ? "Wiki access removed for that account."
-      : "Wiki permission saved. The user may need to refresh or sign in again.";
+    permissionStatus.textContent = action === "clear"
+      ? "All LiquinWiki permissions removed."
+      : action === "remove"
+        ? "Selected LiquinWiki permission removed."
+        : "Permission assigned. Existing permissions were preserved.";
+    if (email.toLowerCase() === (user.email || "").toLowerCase()) {
+      if (await refreshCurrentPermissions()) window.location.reload();
+    }
     permissionEmail.value = "";
   } catch (error) {
     permissionStatus.textContent = error.message || "Could not save wiki permission.";
@@ -697,8 +762,12 @@ $("#remove-format").addEventListener("click", () => {
 submitButton.addEventListener("click", async () => {
   if (!user || !isWikiEditor) return;
   const creating = isCreatingArticle();
-  if (creating && !canCreateArticles && !isWikiAdmin && !isTrustedEditor) {
+  if (creating && !canCreateArticles) {
     showMessage("An administrator must grant you new article creation permission.", true);
+    return;
+  }
+  if (!creating && !canEditExistingArticles) {
+    showMessage("Your account can create new articles but cannot edit existing articles.", true);
     return;
   }
   const title = creating ? newArticleTitle.value.trim() : articles[articleSelect.value];
@@ -786,19 +855,8 @@ async function initialize() {
     return;
   }
   user = session.user;
-  const [{ data: profile, error: profileError }, { data: permission, error: permissionError }] = await withTimeout(Promise.all([
-    supabase.from("profiles").select("role").eq("id", user.id).maybeSingle(),
-    supabase.from("wiki_permissions").select("permission").eq("user_id", user.id).maybeSingle()
-  ]), "Account permissions check");
-  if (profileError) throw profileError;
-  if (permissionError) throw permissionError;
-  isWikiAdmin = profile?.role === "admin" || permission?.permission === "liquinwiki_admin";
-  isTrustedEditor = permission?.permission === "liquinwiki_trusted_editor";
-  canCreateArticles = isWikiAdmin || isTrustedEditor || permission?.permission === "liquinwiki_creator";
-  isWikiEditor = isWikiAdmin || isTrustedEditor || ["liquinwiki_editor", "liquinwiki_creator"].includes(permission?.permission);
-  submitButton.textContent = isWikiAdmin || isTrustedEditor ? "Publish article" : "Submit for approval";
-  articleSelect.querySelector(`option[value="${articleCreateOption}"]`).hidden = !canCreateArticles && !isWikiAdmin;
-  if (!canCreateArticles && !isWikiAdmin && articleSelect.value === articleCreateOption) articleSelect.value = "liquindo";
+  await refreshCurrentPermissions();
+  watchPermissionChanges();
   if (!isWikiEditor) {
     setAppState("no-permission");
     return;
