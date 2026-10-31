@@ -242,6 +242,7 @@
     async function verifyAdministrator(session) {
       const sequence = ++verificationSequence;
       currentAdminUserId = null;
+      delete document.documentElement.dataset.liquindoAdminUserId;
       content.hidden = true;
       signOutButton.disabled = true;
       status.classList.remove("error");
@@ -275,6 +276,8 @@
 
         status.textContent = "Administrator access verified.";
         currentAdminUserId = session.user.id;
+        document.documentElement.dataset.liquindoAdminUserId = session.user.id;
+        document.dispatchEvent(new CustomEvent("liquindo-admin-verified", { detail: { userId: session.user.id } }));
         content.hidden = false;
         await loadMessageFromLiquin();
       } catch (error) {
@@ -318,6 +321,7 @@
         const { error: signOutError } = await supabase.auth.signOut();
         if (signOutError) throw signOutError;
         content.hidden = true;
+        delete document.documentElement.dataset.liquindoAdminUserId;
         window.location.href = "index.html";
       } catch {
         status.textContent = "Could not sign out. Please try again.";
