@@ -231,13 +231,16 @@ function showSession(session) {
   accountDisplayName.textContent = "Loading…";
   accountRole.textContent = "Loading…";
   accountCreated.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—";
-  loadAccountProfile(user, profileRequest).catch(error => {
-    if (profileRequest !== accountProfileRequest) return;
-    accountDisplayName.textContent = user.user_metadata?.display_name || "Unavailable";
-    accountRole.textContent = "Unavailable";
-    if (accountAdminToolsLink) accountAdminToolsLink.hidden = true;
-    setAccountMessage("Account details could not be loaded: " + (error?.message || "Please reload and try again."), true);
-  });
+  // Defer Supabase requests until after the auth-state callback returns.
+  window.setTimeout(() => {
+    loadAccountProfile(user, profileRequest).catch(error => {
+      if (profileRequest !== accountProfileRequest) return;
+      accountDisplayName.textContent = user.user_metadata?.display_name || "Unavailable";
+      accountRole.textContent = "Unavailable";
+      if (accountAdminToolsLink) accountAdminToolsLink.hidden = true;
+      setAccountMessage("Account details could not be loaded: " + (error?.message || "Please reload and try again."), true);
+    });
+  }, 0);
 }
 confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
 loginTab.addEventListener("click", () => setMode("login"));
