@@ -55,7 +55,7 @@
           <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
           <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
           <p class="contents-group-label">TOOLS &amp; RESOURCES</p>
-          <a href="app.html"><span>08</span><span>Liquindo Web App · PWA install</span></a>
+          <span class="contents-disabled" aria-disabled="true"><span>08</span><span>Liquindo Web App · PWA install</span></span>
           <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
           <p class="contents-group-label">CONTACT &amp; ACCOUNT</p>
           <a href="index.html#contact"><span>10</span><span data-i18n="nav.contact">Contact</span></a>
@@ -141,6 +141,8 @@
           text-decoration: none; box-shadow: none; transform: none; transition: color .16s ease,padding-left .16s ease;
         }
         .liquindo-universal-contents .contents-panel a > span:first-child { color: #fdbe00; font-size: .76rem; font-variant-numeric: tabular-nums; }
+        .liquindo-universal-contents .contents-panel .contents-disabled { display: grid; grid-template-columns: 2.2rem minmax(0,1fr); align-items: baseline; gap: 10px; padding: 13px 2px; border-bottom: 1px solid rgba(223,191,112,.16); color: #8f91a4; font-size: .96rem; line-height: 1.4; text-decoration: line-through; text-decoration-thickness: 1px; opacity: .62; cursor: not-allowed; user-select: none; }
+        .liquindo-universal-contents .contents-panel .contents-disabled > span:first-child { color: #8f91a4; font-size: .76rem; font-variant-numeric: tabular-nums; }
         .liquindo-universal-contents .contents-panel a:hover,
         .liquindo-universal-contents .contents-panel a:focus-visible { padding-left: 7px; background: transparent; color: #fff0c5; }
         .liquindo-universal-contents [hidden] { display: none !important; }
