@@ -160,7 +160,7 @@
 
     const topbar = menu.closest(".topbar");
     const backdrop = menu.querySelector(".contents-backdrop");
-    const links = [...menu.querySelectorAll('.contents-panel a:not(#admin-tools-nav)')];
+    const links = [...menu.querySelectorAll(".contents-panel a")];
     const search = menu.querySelector("#contents-search");
     const status = menu.querySelector("#contents-search-status");
     const syncOpenState = () => {
@@ -240,6 +240,59 @@
         });
     }
     initializeMemberOnlyLinks();
+
+    // The universal Contents menu is generated on every page, so its
+    // administrator shortcut must be authorized here rather than only by
+    // homepage-specific code. Wiki-only permissions do not grant this link.
+    function initializeAdminToolsLink() {
+      const adminLink = menu.querySelector("#admin-tools-nav");
+      if (!adminLink) return;
+
+      let sequence = 0;
+      const applySession = async (session) => {
+        const current = ++sequence;
+        adminLink.hidden = true;
+        adminLink.setAttribute("aria-hidden", "true");
+        if (!session?.user) return;
+
+        try {
+          const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+          const client = createClient(
+            "https://uivjovkvpskvvazznlyr.supabase.co",
+            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
+          );
+          const { data, error } = await client
+            .from("profiles")
+            .select("role")
+            .eq("id", session.user.id)
+            .maybeSingle();
+
+          if (current !== sequence || error || data?.role !== "admin") return;
+          adminLink.hidden = false;
+          adminLink.removeAttribute("aria-hidden");
+        } catch {
+          // Fail closed if the account or role cannot be verified.
+        }
+      };
+
+      import("https://esm.sh/@supabase/supabase-js@2")
+        .then(({ createClient }) => {
+          const client = createClient(
+            "https://uivjovkvpskvvazznlyr.supabase.co",
+            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
+          );
+          client.auth.onAuthStateChange((_event, session) => applySession(session));
+          return client.auth.getSession().then(({ data, error }) => {
+            if (error) throw error;
+            return applySession(data.session);
+          });
+        })
+        .catch(() => {
+          adminLink.hidden = true;
+          adminLink.setAttribute("aria-hidden", "true");
+        });
+    }
+    initializeAdminToolsLink();
   }
 
   function detectPwaDisplayMode() {
