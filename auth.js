@@ -159,7 +159,7 @@ document.addEventListener("liquindo-language-changed", () => {
   }
   if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
 });
-async function showSession(session) {
+function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
   accountPanel.classList.toggle("auth-hidden", !signedIn);
@@ -170,18 +170,20 @@ async function showSession(session) {
   accountDisplayName.textContent = "Loading…";
   accountRole.textContent = "Loading…";
   accountCreated.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—";
-  const { data: profile, error } = await supabase.from("profiles").select("username, display_name, role, created_at").eq("id", user.id).maybeSingle();
-  if (error) {
-    accountDisplayName.textContent = "Unavailable";
-    accountRole.textContent = "Unavailable";
-    accountMessage.textContent = "Some profile information could not be loaded. Refresh and try again.";
-    return;
-  }
-  accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
-  accountDisplayName.textContent = profile?.display_name || "Not set";
-  accountRole.textContent = profile?.role || "Not assigned";
-  if (profile?.created_at) accountCreated.textContent = new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
-  document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
+  window.setTimeout(async () => {
+    const { data: profile, error } = await supabase.from("profiles").select("username, display_name, role, created_at").eq("id", user.id).maybeSingle();
+    if (error) {
+      accountDisplayName.textContent = "Unavailable";
+      accountRole.textContent = "Unavailable";
+      setAccountMessage("Some profile information could not be loaded. Refresh and try again.", true);
+      return;
+    }
+    accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
+    accountDisplayName.textContent = profile?.display_name || "Not set";
+    accountRole.textContent = profile?.role || "Not assigned";
+    if (profile?.created_at) accountCreated.textContent = new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
+  }, 0);
 }
 confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
 loginTab.addEventListener("click", () => setMode("login"));
