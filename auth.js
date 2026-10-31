@@ -194,7 +194,7 @@ async function loadAccountProfile(user, requestId) {
       const result = await withAccountTimeout(supabase.rpc("is_admin"), "Administrator verification", 8000);
       if (!result.error) isAdministrator = result.data === true;
     } catch (error) {
-      if (!profileError) profileError = error;
+      if (!profile && !profileError) profileError = error;
     }
   }
   if (requestId !== accountProfileRequest) return;
