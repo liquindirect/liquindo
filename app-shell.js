@@ -197,9 +197,9 @@
     });
     updateSearch();
 
-    // The gallery is member-only. Hide every navigation/CTA link to it until
-    // Supabase confirms an authenticated session, including links outside the
-    // shared Contents menu (for example the homepage archive CTA).
+    // LiquinWiki and Gallery are member-only. Hide every navigation/CTA link
+    // to either page until Supabase confirms an authenticated session. The
+    // Members directory intentionally remains public.
     function initializeMemberOnlyLinks() {
       const protectedLinks = [...document.querySelectorAll('a[href]')].filter((link) => {
         const href = link.getAttribute("href") || "";
