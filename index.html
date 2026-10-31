@@ -32,6 +32,8 @@
       .nav-links .account-logout:disabled { cursor: wait; opacity: 0.7; }
 
       #admin-tools-nav[hidden] { display: none !important; }
+      .contents-panel .contents-disabled { display: grid; grid-template-columns: 2rem minmax(0,1fr); gap: .65rem; padding: .68rem .15rem; border-bottom: 1px solid rgba(255,204,0,.12); color: #8f91a4; text-decoration: line-through; text-decoration-thickness: 1px; opacity: .62; cursor: not-allowed; user-select: none; }
+      .contents-panel .contents-disabled > span:first-child { color: #8f91a4; font-size: .74rem; }
       .contents-panel .contents-group-label {
         margin: 16px 12px 5px;
         padding-top: 10px;
@@ -84,7 +86,7 @@
             <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
             <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
             <p class="contents-group-label">TOOLS & RESOURCES</p>
-            <a href="app.html"><span>08</span><span>Liquindo Web App · PWA install</span></a>
+            <span class="contents-disabled" aria-disabled="true"><span>08</span><span>Liquindo Web App · PWA install</span></span>
             <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
             <p class="contents-group-label">CONTACT & ACCOUNT</p>
             <a href="index.html#contact"><span>10</span><span data-i18n="nav.contact">Contact</span></a>
