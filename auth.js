@@ -20,6 +20,13 @@ const signupTab = document.querySelector("#signup-tab");
 const formPanel = document.querySelector("#auth-form-panel");
 const accountPanel = document.querySelector("#auth-account-panel");
 const accountEmail = document.querySelector("#account-email");
+const accountUsername = document.querySelector("#account-username");
+const accountDisplayName = document.querySelector("#account-display-name");
+const accountRole = document.querySelector("#account-role");
+const accountCreated = document.querySelector("#account-created");
+const changeUsernameForm = document.querySelector("#change-username-form");
+const changeEmailForm = document.querySelector("#change-email-form");
+const changePasswordForm = document.querySelector("#change-password-form");
 const accountMessage = document.querySelector("#account-message");
 const logoutButton = document.querySelector("#logout-button");
 const forgotPasswordButton = document.querySelector("#forgot-password-button");
@@ -152,14 +159,29 @@ document.addEventListener("liquindo-language-changed", () => {
   }
   if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
 });
-function showSession(session) {
+async function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
   accountPanel.classList.toggle("auth-hidden", !signedIn);
-  if (signedIn) {
-    const username = session.user.user_metadata?.username;
-    accountEmail.textContent = username ? "Signed in as " + username : (session.user.email || "Signed-in user");
+  if (!signedIn) return;
+  const user = session.user;
+  accountEmail.textContent = user.email || "Not set";
+  accountUsername.textContent = user.user_metadata?.username || "Not set";
+  accountDisplayName.textContent = "Loading…";
+  accountRole.textContent = "Loading…";
+  accountCreated.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—";
+  const { data: profile, error } = await supabase.from("profiles").select("username, display_name, role, created_at").eq("id", user.id).maybeSingle();
+  if (error) {
+    accountDisplayName.textContent = "Unavailable";
+    accountRole.textContent = "Unavailable";
+    accountMessage.textContent = "Some profile information could not be loaded. Refresh and try again.";
+    return;
   }
+  accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
+  accountDisplayName.textContent = profile?.display_name || "Not set";
+  accountRole.textContent = profile?.role || "Not assigned";
+  if (profile?.created_at) accountCreated.textContent = new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
 }
 confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
 loginTab.addEventListener("click", () => setMode("login"));
@@ -271,6 +293,82 @@ form.addEventListener("submit", async event => {
     submitButton.disabled = false;
     form.removeAttribute("aria-busy");
   }
+});
+function setAccountMessage(text, isError = false) {
+  accountMessage.textContent = text;
+  accountMessage.style.color = isError ? "#b42318" : "#176b4d";
+}
+changeUsernameForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const input = document.querySelector("#new-username");
+  const username = input.value.trim();
+  const button = changeUsernameForm.querySelector("button");
+  if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) {
+    setAccountMessage("Username must be 3–24 characters and use only letters, numbers, or underscores.", true);
+    return;
+  }
+  button.disabled = true;
+  setAccountMessage("Updating username…");
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) throw userError || new Error("Please sign in again.");
+    const normalized = username.toLowerCase();
+    const { error } = await supabase.from("profiles").update({ username: normalized }).eq("id", user.id);
+    if (error) {
+      if (error.code === "23505") throw new Error("That username is already in use. Choose another one.");
+      throw error;
+    }
+    const { error: metadataError } = await supabase.auth.updateUser({ data: { username: normalized } });
+    if (metadataError) throw new Error("Username saved to your profile, but the login details could not be synchronised. Please contact an administrator.");
+    accountUsername.textContent = normalized;
+    setAccountMessage("Username updated. You can now use it to log in.");
+  } catch (error) {
+    setAccountMessage(error.message || "Could not update username. Please try again.", true);
+  } finally { button.disabled = false; }
+});
+changeEmailForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const input = document.querySelector("#new-email");
+  const button = changeEmailForm.querySelector("button");
+  const email = input.value.trim();
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+    setAccountMessage("Enter a valid email address.", true);
+    return;
+  }
+  button.disabled = true;
+  setAccountMessage("Requesting email change…");
+  try {
+    const { error } = await supabase.auth.updateUser({ email });
+    if (error) throw error;
+    setAccountMessage("Email change requested. Follow the confirmation instructions sent by Supabase before the new address becomes active.");
+    input.value = "";
+  } catch (error) {
+    setAccountMessage(error.message || "Could not update email. Please try again.", true);
+  } finally { button.disabled = false; }
+});
+changePasswordForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  const password = document.querySelector("#new-password").value;
+  const confirmation = document.querySelector("#confirm-new-password").value;
+  const button = changePasswordForm.querySelector("button");
+  if (password.length < 6) {
+    setAccountMessage("Use a password with at least 6 characters.", true);
+    return;
+  }
+  if (password !== confirmation) {
+    setAccountMessage("The new passwords do not match.", true);
+    return;
+  }
+  button.disabled = true;
+  setAccountMessage("Updating password…");
+  try {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    changePasswordForm.reset();
+    setAccountMessage("Password updated successfully.");
+  } catch (error) {
+    setAccountMessage(error.message || "Could not update password. Please try again.", true);
+  } finally { button.disabled = false; }
 });
 logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
