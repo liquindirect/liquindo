@@ -35,6 +35,8 @@ const forgotPasswordButton = document.querySelector("#forgot-password-button");
 const turnstileElement = document.querySelector("#turnstile-widget");
 const TURNSTILE_SITE_KEY = "0x4AAAAAAFuRC1IwI8gWuo3m";
 let turnstileWidgetId = null;
+let turnstileInitPromise = null;
+let lastAccountUserId = null;
 let captchaToken = "";
 let mode = "login";
 
@@ -85,22 +87,39 @@ function recoveryErrorMessage(error) {
   if (/network|fetch/i.test(error?.message || "")) return "We could not reach the account service. Check your connection and try again.";
   return "We could not send a recovery email right now. Please try again shortly.";
 }
-async function initialiseTurnstile() {
-  if (!turnstileElement) return;
-  if (!window.turnstile) {
-    const script = document.querySelector("#turnstile-script");
-    if (script) await new Promise((resolve, reject) => {
-      script.addEventListener("load", resolve, { once: true });
-      script.addEventListener("error", reject, { once: true });
+function initialiseTurnstile() {
+  if (!turnstileElement || turnstileWidgetId !== null) return Promise.resolve();
+  if (turnstileInitPromise) return turnstileInitPromise;
+  turnstileInitPromise = (async () => {
+    if (!window.turnstile) {
+      let script = document.querySelector("#turnstile-script");
+      if (!script) {
+        script = document.createElement("script");
+        script.id = "turnstile-script";
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+      }
+      const loaded = new Promise((resolve, reject) => {
+        if (window.turnstile) return resolve();
+        script.addEventListener("load", resolve, { once: true });
+        script.addEventListener("error", reject, { once: true });
+      });
+      if (!script.isConnected) document.head.appendChild(script);
+      await loaded;
+    }
+    if (!window.turnstile) throw new Error("CAPTCHA could not load. Please refresh and try again.");
+    turnstileWidgetId = window.turnstile.render(turnstileElement, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: token => { captchaToken = token; },
+      "expired-callback": () => { captchaToken = ""; },
+      "error-callback": () => { captchaToken = ""; setMessage("CAPTCHA could not load. Please refresh and try again.", true); }
     });
-  }
-  if (!window.turnstile) throw new Error("CAPTCHA could not load. Please refresh and try again.");
-  turnstileWidgetId = window.turnstile.render(turnstileElement, {
-    sitekey: TURNSTILE_SITE_KEY,
-    callback: token => { captchaToken = token; },
-    "expired-callback": () => { captchaToken = ""; },
-    "error-callback": () => { captchaToken = ""; setMessage("CAPTCHA could not load. Please refresh and try again.", true); }
+  })().catch(error => {
+    turnstileInitPromise = null;
+    throw error;
   });
+  return turnstileInitPromise;
 }
 function getCaptchaToken() {
   const token = (turnstileWidgetId !== null && window.turnstile?.getResponse(turnstileWidgetId)) || captchaToken;
@@ -121,7 +140,6 @@ async function usernameAuth(payload) {
   if (!response.ok) throw new Error(result.error || "Account request failed.");
   return result;
 }
-void initialiseTurnstile().catch(() => setMessage("CAPTCHA could not load. Please refresh and try again.", true));
 
 function setMode(next) {
   mode = next;
@@ -219,8 +237,16 @@ async function loadAccountProfile(user, requestId) {
 }
 
 function showSession(session) {
-  const profileRequest = ++accountProfileRequest;
   const signedIn = Boolean(session?.user);
+  if (!signedIn) {
+    lastAccountUserId = null;
+    initialiseTurnstile().catch(() => setMessage("CAPTCHA could not load. Please refresh and try again.", true));
+  } else if (lastAccountUserId === session.user.id && !accountPanel.classList.contains("auth-hidden")) {
+    return;
+  } else {
+    lastAccountUserId = session.user.id;
+  }
+  const profileRequest = ++accountProfileRequest;
   formPanel.classList.toggle("auth-hidden", signedIn);
   accountPanel.classList.toggle("auth-hidden", !signedIn);
   if (accountAdminToolsLink) accountAdminToolsLink.hidden = true;
