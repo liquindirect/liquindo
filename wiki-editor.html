@@ -340,14 +340,14 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
     </section>
     <section id="editor-no-permission" class="editor-panel editor-hidden">
       <h2>Wiki editor access required</h2>
-      <p>Your account is signed in, but it does not have LiquinWiki editing permissions. Ask an administrator to grant you <code>liquinwiki_editor</code> or <code>liquinwiki_creator</code> access.</p>
+      <p>Your account is signed in, but it does not have LiquinWiki editing permissions. Ask an administrator to grant you Wiki Editor or Trusted Editor access.</p>
       <a href="wiki.html">Return to LiquinWiki</a>
     </section>
 
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
         <h2>Submit an article revision</h2>
-        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Wiki markup is selected by default; switch to the visual editor whenever you prefer. Your changes are saved as a revision; non-admin edits require administrator approval, while administrator edits publish immediately.</p>
+        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Wiki markup is selected by default; switch to the visual editor whenever you prefer. Wiki Editors submit edits and new articles for administrator approval. Trusted Editors and website Administrators publish directly.</p>
         <div class="editor-controls">
           <label for="article-select">Article</label>
           <select id="article-select">
@@ -440,7 +440,7 @@ See [[Liquindo Nationalist Front|the related article]].
 
       <section id="permission-panel" class="editor-panel editor-hidden">
         <h2>Manage wiki permissions</h2>
-        <p class="editor-note">Assign independent permissions to an existing account. Permissions accumulate: assigning a second permission does not replace the first. A Creator can create new articles for approval but cannot edit existing articles unless also assigned Editor. Trusted Editors can edit, create and publish immediately. This does not change the account's website member/admin role.</p>
+        <p class="editor-note">Assign independent permissions to an existing account. Permissions accumulate: assigning a second permission does not replace the first. Wiki Editors can edit existing articles and submit new articles for approval. Trusted Editors can edit, create, publish directly, review submissions and manage wiki permissions. This does not change the account's website member/admin role.</p>
         <form id="permission-form" class="editor-controls">
           <label for="permission-email">Account email
             <input id="permission-email" type="email" autocomplete="off" required />
@@ -448,7 +448,6 @@ See [[Liquindo Nationalist Front|the related article]].
           <label for="permission-choice">Permission
             <select id="permission-choice">
               <option value="liquinwiki_editor">Editor — edit existing articles</option>
-              <option value="liquinwiki_creator">Creator — create new articles (approval required)</option>
               <option value="liquinwiki_trusted_editor">Trusted Editor — edit, create and publish immediately</option>
               <option value="liquinwiki_admin">Wiki Administrator — manage wiki permissions and reviews</option>
             </select>
