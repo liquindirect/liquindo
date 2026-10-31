@@ -160,7 +160,7 @@
 
     const topbar = menu.closest(".topbar");
     const backdrop = menu.querySelector(".contents-backdrop");
-    const links = [...menu.querySelectorAll(".contents-panel a")];
+    const links = [...menu.querySelectorAll('.contents-panel a:not(#admin-tools-nav)')];
     const search = menu.querySelector("#contents-search");
     const status = menu.querySelector("#contents-search-status");
     const syncOpenState = () => {
