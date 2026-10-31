@@ -3,7 +3,7 @@
 do $$
 begin
   if to_regprocedure('public.can_edit_existing_liquinwiki()') is not null then
-    raise exception 'This legacy LiquinWiki setup script is superseded by supabase/migrations/20261031190000_repair_role_and_wiki_permissions.sql';
+    raise exception 'This legacy LiquinWiki setup script is superseded by supabase/migrations/20261031214929_repair_role_and_wiki_permissions.sql';
   end if;
 end;
 $$;
