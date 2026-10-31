@@ -113,7 +113,7 @@
           status.textContent = "Administrator verification did not start. The authentication library may not have loaded; check your connection and reload this page.";
           status.classList.add("error");
         }
-      }, 20000);
+      }, 10000);
     </script>
     <div id="admin-tools-content" hidden>
       <div class="admin-actions">
@@ -164,10 +164,6 @@
   </footer>
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-    if (window.__liquindoAdminBootWatchdog) {
-      window.clearTimeout(window.__liquindoAdminBootWatchdog);
-      window.__liquindoAdminBootWatchdog = null;
-    }
     const supabase = createClient(
       "https://uivjovkvpskvvazznlyr.supabase.co",
       "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
@@ -274,6 +270,7 @@
           return;
         }
 
+        if (window.__liquindoAdminBootWatchdog) { window.clearTimeout(window.__liquindoAdminBootWatchdog); window.__liquindoAdminBootWatchdog = null; }
         status.textContent = "Administrator access verified.";
         currentAdminUserId = session.user.id;
         document.documentElement.dataset.liquindoAdminUserId = session.user.id;
