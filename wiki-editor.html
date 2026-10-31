@@ -440,18 +440,24 @@ See [[Liquindo Nationalist Front|the related article]].
 
       <section id="permission-panel" class="editor-panel editor-hidden">
         <h2>Manage wiki permissions</h2>
-        <p class="editor-note">Grant an existing account permission to edit articles, create new articles, or administer LiquinWiki. This does not change that account's member/admin role.</p>
+        <p class="editor-note">Assign independent permissions to an existing account. Permissions accumulate: assigning a second permission does not replace the first. A Creator can create new articles for approval but cannot edit existing articles unless also assigned Editor. Trusted Editors can edit, create and publish immediately. This does not change the account's website member/admin role.</p>
         <form id="permission-form" class="editor-controls">
           <label for="permission-email">Account email
             <input id="permission-email" type="email" autocomplete="off" required />
           </label>
-          <label for="permission-choice">Wiki permission
+          <label for="permission-choice">Permission
             <select id="permission-choice">
-              <option value="liquinwiki_editor">LiquinWiki editor (existing articles)</option>
-              <option value="liquinwiki_creator">Wiki editor + new article creation (approval required)</option>
-              <option value="liquinwiki_trusted_editor">Trusted editor (publish/create immediately)</option>
-              <option value="liquinwiki_admin">LiquinWiki administrator</option>
-              <option value="none">Remove wiki access</option>
+              <option value="liquinwiki_editor">Editor — edit existing articles</option>
+              <option value="liquinwiki_creator">Creator — create new articles (approval required)</option>
+              <option value="liquinwiki_trusted_editor">Trusted Editor — edit, create and publish immediately</option>
+              <option value="liquinwiki_admin">Wiki Administrator — manage wiki permissions and reviews</option>
+            </select>
+          </label>
+          <label for="permission-action">Action
+            <select id="permission-action">
+              <option value="assign">Assign permission (keep existing permissions)</option>
+              <option value="remove">Remove selected permission only</option>
+              <option value="clear">Remove all LiquinWiki permissions</option>
             </select>
           </label>
           <button id="permission-save" class="editor-button" type="submit">Save permission</button>
