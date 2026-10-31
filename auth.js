@@ -161,6 +161,63 @@ document.addEventListener("liquindo-language-changed", () => {
   }
   if (accountMessage.dataset.i18nMessageKey && window.languageManager) accountMessage.textContent = window.languageManager.get(accountMessage.dataset.i18nMessageKey);
 });
+function withAccountTimeout(promise, label, milliseconds = 10000) {
+  let timer;
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => {
+      timer = window.setTimeout(() => reject(new Error(label + " timed out. Please check your connection and reload the account page.")), milliseconds);
+    })
+  ]).finally(() => window.clearTimeout(timer));
+}
+
+async function loadAccountProfile(user, requestId) {
+  let profile = null;
+  let profileError = null;
+  try {
+    const result = await withAccountTimeout(
+      supabase.from("profiles").select("display_name, role").eq("id", user.id).maybeSingle(),
+      "Account profile lookup"
+    );
+    if (result.error) throw result.error;
+    profile = result.data;
+  } catch (error) {
+    profileError = error;
+  }
+  if (requestId !== accountProfileRequest) return;
+
+  // is_admin() is a SECURITY DEFINER RPC, so administrator verification does
+  // not depend on the browser having table-level SELECT privileges on profiles.
+  let isAdministrator = profile?.role === "admin";
+  if (!isAdministrator) {
+    try {
+      const result = await withAccountTimeout(supabase.rpc("is_admin"), "Administrator verification", 8000);
+      if (!result.error) isAdministrator = result.data === true;
+    } catch (error) {
+      if (!profileError) profileError = error;
+    }
+  }
+  if (requestId !== accountProfileRequest) return;
+
+  const metadataName = user.user_metadata?.display_name || user.user_metadata?.full_name || "";
+  accountUsername.textContent = user.user_metadata?.username || "Not set";
+  accountDisplayName.textContent = profileError
+    ? (metadataName || "Unavailable")
+    : (profile?.display_name || metadataName || "Not set");
+  accountRole.textContent = isAdministrator
+    ? "Administrator"
+    : profileError
+      ? "Unavailable"
+      : profile?.role === "member" ? "Member" : profile?.role || "Not assigned";
+  if (accountAdminToolsLink) accountAdminToolsLink.hidden = !isAdministrator;
+  const usernameField = document.querySelector("#new-username");
+  if (usernameField) usernameField.value = user.user_metadata?.username || "";
+
+  if (profileError) {
+    setAccountMessage("Some profile information could not be loaded. " + (profileError.message || "Please reload and try again."), true);
+  }
+}
+
 function showSession(session) {
   const profileRequest = ++accountProfileRequest;
   const signedIn = Boolean(session?.user);
@@ -174,21 +231,13 @@ function showSession(session) {
   accountDisplayName.textContent = "Loading…";
   accountRole.textContent = "Loading…";
   accountCreated.textContent = user.created_at ? new Date(user.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—";
-  window.setTimeout(async () => {
-    const { data: profile, error } = await supabase.from("profiles").select("display_name, role").eq("id", user.id).maybeSingle();
+  loadAccountProfile(user, profileRequest).catch(error => {
     if (profileRequest !== accountProfileRequest) return;
-    if (error) {
-      accountDisplayName.textContent = "Unavailable";
-      accountRole.textContent = "Unavailable";
-      setAccountMessage("Some profile information could not be loaded. Refresh and try again.", true);
-      return;
-    }
-    accountUsername.textContent = user.user_metadata?.username || "Not set";
-    accountDisplayName.textContent = profile?.display_name || "Not set";
-    accountRole.textContent = profile?.role === "admin" ? "Administrator" : profile?.role === "member" ? "Member" : profile?.role || "Not assigned";
-    if (accountAdminToolsLink) accountAdminToolsLink.hidden = profile?.role !== "admin";
-    document.querySelector("#new-username").value = user.user_metadata?.username || "";
-  }, 0);
+    accountDisplayName.textContent = user.user_metadata?.display_name || "Unavailable";
+    accountRole.textContent = "Unavailable";
+    if (accountAdminToolsLink) accountAdminToolsLink.hidden = true;
+    setAccountMessage("Account details could not be loaded: " + (error?.message || "Please reload and try again."), true);
+  });
 }
 confirmPasswordInput.addEventListener("input", () => confirmPasswordInput.removeAttribute("aria-invalid"));
 loginTab.addEventListener("click", () => setMode("login"));
