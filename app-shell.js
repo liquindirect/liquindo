@@ -196,6 +196,50 @@
       if (menu.open && !menu.contains(event.target)) { menu.open = false; syncOpenState(); }
     });
     updateSearch();
+
+    // The gallery is member-only. Hide every navigation/CTA link to it until
+    // Supabase confirms an authenticated session, including links outside the
+    // shared Contents menu (for example the homepage archive CTA).
+    function initializeMemberOnlyLinks() {
+      const protectedLinks = [...document.querySelectorAll('a[href]')].filter((link) => {
+        const href = link.getAttribute("href") || "";
+        return /^(?:\.\/)?gallery\.html(?:[?#].*)?$/.test(href);
+      });
+      protectedLinks.forEach((link) => {
+        link.dataset.requiresAuth = "true";
+        link.hidden = true;
+        link.setAttribute("aria-hidden", "true");
+      });
+      if (!protectedLinks.length) return;
+
+      const applySession = (session) => {
+        const signedIn = Boolean(session?.user);
+        protectedLinks.forEach((link) => {
+          link.hidden = !signedIn;
+          if (signedIn) link.removeAttribute("aria-hidden");
+          else link.setAttribute("aria-hidden", "true");
+        });
+      };
+
+      import("https://esm.sh/@supabase/supabase-js@2")
+        .then(({ createClient }) => {
+          const client = createClient(
+            "https://uivjovkvpskvvazznlyr.supabase.co",
+            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
+          );
+          client.auth.onAuthStateChange((_event, session) => applySession(session));
+          return client.auth.getSession().then(({ data, error }) => {
+            if (error) throw error;
+            applySession(data.session);
+          });
+        })
+        .catch(() => {
+          // Fail closed: keep member-only navigation hidden if auth status
+          // cannot be verified.
+          applySession(null);
+        });
+    }
+    initializeMemberOnlyLinks();
   }
 
   function detectPwaDisplayMode() {
