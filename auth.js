@@ -24,6 +24,7 @@ const accountUsername = document.querySelector("#account-username");
 const accountDisplayName = document.querySelector("#account-display-name");
 const accountRole = document.querySelector("#account-role");
 const accountCreated = document.querySelector("#account-created");
+const accountAdminToolsLink = document.querySelector("#account-admin-tools-link");
 const changeUsernameForm = document.querySelector("#change-username-form");
 const changeEmailForm = document.querySelector("#change-email-form");
 const changePasswordForm = document.querySelector("#change-password-form");
@@ -163,6 +164,7 @@ function showSession(session) {
   const signedIn = Boolean(session?.user);
   formPanel.classList.toggle("auth-hidden", signedIn);
   accountPanel.classList.toggle("auth-hidden", !signedIn);
+  if (accountAdminToolsLink) accountAdminToolsLink.hidden = true;
   if (!signedIn) return;
   const user = session.user;
   accountEmail.textContent = user.email || "Not set";
@@ -181,6 +183,7 @@ function showSession(session) {
     accountUsername.textContent = profile?.username || user.user_metadata?.username || "Not set";
     accountDisplayName.textContent = profile?.display_name || "Not set";
     accountRole.textContent = profile?.role || "Not assigned";
+    if (accountAdminToolsLink) accountAdminToolsLink.hidden = profile?.role !== "admin";
     if (profile?.created_at) accountCreated.textContent = new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
     document.querySelector("#new-username").value = profile?.username || user.user_metadata?.username || "";
   }, 0);
