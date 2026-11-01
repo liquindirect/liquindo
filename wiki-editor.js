@@ -757,8 +757,8 @@ submitButton.addEventListener("click", async () => {
     showMessage("Article content cannot be empty.", true);
     return;
   }
-  if (content.length > 200000) {
-    showMessage("This article is too long to submit.", true);
+  if (content.length > 2000000) {
+    showMessage("This article exceeds the 2,000,000-character limit.", true);
     return;
   }
   if (!creating && slug) {
