@@ -142,9 +142,10 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    const conflict=document.createElement("p");conflict.className="ac-warn";
    conflict.textContent="This account has conflicting legacy permissions: Administrator and "+roleLabel(wikiRole)+". Saving the displayed Administrator role will remove the extra Wiki permission.";
    conflict.hidden=!roleConflict;
-   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save assigned role";save.setAttribute("aria-label","Save assigned role for "+(p.display_name||"this account"));
+   const saveArea=document.createElement("div");saveArea.className="ac-role-save-controls";saveArea.style.cssText="display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:.5rem!important;margin-top:1rem!important;min-height:48px!important;visibility:visible!important;opacity:1!important";
+   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save assigned role";save.setAttribute("aria-label","Save assigned role for "+(p.display_name||"this account"));save.style.cssText="display:inline-flex!important;visibility:visible!important;opacity:1!important;position:static!important;min-height:46px!important;padding:.75rem 1.1rem!important;background:#fdbe00!important;color:#000032!important;border:2px solid #000032!important;border-radius:8px!important;font-weight:800!important;cursor:pointer!important";
    const rowStatus=document.createElement("p");rowStatus.className="ac-status";rowStatus.setAttribute("role","status");rowStatus.setAttribute("aria-live","polite");
-   const updateSaveState=()=>{save.disabled=p.id===adminId;save.textContent=role.value===currentRole&&!roleConflict?"Role unchanged — save":"Save assigned role";};
+   const updateSaveState=()=>{save.disabled=p.id===adminId;save.textContent=p.id===adminId?"Your own administrator role is protected":role.value===currentRole&&!roleConflict?"No role changes selected":"Save assigned role";};
    role.addEventListener("change",()=>{updateExplanation();updateSaveState();rowStatus.textContent=role.value===currentRole&&!roleConflict?"No role changes to save.":"Unsaved role change: "+roleLabel(role.value);});
    updateSaveState();
    save.onclick=async()=>{
@@ -175,8 +176,8 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
      role.disabled=p.id===adminId;updateSaveState();
     }
    };
-   f.append(save);
-   card.append(h,meta,details,conflict,f,explanation,rowStatus);o.append(card);
+   saveArea.append(save,rowStatus);
+   card.append(h,meta,details,conflict,f,explanation,saveArea);o.append(card);
   });
  }
  function local(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
