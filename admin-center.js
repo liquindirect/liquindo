@@ -113,7 +113,7 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
   const rows=profiles.filter(p=>[p.id,p.display_name,p.role,p.bio,p.wiki_role].some(x=>String(x||"").toLowerCase().includes(q)));
   if(!rows.length){o.textContent="No matching accounts.";return;}
   rows.forEach(p=>{
-   const card=document.createElement("article");card.className="ac-item";
+   const card=document.createElement("article");card.className="account-role-row";
    const h=document.createElement("h3");h.textContent=p.display_name||"Unnamed profile";
    const meta=document.createElement("p");meta.className="ac-meta";
    const wikiLabel=value=>value==="liquinwiki_editor"?"Wiki Editor":value==="liquinwiki_trusted_editor"?"Trusted Editor":"None";
