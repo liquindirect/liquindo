@@ -288,6 +288,28 @@
       // INITIAL_SESSION supplies the startup session. Avoid a duplicate
       // getSession() call; the same listener also handles resume/token events.
       client.auth.onAuthStateChange((_event, session) => applySession(session));
+
+      // Mobile browsers may suspend a page while another app is open. On resume,
+      // let the shared Supabase client restore/refresh its session and resync navigation.
+      let lastResumeCheck = 0;
+      let resumeCheckPromise = null;
+      const syncSessionOnResume = () => {
+        if (document.visibilityState === "hidden" || Date.now() - lastResumeCheck < 15000) return resumeCheckPromise;
+        lastResumeCheck = Date.now();
+        if (resumeCheckPromise) return resumeCheckPromise;
+        resumeCheckPromise = client.auth.getSession()
+          .then(({ data, error }) => {
+            if (error) throw error;
+            applySession(data.session);
+          })
+          .catch(error => console.warn("Liquindo session resume check failed.", error))
+          .finally(() => { resumeCheckPromise = null; });
+        return resumeCheckPromise;
+      };
+      window.addEventListener("pageshow", syncSessionOnResume);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") syncSessionOnResume();
+      });
     }
     initializeAuthNavigation();
   }
@@ -386,35 +408,6 @@
       panel.appendChild(a);
     });
 
-    // The APK's app/website preference is stored in this WebView's origin storage.
-    // Ordinary browser/PWA users never set the APK marker, so they do not see this switch.
-    let modeLink = null;
-    function syncApkModeLink() {
-      let isApk = false;
-      let appMode = false;
-      try {
-        isApk = localStorage.getItem("liquindo-apk-installed") === "1";
-        appMode = localStorage.getItem("liquindo-apk-mode") !== "website";
-      } catch (_) {}
-      if (!isApk) {
-        modeLink?.remove();
-        modeLink = null;
-        return;
-      }
-      if (!modeLink) {
-        modeLink = document.createElement("a");
-        panel.appendChild(modeLink);
-      }
-      modeLink.textContent = appMode ? "Switch to website mode" : "Switch to app mode";
-      modeLink.href = base + (appMode ? "index.html" : "app.html");
-      modeLink.addEventListener("click", () => {
-        try {
-          localStorage.setItem("liquindo-apk-mode", appMode ? "website" : "app");
-        } catch (_) {}
-      }, { once: true });
-    }
-    syncApkModeLink();
-
     // Admin navigation may be revealed asynchronously after Supabase verifies a session.
     let adminAnchor = null;
     function syncAdminLink() {
@@ -441,7 +434,7 @@
         attributes: true,
         attributeFilter: ["hidden", "class", "style", "aria-hidden"]
       });
-      window.addEventListener("pagehide", () => adminObserver.disconnect(), { once: true });
+      // Keep this lightweight observer alive while the page is in the back-forward cache.
     }
 
     menuButton.addEventListener("click", () => {
