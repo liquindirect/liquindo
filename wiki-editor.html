@@ -369,6 +369,11 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
           <button id="toggle-wiki-markup" class="editor-button" type="button" aria-pressed="true">Back to visual editor</button>
           <span id="editor-mode-note" class="editor-mode-note">Wiki markup editor</span>
         </div>
+        <div class="editor-controls wiki-image-upload-controls" aria-label="Article image upload">
+          <button id="wiki-image-upload" class="editor-button" type="button">Upload image</button>
+          <input id="wiki-image-file" class="wiki-image-file-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Choose an article image" />
+          <span id="wiki-image-upload-status" class="editor-note" role="status" aria-live="polite">Choose an image from your device; it will be added to this article.</span>
+        </div>
         <div class="editor-toolbar" id="visual-editor-toolbar" aria-label="Formatting tools">
           <button type="button" data-command="bold"><strong>Bold</strong></button>
           <button type="button" data-command="italic"><em>Italic</em></button>
@@ -402,7 +407,7 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
 {{Short description|A short summary shown below the title}}
 {{See also|Liquindo|Liquin's Plan}}
 [[Category:History]]</code></pre>
-            <p><strong>Other supported patterns:</strong> <code>#REDIRECT [[Article title]]</code> for a redirect page, <code>{{Disambiguation}}</code> for a disambiguation notice, <code>----</code> for a horizontal rule, and leading spaces for a block quote. Images use [[File:https://example.com/image.jpg|right|300px|alt=Description|Caption]]. Galleries use a {{Gallery block with one image URL and optional caption per line, closed by }}. Image alignment and widths adapt on mobile.</p>
+            <p><strong>Other supported patterns:</strong> <code>#REDIRECT [[Article title]]</code> for a redirect page, <code>{{Disambiguation}}</code> for a disambiguation notice, <code>----</code> for a horizontal rule, and leading spaces for a block quote. Images use [[File:https://example.com/image.jpg|right|300px|alt=Description|Caption]]. Galleries use a {{Gallery block with one image URL and optional caption per line, closed by }}. Image alignment and widths adapt on mobile. Use the Upload image button to choose a JPG, PNG, WebP, or GIF from your device; the editor uploads it and inserts the markup automatically.</p>
             <pre><code>== History ==
 Liquindo was founded in '''2026'''.
 
@@ -542,7 +547,7 @@ See [[Liquindo Nationalist Front|the related article]].
     </div>
     <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer" class="footer-repo">View on GitHub</a>
   </footer>
-  <script type="module" src="wiki-editor.js?v=20261101-central-role-assignment1"></script>
+  <script type="module" src="wiki-editor.js?v=20261101-image-upload1"></script>
 <script>
   (() => {
     const menu = document.querySelector(".contents-menu");
