@@ -4,7 +4,8 @@ import { supabase } from "./supabase-client.js";
  const css=document.createElement("style");css.textContent=".ac-wrap{display:grid;gap:1rem;margin-top:2rem}.ac-panel{padding:1.2rem;border:1px solid #d8dce1;border-radius:14px;background:#fff;color:#172033;scroll-margin-top:1rem}.ac-panel h2{color:#000032;margin:.1rem 0 .6rem}.ac-muted{color:#566273;line-height:1.5}.ac-nav,.ac-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin:.8rem 0}.ac-nav a,.ac-btn{padding:.6rem .85rem;border:1px solid #c6ccd4;border-radius:8px;background:#fff;color:#172033;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}.ac-btn.primary{background:#fdbe00;border-color:#fdbe00;color:#000032}.ac-btn.danger{color:#a3221a;border-color:#a3221a}.ac-btn:disabled{opacity:.55}.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.7rem}.ac-stat,.ac-item{border:1px solid #e0e4e9;border-radius:10px;padding:.8rem;overflow-wrap:anywhere}.ac-stat strong{display:block;font-size:1.7rem;color:#000032}.ac-stat span,.ac-meta{font-size:.85rem;color:#647084}.ac-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.7rem;align-items:end}.ac-form label,.ac-label{display:grid;gap:.35rem;font-weight:700;font-size:.92rem}.ac-form input,.ac-form select,.ac-form textarea,.ac-panel input,.ac-panel select,.ac-panel textarea{box-sizing:border-box;width:100%;min-width:0;padding:.6rem;border:1px solid #b9c1cb;border-radius:7px;background:#fff;color:#172033;font:inherit}.ac-form textarea,.ac-panel textarea{min-height:85px}.ac-list{display:grid;gap:.6rem;margin-top:.8rem}.ac-item h3{font-size:1rem;margin:0 0 .4rem;color:#000032}.ac-status{min-height:1.2rem;color:#425466}.ac-status.error{color:#b42318}.ac-tablewrap{overflow:auto}.ac-table{width:100%;border-collapse:collapse;min-width:600px}.ac-table th,.ac-table td{text-align:left;padding:.6rem;border-bottom:1px solid #e0e4e9;vertical-align:top}.ac-warn{padding:.8rem;background:#fff8df;border:1px solid #e7cb73;border-radius:8px}.ac-hidden{display:none!important}.ac-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.7rem;margin:.9rem 0 1.25rem}.ac-shortcut{display:flex;flex-direction:column;gap:.35rem;min-height:105px;padding:.85rem;border:1px solid #d8dce1;border-radius:10px;background:#f8f9fb;color:#172033;text-decoration:none}.ac-shortcut strong{color:#000032}.ac-shortcut span{font-size:.84rem;color:#566273;line-height:1.4}.ac-shortcut:focus-visible,.ac-shortcut:hover{border-color:#fdbe00;background:#fffdf5}";document.head.append(css);
  const wrap=document.createElement("div");wrap.className="ac-wrap";wrap.innerHTML=String.raw`
  <nav class="ac-shortcuts" aria-label="Administration sections">
- <a class="ac-shortcut" href="#ac-accounts"><strong>Accounts &amp; roles</strong><span>Search users and assign website roles</span></a>
+ <a class="ac-shortcut" href="#ac-accounts"><strong>Website accounts</strong><span>Search accounts and assign website roles</span></a>
+ <a class="ac-shortcut" href="#ac-role-assignment"><strong>LiquinWiki role assignment</strong><span>Assign Wiki Editor or Trusted Editor</span></a>
  <a class="ac-shortcut" href="wiki-editor.html?admin=1"><strong>LiquinWiki</strong><span>Review revisions and edit articles</span></a>
  <a class="ac-shortcut" href="#ac-site"><strong>Website settings</strong><span>Homepage, navigation and language</span></a>
  <a class="ac-shortcut" href="#ac-search"><strong>Content search</strong><span>Find profiles and wiki articles</span></a>
@@ -18,7 +19,8 @@ import { supabase } from "./supabase-client.js";
  <a class="ac-shortcut" href="app-cover-admin.html"><strong>App cover library</strong><span>Manage available cover artwork</span></a>
  </nav>
  <section class="ac-panel" id="ac-overview"><h2>Administration overview</h2><p class="ac-muted">Live counts from the existing Supabase project.</p><div class="ac-grid" id="ac-stats">Loading…</div><button class="ac-btn primary" id="ac-refresh">Refresh overview</button> <a class="ac-btn" href="wiki-editor.html?admin=1">Wiki review</a><p class="ac-status" id="ac-overview-status"></p></section>
- <section class="ac-panel" id="ac-accounts"><h2>Account and role management</h2><p class="ac-muted">Assign website roles here. Display names and biographies are read-only. Website role changes are managed only in this section.</p><label class="ac-label">Search profiles<input id="ac-account-filter" type="search" placeholder="Name, bio, role, or ID"></label><div class="ac-list" id="ac-accounts-list"></div><button type="button" class="ac-btn" id="ac-accounts-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-accounts-status" role="status" aria-live="polite"></p></section>
+ <section class="ac-panel" id="ac-accounts"><h2>Website account roles</h2><p class="ac-muted">Assign website Member or Administrator roles here. Display names and biographies are read-only. LiquinWiki roles are managed separately below.</p><label class="ac-label">Search profiles<input id="ac-account-filter" type="search" placeholder="Name, bio, role, or ID"></label><div class="ac-list" id="ac-accounts-list"></div><button type="button" class="ac-btn" id="ac-accounts-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-accounts-status" role="status" aria-live="polite"></p></section>
+ <section class="ac-panel" id="ac-role-assignment"><h2>LiquinWiki role assignment</h2><p class="ac-muted">Assign one LiquinWiki role per account. Wiki Editor can edit and submit new articles for approval; Trusted Editor can edit, create and publish directly. Website Administrator permissions remain separate.</p><div class="ac-list" id="ac-wiki-role-list"></div><p class="ac-status" id="ac-wiki-role-status" role="status" aria-live="polite"></p></section>
  <section class="ac-panel" id="ac-site"><h2>Website settings and content</h2><p class="ac-muted">Edit public notices and featured content. Announcement, maintenance, and featured content are rendered on the homepage.</p><div class="ac-grid">
  <div><h3>Announcement</h3><label class="ac-label"><input id="ac-ann-on" type="checkbox"> Enabled</label><label class="ac-label">Text<textarea id="ac-ann-text" maxlength="1000"></textarea></label><label class="ac-label">Start<input id="ac-ann-start" type="datetime-local"></label><label class="ac-label">End<input id="ac-ann-end" type="datetime-local"></label></div>
  <div><h3>Maintenance</h3><label class="ac-label"><input id="ac-maint-on" type="checkbox"> Enabled</label><label class="ac-label">Notice<textarea id="ac-maint-text" maxlength="1000"></textarea></label></div>
@@ -53,7 +55,7 @@ import { supabase } from "./supabase-client.js";
    const r=await db.rpc("admin_list_profiles",{p_offset:profilesOffset,p_limit:100,p_search:$("ac-account-filter").value.trim()||null});
    if(r.error)throw r.error;
    const payload=r.data||{},batch=Array.isArray(payload.profiles)?payload.profiles:[];profiles=reset?batch:profiles.concat(batch);profilesOffset+=batch.length;profilesTotal=Number(payload.total)||0;
-   renderProfiles();
+   renderProfiles();renderWikiRoleProfiles();
    say("ac-accounts-status","Showing "+profiles.length+" of "+profilesTotal+" accounts.");
    if(more){more.hidden=profilesOffset>=profilesTotal;more.disabled=profilesOffset>=profilesTotal;}
   }catch(e){say("ac-accounts-status",e.message||"Could not load accounts.",true);}
@@ -88,27 +90,41 @@ import { supabase } from "./supabase-client.js";
    };
    f.append(save);
 
-   const wikiRole=document.createElement("select");
-   [["none","None"],["liquinwiki_editor","Wiki Editor"],["liquinwiki_trusted_editor","Trusted Editor"]].forEach(([v,t])=>{const x=document.createElement("option");x.value=v;x.textContent=t;wikiRole.append(x);});
-   wikiRole.value=p.wiki_role||"none";field("LiquinWiki role",wikiRole);
-   const wikiSave=document.createElement("button");wikiSave.type="button";wikiSave.className="ac-btn";wikiSave.textContent="Assign wiki role";
-   wikiSave.onclick=async()=>{
-    const next=wikiRole.value,current=p.wiki_role||"none";
-    if(next===current){say("ac-accounts-status","Choose a different LiquinWiki role before assigning it.");return;}
-    const label=next==="liquinwiki_trusted_editor"?"Trusted Editor":next==="liquinwiki_editor"?"Wiki Editor":"no wiki role";
-    if(!window.confirm("Assign "+label+" to "+(p.display_name||"this account")+"?")){wikiRole.value=current;return;}
-    wikiSave.disabled=true;
-    try{
-     const r=await db.rpc("set_liquinwiki_role",{p_user_id:p.id,p_role:next});if(r.error)throw r.error;
-     p.wiki_role=next;wikiRole.value=next;
-     say("ac-accounts-status","LiquinWiki role updated for "+(p.display_name||"this account")+": "+label+".");
-     await loadProfiles(true);
-    }catch(e){wikiRole.value=current;say("ac-accounts-status",e.message,true);}
-    finally{wikiSave.disabled=false;}
-   };
-   f.append(wikiSave);card.append(h,m,f);o.append(card);
+   card.append(h,m,f);o.append(card);
   });
  }
+ function renderWikiRoleProfiles(){
+  const o=$("ac-wiki-role-list");if(!o)return;o.replaceChildren();
+  const q=$("ac-account-filter").value.toLowerCase().trim();
+  const rows=profiles.filter(p=>[p.id,p.display_name,p.role,p.bio,p.wiki_role].some(x=>String(x||"").toLowerCase().includes(q)));
+  if(!rows.length){o.textContent="No matching accounts.";return;}
+  rows.forEach(p=>{
+   const card=document.createElement("article");card.className="ac-item";
+   const h=document.createElement("h3");h.textContent=p.display_name||"Unnamed profile";
+   const meta=document.createElement("p");meta.className="ac-meta";meta.textContent=p.id+" · Current wiki role: "+(p.wiki_role==="liquinwiki_editor"?"Wiki Editor":p.wiki_role==="liquinwiki_trusted_editor"?"Trusted Editor":"None");
+   const form=document.createElement("div");form.className="ac-form";
+   const label=document.createElement("label");label.textContent="LiquinWiki role";
+   const select=document.createElement("select");
+   [["none","None"],["liquinwiki_editor","Wiki Editor"],["liquinwiki_trusted_editor","Trusted Editor"]].forEach(([v,t])=>{const opt=document.createElement("option");opt.value=v;opt.textContent=t;select.append(opt);});
+   const current=p.wiki_role||"none";select.value=current;label.append(select);
+   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Assign wiki role";
+   save.onclick=async()=>{
+    const next=select.value;if(next===current){say("ac-wiki-role-status","Choose a different role before assigning it.");return;}
+    const labelText=next==="liquinwiki_trusted_editor"?"Trusted Editor":next==="liquinwiki_editor"?"Wiki Editor":"no wiki role";
+    if(!window.confirm("Assign "+labelText+" to "+(p.display_name||"this account")+"?")){select.value=current;return;}
+    save.disabled=true;select.disabled=true;
+    try{
+     const result=await db.rpc("set_liquinwiki_role",{p_user_id:p.id,p_role:next});if(result.error)throw result.error;
+     p.wiki_role=next;
+     say("ac-wiki-role-status","LiquinWiki role updated for "+(p.display_name||"this account")+": "+labelText+".");
+     await loadProfiles(true);
+    }catch(error){select.value=current;say("ac-wiki-role-status",error.message||"Could not assign wiki role.",true);}
+    finally{save.disabled=false;select.disabled=false;}
+   };
+   form.append(label,save);card.append(h,meta,form);o.append(card);
+  });
+ }
+
  function local(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
  function utc(v){if(!v)return null;const d=new Date(v);return Number.isNaN(d.getTime())?null:d.toISOString();}
  async function loadSettings(){const r=await db.from("site_settings").select("setting_key,setting_value");if(r.error)throw r.error;settings=Object.fromEntries((r.data||[]).map(x=>[x.setting_key,x.setting_value]));const a=settings.announcement||{},m=settings.maintenance_notice||{},f=settings.homepage_featured||{},d=settings.directory_settings||{},l=settings.language_settings||{},ft=settings.footer_settings||{},faq=settings.faq_items||{},nav=settings.custom_nav_links||{};$("ac-ann-on").checked=!!a.enabled;$("ac-ann-text").value=a.text||"";$("ac-ann-start").value=local(a.start_at);$("ac-ann-end").value=local(a.end_at);$("ac-maint-on").checked=!!m.enabled;$("ac-maint-text").value=m.text||"";$("ac-feature-title").value=f.title||"";$("ac-feature-desc").value=f.description||"";$("ac-feature-url").value=f.url||"";$("ac-bio-on").checked=d.show_bio!==false;$("ac-language").value=langs.includes(l.default)?l.default:"en";$("ac-footer-text").value=ft.text||"Contact: liquindohq@yahoo.com";$("ac-faq-json").value=JSON.stringify(Array.isArray(faq.items)?faq.items:[],null,2);$("ac-nav-json").value=JSON.stringify(Array.isArray(nav.items)?nav.items:[],null,2);$("ac-settings-raw").textContent=JSON.stringify(settings,null,2);say("ac-settings-status","Loaded "+Object.keys(settings).length+" settings.");}
