@@ -1,6 +1,16 @@
--- Keep the public directory's existing public fields, but resolve the displayed
--- account category from the same unified role assignment used by Admin Tools.
--- This avoids exposing wiki_permissions directly to anonymous visitors.
+-- Publish only the two directory role columns needed to display assigned roles.
+-- Row-level security keeps all other permission records private and immutable here.
+alter table public.wiki_permissions enable row level security;
+
+revoke select on table public.wiki_permissions from anon, authenticated;
+grant select (user_id, permission) on table public.wiki_permissions to anon, authenticated;
+
+drop policy if exists "Public can read directory role assignments" on public.wiki_permissions;
+create policy "Public can read directory role assignments"
+on public.wiki_permissions
+for select
+to anon, authenticated
+using (permission in ('liquinwiki_editor', 'liquinwiki_trusted_editor'));
 
 create or replace function public.get_public_member_directory()
 returns table (
@@ -11,7 +21,7 @@ returns table (
 )
 language sql
 stable
-security definer
+security invoker
 set search_path = ''
 as $$
   select
