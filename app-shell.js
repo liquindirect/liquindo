@@ -2,12 +2,6 @@
   "use strict";
 
   const base = "/liquindo/";
-  // Native APK builds append their own build number to the remote app URL.
-  // Persist it across navigation so the update checker can compare like-for-like.
-  const apkVersionParam = new URLSearchParams(location.search).get("apkVersion");
-  if (/^\d+$/.test(apkVersionParam || "")) {
-    try { localStorage.setItem("liquindo-apk-version", apkVersionParam); } catch (_) {}
-  }
   const links = [
     { id: "home", label: "Home", href: "index.html", icon: "⌂" },
     { id: "wiki", label: "Wiki", href: "wiki.html", icon: "▤" },
@@ -506,113 +500,14 @@
     });
   }
 
-  function addConnectionStatus() {
-    // Keep this APK-specific UI out of the ordinary website/PWA experience.
-    const isNativeApp = !!window.Capacitor &&
-      typeof window.Capacitor.isNativePlatform === "function" &&
-      window.Capacitor.isNativePlatform();
-    if (!isNativeApp || !document.body || document.querySelector(".liquindo-connection-banner")) return;
-    const banner = document.createElement("div");
-    banner.className = "liquindo-connection-banner";
-    banner.setAttribute("role", "status");
-    banner.setAttribute("aria-live", "polite");
-    banner.hidden = navigator.onLine;
-    banner.style.cssText = "position:sticky;top:0;z-index:1000;padding:10px 14px;text-align:center;background:#7f1d1d;color:#fff;font:700 14px/1.4 system-ui,sans-serif";
-    const message = document.createElement("span");
-    message.textContent = "You appear to be offline. Some Liquindo pages need an internet connection.";
-    const retry = document.createElement("button");
-    retry.type = "button";
-    retry.textContent = "Retry";
-    retry.style.cssText = "margin-left:10px;padding:5px 10px;border:1px solid #fff;border-radius:999px;background:transparent;color:#fff;font:inherit";
-    retry.addEventListener("click", () => location.reload());
-    banner.append(message, retry);
-    document.body.prepend(banner);
-    window.addEventListener("offline", () => { banner.hidden = false; });
-    window.addEventListener("online", () => { banner.hidden = true; });
-  }
-
-  function setupUpdateAndAboutTools() {
-    const checkButton = document.getElementById("check-updates");
-    const status = document.getElementById("update-status");
-    const releaseLink = document.getElementById("latest-release-link");
+  function setupAboutToggle() {
     const aboutButton = document.getElementById("about-toggle");
     const aboutPanel = document.getElementById("about-panel");
-
-    if (aboutButton && aboutPanel) {
-      aboutButton.addEventListener("click", () => {
-        const expanded = aboutButton.getAttribute("aria-expanded") === "true";
-        aboutButton.setAttribute("aria-expanded", String(!expanded));
-        aboutPanel.hidden = expanded;
-      });
-    }
-    if (!checkButton || !status || !releaseLink) return;
-
-    checkButton.addEventListener("click", async () => {
-      checkButton.disabled = true;
-      status.dataset.state = "";
-      status.textContent = "Checking GitHub Releases…";
-      releaseLink.hidden = true;
-      try {
-        // Query the published releases list with a cache-busting parameter instead of
-        // relying on /releases/latest, which can remain stale in intermediary caches.
-        const endpoint = "https://api.github.com/repos/liquindirect/liquindo/releases?per_page=100&_=" + Date.now();
-        const response = await fetch(endpoint, {
-          // Avoid Cache-Control request headers: on some WebViews they trigger a
-          // cross-origin preflight that GitHub's API request may not pass.
-          headers: { Accept: "application/vnd.github+json" },
-          cache: "no-store"
-        });
-        if (!response.ok) throw new Error("GitHub returned " + response.status);
-        const releases = await response.json();
-        if (!Array.isArray(releases)) throw new Error("GitHub returned an unexpected release list.");
-        const candidates = releases.filter((item) =>
-          item && !item.draft && !item.prerelease &&
-          /^liquindo-v\d+$/i.test(item.tag_name || "") &&
-          Array.isArray(item.assets) &&
-          item.assets.some((asset) => asset.name === "app-release.apk" && asset.browser_download_url)
-        );
-        candidates.sort((a, b) =>
-          Number((b.tag_name.match(/\d+$/) || ["0"])[0]) -
-          Number((a.tag_name.match(/\d+$/) || ["0"])[0])
-        );
-        const release = candidates[0];
-        if (!release) throw new Error("No published signed APK release was found.");
-        const latestNumber = Number((release.tag_name.match(/\d+$/) || ["0"])[0]);
-        const version = "v" + latestNumber;
-        const apkAsset = release.assets.find((asset) => asset.name === "app-release.apk" && asset.browser_download_url);
-        if (!apkAsset) throw new Error("The latest release has no downloadable APK asset.");
-
-        let installedNumber = null;
-        try {
-          const savedVersion = localStorage.getItem("liquindo-apk-version");
-          if (/^\d+$/.test(savedVersion || "")) installedNumber = Number(savedVersion);
-        } catch (_) {}
-
-        status.dataset.state = "success";
-        if (installedNumber === null) {
-          status.textContent = "Latest published Android APK: " + version + ". The installed version could not be verified; download this APK to ensure you are current.";
-        } else if (installedNumber < latestNumber) {
-          status.textContent = "Update available: " + version + " (installed build v" + installedNumber + "). Download the APK, then open it and confirm installation in Android.";
-        } else if (installedNumber === latestNumber) {
-          status.textContent = "You're up to date: v" + installedNumber + " is the latest published Android APK.";
-        } else {
-          status.textContent = "Installed build v" + installedNumber + " is newer than the latest published release (" + version + "). No newer APK has been published yet.";
-        }
-        releaseLink.href = apkAsset.browser_download_url;
-        releaseLink.textContent = "Download " + version + " APK";
-        releaseLink.hidden = false;
-      } catch (error) {
-        status.dataset.state = "error";
-        status.textContent = navigator.onLine
-          ? "Could not check releases right now. Try again later or open GitHub Releases."
-          : "You are offline. Reconnect to check for updates.";
-        releaseLink.href = "https://github.com/liquindirect/liquindo/releases/latest";
-        releaseLink.textContent = "Open GitHub Releases";
-        releaseLink.hidden = false;
-        console.warn("Liquindo update check failed.", error);
-      } finally {
-        checkButton.disabled = false;
-      }
+    if (!aboutButton || !aboutPanel) return;
+    aboutButton.addEventListener("click", () => {
+      const expanded = aboutButton.getAttribute("aria-expanded") === "true";
+      aboutButton.setAttribute("aria-expanded", String(!expanded));
+      aboutPanel.hidden = expanded;
     });
   }
 
@@ -640,12 +535,8 @@
   }
   registerWorker();
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      addConnectionStatus();
-      setupUpdateAndAboutTools();
-    }, { once: true });
+    document.addEventListener("DOMContentLoaded", setupAboutToggle, { once: true });
   } else {
-    addConnectionStatus();
-    setupUpdateAndAboutTools();
+    setupAboutToggle();
   }
 })();
