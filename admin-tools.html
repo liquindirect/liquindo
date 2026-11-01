@@ -172,7 +172,6 @@
     (() => {
       const SUPABASE_URL = "https://uivjovkvpskvvazznlyr.supabase.co";
       const SUPABASE_KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
-      const STORAGE_KEY = "sb-uivjovkvpskvvazznlyr-auth-token";
       const status = document.getElementById("admin-status");
       const content = document.getElementById("admin-tools-content");
       const signOutButton = document.getElementById("admin-sign-out");
@@ -181,6 +180,7 @@
       const messageStatus = document.getElementById("message-admin-status");
       const saveButton = document.getElementById("message-admin-save");
       let session = null;
+      let supabaseClient = null;
       let adminUserId = null;
 
       // Admin-center sections are inserted after administrator verification.
@@ -241,16 +241,6 @@
         messageStatus.textContent = text;
         messageStatus.classList.toggle("error", error);
       };
-      function readSession() {
-        let raw;
-        try { raw = localStorage.getItem(STORAGE_KEY); }
-        catch { throw new Error("Browser storage is unavailable. Enable site storage, sign in again, and reload."); }
-        if (!raw) return null;
-        let saved;
-        try { saved = JSON.parse(raw); }
-        catch { throw new Error("The saved sign-in data is damaged. Sign out and sign in again."); }
-        return saved?.currentSession || saved;
-      }
       async function api(path, options = {}, timeout = 12000) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeout);
@@ -277,27 +267,6 @@
           throw error;
         } finally { clearTimeout(timer); }
       }
-      async function refreshSession() {
-        if (!session?.refresh_token) throw new Error("Your sign-in has expired. Please sign in again.");
-        const expiresAt = Number(session.expires_at || 0);
-        if (expiresAt > Math.floor(Date.now() / 1000) + 60) return;
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 12000);
-        try {
-          const response = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token", {
-            method: "POST", signal: controller.signal,
-            headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh_token: session.refresh_token })
-          });
-          const data = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(data.msg || data.message || data.error_description || "Your sign-in expired. Please sign in again.");
-          session = data;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch (error) {
-          if (error.name === "AbortError") throw new Error("Refreshing your sign-in timed out. Please sign in again.");
-          throw error;
-        } finally { clearTimeout(timer); }
-      }
       async function loadMessage() {
         showMessageStatus("Loading current message…");
         try {
@@ -312,13 +281,25 @@
         content.hidden = true;
         signOutButton.disabled = true;
         try {
-          session = readSession();
+          const authModule = await import("./supabase-client.js");
+          supabaseClient = authModule.supabase;
+          const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+          if (sessionError) throw sessionError;
+          session = sessionData.session;
           if (!session?.access_token || !session?.user?.id) {
             showStatus("No active sign-in was found. Sign in with your administrator account, then reopen this page.", true);
             return;
           }
-          await refreshSession();
           showStatus("Checking administrator permissions with Supabase…");
+          supabaseClient.auth.onAuthStateChange((event, nextSession) => {
+            session = nextSession;
+            if (event === "SIGNED_OUT") {
+              adminUserId = null;
+              content.hidden = true;
+              delete document.documentElement.dataset.liquindoAdminUserId;
+              showStatus("Your sign-in has ended. Sign in again to use Admin Tools.", true);
+            }
+          });
           const result = await api("/rest/v1/rpc/is_admin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -360,8 +341,10 @@
         signOutButton.disabled = true;
         showStatus("Signing out…");
         try {
-          if (session?.access_token) await api("/auth/v1/logout", { method:"POST" });
-          localStorage.removeItem(STORAGE_KEY);
+          if (supabaseClient) {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) throw error;
+          }
           adminUserId = null;
           content.hidden = true;
           delete document.documentElement.dataset.liquindoAdminUserId;
@@ -372,6 +355,22 @@
         }
       });
       verify();
+      window.addEventListener("pageshow", async () => {
+        if (!supabaseClient || document.visibilityState === "hidden") return;
+        try {
+          const { data, error } = await supabaseClient.auth.getSession();
+          if (error) throw error;
+          session = data.session;
+          if (!session?.user?.id) {
+            adminUserId = null;
+            content.hidden = true;
+            delete document.documentElement.dataset.liquindoAdminUserId;
+            showStatus("Your sign-in has ended. Sign in again to use Admin Tools.", true);
+          }
+        } catch (error) {
+          showStatus(error.message || "Could not restore your administrator session.", true);
+        }
+      });
     })();
   </script>
   <script>
