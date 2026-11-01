@@ -1,6 +1,6 @@
 /* LiquinWiki Markup Standard (LMS) — shared by published articles and editor previews. */
 .wiki-article,.wiki-article [data-wiki-article],.editor-canvas,.revision-preview{font-size:16px;line-height:1.65;overflow-wrap:anywhere}
-.wiki-article p,.wiki-article li,.wiki-article td,.wiki-article th,.wiki-article figcaption,.wiki-article blockquote,.editor-canvas p,.editor-canvas li,.editor-canvas td,.editor-canvas th,.editor-canvas figcaption,.revision-preview p,.revision-preview li{font-size:1rem;line-height:inherit}
+.wiki-article p,.wiki-article li,.wiki-article td,.wiki-article th,.wiki-article figcaption,.wiki-article blockquote,.editor-canvas p,.editor-canvas li,.editor-canvas td,.editor-canvas th,.editor-canvas figcaption,.revision-preview p,.revision-preview li{font-size:1rem!important;line-height:1.65!important}
 .wiki-article img,.editor-canvas img,.revision-preview img{max-width:100%;height:auto}
 .wiki-article figure,.editor-canvas figure,.revision-preview figure{margin:1rem 0}
 .wiki-article .wiki-image,.editor-canvas .wiki-image,.revision-preview .wiki-image{display:table;max-width:min(100%,22rem);margin:.35rem 0 1rem 1.25rem;padding:.35rem;border:1px solid rgba(199,164,81,.55);background:rgba(10,24,45,.28)}
