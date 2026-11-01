@@ -201,12 +201,34 @@
           return true;
         };
         if (revealTarget()) return;
+        const sectionName = link.querySelector("h2")?.textContent || "administration section";
+        showStatus("Opening " + sectionName + "…");
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          observer.disconnect();
+          window.clearTimeout(timeoutId);
+        };
         const observer = new MutationObserver(() => {
-          if (revealTarget()) observer.disconnect();
+          if (revealTarget()) finish();
         });
-        observer.observe(content, { childList: true, subtree: true });
-        window.setTimeout(() => observer.disconnect(), 8000);
-        showStatus("Opening "+(link.querySelector("h2")?.textContent||"administration section")+"…");
+        // The section is inserted by admin-center.js, while its parent remains
+        // hidden until the separate administrator check completes. Observe both
+        // insertion and the parent's hidden attribute so an early tap is not lost.
+        observer.observe(content, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["hidden"]
+        });
+        const timeoutId = window.setTimeout(() => {
+          if (revealTarget()) finish();
+          else {
+            finish();
+            showStatus("Could not open " + sectionName + ". The administration sections have not finished loading. Reload Admin Tools and try again.", true);
+          }
+        }, 15000);
       }, true);
 
       const showStatus = (text, error = false) => {
