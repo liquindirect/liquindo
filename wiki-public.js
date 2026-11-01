@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import DOMPurify from "https://esm.sh/dompurify@3";
-import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js?v=20261024-markup-v5";
+import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js?v=20261101-lms1";
 
 
 const sanitizeOptions = {
