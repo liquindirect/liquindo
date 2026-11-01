@@ -117,7 +117,15 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    const h=document.createElement("h3");h.textContent=p.display_name||"Unnamed profile";
    const meta=document.createElement("p");meta.className="ac-meta";
    const roleOptions=[["member","Member"],["admin","Administrator"],["liquinwiki_editor","LiquinWiki Editor"],["liquinwiki_trusted_editor","LiquinWiki Trusted Editor"]];
-   const currentRole=p.role==="admin"?"admin":(p.wiki_role==="liquinwiki_editor"||p.wiki_role==="liquinwiki_trusted_editor"?p.wiki_role:"member");
+   const roleDescriptions={
+    member:"Standard website access. No administrative tools or special LiquinWiki editing permissions.",
+    admin:"Administrator access to Admin Tools and account management. This role cannot be combined with a LiquinWiki editor role.",
+    liquinwiki_editor:"Normal member access plus the ability to edit articles and submit new articles or changes for approval.",
+    liquinwiki_trusted_editor:"Normal member access plus the ability to create, edit and publish LiquinWiki articles directly."
+   };
+   const wikiRole=p.wiki_role==="liquinwiki_editor"||p.wiki_role==="liquinwiki_trusted_editor"?p.wiki_role:"none";
+   let roleConflict=p.role==="admin"&&wikiRole!=="none";
+   let currentRole=p.role==="admin"?"admin":wikiRole!=="none"?wikiRole:"member";
    const roleLabel=value=>roleOptions.find(([key])=>key===value)?.[1]||"Member";
    const updateMeta=()=>{meta.textContent=p.id+" · Assigned role: "+roleLabel(currentRole);};
    updateMeta();
@@ -128,17 +136,24 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    role.value=currentRole;
    if(p.id===adminId)role.disabled=true;
    const roleField=document.createElement("label");roleField.textContent="Account role";roleField.append(role);f.append(roleField);
+   const explanation=document.createElement("p");explanation.className="ac-muted";explanation.setAttribute("aria-live","polite");
+   const updateExplanation=()=>{explanation.textContent=roleDescriptions[role.value];};
+   updateExplanation();
+   const conflict=document.createElement("p");conflict.className="ac-warn";
+   conflict.textContent="This account has conflicting legacy permissions: Administrator and "+roleLabel(wikiRole)+". Saving the displayed Administrator role will remove the extra Wiki permission.";
+   conflict.hidden=!roleConflict;
    const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save role";
-   const updateSaveState=()=>{save.disabled=role.value===currentRole||p.id===adminId;};
-   role.addEventListener("change",updateSaveState);
+   const updateSaveState=()=>{save.disabled=(role.value===currentRole&&!roleConflict)||p.id===adminId;};
+   role.addEventListener("change",()=>{updateExplanation();updateSaveState();});
    updateSaveState();
    save.onclick=async()=>{
     const selected=role.value;
-    if(selected===currentRole)return;
+    if(selected===currentRole&&!roleConflict)return;
     const nextWebsite=selected==="admin"?"admin":"member";
     const nextWiki=selected==="liquinwiki_editor"||selected==="liquinwiki_trusted_editor"?selected:"none";
-    if(!window.confirm("Change "+(p.display_name||"this account")+"'s role from "+roleLabel(currentRole)+" to "+roleLabel(selected)+"?")){
-     role.value=currentRole;updateSaveState();return;
+    const fromLabel=roleConflict?"Administrator with conflicting Wiki permission":roleLabel(currentRole);
+    if(!window.confirm("Change "+(p.display_name||"this account")+"'s role from "+fromLabel+" to "+roleLabel(selected)+"?")){
+     role.value=currentRole;updateExplanation();updateSaveState();return;
     }
     save.disabled=true;role.disabled=true;
     say("ac-accounts-status","Saving account role…");
@@ -146,6 +161,7 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
      const result=await db.rpc("admin_update_account_roles",{p_user_id:p.id,p_website_role:nextWebsite,p_wiki_role:nextWiki});
      if(result.error)throw result.error;
      Object.assign(p,result.data||{});
+     currentRole=selected;roleConflict=false;role.value=currentRole;updateMeta();updateExplanation();conflict.hidden=true;
      say("ac-accounts-status","Role saved for "+(p.display_name||"this account")+".");
      await Promise.allSettled([overview(),loadProfiles(true)]);
     }catch(error){
@@ -156,7 +172,7 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
     }
    };
    f.append(save);
-   card.append(h,meta,details,f);o.append(card);
+   card.append(h,meta,details,conflict,f,explanation);o.append(card);
   });
  }
  function local(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
