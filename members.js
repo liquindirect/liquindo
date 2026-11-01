@@ -24,6 +24,7 @@ let savedProfileValues = null;
 let currentUser = null;
 let directoryMembers = [];
 let directoryLoadRequest = 0;
+let profileLoadRequest = 0;
 let showDirectoryBio = true;
 const t = (key, values = {}) => {
   let value = window.languageManager?.get(key) || key;
@@ -43,16 +44,14 @@ function showStatus(element, key, isError = false, values = {}) {
   element.textContent = t(key, values);
   element.style.color = isError ? "#b42318" : "var(--teal)";
 }
-async function loadProfile() {
+async function loadProfile(requestId) {
   if (!currentUser) return;
+  const userId = currentUser.id;
   profileEmail.textContent = currentUser.email || "Signed-in user";
   const { data, error } = await supabase.from("profiles")
-    .select("id, display_name, role, bio").eq("id", currentUser.id).maybeSingle();
-  if (error) {
-    showStatus(profileStatus, "dir.profileError", true);
-    return;
-  }
-  if (!data) {
+    .select("id, display_name, role, bio").eq("id", userId).maybeSingle();
+  if (requestId !== profileLoadRequest || currentUser?.id !== userId) return;
+  if (error || !data) {
     showStatus(profileStatus, "dir.profileError", true);
     return;
   }
@@ -222,30 +221,32 @@ logoutButton.addEventListener("click", async () => {
   else window.location.href = "login.html";
   logoutButton.disabled = false;
 });
-async function initialize() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error || !session?.user) {
-    showState("signed-out");
-    await loadDirectory();
-    return;
-  }
-  currentUser = session.user;
-  showState("signed-in");
-  await loadProfile();
-  await loadDirectory();
-}
+let authStateRequest = 0;
 supabase.auth.onAuthStateChange((_event, session) => {
-  if (!session?.user) {
-    currentUser = null;
-    showState("signed-out");
-  } else if (currentUser?.id !== session.user.id) {
-    currentUser = session.user;
+  const request = ++authStateRequest;
+  const nextUser = session?.user || null;
+  // Never issue Supabase queries from inside its auth callback: defer them
+  // until the SDK has released its internal auth lock.
+  Promise.resolve().then(async () => {
+    if (request !== authStateRequest) return;
+    if (!nextUser) {
+      currentUser = null;
+      profileLoadRequest++;
+      showState("signed-out");
+      await loadDirectory();
+      return;
+    }
+    if (currentUser?.id === nextUser.id) return;
+    currentUser = nextUser;
+    const profileRequest = ++profileLoadRequest;
     showState("signed-in");
-    loadProfile();
-    loadDirectory();
-  }
+    await Promise.all([loadProfile(profileRequest), loadDirectory()]);
+  }).catch(error => {
+    if (request !== authStateRequest) return;
+    console.error("Could not refresh member account data:", error);
+    showState(nextUser ? "signed-in" : "signed-out");
+  });
 });
-await initialize();
 
 document.addEventListener("liquindo-language-changed", () => {
   document.querySelectorAll("[data-i18n-message-key]").forEach((element) => {
