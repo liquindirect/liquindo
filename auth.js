@@ -463,7 +463,5 @@ logoutButton.addEventListener("click", async () => {
   accountMessage.textContent = window.languageManager?.get(accountMessage.dataset.i18nMessageKey) || (error ? "We could not complete that account request. Check your details and try again." : "You have been logged out.");
   logoutButton.disabled = false;
 });
+// INITIAL_SESSION supplies the restored session; do not race it with a second getSession() call.
 supabase.auth.onAuthStateChange((_event, session) => showSession(session));
-const { data: { session }, error } = await supabase.auth.getSession();
-if (error) setMessage("We could not complete that account request. Check your details and try again.", true);
-showSession(session);
