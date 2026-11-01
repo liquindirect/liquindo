@@ -55,20 +55,43 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
  document.querySelector('a[href="#ac-visitor-logs"]')?.addEventListener("click",loadVisitorLogs);
  async function count(t,c){const r=await db.from(t).select(c,{count:"exact",head:true});if(r.error)throw r.error;return r.count||0;}
  async function overview(){const o=$("ac-stats");o.replaceChildren();try{const v=await Promise.all([count("profiles","id"),count("wiki_pages","id"),db.from("wiki_revisions").select("id",{count:"exact",head:true}).eq("status","pending"),count("site_settings","setting_key"),db.from("admin_incidents").select("id",{count:"exact",head:true}).neq("status","resolved")]);if(v[2].error)throw v[2].error;if(v[4].error)throw v[4].error;["Profiles","Wiki articles","Pending revisions","Site settings","Open incidents"].forEach((s,i)=>{const e=document.createElement("div");e.className="ac-stat";const b=document.createElement("strong");b.textContent=String([v[0],v[1],v[2].count||0,v[3],v[4].count||0][i]);const t=document.createElement("span");t.textContent=s;e.append(b,t);o.append(e);});say("ac-overview-status","Refreshed "+new Date().toLocaleTimeString());}catch(e){say("ac-overview-status",e.message,true);}}
- let profilesOffset=0,profilesTotal=0,profilesLoading=false;
+ let profilesOffset=0,profilesTotal=0,profilesLoading=false,profilesQueued=false,profilesQueuedReset=false;
  async function loadProfiles(reset=false){
-  if(profilesLoading)return;profilesLoading=true;
-  const more=$("ac-accounts-load-more"),wikiMore=$("ac-wiki-role-load-more");if(more)more.disabled=true;if(wikiMore)wikiMore.disabled=true;
+  if(profilesLoading){profilesQueued=true;profilesQueuedReset=profilesQueuedReset||reset;return;}
+  profilesLoading=true;
+  const more=$("ac-accounts-load-more"),wikiMore=$("ac-wiki-role-load-more");
+  if(more)more.disabled=true;if(wikiMore)wikiMore.disabled=true;
+  let nextReset=reset;
   try{
-   if(reset){profiles=[];profilesOffset=0;profilesTotal=0;}
-   const r=await db.rpc("admin_list_profiles",{p_offset:profilesOffset,p_limit:100,p_search:$("ac-account-filter").value.trim()||null});
-   if(r.error)throw r.error;
-   const payload=r.data||{},batch=Array.isArray(payload.profiles)?payload.profiles:[];profiles=reset?batch:profiles.concat(batch);profilesOffset+=batch.length;profilesTotal=Number(payload.total)||0;
-   renderProfiles();renderWikiRoleProfiles();
-   say("ac-accounts-status","Showing "+profiles.length+" of "+profilesTotal+" accounts.");
-   if(more){more.hidden=profilesOffset>=profilesTotal;more.disabled=profilesOffset>=profilesTotal;}if(wikiMore){wikiMore.hidden=profilesOffset>=profilesTotal;wikiMore.disabled=profilesOffset>=profilesTotal;}
+   do{
+    profilesQueued=false;
+    const shouldReset=nextReset||profilesQueuedReset;
+    profilesQueuedReset=false;nextReset=false;
+    if(shouldReset){profiles=[];profilesOffset=0;profilesTotal=0;}
+    const search=$("ac-account-filter").value.trim()||null;
+    const offset=profilesOffset;
+    const r=await db.rpc("admin_list_profiles",{p_offset:offset,p_limit:100,p_search:search});
+    if(r.error)throw r.error;
+    // Never let an older response overwrite results for a newer search.
+    if(search!==($("ac-account-filter").value.trim()||null)){
+      profilesQueued=true;profilesQueuedReset=true;continue;
+    }
+    const payload=r.data||{},batch=Array.isArray(payload.profiles)?payload.profiles:[];
+    profiles=shouldReset?batch:profiles.concat(batch);
+    profilesOffset=offset+batch.length;profilesTotal=Number(payload.total)||0;
+    renderProfiles();renderWikiRoleProfiles();
+    say("ac-accounts-status","Showing "+profiles.length+" of "+profilesTotal+" accounts.");
+    if(more)more.hidden=profilesOffset>=profilesTotal;
+    if(wikiMore)wikiMore.hidden=profilesOffset>=profilesTotal;
+   }while(profilesQueued);
   }catch(e){say("ac-accounts-status",e.message||"Could not load accounts.",true);}
-  finally{profilesLoading=false;if(more&&profilesOffset<profilesTotal)more.disabled=false;if(wikiMore&&profilesOffset<profilesTotal)wikiMore.disabled=false;}
+  finally{
+   profilesLoading=false;
+   const canLoadMore=profilesOffset<profilesTotal;
+   if(more)more.disabled=!canLoadMore;
+   if(wikiMore)wikiMore.disabled=!canLoadMore;
+   if(profilesQueued){const queuedReset=profilesQueuedReset;profilesQueued=false;profilesQueuedReset=false;queueMicrotask(()=>loadProfiles(queuedReset));}
+  }
  }
  function renderProfiles(){
   const o=$("ac-accounts-list");o.replaceChildren();
@@ -125,7 +148,8 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
     try{
      const result=await db.rpc("set_liquinwiki_role",{p_user_id:p.id,p_role:next});if(result.error)throw result.error;
      p.wiki_role=next;
-     say("ac-wiki-role-status","LiquinWiki role updated for "+(p.display_name||"this account")+": "+labelText+".");
+     meta.textContent=p.id+" · Current wiki role: "+(next==="liquinwiki_editor"?"Wiki Editor":next==="liquinwiki_trusted_editor"?"Trusted Editor":"None");
+     say("ac-wiki-role-status","LiquinWiki role saved for "+(p.display_name||"this account")+". Refreshing the account list…");
      await loadProfiles(true);
     }catch(error){select.value=current;say("ac-wiki-role-status",error.message||"Could not assign wiki role.",true);}
     finally{save.disabled=false;select.disabled=false;}
