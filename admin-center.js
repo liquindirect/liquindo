@@ -142,37 +142,41 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    const conflict=document.createElement("p");conflict.className="ac-warn";
    conflict.textContent="This account has conflicting legacy permissions: Administrator and "+roleLabel(wikiRole)+". Saving the displayed Administrator role will remove the extra Wiki permission.";
    conflict.hidden=!roleConflict;
-   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save role";
-   const updateSaveState=()=>{save.disabled=(role.value===currentRole&&!roleConflict)||p.id===adminId;};
-   role.addEventListener("change",()=>{updateExplanation();updateSaveState();});
+   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save assigned role";save.setAttribute("aria-label","Save assigned role for "+(p.display_name||"this account"));
+   const rowStatus=document.createElement("p");rowStatus.className="ac-status";rowStatus.setAttribute("role","status");rowStatus.setAttribute("aria-live","polite");
+   const updateSaveState=()=>{save.disabled=p.id===adminId;save.textContent=role.value===currentRole&&!roleConflict?"Role unchanged — save":"Save assigned role";};
+   role.addEventListener("change",()=>{updateExplanation();updateSaveState();rowStatus.textContent=role.value===currentRole&&!roleConflict?"No role changes to save.":"Unsaved role change: "+roleLabel(role.value);});
    updateSaveState();
    save.onclick=async()=>{
     const selected=role.value;
-    if(selected===currentRole&&!roleConflict)return;
+    if(selected===currentRole&&!roleConflict){rowStatus.textContent="No changes to save.";return;}
     const nextWebsite=selected==="admin"?"admin":"member";
     const nextWiki=selected==="liquinwiki_editor"||selected==="liquinwiki_trusted_editor"?selected:"none";
     const fromLabel=roleConflict?"Administrator with conflicting Wiki permission":roleLabel(currentRole);
     if(!window.confirm("Change "+(p.display_name||"this account")+"'s role from "+fromLabel+" to "+roleLabel(selected)+"?")){
-     role.value=currentRole;updateExplanation();updateSaveState();return;
+     role.value=currentRole;updateExplanation();updateSaveState();rowStatus.textContent="Change cancelled.";return;
     }
-    save.disabled=true;role.disabled=true;
+    save.disabled=true;role.disabled=true;save.textContent="Saving…";rowStatus.textContent="Saving this account's role…";
     say("ac-accounts-status","Saving account role…");
     try{
      const result=await db.rpc("admin_update_account_roles",{p_user_id:p.id,p_website_role:nextWebsite,p_wiki_role:nextWiki});
      if(result.error)throw result.error;
-     Object.assign(p,result.data||{});
+     if(!result.data||result.data.role!==nextWebsite||result.data.wiki_role!==nextWiki)throw new Error("Supabase did not confirm the requested role. Reload the account list before trying again.");
+     Object.assign(p,result.data);
      currentRole=selected;roleConflict=false;role.value=currentRole;updateMeta();updateExplanation();conflict.hidden=true;
+     rowStatus.textContent="Saved successfully. Assigned role: "+roleLabel(currentRole)+".";
      say("ac-accounts-status","Role saved for "+(p.display_name||"this account")+".");
      await Promise.allSettled([overview(),loadProfiles(true)]);
     }catch(error){
      role.value=currentRole;
+     rowStatus.textContent="Could not save: "+(error.message||"Unknown error. Your previous role remains selected.");
      say("ac-accounts-status",error.message||"Could not save account role.",true);
     }finally{
      role.disabled=p.id===adminId;updateSaveState();
     }
    };
    f.append(save);
-   card.append(h,meta,details,conflict,f,explanation);o.append(card);
+   card.append(h,meta,details,conflict,f,explanation,rowStatus);o.append(card);
   });
  }
  function local(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
