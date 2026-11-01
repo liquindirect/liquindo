@@ -1,9 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabase } from "./supabase-client.js";
 
-const supabase = createClient(
-  "https://uivjovkvpskvvazznlyr.supabase.co",
-  "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-);
 
 const loadingPanel = document.querySelector("#members-loading");
 const signedOutPanel = document.querySelector("#members-signed-out");
