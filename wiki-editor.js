@@ -228,6 +228,122 @@ function showMessage(message, isError = false) {
   status.textContent = message;
   status.style.color = isError ? "#b42318" : "var(--teal)";
 }
+const wikiImageUploadButton = $("#wiki-image-upload");
+const wikiImageFileInput = $("#wiki-image-file");
+const wikiImageUploadStatus = $("#wiki-image-upload-status");
+let savedMarkupSelection = null;
+let savedCanvasRange = null;
+
+function cleanWikiImageOption(value) {
+  return String(value || "").replace(/[|\[\]\r\n]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
+}
+function rememberImageInsertionPoint() {
+  if (wikiMarkupMode) {
+    savedMarkupSelection = { start: markupEditor.selectionStart, end: markupEditor.selectionEnd };
+    return;
+  }
+  const selection = window.getSelection();
+  savedCanvasRange = selection && selection.rangeCount && canvas.contains(selection.anchorNode)
+    ? selection.getRangeAt(0).cloneRange()
+    : null;
+}
+function insertUploadedImage(markup, publicUrl, altText) {
+  if (wikiMarkupMode) {
+    const start = savedMarkupSelection?.start ?? markupEditor.selectionStart;
+    const end = savedMarkupSelection?.end ?? markupEditor.selectionEnd;
+    const before = markupEditor.value.slice(0, start);
+    const after = markupEditor.value.slice(end);
+    const prefix = before && !before.endsWith("\n") ? "\n" : "";
+    const suffix = after && !after.startsWith("\n") ? "\n" : "";
+    markupEditor.setRangeText(prefix + markup + suffix, start, end, "end");
+    markupEditor.focus();
+    markupEditor.dispatchEvent(new Event("input", { bubbles: true }));
+    return;
+  }
+  const wrapper = document.createElement("span");
+  wrapper.className = "wiki-image wiki-image-right";
+  const image = document.createElement("img");
+  image.src = publicUrl;
+  image.alt = altText;
+  image.loading = "lazy";
+  image.style.maxWidth = "320px";
+  const caption = document.createElement("span");
+  caption.className = "wiki-image-caption";
+  wrapper.append(image, caption);
+  canvas.focus();
+  const selection = window.getSelection();
+  if (savedCanvasRange && selection) {
+    selection.removeAllRanges();
+    selection.addRange(savedCanvasRange);
+    savedCanvasRange.deleteContents();
+    savedCanvasRange.insertNode(wrapper);
+    savedCanvasRange.setStartAfter(wrapper);
+    savedCanvasRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(savedCanvasRange);
+  } else {
+    canvas.append(wrapper);
+  }
+  canvas.dispatchEvent(new Event("input", { bubbles: true }));
+}
+wikiImageUploadButton?.addEventListener("click", () => {
+  if (!user || !isWikiEditor || (!canEditExistingArticles && !canCreateArticles)) {
+    showMessage("LiquinWiki editing permission is required to upload article images.", true);
+    return;
+  }
+  rememberImageInsertionPoint();
+  wikiImageFileInput.click();
+});
+wikiImageFileInput?.addEventListener("change", async () => {
+  const file = wikiImageFileInput.files?.[0];
+  if (!file) return;
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+  if (!allowedTypes.has(file.type)) {
+    wikiImageUploadStatus.textContent = "Use a JPG, PNG, WebP, or GIF image.";
+    wikiImageFileInput.value = "";
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    wikiImageUploadStatus.textContent = "Image is too large. The maximum size is 10 MB.";
+    wikiImageFileInput.value = "";
+    return;
+  }
+  const defaultAlt = file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 180);
+  const chosenAlt = window.prompt("Describe the image for accessibility (alt text):", defaultAlt);
+  if (chosenAlt === null) {
+    wikiImageFileInput.value = "";
+    return;
+  }
+  const altText = cleanWikiImageOption(chosenAlt) || "Article image";
+  const extension = ({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" })[file.type];
+  const safeId = crypto.randomUUID();
+  const storagePath = user.id + "/" + Date.now() + "-" + safeId + "." + extension;
+  wikiImageUploadButton.disabled = true;
+  wikiImageUploadStatus.textContent = "Uploading image…";
+  try {
+    const { data, error } = await withTimeout(
+      supabase.storage.from("liquinwiki-images").upload(storagePath, file, {
+        cacheControl: "31536000",
+        contentType: file.type,
+        upsert: false
+      }),
+      "Image upload",
+      60000
+    );
+    if (error) throw error;
+    const { data: publicData } = supabase.storage.from("liquinwiki-images").getPublicUrl(data.path);
+    if (!publicData?.publicUrl) throw new Error("The image uploaded, but its public URL could not be created.");
+    const markup = "[[File:" + publicData.publicUrl + "|right|320px|alt=" + altText + "]]";
+    insertUploadedImage(markup, publicData.publicUrl, altText);
+    wikiImageUploadStatus.textContent = "Image uploaded and inserted. Remember to submit the article.";
+  } catch (error) {
+    wikiImageUploadStatus.textContent = error.message || "Image upload failed. Try again.";
+  } finally {
+    wikiImageUploadButton.disabled = false;
+    wikiImageFileInput.value = "";
+  }
+});
+
 function safeHtml(html) {
   return DOMPurify.sanitize(html || "", {
     USE_PROFILES: { html: true },
@@ -751,7 +867,7 @@ submitButton.addEventListener("click", async () => {
       showMessage("Markup needs fixing: " + diagnostics.errors.join(" "), true);
       return;
     }
-    if (diagnostics.warnings.length && !window.confirm("Markup checks found possible issues:\\n\\n" + diagnostics.warnings.join("\\n") + "\\n\\nSubmit anyway?")) return;
+    if (diagnostics.warnings.length && !window.confirm("Markup checks found possible issues:\n\n" + diagnostics.warnings.join("\n") + "\n\nSubmit anyway?")) return;
   }
   if (creating && (!title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
     showMessage("Enter a title and a URL slug using lowercase letters, numbers, and single hyphens.", true);
