@@ -38,7 +38,20 @@ function renderInline(source, titleToSlug = {}, refs = null) {
       return '<sup class="reference" id="cite_ref-' + ref.id + '-' + ref.uses + '"><a href="#cite_note-' + ref.id + '">' + ref.id + '</a></sup>';
     });
   }
-  text = text.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
+  // MediaWiki-compatible image syntax: [[File:https://...|thumb|right|250px|alt=...|caption]].
+  text = text.replace(/\\[\\[(?:File|Image):([^\\]|]+)((?:\\|[^\\]]*)?)\\]\\]/gi, (_, rawUrl, rawOptions) => {
+    const url = decodeEntities(rawUrl).trim();
+    if (!/^https?:\\/\\//i.test(url)) return "";
+    const options = String(rawOptions || "").split("|").map(item => item.trim()).filter(Boolean);
+    const alignment = options.find(item => /^(left|right|center)$/i.test(item))?.toLowerCase() || "right";
+    const widthOption = options.find(item => /^\\d{2,4}px$/i.test(item));
+    const width = widthOption ? Math.min(1200, Math.max(80, parseInt(widthOption, 10))) : 320;
+    const altOption = options.find(item => /^alt=/i.test(item));
+    const alt = altOption ? altOption.slice(4) : "";
+    const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
+    return '<figure class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>';
+  });
+  text = text.replace(/\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
   text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) => internalLink(decodeEntities(target), null, titleToSlug));
   text = text.replace(/\[(https?:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/g, (_, url, label) =>
     '<a href="' + url + '" rel="nofollow noopener noreferrer" target="_blank">' + (label || url) + "</a>");
@@ -171,6 +184,23 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
       continue;
     }
     if (/^<references\s*\/\s*>$/i.test(line)) { flushParagraph(); closeList(); output.push("__WIKI_REFERENCES_MARKER__"); continue; }
+    // Gallery blocks accept either <gallery>...</gallery> or {{Gallery ... }}.
+    if (/^<gallery\s*>$/i.test(line) || /^\{\{Gallery\s*$/i.test(line)) {
+      flushParagraph(); closeList();
+      const html = [];
+      while (i + 1 < lines.length) {
+        const galleryLine = lines[++i].trim();
+        if (/^<\/gallery\s*>$/i.test(galleryLine) || galleryLine === "}}") break;
+        if (!galleryLine) continue;
+        const parts = galleryLine.replace(/^\*\s*/, "").split("|");
+        const url = parts.shift().trim().replace(/^(?:File|Image):/i, "");
+        if (!/^https?:\/\//i.test(url)) continue;
+        const caption = parts.join(" ").trim();
+        html.push('<figure class="wiki-gallery-item"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(caption) + '" loading="lazy"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>');
+      }
+      if (html.length) output.push('<div class="wiki-gallery" role="group" aria-label="Image gallery">' + html.join("") + '</div>');
+      continue;
+    }
     if (/^\{\{Infobox(?:\s+[^}]*)?$/i.test(line)) {
       flushParagraph(); closeList();
       const block = [line];
@@ -276,4 +306,42 @@ export function looksLikeWikiMarkup(source) {
   if (/<\/?(?:p|div|section|table|img|h[1-6]|ul|ol|li|strong|em|a|blockquote|figure)\b[^>]*>/i.test(text)) return false;
   return /^(?:={2,6}\s|#(?:REDIRECT|redirect)\s|\{\{(?:Infobox|Short description|See also|Disambiguation)|\[\[|[*#]+\s|\{\||----)/im.test(text) ||
     /\[\[Category:|<\/?ref(?:\s|>|\/)|<references\s*\//im.test(text);
+}
+
+
+// LiquinWiki Markup Standard (LMS) diagnostics. Checks never rewrite stored article text.
+export function validateWikiMarkup(source) {
+  const text = String(source ?? "");
+  const errors = [];
+  const warnings = [];
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  const stack = [];
+  const namedRefs = new Set();
+  const usedRefs = new Set();
+  lines.forEach((raw, index) => {
+    const line = raw.trim();
+    const lineNumber = index + 1;
+    if (/^\{\{Infobox(?:\s+[^}]*)?$/i.test(line)) stack.push({ type: "Infobox", line: lineNumber });
+    if (/^\{\{Gallery\s*$/i.test(line) || /^<gallery\s*>$/i.test(line)) stack.push({ type: "Gallery", line: lineNumber });
+    if (line.startsWith("{|")) stack.push({ type: "table", line: lineNumber });
+    if (line === "}}" || line === "|}") {
+      const expected = line === "|}" ? "table" : null;
+      const position = expected ? stack.map(item => item.type.toLowerCase()).lastIndexOf(expected) : stack.length - 1;
+      if (position >= 0) stack.splice(position, 1);
+    }
+    if (/^<\/gallery\s*>$/i.test(line)) {
+      const position = stack.map(item => item.type).lastIndexOf("Gallery");
+      if (position >= 0) stack.splice(position, 1);
+      else warnings.push("Line " + lineNumber + ": closing gallery tag has no matching opening tag.");
+    }
+    for (const match of line.matchAll(/<ref\s+name=["']([^"']+)["'][^>]*>([\s\S]*?)<\/ref>/gi)) namedRefs.add(match[1]);
+    for (const match of line.matchAll(/<ref\s+name=["']([^"']+)["']\s*\/>/gi)) usedRefs.add(match[1]);
+    const fileMatch = line.match(/\[\[(?:File|Image):([^|\]]+)/i);
+    if (fileMatch && !/^https?:\/\//i.test(fileMatch[1].trim())) warnings.push("Line " + lineNumber + ": image links must use an http:// or https:// image URL.");
+    if (/^={1,}$/.test(line)) warnings.push("Line " + lineNumber + ": heading markup needs at least two matching equals signs.");
+  });
+  for (const item of stack) errors.push("Unclosed " + item.type + " block opened on line " + item.line + ".");
+  for (const name of usedRefs) if (!namedRefs.has(name)) warnings.push('Named reference "' + name + '" is used but has no definition.');
+  if (/<script\b|javascript:/i.test(text)) errors.push("Scripts and javascript: URLs are not permitted in article markup.");
+  return { valid: errors.length === 0, errors, warnings };
 }
