@@ -51,7 +51,7 @@ function renderInline(source, titleToSlug = {}, refs = null) {
     const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
     return '<figure class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>';
   });
-  text = text.replace(/\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
+  text = text.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
   text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) => internalLink(decodeEntities(target), null, titleToSlug));
   text = text.replace(/\[(https?:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/g, (_, url, label) =>
     '<a href="' + url + '" rel="nofollow noopener noreferrer" target="_blank">' + (label || url) + "</a>");
