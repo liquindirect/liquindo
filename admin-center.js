@@ -49,7 +49,7 @@ import { supabase } from "./supabase-client.js";
  let profilesOffset=0,profilesTotal=0,profilesLoading=false;
  async function loadProfiles(reset=false){
   if(profilesLoading)return;profilesLoading=true;
-  const more=$("ac-accounts-load-more");if(more)more.disabled=true;
+  const more=$("ac-accounts-load-more"),wikiMore=$("ac-wiki-role-load-more");if(more)more.disabled=true;if(wikiMore)wikiMore.disabled=true;
   try{
    if(reset){profiles=[];profilesOffset=0;profilesTotal=0;}
    const r=await db.rpc("admin_list_profiles",{p_offset:profilesOffset,p_limit:100,p_search:$("ac-account-filter").value.trim()||null});
