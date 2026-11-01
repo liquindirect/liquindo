@@ -278,23 +278,84 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
 
 export function htmlToWikiMarkup(html) {
   const doc = new DOMParser().parseFromString(String(html ?? ""), "text/html");
+  const noteText = new Map();
+  for (const note of doc.querySelectorAll(".wiki-references li[id^='cite_note-']")) {
+    const id = note.id.replace("cite_note-", "");
+    const clone = note.cloneNode(true);
+    clone.querySelectorAll(".reference-backlink").forEach(link => link.remove());
+    noteText.set(id, (clone.textContent || "").trim());
+  }
+  const referenceUses = new Map();
   const convert = (node) => {
     if (node.nodeType === Node.TEXT_NODE) return node.nodeValue || "";
     if (node.nodeType !== Node.ELEMENT_NODE) return "";
     const tag = node.tagName.toLowerCase();
-    const inner = [...node.childNodes].map(convert).join("");
-    if (/^h[2-6]$/.test(tag)) return "\n" + "=".repeat(Number(tag.slice(1))) + " " + inner.trim() + " " + "=".repeat(Number(tag.slice(1))) + "\n";
-    if (tag === "p" || tag === "div" || tag === "section") return inner + "\n\n";
-    if (tag === "strong" || tag === "b") return "'''" + inner + "'''";
-    if (tag === "em" || tag === "i") return "''" + inner + "''";
-    if (tag === "li") return "* " + inner + "\n";
+    if (node.classList.contains("wiki-references")) return "";
+    if (node.classList.contains("wiki-categories")) {
+      return [...node.querySelectorAll("a")].map(link => "[[Category:" + link.textContent.trim() + "]]").join("\n") + "\n";
+    }
+    if (node.matches("sup.reference")) {
+      const id = node.querySelector("a[href^='#cite_note-']")?.getAttribute("href")?.slice("#cite_note-".length);
+      if (!id || !noteText.has(id)) return "";
+      const count = referenceUses.get(id) || 0;
+      referenceUses.set(id, count + 1);
+      const name = "lms-ref-" + id.replace(/[^a-z0-9_-]/gi, "");
+      return count ? '<ref name="' + name + '" />' : '<ref name="' + name + '">' + noteText.get(id) + "</ref>";
+    }
+    if (node.classList.contains("wiki-gallery")) {
+      const items = [...node.querySelectorAll(".wiki-gallery-item")].map(item => {
+        const image = item.querySelector("img");
+        const caption = item.querySelector("figcaption")?.textContent?.trim() || image?.alt || "";
+        return image?.src ? image.src + (caption ? " | " + caption : "") : "";
+      }).filter(Boolean);
+      return items.length ? "{{Gallery\n" + items.join("\n") + "\n}}\n\n" : "";
+    }
+    if (node.matches("figure.wiki-image, span.wiki-image")) {
+      const image = node.querySelector("img");
+      if (!image?.src) return "";
+      const alignment = ["left", "right", "center"].find(value => node.classList.contains("wiki-image-" + value)) || "right";
+      const width = image.style.maxWidth.match(/(\d{2,4})px/)?.[1] || "320";
+      const caption = node.querySelector("figcaption,.wiki-image-caption")?.textContent?.trim() || "";
+      return "[[File:" + image.src + "|" + alignment + "|" + width + "px|alt=" + (image.alt || caption) + "|" + caption + "]]";
+    }
+    if (tag === "img") {
+      return node.src ? "[[File:" + node.src + "|right|320px|alt=" + (node.alt || "") + "]]" : "";
+    }
+    if (tag === "table") {
+      const rows = [...node.querySelectorAll("tr")];
+      if (node.classList.contains("infobox")) {
+        const title = node.querySelector("caption")?.textContent?.trim() || "Information";
+        const fields = rows.map(row => {
+          const cells = [...row.children];
+          return cells.length >= 2 ? "| " + cells[0].textContent.trim() + " = " + cells.slice(1).map(cell => cell.textContent.trim()).join(" ") : "";
+        }).filter(Boolean);
+        return "{{Infobox " + title + "\n" + fields.join("\n") + "\n}}\n\n";
+      }
+      const tableRows = rows.map(row => {
+        const cells = [...row.children].map(cell => (cell.tagName.toLowerCase() === "th" ? "!" : "|") + " " + [...cell.childNodes].map(convert).join("").trim());
+        return "|-\n" + cells.join(" !! ");
+      });
+      return tableRows.length ? '{| class="wikitable"\n' + tableRows.join("\n") + "\n|}\n\n" : "";
+    }
+    if (/^h[2-6]$/.test(tag)) return "\n" + "=".repeat(Number(tag.slice(1))) + " " + [...node.childNodes].map(convert).join("").trim() + " " + "=".repeat(Number(tag.slice(1))) + "\n";
+    if (tag === "p" || tag === "div" || tag === "section") return [...node.childNodes].map(convert).join("") + "\n\n";
+    if (tag === "strong" || tag === "b") return "'''" + [...node.childNodes].map(convert).join("") + "'''";
+    if (tag === "em" || tag === "i") return "''" + [...node.childNodes].map(convert).join("") + "''";
+    if (tag === "del" || tag === "s") return "~~" + [...node.childNodes].map(convert).join("") + "~~";
+    if (tag === "li") {
+      const marker = node.parentElement?.tagName.toLowerCase() === "ol" ? "#" : "*";
+      return marker + " " + [...node.childNodes].map(convert).join("").trim() + "\n";
+    }
+    if (tag === "ul" || tag === "ol") return [...node.children].map(convert).join("") + "\n";
+    if (tag === "blockquote") return [...node.childNodes].map(convert).join("").trim().split("\n").map(line => " " + line).join("\n") + "\n";
     if (tag === "a") {
       const href = node.getAttribute("href") || "";
+      const inner = [...node.childNodes].map(convert).join("");
       if (href.startsWith("wiki.html#")) return "[[" + decodeURIComponent(href.slice("wiki.html#".length)).replace(/-/g, " ") + "|" + inner + "]]";
       return href ? "[" + href + " " + inner + "]" : inner;
     }
     if (tag === "br") return "\n";
-    return inner;
+    return [...node.childNodes].map(convert).join("");
   };
   return [...doc.body.childNodes].map(convert).join("").replace(/\n{3,}/g, "\n\n").trim();
 }
