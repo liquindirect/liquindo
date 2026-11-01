@@ -378,7 +378,7 @@
     // module import otherwise leaves the navigation cards pointing at sections
     // that were never created, making them appear to be inert.
     (() => {
-      import("./admin-center.js?v=20261101-unified-role-selector1")
+      import("./admin-center.js?v=20261101-role-save-visible2")
         .then(() => { document.documentElement.dataset.liquindoAdminModuleLoaded = "true"; })
         .catch(error => {
           const status = document.getElementById("admin-status");
