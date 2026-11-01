@@ -15,5 +15,17 @@ try {
 const SUPABASE_URL = "https://uivjovkvpskvvazznlyr.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Make the browser persistence contract explicit. Supabase otherwise defaults to
+// localStorage, but specifying it prevents accidental session-only configuration
+// during future client refactors. Keep the same storage key so existing sessions
+// remain readable after this deployment.
+export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: window.localStorage,
+    storageKey: "sb-uivjovkvpskvvazznlyr-auth-token"
+  }
+});
 export { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY };
