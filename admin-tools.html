@@ -377,7 +377,7 @@
     // module import otherwise leaves the navigation cards pointing at sections
     // that were never created, making them appear to be inert.
     (() => {
-      import("./admin-center.js?v=20261101-adminfix4")
+      import("./admin-center.js?v=20261101-central-dropdowns2")
         .then(() => { document.documentElement.dataset.liquindoAdminModuleLoaded = "true"; })
         .catch(error => {
           const status = document.getElementById("admin-status");
