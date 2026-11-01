@@ -26,3 +26,6 @@
 .wiki-article h3{font-size:1.2rem;line-height:1.35}
 .wiki-article h4{font-size:1.05rem;line-height:1.4}
 @media(max-width:640px){.wiki-article .wiki-image,.wiki-article .wiki-image-left,.wiki-article .wiki-image-right{float:none;clear:both;display:table;width:auto;max-width:100%;margin:1rem auto}.wiki-article table.wikitable,.editor-canvas table.wikitable{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.wiki-article .wikitable td,.wiki-article .wikitable th{min-width:7rem}.wiki-gallery{grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}.wiki-gallery-item img{height:145px}}
+
+/* Image markup is inline-safe because images may appear inside paragraph text. */
+.wiki-article .wiki-image-caption,.editor-canvas .wiki-image-caption,.revision-preview .wiki-image-caption{display:block;padding:.35rem .45rem;text-align:center;font-size:1rem!important;line-height:1.5!important}
