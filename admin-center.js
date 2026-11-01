@@ -20,7 +20,7 @@ import { supabase } from "./supabase-client.js";
  </nav>
  <section class="ac-panel" id="ac-overview"><h2>Administration overview</h2><p class="ac-muted">Live counts from the existing Supabase project.</p><div class="ac-grid" id="ac-stats">Loading…</div><button class="ac-btn primary" id="ac-refresh">Refresh overview</button> <a class="ac-btn" href="wiki-editor.html?admin=1">Wiki review</a><p class="ac-status" id="ac-overview-status"></p></section>
  <section class="ac-panel" id="ac-accounts"><h2>Website account roles</h2><p class="ac-muted">Assign website Member or Administrator roles here. Display names and biographies are read-only. LiquinWiki roles are managed separately below.</p><label class="ac-label">Search profiles<input id="ac-account-filter" type="search" placeholder="Name, bio, role, or ID"></label><div class="ac-list" id="ac-accounts-list"></div><button type="button" class="ac-btn" id="ac-accounts-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-accounts-status" role="status" aria-live="polite"></p></section>
- <section class="ac-panel" id="ac-role-assignment"><h2>LiquinWiki role assignment</h2><p class="ac-muted">Assign one LiquinWiki role per account. Wiki Editor can edit and submit new articles for approval; Trusted Editor can edit, create and publish directly. Website Administrator permissions remain separate.</p><div class="ac-list" id="ac-wiki-role-list"></div><p class="ac-status" id="ac-wiki-role-status" role="status" aria-live="polite"></p></section>
+ <section class="ac-panel" id="ac-role-assignment"><h2>LiquinWiki role assignment</h2><p class="ac-muted">Assign one LiquinWiki role per account. Wiki Editor can edit and submit new articles for approval; Trusted Editor can edit, create and publish directly. Website Administrator permissions remain separate.</p><div class="ac-list" id="ac-wiki-role-list"></div><button type="button" class="ac-btn" id="ac-wiki-role-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-wiki-role-status" role="status" aria-live="polite"></p></section>
  <section class="ac-panel" id="ac-site"><h2>Website settings and content</h2><p class="ac-muted">Edit public notices and featured content. Announcement, maintenance, and featured content are rendered on the homepage.</p><div class="ac-grid">
  <div><h3>Announcement</h3><label class="ac-label"><input id="ac-ann-on" type="checkbox"> Enabled</label><label class="ac-label">Text<textarea id="ac-ann-text" maxlength="1000"></textarea></label><label class="ac-label">Start<input id="ac-ann-start" type="datetime-local"></label><label class="ac-label">End<input id="ac-ann-end" type="datetime-local"></label></div>
  <div><h3>Maintenance</h3><label class="ac-label"><input id="ac-maint-on" type="checkbox"> Enabled</label><label class="ac-label">Notice<textarea id="ac-maint-text" maxlength="1000"></textarea></label></div>
@@ -57,9 +57,9 @@ import { supabase } from "./supabase-client.js";
    const payload=r.data||{},batch=Array.isArray(payload.profiles)?payload.profiles:[];profiles=reset?batch:profiles.concat(batch);profilesOffset+=batch.length;profilesTotal=Number(payload.total)||0;
    renderProfiles();renderWikiRoleProfiles();
    say("ac-accounts-status","Showing "+profiles.length+" of "+profilesTotal+" accounts.");
-   if(more){more.hidden=profilesOffset>=profilesTotal;more.disabled=profilesOffset>=profilesTotal;}
+   if(more){more.hidden=profilesOffset>=profilesTotal;more.disabled=profilesOffset>=profilesTotal;}if(wikiMore){wikiMore.hidden=profilesOffset>=profilesTotal;wikiMore.disabled=profilesOffset>=profilesTotal;}
   }catch(e){say("ac-accounts-status",e.message||"Could not load accounts.",true);}
-  finally{profilesLoading=false;if(more&&profilesOffset<profilesTotal)more.disabled=false;}
+  finally{profilesLoading=false;if(more&&profilesOffset<profilesTotal)more.disabled=false;if(wikiMore&&profilesOffset<profilesTotal)wikiMore.disabled=false;}
  }
  function renderProfiles(){
   const o=$("ac-accounts-list");o.replaceChildren();
@@ -69,7 +69,7 @@ import { supabase } from "./supabase-client.js";
   rows.forEach(p=>{
    const card=document.createElement("article");card.className="ac-item";
    const h=document.createElement("h3");h.textContent=p.display_name||"Unnamed profile";
-   const m=document.createElement("p");m.className="ac-meta";m.textContent=p.id+" · "+p.role+" · "+(p.wiki_role==="liquinwiki_editor"?"Wiki Editor":p.wiki_role==="liquinwiki_trusted_editor"?"Trusted Editor":"No wiki role");
+   const m=document.createElement("p");m.className="ac-meta";m.textContent=p.id+" · Website role: "+(p.role==="admin"?"Administrator":"Member");
    const f=document.createElement("div");f.className="ac-form";
    function field(t,e){const l=document.createElement("label");l.textContent=t;l.append(e);f.append(l);}
    const name=document.createElement("p");name.className="ac-muted";name.textContent="Display name (read-only): "+(p.display_name||"Unnamed profile");
@@ -165,7 +165,7 @@ import { supabase } from "./supabase-client.js";
   }catch(e){say("ac-i18n-status",e.message,true);}
  }
  let accountSearchTimer=null;$("ac-account-filter").addEventListener("input",()=>{clearTimeout(accountSearchTimer);accountSearchTimer=setTimeout(()=>loadProfiles(true),250);});$("ac-refresh").onclick=()=>{overview();loadProfiles(true);loadSettings();};
- const loadMoreProfiles=$("ac-accounts-load-more");if(loadMoreProfiles)loadMoreProfiles.addEventListener("click",()=>loadProfiles(false));$("ac-audit-refresh").onclick=audit;$("ac-audit-export").onclick=()=>download("liquindo-audit.json",auditRows);$("ac-health-run").onclick=health;$("ac-i18n-run").onclick=i18nCheck;
+ const loadMoreProfiles=$("ac-accounts-load-more");if(loadMoreProfiles)loadMoreProfiles.addEventListener("click",()=>loadProfiles(false));const wikiLoadMore=$("ac-wiki-role-load-more");if(wikiLoadMore)wikiLoadMore.addEventListener("click",()=>loadProfiles(false));$("ac-audit-refresh").onclick=audit;$("ac-audit-export").onclick=()=>download("liquindo-audit.json",auditRows);$("ac-health-run").onclick=health;$("ac-i18n-run").onclick=i18nCheck;
  async function start(id){if(!id||adminId===id)return;adminId=id;await Promise.allSettled([overview(),loadProfiles(true),loadSettings(),audit(),incidents(),loadShapeHistory(),loadSettingsHistory()]);}
  const verifiedId=document.documentElement.dataset.liquindoAdminUserId;
  if(verifiedId)start(verifiedId);
