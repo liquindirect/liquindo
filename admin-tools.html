@@ -186,49 +186,51 @@
       // Admin-center sections are inserted after administrator verification.
       // Keep role shortcuts functional even if tapped before insertion.
       document.addEventListener("click", event => {
-        const link = event.target.closest('.admin-tool-card[href^="#ac-"]');
+        const link = event.target instanceof Element ? event.target.closest('.admin-tool-card[href^="#ac-"]') : null;
         if (!link) return;
         const targetId = link.getAttribute("href").slice(1);
         if (!targetId) return;
         event.preventDefault();
-        const revealTarget = () => {
-          const target = document.getElementById(targetId);
-          if (!target || content.hidden) return false;
-          history.replaceState(null, "", "#"+targetId);
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-          target.setAttribute("tabindex", "-1");
-          target.focus({ preventScroll: true });
-          return true;
-        };
-        if (revealTarget()) return;
         const sectionName = link.querySelector("h2")?.textContent || "administration section";
         showStatus("Opening " + sectionName + "…");
-        let finished = false;
+        let finished = false, attempts = 0, observer = null, retryTimer = null, timeoutId = null;
         const finish = () => {
           if (finished) return;
           finished = true;
-          observer.disconnect();
+          observer?.disconnect();
+          window.clearInterval(retryTimer);
           window.clearTimeout(timeoutId);
         };
-        const observer = new MutationObserver(() => {
-          if (revealTarget()) finish();
-        });
-        // The section is inserted by admin-center.js, while its parent remains
-        // hidden until the separate administrator check completes. Observe both
-        // insertion and the parent's hidden attribute so an early tap is not lost.
-        observer.observe(content, {
-          childList: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ["hidden"]
-        });
-        const timeoutId = window.setTimeout(() => {
-          if (revealTarget()) finish();
-          else {
+        const revealTarget = () => {
+          const target = document.getElementById(targetId);
+          if (!target || content.hidden || !content.isConnected) return false;
+          history.replaceState(null, "", "#" + targetId);
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.setAttribute("tabindex", "-1");
+          target.focus({ preventScroll: true });
+          showStatus(sectionName + " opened.");
+          finish();
+          return true;
+        };
+        // Observe the whole page, not only the hidden content node: the admin
+        // module can be inserted before or after verification changes visibility.
+        observer = new MutationObserver(revealTarget);
+        observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
+        if (revealTarget()) return;
+        retryTimer = window.setInterval(() => {
+          attempts += 1;
+          if (revealTarget()) return;
+          if (attempts >= 300) {
             finish();
-            showStatus("Could not open " + sectionName + ". The administration sections have not finished loading. Reload Admin Tools and try again.", true);
+            showStatus("Could not open " + sectionName + ". The Admin Tools interface has not loaded. Check the connection and reload the page.", true);
           }
-        }, 15000);
+        }, 100);
+        timeoutId = window.setTimeout(() => {
+          if (!revealTarget()) {
+            finish();
+            showStatus("Could not open " + sectionName + ". The Admin Tools interface has not loaded. Check the connection and reload the page.", true);
+          }
+        }, 30000);
       }, true);
 
       const showStatus = (text, error = false) => {
