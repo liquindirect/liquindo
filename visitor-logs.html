@@ -52,10 +52,7 @@
     </section>
   </main>
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-    const URL = "https://uivjovkvpskvvazznlyr.supabase.co";
-    const KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
-    const supabase = createClient(URL, KEY);
+    import { supabase } from "./supabase-client.js";
     const status = document.getElementById("log-status");
     const rows = document.getElementById("log-rows");
     const refresh = document.getElementById("refresh-logs");
