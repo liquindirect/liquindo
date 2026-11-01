@@ -154,7 +154,7 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
      Object.assign(p,result.data||{});
      updateMeta();
      say("ac-accounts-status","Website and LiquinWiki roles saved together for "+(p.display_name||"this account")+".");
-     await Promise.all([overview(),loadProfiles(true)]);
+     await Promise.allSettled([overview(),loadProfiles(true)]);
     }catch(error){
      websiteRole.value=p.role;wikiRole.value=currentWikiRole;
      say("ac-accounts-status",error.message||"Could not save account roles.",true);
