@@ -332,8 +332,9 @@ export function htmlToWikiMarkup(html) {
         return "{{Infobox " + title + "\n" + fields.join("\n") + "\n}}\n\n";
       }
       const tableRows = rows.map(row => {
-        const cells = [...row.children].map(cell => (cell.tagName.toLowerCase() === "th" ? "!" : "|") + " " + [...cell.childNodes].map(convert).join("").trim());
-        return "|-\n" + cells.join(" !! ");
+        const cells = [...row.children].map(cell => [...cell.childNodes].map(convert).join("").trim());
+        const isHeader = [...row.children].length > 0 && [...row.children].every(cell => cell.tagName.toLowerCase() === "th");
+        return "|-\n" + (isHeader ? "! " + cells.join(" !! ") : "| " + cells.join(" || "));
       });
       return tableRows.length ? '{| class="wikitable"\n' + tableRows.join("\n") + "\n|}\n\n" : "";
     }
