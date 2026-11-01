@@ -733,8 +733,8 @@
         }
       });
 
-      const { data: { session } } = await supabase.auth.getSession();
-      updateAccountLink(session);
+      // INITIAL_SESSION provides the first account state; do not make a
+      // separate session read before subscribing.
       supabase.auth.onAuthStateChange((_event, nextSession) => {
         updateAccountLink(nextSession);
       });
