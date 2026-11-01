@@ -174,7 +174,7 @@ import { supabase } from "./supabase-client.js";
  }
  let accountSearchTimer=null;$("ac-account-filter").addEventListener("input",()=>{clearTimeout(accountSearchTimer);accountSearchTimer=setTimeout(()=>loadProfiles(true),250);});$("ac-refresh").onclick=()=>{overview();loadProfiles(true);loadSettings();};
  const loadMoreProfiles=$("ac-accounts-load-more");if(loadMoreProfiles)loadMoreProfiles.addEventListener("click",()=>loadProfiles(false));const wikiLoadMore=$("ac-wiki-role-load-more");if(wikiLoadMore)wikiLoadMore.addEventListener("click",()=>loadProfiles(false));$("ac-audit-refresh").onclick=audit;$("ac-audit-export").onclick=()=>download("liquindo-audit.json",auditRows);$("ac-health-run").onclick=health;$("ac-i18n-run").onclick=i18nCheck;
- async function start(id){if(!id||adminId===id)return;adminId=id;await Promise.allSettled([overview(),loadProfiles(true),loadSettings(),audit(),incidents(),loadShapeHistory(),loadSettingsHistory()]);}
+ async function start(id){if(!id||adminId===id)return;adminId=id;const tasks=[overview,()=>loadProfiles(true),loadSettings,audit,incidents,loadSettingsHistory];const results=await Promise.allSettled(tasks.map(task=>Promise.resolve().then(task)));const failed=results.filter(result=>result.status==="rejected");if(failed.length)say("ac-overview-status",failed.length+" administration task(s) failed to load. Check the relevant section for details.",true);}
  const verifiedId=document.documentElement.dataset.liquindoAdminUserId;
  if(verifiedId)start(verifiedId);
  document.addEventListener("liquindo-admin-verified",event=>start(event.detail?.userId));
