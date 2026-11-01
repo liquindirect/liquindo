@@ -132,11 +132,11 @@
         </form>
       </section>
       <div class="admin-tool-grid">
-        <a class="admin-tool-card" href="#ac-accounts">
-          <span class="kicker">Accounts</span>
-          <h2>Website roles</h2>
-          <p>Find member accounts and assign website Administrator, Wiki Editor or Trusted Editor roles. Names and biographies remain read-only.</p>
-          <span class="open-label">Manage account and wiki roles →</span>
+        <a class="admin-tool-card" href="#ac-role-assignment">
+          <span class="kicker">LiquinWiki</span>
+          <h2>Role assignment</h2>
+          <p>Assign Wiki Editor or Trusted Editor to member accounts. Website roles are managed separately.</p>
+          <span class="open-label">Manage wiki roles →</span>
         </a>
         <a class="admin-tool-card" href="wiki-editor.html?admin=1">
           <span class="kicker">LiquinWiki</span>
@@ -195,29 +195,30 @@
       let session = null;
       let adminUserId = null;
 
-      // The account-management panel is injected by admin-center.js after
-      // administrator verification. Handle the shortcut even if it is tapped
-      // before that module has finished inserting the target section.
+      // Admin-center sections are inserted after administrator verification.
+      // Keep role shortcuts functional even if tapped before insertion.
       document.addEventListener("click", event => {
-        const link = event.target.closest('.admin-tool-card[href="#ac-accounts"]');
+        const link = event.target.closest('.admin-tool-card[href^="#ac-"]');
         if (!link) return;
+        const targetId = link.getAttribute("href").slice(1);
+        if (!targetId) return;
         event.preventDefault();
-        const revealAccounts = () => {
-          const target = document.getElementById("ac-accounts");
+        const revealTarget = () => {
+          const target = document.getElementById(targetId);
           if (!target || content.hidden) return false;
-          history.replaceState(null, "", "#ac-accounts");
+          history.replaceState(null, "", "#"+targetId);
           target.scrollIntoView({ behavior: "smooth", block: "start" });
           target.setAttribute("tabindex", "-1");
           target.focus({ preventScroll: true });
           return true;
         };
-        if (revealAccounts()) return;
+        if (revealTarget()) return;
         const observer = new MutationObserver(() => {
-          if (revealAccounts()) observer.disconnect();
+          if (revealTarget()) observer.disconnect();
         });
         observer.observe(content, { childList: true, subtree: true });
         window.setTimeout(() => observer.disconnect(), 8000);
-        showStatus("Opening account and role management…");
+        showStatus("Opening "+(link.querySelector("h2")?.textContent||"administration section")+"…");
       }, true);
 
       const showStatus = (text, error = false) => {
