@@ -1,4 +1,4 @@
-const CACHE_NAME = "liquindo-shell-v5";
+const CACHE_NAME = "liquindo-shell-v6";
 const APP_BASE = "/liquindo/";
 const HOME_URL = APP_BASE + "index.html";
 const OFFLINE_URL = APP_BASE + "offline.html";
@@ -8,6 +8,7 @@ const SHELL_ASSETS = [
   OFFLINE_URL,
   APP_BASE + "style.css",
   APP_BASE + "app-shell.js",
+  APP_BASE + "supabase-client.js",
   APP_BASE + "manifest.webmanifest",
   APP_BASE + "app-icon.svg",
   APP_BASE + "app-icon-maskable.svg",
