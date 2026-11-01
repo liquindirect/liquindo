@@ -225,6 +225,7 @@
       let currentUserId = null;
       let roleRequest = 0;
       let roleKnownForUser = null;
+      let roleLookupForUser = null;
       const applySession = (session) => {
         const user = session?.user || null;
         const signedIn = Boolean(user);
@@ -238,6 +239,7 @@
         if (!signedIn) {
           currentUserId = null;
           roleKnownForUser = null;
+          roleLookupForUser = null;
           roleRequest++;
           adminLink.hidden = true;
           adminLink.setAttribute("aria-hidden", "true");
@@ -247,12 +249,14 @@
         if (currentUserId !== user.id) {
           currentUserId = user.id;
           roleKnownForUser = null;
+          roleLookupForUser = null;
           adminLink.hidden = true;
           adminLink.setAttribute("aria-hidden", "true");
-        } else if (roleKnownForUser === user.id) {
+        } else if (roleKnownForUser === user.id || roleLookupForUser === user.id) {
           return;
         }
 
+        roleLookupForUser = user.id;
         const request = ++roleRequest;
         // Run database work after the auth callback has returned. This avoids
         // waiting on Supabase's auth lock from inside its own state listener.
@@ -266,12 +270,14 @@
             if (request !== roleRequest || currentUserId !== user.id) return;
             if (error) throw error;
             roleKnownForUser = user.id;
+            roleLookupForUser = null;
             const isAdmin = data?.role === "admin";
             adminLink.hidden = !isAdmin;
             if (isAdmin) adminLink.removeAttribute("aria-hidden");
             else adminLink.setAttribute("aria-hidden", "true");
           } catch (error) {
             if (request !== roleRequest) return;
+            roleLookupForUser = null;
             console.warn("Liquindo administrator navigation check failed.", error);
             adminLink.hidden = true;
             adminLink.setAttribute("aria-hidden", "true");
