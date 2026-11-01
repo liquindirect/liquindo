@@ -683,13 +683,9 @@
       startCountdown();
     </script>
 <script type="module">
-      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+      import { supabase } from "./supabase-client.js";
 
-      const supabase = createClient(
-        "https://uivjovkvpskvvazznlyr.supabase.co",
-        "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-      );
-      sessionStorage.setItem("liquindo-homepage-visited", "yes");
+            sessionStorage.setItem("liquindo-homepage-visited", "yes");
       const accountLink = document.getElementById("account-nav-link");
       const homepageLogoutButton = document.getElementById("account-logout-button");
 
