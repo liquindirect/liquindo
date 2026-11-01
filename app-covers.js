@@ -1,9 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabase } from "./supabase-client.js";
 
-const supabase = createClient(
-  "https://uivjovkvpskvvazznlyr.supabase.co",
-  "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-);
 const BUCKET = "liquindo-app-covers";
 const STORAGE_KEY = "liquindo-app-cover-selection";
 const FALLBACK_TITLE = "Standard Liquindo cover";
