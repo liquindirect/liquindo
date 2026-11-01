@@ -1,0 +1,46 @@
+name: Liquindo source checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate JavaScript and migration filenames
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --check --input-type=module < "$file"
+          done < <(find . -type f -name '*.js' -not -path './.git/*' -not -path './node_modules/*' -print0)
+      - name: Check migration version filenames
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          files = sorted(Path("supabase/migrations").glob("*.sql"))
+          versions = []
+          for file in files:
+              match = re.match(r"^(\d{14})_[a-z0-9_]+\.sql$", file.name)
+              if not match:
+                  raise SystemExit(f"Invalid migration filename: {file}")
+              versions.append(match.group(1))
+          if len(versions) != len(set(versions)):
+              raise SystemExit("Duplicate migration version found")
+          print(f"Validated {len(files)} uniquely versioned migrations.")
+          PY
