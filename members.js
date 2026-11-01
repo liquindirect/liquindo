@@ -249,6 +249,15 @@ supabase.auth.onAuthStateChange((_event, session) => {
   });
 });
 
+// Refresh the public directory whenever this page is restored from the
+// back-forward cache or the user returns to it after changing roles elsewhere.
+window.addEventListener("pageshow", () => {
+  if (document.visibilityState === "visible") loadDirectory();
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") loadDirectory();
+});
+
 document.addEventListener("liquindo-language-changed", () => {
   document.querySelectorAll("[data-i18n-message-key]").forEach((element) => {
     let values = {};
