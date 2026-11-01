@@ -11,7 +11,7 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
  <section class="ac-tool-dropdown"><button type="button" class="ac-tool-toggle" aria-expanded="false">Security &amp; operations</button><div class="ac-tool-options" hidden><a href="#ac-audit">Administrative audit log</a><a href="#ac-health">System health checker</a><a href="#ac-backup">Backup and recovery</a><a href="#ac-incidents">Incident log</a><a href="#ac-visitor-logs">Visitor access logs</a></div></section>
  </nav>
  <section class="ac-panel" id="ac-overview"><h2>Administration overview</h2><p class="ac-muted">Live counts from the existing Supabase project.</p><div class="ac-grid" id="ac-stats">Loading…</div><button class="ac-btn primary" id="ac-refresh">Refresh overview</button> <a class="ac-btn" href="wiki-editor.html?admin=1">Wiki review</a><p class="ac-status" id="ac-overview-status"></p></section>
- <section class="ac-panel" id="ac-accounts"><h2>Accounts &amp; roles</h2><p class="ac-muted">Manage website access and LiquinWiki permissions together from this page. Wiki Editor can edit and submit new articles for approval; Trusted Editor can edit, create and publish directly. Display names and biographies are read-only.</p><label class="ac-label">Search accounts<input id="ac-account-filter" type="search" placeholder="Display name, bio, role, or ID"></label><div class="ac-list" id="ac-accounts-list"></div><button type="button" class="ac-btn" id="ac-accounts-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-accounts-status" role="status" aria-live="polite"></p></section>
+ <section class="ac-panel" id="ac-accounts"><h2>Accounts &amp; roles</h2><p class="ac-muted">Assign one account role: Member, Administrator, LiquinWiki Editor, or LiquinWiki Trusted Editor. Wiki roles include normal member access. Wiki Editor can edit and submit new articles for approval; Trusted Editor can edit, create and publish directly. Display names and biographies are read-only.</p><label class="ac-label">Search accounts<input id="ac-account-filter" type="search" placeholder="Display name, bio, role, or ID"></label><div class="ac-list" id="ac-accounts-list"></div><button type="button" class="ac-btn" id="ac-accounts-load-more" hidden>Load more accounts</button><p class="ac-status" id="ac-accounts-status" role="status" aria-live="polite"></p></section>
  <section class="ac-panel" id="ac-site"><h2>Website settings and content</h2><p class="ac-muted">Edit public notices and featured content. Announcement, maintenance, and featured content are rendered on the homepage.</p><div class="ac-grid">
  <div><h3>Announcement</h3><label class="ac-label"><input id="ac-ann-on" type="checkbox"> Enabled</label><label class="ac-label">Text<textarea id="ac-ann-text" maxlength="1000"></textarea></label><label class="ac-label">Start<input id="ac-ann-start" type="datetime-local"></label><label class="ac-label">End<input id="ac-ann-end" type="datetime-local"></label></div>
  <div><h3>Maintenance</h3><label class="ac-label"><input id="ac-maint-on" type="checkbox"> Enabled</label><label class="ac-label">Notice<textarea id="ac-maint-text" maxlength="1000"></textarea></label></div>
@@ -116,50 +116,43 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    const card=document.createElement("article");card.className="account-role-row";
    const h=document.createElement("h3");h.textContent=p.display_name||"Unnamed profile";
    const meta=document.createElement("p");meta.className="ac-meta";
-   const wikiLabel=value=>value==="liquinwiki_editor"?"Wiki Editor":value==="liquinwiki_trusted_editor"?"Trusted Editor":"None";
-   const updateMeta=()=>{meta.textContent=p.id+" · Website: "+(p.role==="admin"?"Administrator":"Member")+" · LiquinWiki: "+wikiLabel(p.wiki_role);};
+   const roleOptions=[["member","Member"],["admin","Administrator"],["liquinwiki_editor","LiquinWiki Editor"],["liquinwiki_trusted_editor","LiquinWiki Trusted Editor"]];
+   const currentRole=p.role==="admin"?"admin":(p.wiki_role==="liquinwiki_editor"||p.wiki_role==="liquinwiki_trusted_editor"?p.wiki_role:"member");
+   const roleLabel=value=>roleOptions.find(([key])=>key===value)?.[1]||"Member";
+   const updateMeta=()=>{meta.textContent=p.id+" · Assigned role: "+roleLabel(currentRole);};
    updateMeta();
    const details=document.createElement("p");details.className="ac-muted";details.textContent="Display name and biography are read-only. "+(p.bio||"No biography provided.");
    const f=document.createElement("div");f.className="ac-form";
-   function field(labelText,control){const label=document.createElement("label");label.textContent=labelText;label.append(control);f.append(label);}
-   const websiteRole=document.createElement("select");
-   [["member","Member"],["admin","Administrator"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;websiteRole.append(option);});
-   websiteRole.value=p.role||"member";
-   if(p.id===adminId)websiteRole.disabled=true;
-   field("Website role",websiteRole);
-   const currentWikiRole=p.wiki_role||"none";
-   const wikiRole=document.createElement("select");
-   [["none","None"],["liquinwiki_editor","Wiki Editor"],["liquinwiki_trusted_editor","Trusted Editor"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;wikiRole.append(option);});
-   wikiRole.value=currentWikiRole;
-   field("LiquinWiki role",wikiRole);
-   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save roles";
-   const updateSaveState=()=>{save.disabled=websiteRole.value===p.role&&wikiRole.value===currentWikiRole;};
-   websiteRole.addEventListener("change",updateSaveState);
-   wikiRole.addEventListener("change",updateSaveState);
+   const role=document.createElement("select");
+   roleOptions.forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;role.append(option);});
+   role.value=currentRole;
+   if(p.id===adminId)role.disabled=true;
+   const roleField=document.createElement("label");roleField.textContent="Account role";roleField.append(role);f.append(roleField);
+   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save role";
+   const updateSaveState=()=>{save.disabled=role.value===currentRole||p.id===adminId;};
+   role.addEventListener("change",updateSaveState);
    updateSaveState();
    save.onclick=async()=>{
-    const nextWebsite=websiteRole.value,nextWiki=wikiRole.value;
-    if(nextWebsite===p.role&&nextWiki===currentWikiRole)return;
-    const changes=[];
-    if(nextWebsite!==p.role)changes.push("website role to "+(nextWebsite==="admin"?"Administrator":"Member"));
-    if(nextWiki!==currentWikiRole)changes.push("LiquinWiki role to "+wikiLabel(nextWiki));
-    if(!window.confirm("Save "+changes.join(" and ")+" for "+(p.display_name||"this account")+"?")){
-     websiteRole.value=p.role;wikiRole.value=currentWikiRole;updateSaveState();return;
+    const selected=role.value;
+    if(selected===currentRole)return;
+    const nextWebsite=selected==="admin"?"admin":"member";
+    const nextWiki=selected==="liquinwiki_editor"||selected==="liquinwiki_trusted_editor"?selected:"none";
+    if(!window.confirm("Change "+(p.display_name||"this account")+"'s role from "+roleLabel(currentRole)+" to "+roleLabel(selected)+"?")){
+     role.value=currentRole;updateSaveState();return;
     }
-    save.disabled=true;websiteRole.disabled=true;wikiRole.disabled=true;
-    say("ac-accounts-status","Saving both roles together…");
+    save.disabled=true;role.disabled=true;
+    say("ac-accounts-status","Saving account role…");
     try{
      const result=await db.rpc("admin_update_account_roles",{p_user_id:p.id,p_website_role:nextWebsite,p_wiki_role:nextWiki});
      if(result.error)throw result.error;
      Object.assign(p,result.data||{});
-     updateMeta();
-     say("ac-accounts-status","Website and LiquinWiki roles saved together for "+(p.display_name||"this account")+".");
+     say("ac-accounts-status","Role saved for "+(p.display_name||"this account")+".");
      await Promise.allSettled([overview(),loadProfiles(true)]);
     }catch(error){
-     websiteRole.value=p.role;wikiRole.value=currentWikiRole;
-     say("ac-accounts-status",error.message||"Could not save account roles.",true);
+     role.value=currentRole;
+     say("ac-accounts-status",error.message||"Could not save account role.",true);
     }finally{
-     websiteRole.disabled=p.id===adminId;wikiRole.disabled=false;updateSaveState();
+     role.disabled=p.id===adminId;updateSaveState();
     }
    };
    f.append(save);
