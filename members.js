@@ -125,8 +125,9 @@ async function loadDirectory() {
   if (directoryRetry) directoryRetry.hidden = true;
   showStatus(directoryStatus, "dir.loading");
   if (directoryCount) directoryCount.textContent = t("dir.loadingCount");
-  const { data, error } = await supabase.from("profiles")
-    .select("id, display_name, role, bio").order("display_name", { ascending: true });
+  // Use the safe public directory RPC so the displayed account category
+  // includes LiquinWiki roles as well as Member and Administrator.
+  const { data, error } = await supabase.rpc("get_public_member_directory");
   // Multiple auth events or retries can overlap. Only the newest request may render.
   if (requestId !== directoryLoadRequest) return;
   if (error) {
