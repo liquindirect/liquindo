@@ -61,7 +61,7 @@
           <a href="index.html#contact"><span>10</span><span data-i18n="nav.contact">Contact</span></a>
           <a href="https://liquindomerch.printify.me/products" target="_blank" rel="noopener noreferrer"><span>11</span><span>Merchandise Shop ↗</span></a>
           <a href="login.html"><span>12</span><span>Account</span></a>
-          <a href="admin-tools.html" id="admin-tools-nav" hidden><span>13</span><span>Admin Tools</span></a>
+          <a href="admin-tools.html?v=20261101-admin-page-refresh2" id="admin-tools-nav" hidden><span>13</span><span>Admin Tools</span></a>
         </div>
       </details>`;
 
@@ -423,7 +423,7 @@
         getComputedStyle(adminLink).display !== "none";
       if (shouldShow && !adminAnchor) {
         adminAnchor = document.createElement("a");
-        adminAnchor.href = base + "admin-tools.html";
+        adminAnchor.href = base + "admin-tools.html?v=20261101-admin-page-refresh2";
         adminAnchor.textContent = "Admin Tools";
         panel.appendChild(adminAnchor);
       } else if (!shouldShow && adminAnchor) {
