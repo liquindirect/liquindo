@@ -1,10 +1,7 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabase } from "./supabase-client.js";
 
 (async () => {
-  const db = createClient(
-    "https://uivjovkvpskvvazznlyr.supabase.co",
-    "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-  );
+  const db = supabase;
   const { data, error } = await db.from("site_settings")
     .select("setting_key,setting_value")
     .in("setting_key", ["announcement", "maintenance_notice", "homepage_featured", "footer_settings", "language_settings", "faq_items", "custom_nav_links", "message_from_liquin"]);
