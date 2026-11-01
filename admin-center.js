@@ -55,7 +55,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
   const more=$("ac-accounts-load-more");if(more)more.disabled=true;
   try{
    if(reset){profiles=[];profilesOffset=0;profilesTotal=0;}
-   const r=await db.rpc("admin_list_profiles",{p_offset:profilesOffset,p_limit:100});
+   const r=await db.rpc("admin_list_profiles",{p_offset:profilesOffset,p_limit:100,p_search:$("ac-account-filter").value.trim()||null});
    if(r.error)throw r.error;
    const payload=r.data||{},batch=Array.isArray(payload.profiles)?payload.profiles:[];profiles=reset?batch:profiles.concat(batch);profilesOffset+=batch.length;profilesTotal=Number(payload.total)||0;
    renderProfiles();
@@ -104,7 +104,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
    say("ac-i18n-status","Checked "+pages.length+" pages and "+seenLinks.size+" unique same-site resources; "+broken+" resource failures. Translation checks only verify key presence, not translation quality.");
   }catch(e){say("ac-i18n-status",e.message,true);}
  }
- $("ac-account-filter").addEventListener("input",renderProfiles);$("ac-refresh").onclick=()=>{overview();loadProfiles(true);loadSettings();};
+ let accountSearchTimer=null;$("ac-account-filter").addEventListener("input",()=>{clearTimeout(accountSearchTimer);accountSearchTimer=setTimeout(()=>loadProfiles(true),250);});$("ac-refresh").onclick=()=>{overview();loadProfiles(true);loadSettings();};
  const loadMoreProfiles=$("ac-accounts-load-more");if(loadMoreProfiles)loadMoreProfiles.addEventListener("click",()=>loadProfiles(false));$("ac-audit-refresh").onclick=audit;$("ac-audit-export").onclick=()=>download("liquindo-audit.json",auditRows);$("ac-health-run").onclick=health;$("ac-i18n-run").onclick=i18nCheck;
  async function start(id){if(!id||adminId===id)return;adminId=id;await Promise.allSettled([overview(),loadProfiles(true),loadSettings(),audit(),incidents(),loadShapeHistory(),loadSettingsHistory()]);}
  const verifiedId=document.documentElement.dataset.liquindoAdminUserId;
