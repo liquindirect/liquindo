@@ -103,12 +103,6 @@ const status = $("#editor-status");
 const submitButton = $("#submit-revision");
 const pendingPanel = $("#review-panel");
 const permissionPanel = $("#permission-panel");
-const permissionForm = $("#permission-form");
-const permissionEmail = $("#permission-email");
-const permissionChoice = $("#permission-choice");
-const permissionAction = $("#permission-action");
-const permissionStatus = $("#permission-status");
-const permissionHistory = $("#permission-history");
 const articleStatusForm = $("#article-status-form");
 const articleStatusSlug = $("#article-status-slug");
 const articleStatusChoice = $("#article-status-choice");
@@ -160,51 +154,6 @@ async function refreshCurrentPermissions() {
   if (!canCreateArticles && isCreatingArticle()) articleSelect.value = "liquindo";
   setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
   return changed;
-}
-
-async function renderPermissionAuditHistory() {
-  if (!isWikiAdmin || !permissionHistory) return;
-  permissionHistory.textContent = "Loading permission history…";
-  const { data: rows, error } = await withTimeout(
-    supabase.from("admin_audit_log")
-      .select("id, actor_id, action, target_id, details, created_at")
-      .eq("target_type", "wiki_permissions")
-      .order("created_at", { ascending: false })
-      .limit(30),
-    "Permission history"
-  );
-  if (error) {
-    permissionHistory.textContent = "Permission history could not be loaded: " + (error.message || "Unknown error");
-    return;
-  }
-  const ids = [...new Set((rows || []).flatMap(row => [row.actor_id, row.target_id]).filter(Boolean))];
-  let names = new Map();
-  if (ids.length) {
-    const { data: profiles } = await supabase.from("profiles").select("id, display_name").in("id", ids);
-    names = new Map((profiles || []).map(profile => [profile.id, profile.display_name]));
-  }
-  permissionHistory.replaceChildren();
-  if (!rows?.length) {
-    permissionHistory.textContent = "No permission changes have been recorded yet.";
-    return;
-  }
-  for (const row of rows) {
-    const item = document.createElement("div");
-    item.className = "revision-card";
-    const title = document.createElement("strong");
-    const oldPermission = row.details?.old?.permission || "none";
-    const newPermission = row.details?.new?.permission || "none";
-    title.textContent = oldPermission === newPermission
-      ? newPermission + " permission updated"
-      : oldPermission + " → " + newPermission;
-    const detail = document.createElement("p");
-    detail.textContent = "Account: " + (names.get(row.target_id) || row.target_id || "Unknown") +
-      " · By: " + (names.get(row.actor_id) || row.actor_id || "System");
-    const time = document.createElement("small");
-    time.textContent = new Date(row.created_at).toLocaleString();
-    item.append(title, detail, time);
-    permissionHistory.append(item);
-  }
 }
 
 function watchPermissionChanges() {
@@ -743,42 +692,6 @@ articleStatusForm?.addEventListener("submit", async (event) => {
   }
 });
 
-permissionForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!isWikiAdmin) return;
-  const email = permissionEmail.value.trim();
-  const selectedPermission = permissionChoice.value;
-  const action = permissionAction?.value || "assign";
-  const permission = action === "clear" ? "none" :
-    action === "remove" ? "revoke:" + selectedPermission : selectedPermission;
-  const button = $("#permission-save");
-  button.disabled = true;
-  permissionStatus.textContent = "Saving permission…";
-  permissionStatus.style.color = "";
-  try {
-    const { error } = await supabase.rpc("set_liquinwiki_permission", {
-      p_email: email,
-      p_permission: permission
-    });
-    if (error) throw error;
-    permissionStatus.textContent = action === "clear"
-      ? "All LiquinWiki permissions removed."
-      : action === "remove"
-        ? "Selected LiquinWiki permission removed."
-        : "Permission assigned. Existing permissions were preserved.";
-    if (email.toLowerCase() === (user.email || "").toLowerCase()) {
-      if (await refreshCurrentPermissions()) window.location.reload();
-    }
-    permissionEmail.value = "";
-    await renderPermissionAuditHistory();
-  } catch (error) {
-    permissionStatus.textContent = error.message || "Could not save wiki permission.";
-    permissionStatus.style.color = "#b42318";
-  } finally {
-    button.disabled = false;
-  }
-});
-
 $("#load-article").addEventListener("click", loadArticle);
 newArticleTitle.addEventListener("input", () => {
   if (!newArticleSlug.dataset.edited) newArticleSlug.value = slugifyArticleTitle(newArticleTitle.value);
@@ -922,7 +835,6 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
-  if (isWikiAdmin && adminToolsMode) await renderPermissionAuditHistory();
   const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title, article_status"), "Wiki article list");
   if (pagesError) throw pagesError;
   for (const page of existingPages || []) {
