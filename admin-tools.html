@@ -377,7 +377,7 @@
     // module import otherwise leaves the navigation cards pointing at sections
     // that were never created, making them appear to be inert.
     (() => {
-      import("./admin-center.js?v=20261101-dropdown-button-fix2")
+      import("./admin-center.js?v=20261101-admin-ux-reliability1")
         .then(() => { document.documentElement.dataset.liquindoAdminModuleLoaded = "true"; })
         .catch(error => {
           const status = document.getElementById("admin-status");
