@@ -39,16 +39,16 @@ function renderInline(source, titleToSlug = {}, refs = null) {
     });
   }
   // MediaWiki-compatible image syntax: [[File:https://...|thumb|right|250px|alt=...|caption]].
-  text = text.replace(/\\[\\[(?:File|Image):([^\\]|]+)((?:\\|[^\\]]*)?)\\]\\]/gi, (_, rawUrl, rawOptions) => {
+  text = text.replace(/\[\[(?:File|Image):([^|\]]+)((?:\|[^\]]*)?)\]\]/gi, (_, rawUrl, rawOptions) => {
     const url = decodeEntities(rawUrl).trim();
-    if (!/^https?:\\/\\//i.test(url)) return "";
+    if (!/^https?:\/\//i.test(url)) return "";
     const options = String(rawOptions || "").split("|").map(item => item.trim()).filter(Boolean);
     const alignment = options.find(item => /^(left|right|center)$/i.test(item))?.toLowerCase() || "right";
-    const widthOption = options.find(item => /^\\d{2,4}px$/i.test(item));
+    const widthOption = options.find(item => /^\d{2,4}px$/i.test(item));
     const width = widthOption ? Math.min(1200, Math.max(80, parseInt(widthOption, 10))) : 320;
     const altOption = options.find(item => /^alt=/i.test(item));
     const alt = altOption ? altOption.slice(4) : "";
-    const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
+    const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
     return '<figure class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>';
   });
   text = text.replace(/\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
