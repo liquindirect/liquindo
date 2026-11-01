@@ -10,7 +10,10 @@ function translate(key, fallback) {
   return window.languageManager?.get?.(key) || fallback;
 }
 
+let currentSession = null;
+
 function updateNavigation(session) {
+  currentSession = session || null;
   const signedIn = Boolean(session?.user);
   const email = session?.user?.email || "";
   if (accountLink) {
@@ -35,24 +38,12 @@ function updateNavigation(session) {
 }
 
 if (accountLink || logoutButton) {
+  // Supabase emits INITIAL_SESSION when this listener is registered; avoid
+  // a second getSession() read during page startup.
   supabase.auth.onAuthStateChange((_event, session) => updateNavigation(session));
-  supabase.auth.getSession()
-    .then(({ data, error }) => {
-      if (error) throw error;
-      updateNavigation(data.session);
-    })
-    .catch(() => {
-      if (accountLink) {
-        accountLink.textContent = translate("auth.access", "Account access");
-        accountLink.title = translate("home.accountLoginTitle", "Account access");
-        accountLink.setAttribute("aria-label", translate("auth.access", "Account access"));
-        accountLink.dataset.accountState = "unknown";
-      }
-      if (logoutButton) logoutButton.hidden = true;
-    });
 
   document.addEventListener("liquindo-language-changed", () => {
-    supabase.auth.getSession().then(({ data }) => updateNavigation(data.session));
+    updateNavigation(currentSession);
   });
 
   logoutButton?.addEventListener("click", async () => {
