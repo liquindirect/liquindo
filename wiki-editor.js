@@ -235,7 +235,7 @@ let savedMarkupSelection = null;
 let savedCanvasRange = null;
 
 function cleanWikiImageOption(value) {
-  return String(value || "").replace(/[|\\[\\]\\r\\n]+/g, " ").replace(/\\s+/g, " ").trim().slice(0, 180);
+  return String(value || "").replace(/[|\[\]\r\n]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 180);
 }
 function rememberImageInsertionPoint() {
   if (wikiMarkupMode) {
@@ -253,8 +253,8 @@ function insertUploadedImage(markup, publicUrl, altText) {
     const end = savedMarkupSelection?.end ?? markupEditor.selectionEnd;
     const before = markupEditor.value.slice(0, start);
     const after = markupEditor.value.slice(end);
-    const prefix = before && !before.endsWith("\\n") ? "\\n" : "";
-    const suffix = after && !after.startsWith("\\n") ? "\\n" : "";
+    const prefix = before && !before.endsWith("\n") ? "\n" : "";
+    const suffix = after && !after.startsWith("\n") ? "\n" : "";
     markupEditor.setRangeText(prefix + markup + suffix, start, end, "end");
     markupEditor.focus();
     markupEditor.dispatchEvent(new Event("input", { bubbles: true }));
@@ -308,7 +308,7 @@ wikiImageFileInput?.addEventListener("change", async () => {
     wikiImageFileInput.value = "";
     return;
   }
-  const defaultAlt = file.name.replace(/\\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 180);
+  const defaultAlt = file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim().slice(0, 180);
   const chosenAlt = window.prompt("Describe the image for accessibility (alt text):", defaultAlt);
   if (chosenAlt === null) {
     wikiImageFileInput.value = "";
@@ -867,7 +867,7 @@ submitButton.addEventListener("click", async () => {
       showMessage("Markup needs fixing: " + diagnostics.errors.join(" "), true);
       return;
     }
-    if (diagnostics.warnings.length && !window.confirm("Markup checks found possible issues:\\n\\n" + diagnostics.warnings.join("\\n") + "\\n\\nSubmit anyway?")) return;
+    if (diagnostics.warnings.length && !window.confirm("Markup checks found possible issues:\n\n" + diagnostics.warnings.join("\n") + "\n\nSubmit anyway?")) return;
   }
   if (creating && (!title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
     showMessage("Enter a title and a URL slug using lowercase letters, numbers, and single hyphens.", true);
