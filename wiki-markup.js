@@ -38,6 +38,19 @@ function renderInline(source, titleToSlug = {}, refs = null) {
       return '<sup class="reference" id="cite_ref-' + ref.id + '-' + ref.uses + '"><a href="#cite_note-' + ref.id + '">' + ref.id + '</a></sup>';
     });
   }
+  // MediaWiki-compatible image syntax: [[File:https://...|thumb|right|250px|alt=...|caption]].
+  text = text.replace(/\[\[(?:File|Image):([^|\]]+)((?:\|[^\]]*)?)\]\]/gi, (_, rawUrl, rawOptions) => {
+    const url = decodeEntities(rawUrl).trim();
+    if (!/^https?:\/\//i.test(url)) return "";
+    const options = String(rawOptions || "").split("|").map(item => item.trim()).filter(Boolean);
+    const alignment = options.find(item => /^(left|right|center)$/i.test(item))?.toLowerCase() || "right";
+    const widthOption = options.find(item => /^\d{2,4}px$/i.test(item));
+    const width = widthOption ? Math.min(1200, Math.max(80, parseInt(widthOption, 10))) : 320;
+    const altOption = options.find(item => /^alt=/i.test(item));
+    const alt = altOption ? altOption.slice(4) : "";
+    const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
+    return '<span class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><span class="wiki-image-caption">' + renderInline(caption, titleToSlug, refs) + '</span></span>';
+  });
   text = text.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
   text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) => internalLink(decodeEntities(target), null, titleToSlug));
   text = text.replace(/\[(https?:\/\/[^\s\]]+)(?:\s+([^\]]+))?\]/g, (_, url, label) =>
@@ -171,6 +184,23 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
       continue;
     }
     if (/^<references\s*\/\s*>$/i.test(line)) { flushParagraph(); closeList(); output.push("__WIKI_REFERENCES_MARKER__"); continue; }
+    // Gallery blocks accept either <gallery>...</gallery> or {{Gallery ... }}.
+    if (/^<gallery\s*>$/i.test(line) || /^\{\{Gallery\s*$/i.test(line)) {
+      flushParagraph(); closeList();
+      const html = [];
+      while (i + 1 < lines.length) {
+        const galleryLine = lines[++i].trim();
+        if (/^<\/gallery\s*>$/i.test(galleryLine) || galleryLine === "}}") break;
+        if (!galleryLine) continue;
+        const parts = galleryLine.replace(/^\*\s*/, "").split("|");
+        const url = parts.shift().trim().replace(/^(?:File|Image):/i, "");
+        if (!/^https?:\/\//i.test(url)) continue;
+        const caption = parts.join(" ").trim();
+        html.push('<figure class="wiki-gallery-item"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(caption) + '" loading="lazy"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>');
+      }
+      if (html.length) output.push('<div class="wiki-gallery" role="group" aria-label="Image gallery">' + html.join("") + '</div>');
+      continue;
+    }
     if (/^\{\{Infobox(?:\s+[^}]*)?$/i.test(line)) {
       flushParagraph(); closeList();
       const block = [line];
@@ -248,23 +278,85 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
 
 export function htmlToWikiMarkup(html) {
   const doc = new DOMParser().parseFromString(String(html ?? ""), "text/html");
+  const noteText = new Map();
+  for (const note of doc.querySelectorAll(".wiki-references li[id^='cite_note-']")) {
+    const id = note.id.replace("cite_note-", "");
+    const clone = note.cloneNode(true);
+    clone.querySelectorAll(".reference-backlink").forEach(link => link.remove());
+    noteText.set(id, (clone.textContent || "").trim());
+  }
+  const referenceUses = new Map();
   const convert = (node) => {
     if (node.nodeType === Node.TEXT_NODE) return node.nodeValue || "";
     if (node.nodeType !== Node.ELEMENT_NODE) return "";
     const tag = node.tagName.toLowerCase();
-    const inner = [...node.childNodes].map(convert).join("");
-    if (/^h[2-6]$/.test(tag)) return "\n" + "=".repeat(Number(tag.slice(1))) + " " + inner.trim() + " " + "=".repeat(Number(tag.slice(1))) + "\n";
-    if (tag === "p" || tag === "div" || tag === "section") return inner + "\n\n";
-    if (tag === "strong" || tag === "b") return "'''" + inner + "'''";
-    if (tag === "em" || tag === "i") return "''" + inner + "''";
-    if (tag === "li") return "* " + inner + "\n";
+    if (node.classList.contains("wiki-references")) return "";
+    if (node.classList.contains("wiki-categories")) {
+      return [...node.querySelectorAll("a")].map(link => "[[Category:" + link.textContent.trim() + "]]").join("\n") + "\n";
+    }
+    if (node.matches("sup.reference")) {
+      const id = node.querySelector("a[href^='#cite_note-']")?.getAttribute("href")?.slice("#cite_note-".length);
+      if (!id || !noteText.has(id)) return "";
+      const count = referenceUses.get(id) || 0;
+      referenceUses.set(id, count + 1);
+      const name = "lms-ref-" + id.replace(/[^a-z0-9_-]/gi, "");
+      return count ? '<ref name="' + name + '" />' : '<ref name="' + name + '">' + noteText.get(id) + "</ref>";
+    }
+    if (node.classList.contains("wiki-gallery")) {
+      const items = [...node.querySelectorAll(".wiki-gallery-item")].map(item => {
+        const image = item.querySelector("img");
+        const caption = item.querySelector("figcaption")?.textContent?.trim() || image?.alt || "";
+        return image?.src ? image.src + (caption ? " | " + caption : "") : "";
+      }).filter(Boolean);
+      return items.length ? "{{Gallery\n" + items.join("\n") + "\n}}\n\n" : "";
+    }
+    if (node.matches("figure.wiki-image, span.wiki-image")) {
+      const image = node.querySelector("img");
+      if (!image?.src) return "";
+      const alignment = ["left", "right", "center"].find(value => node.classList.contains("wiki-image-" + value)) || "right";
+      const width = image.style.maxWidth.match(/(\d{2,4})px/)?.[1] || "320";
+      const caption = node.querySelector("figcaption,.wiki-image-caption")?.textContent?.trim() || "";
+      return "[[File:" + image.src + "|" + alignment + "|" + width + "px|alt=" + (image.alt || caption) + "|" + caption + "]]";
+    }
+    if (tag === "img") {
+      return node.src ? "[[File:" + node.src + "|right|320px|alt=" + (node.alt || "") + "]]" : "";
+    }
+    if (tag === "table") {
+      const rows = [...node.querySelectorAll("tr")];
+      if (node.classList.contains("infobox")) {
+        const title = node.querySelector("caption")?.textContent?.trim() || "Information";
+        const fields = rows.map(row => {
+          const cells = [...row.children];
+          return cells.length >= 2 ? "| " + cells[0].textContent.trim() + " = " + cells.slice(1).map(cell => cell.textContent.trim()).join(" ") : "";
+        }).filter(Boolean);
+        return "{{Infobox " + title + "\n" + fields.join("\n") + "\n}}\n\n";
+      }
+      const tableRows = rows.map(row => {
+        const cells = [...row.children].map(cell => [...cell.childNodes].map(convert).join("").trim());
+        const isHeader = [...row.children].length > 0 && [...row.children].every(cell => cell.tagName.toLowerCase() === "th");
+        return "|-\n" + (isHeader ? "! " + cells.join(" !! ") : "| " + cells.join(" || "));
+      });
+      return tableRows.length ? '{| class="wikitable"\n' + tableRows.join("\n") + "\n|}\n\n" : "";
+    }
+    if (/^h[2-6]$/.test(tag)) return "\n" + "=".repeat(Number(tag.slice(1))) + " " + [...node.childNodes].map(convert).join("").trim() + " " + "=".repeat(Number(tag.slice(1))) + "\n";
+    if (tag === "p" || tag === "div" || tag === "section") return [...node.childNodes].map(convert).join("") + "\n\n";
+    if (tag === "strong" || tag === "b") return "'''" + [...node.childNodes].map(convert).join("") + "'''";
+    if (tag === "em" || tag === "i") return "''" + [...node.childNodes].map(convert).join("") + "''";
+    if (tag === "del" || tag === "s") return "~~" + [...node.childNodes].map(convert).join("") + "~~";
+    if (tag === "li") {
+      const marker = node.parentElement?.tagName.toLowerCase() === "ol" ? "#" : "*";
+      return marker + " " + [...node.childNodes].map(convert).join("").trim() + "\n";
+    }
+    if (tag === "ul" || tag === "ol") return [...node.children].map(convert).join("") + "\n";
+    if (tag === "blockquote") return [...node.childNodes].map(convert).join("").trim().split("\n").map(line => " " + line).join("\n") + "\n";
     if (tag === "a") {
       const href = node.getAttribute("href") || "";
+      const inner = [...node.childNodes].map(convert).join("");
       if (href.startsWith("wiki.html#")) return "[[" + decodeURIComponent(href.slice("wiki.html#".length)).replace(/-/g, " ") + "|" + inner + "]]";
       return href ? "[" + href + " " + inner + "]" : inner;
     }
     if (tag === "br") return "\n";
-    return inner;
+    return [...node.childNodes].map(convert).join("");
   };
   return [...doc.body.childNodes].map(convert).join("").replace(/\n{3,}/g, "\n\n").trim();
 }
@@ -276,4 +368,42 @@ export function looksLikeWikiMarkup(source) {
   if (/<\/?(?:p|div|section|table|img|h[1-6]|ul|ol|li|strong|em|a|blockquote|figure)\b[^>]*>/i.test(text)) return false;
   return /^(?:={2,6}\s|#(?:REDIRECT|redirect)\s|\{\{(?:Infobox|Short description|See also|Disambiguation)|\[\[|[*#]+\s|\{\||----)/im.test(text) ||
     /\[\[Category:|<\/?ref(?:\s|>|\/)|<references\s*\//im.test(text);
+}
+
+
+// LiquinWiki Markup Standard (LMS) diagnostics. Checks never rewrite stored article text.
+export function validateWikiMarkup(source) {
+  const text = String(source ?? "");
+  const errors = [];
+  const warnings = [];
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  const stack = [];
+  const namedRefs = new Set();
+  const usedRefs = new Set();
+  lines.forEach((raw, index) => {
+    const line = raw.trim();
+    const lineNumber = index + 1;
+    if (/^\{\{Infobox(?:\s+[^}]*)?$/i.test(line)) stack.push({ type: "Infobox", line: lineNumber });
+    if (/^\{\{Gallery\s*$/i.test(line) || /^<gallery\s*>$/i.test(line)) stack.push({ type: "Gallery", line: lineNumber });
+    if (line.startsWith("{|")) stack.push({ type: "table", line: lineNumber });
+    if (line === "}}" || line === "|}") {
+      const expected = line === "|}" ? "table" : null;
+      const position = expected ? stack.map(item => item.type.toLowerCase()).lastIndexOf(expected) : stack.length - 1;
+      if (position >= 0) stack.splice(position, 1);
+    }
+    if (/^<\/gallery\s*>$/i.test(line)) {
+      const position = stack.map(item => item.type).lastIndexOf("Gallery");
+      if (position >= 0) stack.splice(position, 1);
+      else warnings.push("Line " + lineNumber + ": closing gallery tag has no matching opening tag.");
+    }
+    for (const match of line.matchAll(/<ref\s+name=["']([^"']+)["'][^>]*>([\s\S]*?)<\/ref>/gi)) namedRefs.add(match[1]);
+    for (const match of line.matchAll(/<ref\s+name=["']([^"']+)["']\s*\/>/gi)) usedRefs.add(match[1]);
+    const fileMatch = line.match(/\[\[(?:File|Image):([^|\]]+)/i);
+    if (fileMatch && !/^https?:\/\//i.test(fileMatch[1].trim())) warnings.push("Line " + lineNumber + ": image links must use an http:// or https:// image URL.");
+    if (/^={1,}$/.test(line)) warnings.push("Line " + lineNumber + ": heading markup needs at least two matching equals signs.");
+  });
+  for (const item of stack) errors.push("Unclosed " + item.type + " block opened on line " + item.line + ".");
+  for (const name of usedRefs) if (!namedRefs.has(name)) warnings.push('Named reference "' + name + '" is used but has no definition.');
+  if (/<script\b|javascript:/i.test(text)) errors.push("Scripts and javascript: URLs are not permitted in article markup.");
+  return { valid: errors.length === 0, errors, warnings };
 }

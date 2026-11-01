@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import DOMPurify from "https://esm.sh/dompurify@3";
-import { htmlToWikiMarkup, renderWikiMarkup } from "./wiki-markup.js?v=20261024-markup-v4";
+import { htmlToWikiMarkup, renderWikiMarkup, validateWikiMarkup } from "./wiki-markup.js?v=20261101-lms1";
 
 const articles = {
   "liquindo": "Liquindo",
@@ -745,6 +745,14 @@ submitButton.addEventListener("click", async () => {
   const title = creating ? newArticleTitle.value.trim() : articles[articleSelect.value];
   const slug = creating ? (newArticleSlug.value.trim() || slugifyArticleTitle(title)) : articleSelect.value;
   const content = currentEditorHtml().trim();
+  if (wikiMarkupMode) {
+    const diagnostics = validateWikiMarkup(markupEditor.value);
+    if (diagnostics.errors.length) {
+      showMessage("Markup needs fixing: " + diagnostics.errors.join(" "), true);
+      return;
+    }
+    if (diagnostics.warnings.length && !window.confirm("Markup checks found possible issues:\\n\\n" + diagnostics.warnings.join("\\n") + "\\n\\nSubmit anyway?")) return;
+  }
   if (creating && (!title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))) {
     showMessage("Enter a title and a URL slug using lowercase letters, numbers, and single hyphens.", true);
     return;

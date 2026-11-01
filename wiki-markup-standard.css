@@ -1,0 +1,31 @@
+/* LiquinWiki Markup Standard (LMS) — shared by published articles and editor previews. */
+.wiki-article,.wiki-article [data-wiki-article],.editor-canvas,.revision-preview{font-size:16px;line-height:1.65;overflow-wrap:anywhere}
+.wiki-article p,.wiki-article li,.wiki-article td,.wiki-article th,.wiki-article figcaption,.wiki-article blockquote,.editor-canvas p,.editor-canvas li,.editor-canvas td,.editor-canvas th,.editor-canvas figcaption,.revision-preview p,.revision-preview li{font-size:1rem!important;line-height:1.65!important}
+.wiki-article img,.editor-canvas img,.revision-preview img{max-width:100%;height:auto}
+.wiki-article figure,.editor-canvas figure,.revision-preview figure{margin:1rem 0}
+.wiki-article .wiki-image,.editor-canvas .wiki-image,.revision-preview .wiki-image{display:table;max-width:min(100%,22rem);margin:.35rem 0 1rem 1.25rem;padding:.35rem;border:1px solid rgba(199,164,81,.55);background:rgba(10,24,45,.28)}
+.wiki-article .wiki-image-right{float:right;clear:right}
+.wiki-article .wiki-image-left{float:left;clear:left;margin-left:0;margin-right:1.25rem}
+.wiki-article .wiki-image-center{float:none;clear:both;margin:1rem auto}
+.wiki-article .wiki-image img,.editor-canvas .wiki-image img{display:block;width:auto;max-width:100%;height:auto;margin:auto}
+.wiki-article figcaption,.editor-canvas figcaption,.revision-preview figcaption{padding:.35rem .45rem;text-align:center;font-size:1rem}
+.wiki-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:.85rem;clear:both;margin:1.25rem 0}
+.wiki-gallery-item{min-width:0;margin:0;padding:.5rem;border:1px solid rgba(199,164,81,.45);background:rgba(10,24,45,.22)}
+.wiki-gallery-item img{display:block;width:100%;height:180px;object-fit:contain}
+.wiki-article table.wikitable,.editor-canvas table.wikitable{display:table;width:auto;max-width:100%;border-collapse:collapse;margin:1rem 0;overflow-wrap:normal}
+.wiki-article .wikitable th,.editor-canvas .wikitable th{font-weight:700;background:rgba(199,164,81,.14)}
+.wiki-article .wikitable td,.wiki-article .wikitable th,.editor-canvas .wikitable td,.editor-canvas .wikitable th{padding:.5rem .65rem;border:1px solid rgba(199,164,81,.5);vertical-align:top}
+.wiki-article .infobox,.editor-canvas .infobox{width:min(22rem,100%);max-width:100%;border-collapse:collapse;table-layout:auto;font-size:1rem}
+.wiki-article .infobox th,.wiki-article .infobox td,.editor-canvas .infobox th,.editor-canvas .infobox td{padding:.45rem .55rem;font-size:1rem;line-height:1.5;vertical-align:top}
+.wiki-article .wiki-references,.editor-canvas .wiki-references{clear:both;margin-top:1.75rem;padding-top:.75rem;border-top:1px solid rgba(199,164,81,.55)}
+.wiki-article .reference-list,.editor-canvas .reference-list{padding-left:1.6rem;font-size:1rem}
+.wiki-article .reference-list li{margin:.4rem 0}
+.wiki-article .reference-backlink{margin-left:.35rem;text-decoration:none}
+.wiki-article .wiki-categories{clear:both;margin-top:1.5rem}
+.wiki-article h2{font-size:1.5rem;line-height:1.3}
+.wiki-article h3{font-size:1.2rem;line-height:1.35}
+.wiki-article h4{font-size:1.05rem;line-height:1.4}
+@media(max-width:640px){.wiki-article .wiki-image,.wiki-article .wiki-image-left,.wiki-article .wiki-image-right{float:none;clear:both;display:table;width:auto;max-width:100%;margin:1rem auto}.wiki-article table.wikitable,.editor-canvas table.wikitable{display:block;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.wiki-article .wikitable td,.wiki-article .wikitable th{min-width:7rem}.wiki-gallery{grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}.wiki-gallery-item img{height:145px}}
+
+/* Image markup is inline-safe because images may appear inside paragraph text. */
+.wiki-article .wiki-image-caption,.editor-canvas .wiki-image-caption,.revision-preview .wiki-image-caption{display:block;padding:.35rem .45rem;text-align:center;font-size:1rem!important;line-height:1.5!important}
