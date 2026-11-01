@@ -1,11 +1,7 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabase } from "./supabase-client.js";
 import DOMPurify from "https://esm.sh/dompurify@3";
 import { looksLikeWikiMarkup, renderWikiMarkup, slugifyWikiTitle } from "./wiki-markup.js?v=20261024-markup-v5";
 
-const supabase = createClient(
-  "https://uivjovkvpskvvazznlyr.supabase.co",
-  "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-);
 
 const sanitizeOptions = {
   USE_PROFILES: { html: true },
