@@ -439,34 +439,8 @@ See [[Liquindo Nationalist Front|the related article]].
       </section>
 
       <section id="permission-panel" class="editor-panel editor-hidden">
-        <h2>Manage wiki permissions</h2>
-        <p class="editor-note">Assign independent permissions to an existing account. Permissions accumulate: assigning a second permission does not replace the first. Wiki Editors can edit existing articles and submit new articles for approval. Trusted Editors can edit, create and publish directly. Only website Administrators can review submissions and manage wiki permissions. This does not change the account's website member/admin role.</p>
-        <form id="permission-form" class="editor-controls">
-          <label for="permission-email">Account email
-            <input id="permission-email" type="email" autocomplete="off" required />
-          </label>
-          <label for="permission-choice">Permission
-            <select id="permission-choice">
-              <option value="liquinwiki_editor">Editor — edit existing articles</option>
-              <option value="liquinwiki_trusted_editor">Trusted Editor — edit, create and publish immediately</option>
-            </select>
-          </label>
-          <label for="permission-action">Action
-            <select id="permission-action">
-              <option value="assign">Assign permission (keep existing permissions)</option>
-              <option value="remove">Remove selected permission only</option>
-              <option value="clear">Remove all LiquinWiki permissions</option>
-            </select>
-          </label>
-          <button id="permission-save" class="editor-button" type="submit">Save permission</button>
-        </form>
-        <p id="permission-status" class="editor-status" role="status" aria-live="polite"></p>
-        <h3>Recent permission changes</h3>
-        <p class="editor-note">The latest 30 assignments, removals and changes are recorded here.</p>
-        <div id="permission-history" class="revision-history" aria-live="polite"></div>
-        <hr />
-        <h2>Article completion tag</h2>
-        <p class="editor-note">Assign a status label to any published article. The label appears on the article and in the article directory.</p>
+        <h2>Article completion tags</h2>
+        <p class="editor-note">Assign a status label to any published article. The label appears on the article and in the article directory. Website roles are managed centrally in Admin Tools.</p>
         <form id="article-status-form" class="editor-controls">
           <label for="article-status-slug">Article
             <select id="article-status-slug" required><option value="">Choose an article…</option></select>
@@ -481,6 +455,10 @@ See [[Liquindo Nationalist Front|the related article]].
           <button id="article-status-save" class="editor-button" type="submit">Save article tag</button>
         </form>
         <p id="article-status-message" class="editor-status" role="status" aria-live="polite"></p>
+        <div hidden aria-hidden="true">
+          <form id="permission-form"><input id="permission-email" type="email"><select id="permission-choice"><option value="liquinwiki_editor">Editor</option></select><select id="permission-action"><option value="assign">Assign</option></select><button id="permission-save" type="submit">Save</button></form>
+          <p id="permission-status"></p><div id="permission-history"></div>
+        </div>
       </section>
 
       <section id="review-panel" class="editor-panel editor-hidden">
