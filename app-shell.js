@@ -199,108 +199,97 @@
     });
     updateSearch();
 
-    // LiquinWiki and Gallery are member-only. Hide every navigation/CTA link
-    // to either page until Supabase confirms an authenticated session. The
-    // Members directory intentionally remains public.
-    function initializeMemberOnlyLinks() {
-      const protectedLinks = [...document.querySelectorAll('a[href]')].filter((link) => {
+    // One shared Supabase client and one auth listener serve navigation checks.
+    // Token refresh events for the same user do not repeat the profile lookup.
+    async function initializeAuthNavigation() {
+      const galleryLinks = [...document.querySelectorAll('a[href]')].filter((link) => {
         const href = link.getAttribute("href") || "";
         return /^(?:\.\/)?gallery\.html(?:[?#].*)?$/.test(href);
       });
-      protectedLinks.forEach((link) => {
+      const adminLink = menu.querySelector("#admin-tools-nav");
+      galleryLinks.forEach((link) => {
         link.dataset.requiresAuth = "true";
         link.hidden = true;
         link.setAttribute("aria-hidden", "true");
       });
-      if (!protectedLinks.length) return;
+      if (!galleryLinks.length && !adminLink) return;
 
+      let client;
+      try {
+        ({ supabase: client } = await import("./supabase-client.js"));
+      } catch (error) {
+        console.warn("Liquindo navigation authentication could not initialise.", error);
+        return;
+      }
+
+      let currentUserId = null;
+      let roleRequest = 0;
+      let roleKnownForUser = null;
       const applySession = (session) => {
-        const signedIn = Boolean(session?.user);
-        protectedLinks.forEach((link) => {
+        const user = session?.user || null;
+        const signedIn = Boolean(user);
+        galleryLinks.forEach((link) => {
           link.hidden = !signedIn;
           if (signedIn) link.removeAttribute("aria-hidden");
           else link.setAttribute("aria-hidden", "true");
         });
-      };
 
-      import("https://esm.sh/@supabase/supabase-js@2")
-        .then(({ createClient }) => {
-          const client = createClient(
-            "https://uivjovkvpskvvazznlyr.supabase.co",
-            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-          );
-          client.auth.onAuthStateChange((_event, session) => applySession(session));
-          return client.auth.getSession().then(({ data, error }) => {
-            if (error) throw error;
-            applySession(data.session);
-          });
-        })
-        .catch(() => {
-          // Fail closed: keep member-only navigation hidden if auth status
-          // cannot be verified.
-          applySession(null);
-        });
-    }
-    initializeMemberOnlyLinks();
-
-    // The universal Contents menu is generated on every page, so its
-    // administrator shortcut must be authorized here rather than only by
-    // homepage-specific code. Wiki-only permissions do not grant this link.
-    function initializeAdminToolsLink() {
-      const adminLink = menu.querySelector("#admin-tools-nav");
-      if (!adminLink) return;
-
-      let sequence = 0;
-      const applySession = async (session) => {
-        const current = ++sequence;
-        adminLink.hidden = true;
-        adminLink.setAttribute("aria-hidden", "true");
-        if (!session?.user) return;
-
-        try {
-          const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-          const client = createClient(
-            "https://uivjovkvpskvvazznlyr.supabase.co",
-            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-          );
-          const { data, error } = await client
-            .from("profiles")
-            .select("role")
-            .eq("id", session.user.id)
-            .maybeSingle();
-
-          if (current !== sequence || error || data?.role !== "admin") return;
-          adminLink.hidden = false;
-          adminLink.removeAttribute("aria-hidden");
-        } catch {
-          // Fail closed if the account or role cannot be verified.
-        }
-      };
-
-      import("https://esm.sh/@supabase/supabase-js@2")
-        .then(async ({ createClient }) => {
-          const client = createClient(
-            "https://uivjovkvpskvvazznlyr.supabase.co",
-            "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz"
-          );
-
-          // Never run a profile query inside Supabase's auth callback: doing so
-          // can wait on the same auth lock and leave the navigation hidden.
-          client.auth.onAuthStateChange((_event, session) => {
-            Promise.resolve().then(() => applySession(session));
-          });
-
-          const { data, error } = await client.auth.getSession();
-          if (error) throw error;
-          await applySession(data.session);
-        })
-        .catch((error) => {
-          console.warn("Liquindo administrator navigation check failed.", error);
+        if (!adminLink) return;
+        if (!signedIn) {
+          currentUserId = null;
+          roleKnownForUser = null;
+          roleRequest++;
           adminLink.hidden = true;
           adminLink.setAttribute("aria-hidden", "true");
+          return;
+        }
+
+        if (currentUserId !== user.id) {
+          currentUserId = user.id;
+          roleKnownForUser = null;
+          adminLink.hidden = true;
+          adminLink.setAttribute("aria-hidden", "true");
+        } else if (roleKnownForUser === user.id) {
+          return;
+        }
+
+        const request = ++roleRequest;
+        // Run database work after the auth callback has returned. This avoids
+        // waiting on Supabase's auth lock from inside its own state listener.
+        Promise.resolve().then(async () => {
+          try {
+            const { data, error } = await client
+              .from("profiles")
+              .select("role")
+              .eq("id", user.id)
+              .maybeSingle();
+            if (request !== roleRequest || currentUserId !== user.id) return;
+            if (error) throw error;
+            roleKnownForUser = user.id;
+            const isAdmin = data?.role === "admin";
+            adminLink.hidden = !isAdmin;
+            if (isAdmin) adminLink.removeAttribute("aria-hidden");
+            else adminLink.setAttribute("aria-hidden", "true");
+          } catch (error) {
+            if (request !== roleRequest) return;
+            console.warn("Liquindo administrator navigation check failed.", error);
+            adminLink.hidden = true;
+            adminLink.setAttribute("aria-hidden", "true");
+          }
         });
+      };
+
+      client.auth.onAuthStateChange((_event, session) => applySession(session));
+      try {
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
+        applySession(data.session);
+      } catch (error) {
+        console.warn("Liquindo navigation session check failed.", error);
+        applySession(null);
+      }
     }
-    initializeAdminToolsLink();
+    initializeAuthNavigation();
   }
 
   function detectPwaDisplayMode() {
