@@ -206,7 +206,7 @@
         link.hidden = true;
         link.setAttribute("aria-hidden", "true");
       });
-      if (!galleryLinks.length && !adminLink) return;
+      if (!galleryLinks.length && !adminLink && !document.querySelector("#site-account-link, #site-account-logout")) return;
 
       let client;
       try {
