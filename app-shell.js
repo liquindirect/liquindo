@@ -279,15 +279,9 @@
         });
       };
 
+      // INITIAL_SESSION supplies the startup session. Avoid a duplicate
+      // getSession() call; the same listener also handles resume/token events.
       client.auth.onAuthStateChange((_event, session) => applySession(session));
-      try {
-        const { data, error } = await client.auth.getSession();
-        if (error) throw error;
-        applySession(data.session);
-      } catch (error) {
-        console.warn("Liquindo navigation session check failed.", error);
-        applySession(null);
-      }
     }
     initializeAuthNavigation();
   }
