@@ -195,6 +195,31 @@
       let session = null;
       let adminUserId = null;
 
+      // The account-management panel is injected by admin-center.js after
+      // administrator verification. Handle the shortcut even if it is tapped
+      // before that module has finished inserting the target section.
+      document.addEventListener("click", event => {
+        const link = event.target.closest('.admin-tool-card[href="#ac-accounts"]');
+        if (!link) return;
+        event.preventDefault();
+        const revealAccounts = () => {
+          const target = document.getElementById("ac-accounts");
+          if (!target || content.hidden) return false;
+          history.replaceState(null, "", "#ac-accounts");
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          target.setAttribute("tabindex", "-1");
+          target.focus({ preventScroll: true });
+          return true;
+        };
+        if (revealAccounts()) return;
+        const observer = new MutationObserver(() => {
+          if (revealAccounts()) observer.disconnect();
+        });
+        observer.observe(content, { childList: true, subtree: true });
+        window.setTimeout(() => observer.disconnect(), 8000);
+        showStatus("Opening account and role management…");
+      }, true);
+
       const showStatus = (text, error = false) => {
         status.textContent = text;
         status.classList.toggle("error", error);
