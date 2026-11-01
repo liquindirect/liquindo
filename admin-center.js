@@ -1,4 +1,4 @@
-import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-client.js?v=20261101-adminfix4";
+import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-client.js";
 (() => {
  const db=supabase,root=document.getElementById("admin-tools-content");if(!root)return;
  const css=document.createElement("style");css.textContent=".ac-wrap{display:grid;gap:1rem;margin-top:2rem}.ac-panel#ac-accounts{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}.ac-panel#ac-accounts .ac-list{display:block;gap:0;margin-top:1rem}#ac-accounts-list .account-role-row{display:block;margin:0;padding:1.1rem 0;border:0;border-bottom:1px solid rgba(0,0,50,.18);border-radius:0;background:transparent;box-shadow:none}#ac-accounts-list .account-role-row:last-child{border-bottom:0}#ac-accounts-list .account-role-row h3{margin:0 0 .4rem}#ac-accounts-list .account-role-row .ac-form{background:transparent;border:0;box-shadow:none;padding:0}.ac-panel#ac-accounts .ac-form{margin-top:.75rem}.ac-panel#ac-accounts .ac-form select{max-width:100%}.ac-panel{padding:1.2rem;border:1px solid #d8dce1;border-radius:14px;background:#fff;color:#172033;scroll-margin-top:1rem}.ac-panel h2{color:#000032;margin:.1rem 0 .6rem}.ac-muted{color:#566273;line-height:1.5}.ac-nav,.ac-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin:.8rem 0}.ac-nav a,.ac-btn{padding:.6rem .85rem;border:1px solid #c6ccd4;border-radius:8px;background:#fff;color:#172033;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}.ac-btn.primary{background:#fdbe00;border-color:#fdbe00;color:#000032}.ac-btn.danger{color:#a3221a;border-color:#a3221a}.ac-btn:disabled{opacity:.55}.ac-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.7rem}.ac-stat,.ac-item{border:1px solid #e0e4e9;border-radius:10px;padding:.8rem;overflow-wrap:anywhere}.ac-stat strong{display:block;font-size:1.7rem;color:#000032}.ac-stat span,.ac-meta{font-size:.85rem;color:#647084}.ac-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.7rem;align-items:end}.ac-form label,.ac-label{display:grid;gap:.35rem;font-weight:700;font-size:.92rem}.ac-form input,.ac-form select,.ac-form textarea,.ac-panel input,.ac-panel select,.ac-panel textarea{box-sizing:border-box;width:100%;min-width:0;padding:.6rem;border:1px solid #b9c1cb;border-radius:7px;background:#fff;color:#172033;font:inherit}.ac-form textarea,.ac-panel textarea{min-height:85px}.ac-list{display:grid;gap:.6rem;margin-top:.8rem}.ac-item h3{font-size:1rem;margin:0 0 .4rem;color:#000032}.ac-status{min-height:1.2rem;color:#425466}.ac-status.error{color:#b42318}.ac-tablewrap{overflow:auto}.ac-table{width:100%;border-collapse:collapse;min-width:600px}.ac-table th,.ac-table td{text-align:left;padding:.6rem;border-bottom:1px solid #e0e4e9;vertical-align:top}.ac-warn{padding:.8rem;background:#fff8df;border:1px solid #e7cb73;border-radius:8px}.ac-hidden{display:none!important}.ac-tool-menu{display:grid;gap:.65rem;margin:.9rem 0 1.5rem}.ac-tool-dropdown{border:1px solid #d8dce1;border-radius:12px;background:#fff;overflow:hidden}.ac-tool-toggle{width:100%;min-height:52px;padding:1rem 1.1rem;border:0;background:#fff;color:#000032;font:inherit;font-weight:800;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation}.ac-tool-toggle:after{content:"＋";color:#9a7200;font-size:1.1rem}.ac-tool-toggle[aria-expanded="true"]{border-bottom:1px solid #e0e4e9;background:#fffdf5}.ac-tool-toggle[aria-expanded="true"]:after{content:"−"}.ac-tool-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:.55rem;padding:.8rem}.ac-tool-options[hidden]{display:none!important}.ac-tool-options a{display:block;padding:.75rem .85rem;border:1px solid #e0e4e9;border-radius:8px;background:#f8f9fb;color:#172033;text-decoration:none;font-weight:650}.ac-tool-options a:hover,.ac-tool-options a:focus-visible{border-color:#fdbe00;background:#fffdf5}";document.head.append(css);
@@ -124,46 +124,48 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
    function field(labelText,control){const label=document.createElement("label");label.textContent=labelText;label.append(control);f.append(label);}
    const websiteRole=document.createElement("select");
    [["member","Member"],["admin","Administrator"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;websiteRole.append(option);});
-   websiteRole.value=p.role||"member";if(p.id===adminId)websiteRole.disabled=true;
+   websiteRole.value=p.role||"member";
+   if(p.id===adminId)websiteRole.disabled=true;
    field("Website role",websiteRole);
-   const websiteSave=document.createElement("button");websiteSave.type="button";websiteSave.className="ac-btn primary";websiteSave.textContent="Save website role";websiteSave.disabled=p.id===adminId;
-   websiteSave.onclick=async()=>{
-    const next=websiteRole.value;if(next===p.role){say("ac-accounts-status","Choose a different website role before saving.");return;}
-    const action=next==="admin"?"promote to Website Administrator":"demote to Member";
-    if(!window.confirm("Are you sure you want to "+action+" "+(p.display_name||"this account")+"? This changes their website-wide permissions.")){websiteRole.value=p.role;return;}
-    websiteSave.disabled=true;
-    try{
-     const result=await db.rpc("admin_update_profile",{target_user_id:p.id,new_display_name:p.display_name||"New member",new_bio:p.bio||"",new_role:next});
-     if(result.error)throw result.error;
-     Object.assign(p,result.data);updateMeta();websiteRole.value=p.role;
-     say("ac-accounts-status","Website role saved for "+(p.display_name||"this account")+".");
-     await Promise.all([overview(),loadProfiles(true)]);
-    }catch(error){websiteRole.value=p.role;say("ac-accounts-status",error.message||"Could not save website role.",true);}
-    finally{websiteSave.disabled=p.id===adminId;}
-   };
-   f.append(websiteSave);
+   const currentWikiRole=p.wiki_role||"none";
    const wikiRole=document.createElement("select");
    [["none","None"],["liquinwiki_editor","Wiki Editor"],["liquinwiki_trusted_editor","Trusted Editor"]].forEach(([value,label])=>{const option=document.createElement("option");option.value=value;option.textContent=label;wikiRole.append(option);});
-   const currentWikiRole=p.wiki_role||"none";wikiRole.value=currentWikiRole;
+   wikiRole.value=currentWikiRole;
    field("LiquinWiki role",wikiRole);
-   const wikiSave=document.createElement("button");wikiSave.type="button";wikiSave.className="ac-btn primary";wikiSave.textContent="Save wiki role";
-   wikiSave.onclick=async()=>{
-    const next=wikiRole.value;if(next===currentWikiRole){say("ac-accounts-status","Choose a different LiquinWiki role before saving.");return;}
-    if(!window.confirm("Assign "+wikiLabel(next)+" to "+(p.display_name||"this account")+"?")){wikiRole.value=currentWikiRole;return;}
-    wikiSave.disabled=true;wikiRole.disabled=true;
+   const save=document.createElement("button");save.type="button";save.className="ac-btn primary";save.textContent="Save roles";
+   const updateSaveState=()=>{save.disabled=websiteRole.value===p.role&&wikiRole.value===currentWikiRole;};
+   websiteRole.addEventListener("change",updateSaveState);
+   wikiRole.addEventListener("change",updateSaveState);
+   updateSaveState();
+   save.onclick=async()=>{
+    const nextWebsite=websiteRole.value,nextWiki=wikiRole.value;
+    if(nextWebsite===p.role&&nextWiki===currentWikiRole)return;
+    const changes=[];
+    if(nextWebsite!==p.role)changes.push("website role to "+(nextWebsite==="admin"?"Administrator":"Member"));
+    if(nextWiki!==currentWikiRole)changes.push("LiquinWiki role to "+wikiLabel(nextWiki));
+    if(!window.confirm("Save "+changes.join(" and ")+" for "+(p.display_name||"this account")+"?")){
+     websiteRole.value=p.role;wikiRole.value=currentWikiRole;updateSaveState();return;
+    }
+    save.disabled=true;websiteRole.disabled=true;wikiRole.disabled=true;
+    say("ac-accounts-status","Saving both roles together…");
     try{
-     const result=await db.rpc("set_liquinwiki_role",{p_user_id:p.id,p_role:next});if(result.error)throw result.error;
-     p.wiki_role=next;updateMeta();
-     say("ac-accounts-status","LiquinWiki role saved for "+(p.display_name||"this account")+".");
-     await loadProfiles(true);
-    }catch(error){wikiRole.value=currentWikiRole;say("ac-accounts-status",error.message||"Could not save LiquinWiki role.",true);}
-    finally{wikiSave.disabled=false;wikiRole.disabled=false;}
+     const result=await db.rpc("admin_update_account_roles",{p_user_id:p.id,p_website_role:nextWebsite,p_wiki_role:nextWiki});
+     if(result.error)throw result.error;
+     Object.assign(p,result.data||{});
+     updateMeta();
+     say("ac-accounts-status","Website and LiquinWiki roles saved together for "+(p.display_name||"this account")+".");
+     await Promise.all([overview(),loadProfiles(true)]);
+    }catch(error){
+     websiteRole.value=p.role;wikiRole.value=currentWikiRole;
+     say("ac-accounts-status",error.message||"Could not save account roles.",true);
+    }finally{
+     websiteRole.disabled=p.id===adminId;wikiRole.disabled=false;updateSaveState();
+    }
    };
-   f.append(wikiSave);
+   f.append(save);
    card.append(h,meta,details,f);o.append(card);
   });
  }
-
  function local(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);}
  function utc(v){if(!v)return null;const d=new Date(v);return Number.isNaN(d.getTime())?null:d.toISOString();}
  async function loadSettings(){const r=await db.from("site_settings").select("setting_key,setting_value");if(r.error)throw r.error;settings=Object.fromEntries((r.data||[]).map(x=>[x.setting_key,x.setting_value]));const a=settings.announcement||{},m=settings.maintenance_notice||{},f=settings.homepage_featured||{},d=settings.directory_settings||{},l=settings.language_settings||{},ft=settings.footer_settings||{},faq=settings.faq_items||{},nav=settings.custom_nav_links||{};$("ac-ann-on").checked=!!a.enabled;$("ac-ann-text").value=a.text||"";$("ac-ann-start").value=local(a.start_at);$("ac-ann-end").value=local(a.end_at);$("ac-maint-on").checked=!!m.enabled;$("ac-maint-text").value=m.text||"";$("ac-feature-title").value=f.title||"";$("ac-feature-desc").value=f.description||"";$("ac-feature-url").value=f.url||"";$("ac-bio-on").checked=d.show_bio!==false;$("ac-language").value=langs.includes(l.default)?l.default:"en";$("ac-footer-text").value=ft.text||"Contact: liquindohq@yahoo.com";$("ac-faq-json").value=JSON.stringify(Array.isArray(faq.items)?faq.items:[],null,2);$("ac-nav-json").value=JSON.stringify(Array.isArray(nav.items)?nav.items:[],null,2);$("ac-settings-raw").textContent=JSON.stringify(settings,null,2);say("ac-settings-status","Loaded "+Object.keys(settings).length+" settings.");}
