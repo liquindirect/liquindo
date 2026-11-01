@@ -350,7 +350,24 @@
       verify();
     })();
   </script>
-  <script type="module" src="admin-center.js"></script>
+  <script>
+    // Load the admin interface with an explicit failure path. A failed ES
+    // module import otherwise leaves the navigation cards pointing at sections
+    // that were never created, making them appear to be inert.
+    (() => {
+      import("./admin-center.js?v=20261101-adminfix4")
+        .then(() => { document.documentElement.dataset.liquindoAdminModuleLoaded = "true"; })
+        .catch(error => {
+          const status = document.getElementById("admin-status");
+          const detail = error && error.message ? error.message : "Unknown module loading error.";
+          if (status) {
+            status.textContent = "Administrator access may be verified, but the administration interface failed to load: " + detail + " Reload the page after checking your connection.";
+            status.classList.add("error");
+          }
+          console.error("Liquindo admin interface failed to load:", error);
+        });
+    })();
+  </script>
   <script src="i18n.js"></script>
   <script type="module" src="site-account.js"></script>
   <script>
