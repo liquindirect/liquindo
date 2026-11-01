@@ -49,7 +49,7 @@ function renderInline(source, titleToSlug = {}, refs = null) {
     const altOption = options.find(item => /^alt=/i.test(item));
     const alt = altOption ? altOption.slice(4) : "";
     const caption = options.filter(item => !/^(thumb|thumbnail|frame|left|right|center)$/i.test(item) && !/^\d{2,4}px$/i.test(item) && !/^alt=/i.test(item)).join(" ");
-    return '<figure class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><figcaption>' + renderInline(caption, titleToSlug, refs) + '</figcaption></figure>';
+    return '<span class="wiki-image wiki-image-' + alignment + '"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt || caption) + '" loading="lazy" style="max-width:' + width + 'px"><span class="wiki-image-caption">' + renderInline(caption, titleToSlug, refs) + '</span></span>';
   });
   text = text.replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g, (_, target, label) => internalLink(decodeEntities(target), label, titleToSlug));
   text = text.replace(/\[\[([^\]]+)\]\]/g, (_, target) => internalLink(decodeEntities(target), null, titleToSlug));
