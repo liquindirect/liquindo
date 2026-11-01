@@ -32,7 +32,21 @@ import { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from "./supabase-cli
  settingsHistoryPanel.innerHTML='<h2>Site settings change history</h2><p class="ac-muted">Previous settings values are retained when a setting changes or is deleted. Restore a snapshot to undo a mistaken settings edit.</p><button type="button" class="ac-btn primary" id="ac-settings-history-refresh">Refresh settings history</button><div class="ac-list" id="ac-settings-history-list"></div><p class="ac-status" id="ac-settings-history-status"></p>';
  wrap.append(settingsHistoryPanel);
   root.append(wrap);
-  wrap.querySelectorAll(".ac-tool-toggle").forEach(button=>button.addEventListener("click",()=>{const panel=button.nextElementSibling;const opening=button.getAttribute("aria-expanded")!=="true";button.setAttribute("aria-expanded",String(opening));panel.hidden=!opening;}));
+  const toolMenu=wrap.querySelector(".ac-tool-menu");
+ toolMenu.querySelectorAll(".ac-tool-dropdown").forEach((section,index)=>{const button=section.querySelector(".ac-tool-toggle"),panel=section.querySelector(".ac-tool-options");const panelId="ac-tool-options-"+index;panel.id=panelId;button.setAttribute("aria-controls",panelId);});
+ toolMenu.addEventListener("click",event=>{
+  const button=event.target.closest(".ac-tool-toggle");
+  if(button&&toolMenu.contains(button)){
+   const panel=button.nextElementSibling,opening=button.getAttribute("aria-expanded")!=="true";
+   toolMenu.querySelectorAll(".ac-tool-toggle").forEach(other=>{const otherPanel=other.nextElementSibling,active=other===button&&opening;other.setAttribute("aria-expanded",String(active));otherPanel.hidden=!active;});
+   return;
+  }
+  const link=event.target.closest(".ac-tool-options a");
+  if(link&&toolMenu.contains(link)){
+   const targetId=link.getAttribute("href")?.startsWith("#")?link.getAttribute("href").slice(1):null;
+   if(targetId){event.preventDefault();const target=$(targetId);if(target){history.replaceState(null,"","#"+targetId);target.scrollIntoView({behavior:"smooth",block:"start"});target.setAttribute("tabindex","-1");target.focus({preventScroll:true});}}
+  }
+ });
  const $=id=>document.getElementById(id);let adminId=null,profiles=[],auditRows=[],backup=null,settings={};const langs=["en","pt","es","fr","de","it","hr","el","pl","ru","zh"];
  function say(id,msg,err=false){const e=$(id);if(e){e.textContent=msg;e.classList.toggle("error",err);}}
  function download(name,data){const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
