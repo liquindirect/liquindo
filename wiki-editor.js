@@ -209,12 +209,22 @@ async function renderPermissionAuditHistory() {
 
 function watchPermissionChanges() {
   if (!user || permissionChannel) return;
-  const refresh = async () => {
-    try {
-      if (await refreshCurrentPermissions()) window.location.reload();
-    } catch (error) {
-      console.error("Could not refresh LiquinWiki permissions:", error);
-    }
+  let refreshPromise = null;
+  const refresh = () => {
+    // Android can emit both focus and visibility events when returning from
+    // another app. Share one in-flight permission check instead of issuing
+    // overlapping Supabase requests or competing reloads.
+    if (refreshPromise) return refreshPromise;
+    refreshPromise = (async () => {
+      try {
+        if (await refreshCurrentPermissions()) window.location.reload();
+      } catch (error) {
+        console.error("Could not refresh LiquinWiki permissions:", error);
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+    return refreshPromise;
   };
   permissionChannel = supabase.channel("wiki-permissions-" + user.id)
     .on("postgres_changes", {
@@ -226,7 +236,8 @@ function watchPermissionChanges() {
       filter: "id=eq." + user.id
     }, refresh)
     .subscribe();
-  window.addEventListener("focus", refresh);
+  // Visibility is the reliable resume signal on Android; avoid also issuing
+  // the same check from window.focus.
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) refresh();
   });
