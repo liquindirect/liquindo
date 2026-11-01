@@ -1,10 +1,9 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabase } from "./supabase-client.js";
 
 const SUPABASE_URL = "https://uivjovkvpskvvazznlyr.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_-wytXeSX8qFAS46RZYBdVg_5atQ4xAz";
 const BUCKET = "liquindo-gallery";
 const EXPECTED_IMAGE_COUNT = 52;
-const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 function showGalleryMessage(message) {
   let notice = document.getElementById("gallery-security-status");
