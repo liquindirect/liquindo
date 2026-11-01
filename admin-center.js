@@ -45,7 +45,8 @@ import { supabase } from "./supabase-client.js";
  `;
  const settingsHistoryPanel=document.createElement("section");settingsHistoryPanel.className="ac-panel";settingsHistoryPanel.id="ac-settings-history";
  settingsHistoryPanel.innerHTML='<h2>Site settings change history</h2><p class="ac-muted">Previous settings values are retained when a setting changes or is deleted. Restore a snapshot to undo a mistaken settings edit.</p><button type="button" class="ac-btn primary" id="ac-settings-history-refresh">Refresh settings history</button><div class="ac-list" id="ac-settings-history-list"></div><p class="ac-status" id="ac-settings-history-status"></p>';
- wrap.append(settingsHistoryPanel);\n root.append(wrap);
+ wrap.append(settingsHistoryPanel);
+  root.append(wrap);
  const $=id=>document.getElementById(id);let adminId=null,profiles=[],auditRows=[],backup=null,settings={};const langs=["en","pt","es","fr","de","it","hr","el","pl","ru","zh"];
  function say(id,msg,err=false){const e=$(id);if(e){e.textContent=msg;e.classList.toggle("error",err);}}
  function download(name,data){const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
