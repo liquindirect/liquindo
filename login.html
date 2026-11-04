@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex" />
     <meta name="description" content="Sign in or create a Liquindo account." />
     <title>Liquindo Account</title>
-    <link rel="stylesheet" href="style.css?v=20261019-hide-sticky-nav1" />
+    <link rel="stylesheet" href="css/style.css?v=20261019-hide-sticky-nav1" />
     <style>
       .auth-wrap { width: min(520px, calc(100% - 32px)); margin: 56px auto 80px; }
       .auth-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: clamp(22px, 5vw, 36px); box-shadow: var(--shadow); }
@@ -89,11 +89,11 @@
     <meta name="theme-color" content="#0b1730" />
     <meta name="application-name" content="Liquindo" />
     <link rel="manifest" href="/liquindo/manifest.webmanifest" />
-    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/liquindo/app-icon-180.png" sizes="180x180" />
+    <link rel="icon" href="/liquindo/icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/icons/app-icon-180.png" sizes="180x180" />
   </head>
   <body class="login-redesign">
-    <script src="homepage-gate.js"></script>
+    <script src="js/homepage-gate.js"></script>
     <header class="page-header">
       <nav class="topbar" aria-label="Main navigation">
         <a class="brand" href="index.html#home">Liquindo</a>
@@ -226,9 +226,9 @@
         <a href="https://github.com/liquindirect/liquindo" target="_blank" rel="noopener noreferrer">View on GitHub</a>
       </div>
     </footer>
-    <script src="i18n.js"></script>
-    <script type="module" src="auth.js?v=20261031-admin-auth-lock-fix1"></script>
-    <script type="module" src="site-account.js"></script>
+    <script src="js/i18n.js"></script>
+    <script type="module" src="js/auth.js?v=20261031-admin-auth-lock-fix1"></script>
+    <script type="module" src="js/site-account.js"></script>
     <script>
       const passwordToggles = [
         { field: document.querySelector("#password"), toggle: document.querySelector("#password-toggle"), label: "password" },
@@ -279,7 +279,7 @@
     });
   })();
 </script>
-  <script type="module" src="visitor-log.js"></script>
-  <script src="/liquindo/app-shell.js?v=20261101-shared-auth-client2" defer></script>
+  <script type="module" src="js/visitor-log.js"></script>
+  <script src="/liquindo/js/app-shell.js?v=20261101-shared-auth-client2" defer></script>
 </body>
 </html>

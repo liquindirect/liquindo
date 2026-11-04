@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="description" content="Administrator shortcuts for the Liquindo website.">
   <title>Admin Tools · Liquindo</title>
-  <link rel="stylesheet" href="style.css?v=20261019-hide-sticky-nav1">
+  <link rel="stylesheet" href="css/style.css?v=20261019-hide-sticky-nav1">
   <style>
     body.admin-tools-page { min-height:100vh; background:#f4f1e9; }
     .admin-page-header { background:#000032; border-bottom:1px solid rgba(253,190,0,.35); }
@@ -45,8 +45,8 @@
     <meta name="theme-color" content="#0b1730" />
     <meta name="application-name" content="Liquindo" />
     <link rel="manifest" href="/liquindo/manifest.webmanifest" />
-    <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/liquindo/app-icon-180.png" sizes="180x180" />
+    <link rel="icon" href="/liquindo/icons/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/liquindo/icons/app-icon-180.png" sizes="180x180" />
   </head>
 <body class="admin-tools-page">
   <header class="admin-page-header">
@@ -281,7 +281,7 @@
         content.hidden = true;
         signOutButton.disabled = true;
         try {
-          const authModule = await import("./supabase-client.js");
+          const authModule = await import("./js/supabase-client.js");
           supabaseClient = authModule.supabase;
           const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
           if (sessionError) throw sessionError;
@@ -391,8 +391,8 @@
         });
     })();
   </script>
-  <script src="i18n.js"></script>
-  <script type="module" src="site-account.js"></script>
+  <script src="js/i18n.js"></script>
+  <script type="module" src="js/site-account.js"></script>
   <script>
     (() => {
       const menu = document.querySelector(".contents-menu");
@@ -407,6 +407,6 @@
       document.addEventListener("click", event => { if (menu.open && !menu.contains(event.target)) { menu.open = false; syncOpenState(); } });
     })();
   </script>
-  <script src="/liquindo/app-shell.js?v=20261101-shared-auth-client2" defer></script>
+  <script src="/liquindo/js/app-shell.js?v=20261101-shared-auth-client2" defer></script>
 </body>
 </html>

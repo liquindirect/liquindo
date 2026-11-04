@@ -6,13 +6,13 @@ const SHELL_ASSETS = [
   APP_BASE,
   HOME_URL,
   OFFLINE_URL,
-  APP_BASE + "style.css",
-  APP_BASE + "app-shell.js",
-  APP_BASE + "supabase-client.js",
+  APP_BASE + "css/style.css",
+  APP_BASE + "js/app-shell.js",
+  APP_BASE + "js/supabase-client.js",
   APP_BASE + "manifest.webmanifest",
-  APP_BASE + "app-icon.svg",
-  APP_BASE + "app-icon-maskable.svg",
-  APP_BASE + "app-icon-180.png"
+  APP_BASE + "icons/app-icon.svg",
+  APP_BASE + "icons/app-icon-maskable.svg",
+  APP_BASE + "icons/app-icon-180.png"
 ];
 
 function isCacheableStaticAsset(url) {
