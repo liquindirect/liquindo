@@ -216,8 +216,25 @@ async function loadAccountProfile(user, requestId) {
   }
   if (requestId !== accountProfileRequest) return;
 
-  const metadataName = user.user_metadata?.display_name || user.user_metadata?.full_name || "";
-  accountUsername.textContent = user.user_metadata?.username || "Not set";
+  const accountName = user.user_metadata?.username || "";
+  const metadataName = user.user_metadata?.display_name || user.user_metadata?.full_name || accountName;
+  accountUsername.textContent = accountName || "Not set";
+
+  // New accounts use their username as the initial display name. Only fill
+  // an empty profile value; never overwrite a display name the user chose.
+  if (!profileError && profile && !String(profile.display_name || "").trim() && accountName) {
+    try {
+      const { error } = await supabase.from("profiles")
+        .update({ display_name: accountName })
+        .eq("id", user.id)
+        .is("display_name", null);
+      if (error) throw error;
+      profile.display_name = accountName;
+    } catch (error) {
+      console.warn("Could not initialise the account display name:", error);
+    }
+  }
+
   accountDisplayName.textContent = profileError
     ? (metadataName || "Unavailable")
     : (profile?.display_name || metadataName || "Not set");
