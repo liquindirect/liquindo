@@ -27,6 +27,7 @@ const signedOut = $("#editor-signed-out");
 const noPermission = $("#editor-no-permission");
 const app = $("#editor-app");
 const articleSelect = $("#article-select");
+const editorWorkspace = $("#editor-workspace");
 const canvas = $("#editor-canvas");
 const markupEditor = $("#editor-markup");
 const wikiMarkupToggle = $("#toggle-wiki-markup");
@@ -40,6 +41,17 @@ function slugifyArticleTitle(value) {
 }
 function isCreatingArticle() { return articleSelect.value === articleCreateOption; }
 function updateArticleMode() {
+  const slug = articleSelect.value;
+  if (!slug) {
+    setVisible(editorWorkspace, false);
+    setVisible(newArticleFields, false);
+    $("#load-article").classList.add("editor-hidden");
+    submitButton.disabled = true;
+    markupEditor.disabled = true;
+    canvas.setAttribute("contenteditable", "false");
+    return;
+  }
+  setVisible(editorWorkspace, true);
   const creating = isCreatingArticle();
   setVisible(newArticleFields, creating);
   $("#load-article").classList.toggle("editor-hidden", creating);
@@ -989,8 +1001,12 @@ async function initialize() {
   const requestedSlug = params.get("article");
   if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
     articleSelect.value = requestedSlug;
+    await withTimeout(loadArticle(), "Wiki article loading");
+    setVisible(editorWorkspace, true);
+  } else {
+    articleSelect.value = "";
+    setVisible(editorWorkspace, false);
   }
-  await withTimeout(loadArticle(), "Wiki article loading");
   setWikiMarkupMode(true);
   submitButton.disabled = !canEditExistingArticles;
   markupEditor.disabled = !canEditExistingArticles;
