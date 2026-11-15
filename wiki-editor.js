@@ -1003,6 +1003,7 @@ async function initialize() {
     articleSelect.value = requestedSlug;
     await withTimeout(loadArticle(), "Wiki article loading");
     setVisible(editorWorkspace, true);
+    $("#load-article").classList.remove("editor-hidden");
   } else {
     articleSelect.value = "";
     setVisible(editorWorkspace, false);
