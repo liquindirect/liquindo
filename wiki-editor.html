@@ -326,7 +326,7 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
       </nav>
     <div class="page-title">
       <p class="section-label">LiquinWiki</p>
-      <h1>Editor and revision review</h1>
+      <h1>Welcome to the LiquinWiki editor</h1>
       <p>Changes are submitted for administrator approval before they appear in the live wiki.</p>
     </div>
   </header>
@@ -346,11 +346,12 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
 
     <div id="editor-app" class="editor-hidden">
       <section class="editor-panel">
-        <h2>Submit an article revision</h2>
-        <p class="editor-note">You can open this editor from an article’s “Edit this article” link to edit that article directly. Wiki markup is selected by default; switch to the visual editor whenever you prefer. Wiki Editors submit edits and new articles for administrator approval. Trusted Editors and website Administrators publish directly.</p>
+        <h2>Welcome to the LiquinWiki editor</h2>
+        <p class="editor-note">Choose an existing article to edit, or select “＋ Create a new article” to start a new page. Your editing workspace will open after you make a selection.</p>
         <div class="editor-controls">
-          <label for="article-select">Article</label>
+          <label for="article-select">Choose an article</label>
           <select id="article-select">
+            <option value="" selected disabled>Choose an article…</option>
             <option value="__new__">＋ Create a new article</option>
             <option value="liquindo">Liquindo</option>
             <option value="liquin-plan">Liquin's Plan</option>
@@ -360,6 +361,7 @@ body.wiki-editor-redesign footer a { color:#ffcc00 !important; }
           </select>
           <button id="load-article" class="editor-button" type="button">Load current version</button>
         </div>
+        <div id="editor-workspace" class="editor-hidden">
         <div id="new-article-fields" class="editor-controls editor-hidden" style="margin-top:.75rem">
           <label for="new-article-title">New article title <input id="new-article-title" type="text" maxlength="120" placeholder="Article title" /></label>
           <label for="new-article-slug">Article URL slug <input id="new-article-slug" type="text" maxlength="80" placeholder="generated-from-title" /></label>
@@ -440,6 +442,7 @@ See [[Liquindo Nationalist Front|the related article]].
         <div class="editor-controls" style="margin-top:1rem">
           <button id="submit-revision" class="editor-button" type="button">Submit for approval</button>
           <span id="editor-status" class="editor-status" role="status" aria-live="polite"></span>
+        </div>
         </div>
       </section>
 
