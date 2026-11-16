@@ -142,7 +142,11 @@ async function loadApprovedArticles() {
     if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
     const safeContent = renderStoredContent(articleData.content);
     const parsedContent = new DOMParser().parseFromString(safeContent, "text/html");
-    const categoryNames = normalizeArticleTags([...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent));
+    const categoryNames = normalizeArticleTags([
+      ...[...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent),
+      // The Liquindian Directorate is the designated recommended article.
+      (articleData.slug === "liquindian-directorate" || String(articleData.title || "").trim().toLocaleLowerCase() === "liquindian directorate") ? "Recommended" : ""
+    ]);
     const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (cardForArticle) {
       const cardLink = cardForArticle.querySelector("h3 a");
