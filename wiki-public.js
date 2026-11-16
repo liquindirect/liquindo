@@ -239,34 +239,24 @@ async function loadApprovedArticles() {
   if (searchStatus && !categoryFilter) searchStatus.textContent = "Showing all " + document.querySelectorAll("#wiki-directory .article-card").length + " articles.";
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
 }
-async function requireMemberAccess() {
+// LiquinWiki's public directory and published articles are publicly readable.
+// Editing and administrative actions remain protected by the separate editor permissions.
+async function initializePublicWiki() {
   const gate = document.getElementById("wiki-access-gate");
   const container = document.querySelector("main.wiki-container");
-  if (container) container.hidden = true;
+  if (gate) gate.hidden = true;
   document.documentElement.classList.remove("wiki-access-pending");
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError) throw sessionError;
-    if (!session?.user) {
-      if (gate) gate.innerHTML = '<h2>Members only</h2><p>Sign in to your Liquindo member account to view LiquinWiki.</p><a class="section-link" href="login.html?next=wiki.html">Log in</a>';
-      return;
-    }
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles").select("role").eq("id", session.user.id).maybeSingle();
-    if (profileError) throw profileError;
-    if (!profile || !["member", "admin"].includes(profile.role)) {
-      if (gate) gate.innerHTML = '<h2>Members only</h2><p>Your account does not currently have Liquindo member access. Contact an administrator if you think this is a mistake.</p><a class="section-link" href="index.html">Back to the main site</a>';
-      return;
-    }
-    if (gate) gate.hidden = true;
-    if (container) container.hidden = false;
-    await loadApprovedArticles();
-  } catch (error) {
-    console.error("LiquinWiki access check failed.", error);
-    if (gate) gate.innerHTML = '<h2>Unable to verify membership</h2><p>LiquinWiki is hidden until your membership can be verified. Please try again later.</p><a class="section-link" href="login.html?next=wiki.html">Return to login</a>';
-  }
+  if (container) container.hidden = false;
+  await loadApprovedArticles();
 }
-requireMemberAccess();
+initializePublicWiki().catch(error => {
+  console.error("LiquinWiki could not be initialized.", error);
+  const status = document.getElementById("wiki-search-status");
+  if (status) status.textContent = "LiquinWiki could not be loaded. Please refresh the page.";
+  window.wikiArticlesLoaded = true;
+  if (typeof window.filterWikiDirectory === "function") window.filterWikiDirectory();
+  if (typeof window.updateWikiPage === "function") window.updateWikiPage();
+});
 
 
 // Keep the article-level Edit link pointed at the article currently open.
