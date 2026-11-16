@@ -42,7 +42,7 @@ async function loadApprovedArticles() {
   for (const slug of deletedSlugs) {
     document.getElementById(slug)?.remove();
     document.querySelectorAll("#wiki-directory .article-card a").forEach(link => {
-      if (link.getAttribute("href") === "wiki.html#" + slug) link.closest(".article-card")?.remove();
+      if (link.getAttribute("href") === "#" + slug) link.closest(".article-card")?.remove();
     });
   }
   const visibleArticles = (data || []).filter(article => !deletedSlugs.has(article.slug));
@@ -58,7 +58,7 @@ async function loadApprovedArticles() {
       card.className = "article-card";
       const cardHeading = document.createElement("h3");
       const cardLink = document.createElement("a");
-      cardLink.href = "wiki.html#" + articleData.slug;
+      cardLink.href = "#" + articleData.slug;
       cardLink.textContent = articleData.title || articleData.slug;
       cardHeading.append(cardLink);
       const description = document.createElement("p");
@@ -99,14 +99,14 @@ async function loadApprovedArticles() {
     const directoryList = document.querySelector("#wiki-directory .articles-list");
     if (directoryList && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
       let directoryCard = [...directoryList.querySelectorAll(".article-card")].find(card =>
-        card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug
+        card.querySelector("a")?.getAttribute("href") === "#" + articleData.slug
       );
       if (!directoryCard) {
         directoryCard = document.createElement("article");
         directoryCard.className = "article-card";
         const heading = document.createElement("h3");
         const link = document.createElement("a");
-        link.href = "wiki.html#" + articleData.slug;
+        link.href = "#" + articleData.slug;
         link.textContent = articleData.title || articleData.slug;
         heading.append(link);
         const description = document.createElement("p");
@@ -147,12 +147,12 @@ async function loadApprovedArticles() {
       // The Liquindian Directorate is the designated recommended article.
       (articleData.slug === "liquindian-directorate" || String(articleData.title || "").trim().toLocaleLowerCase() === "liquindian directorate") ? "Recommended" : ""
     ]);
-    const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
+    const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "#" + articleData.slug);
     if (cardForArticle) {
       const cardLink = cardForArticle.querySelector("h3 a");
       if (cardLink) {
         cardLink.textContent = articleData.title || articleData.slug;
-        cardLink.href = "wiki.html#" + articleData.slug;
+        cardLink.href = "#" + articleData.slug;
       }
       const cardDescription = cardForArticle.querySelector(".article-description");
       if (cardDescription) cardDescription.textContent = articleData.description || "LiquinWiki article.";
@@ -205,7 +205,7 @@ async function loadApprovedArticles() {
       tag.textContent = categoryName;
       categoryTags.append(tag);
     }
-    const currentCard = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
+    const currentCard = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "#" + articleData.slug);
     if (currentCard) {
       let badge = currentCard.querySelector(".wiki-completion-tag");
       if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; currentCard.append(badge); }
@@ -287,7 +287,7 @@ function updateCurrentArticleEditLink() {
   const encoded = encodeURIComponent(slug);
   if (editLink) editLink.href = "wiki-editor.html?article=" + encoded;
   if (historyLink) historyLink.href = "wiki-editor.html?article=" + encoded + "&tab=history#revision-history";
-  if (articleLink) articleLink.href = "wiki.html#" + encoded;
+  if (articleLink) articleLink.href = "#" + encoded;
 }
 window.addEventListener("hashchange", updateCurrentArticleEditLink);
 document.addEventListener("DOMContentLoaded", updateCurrentArticleEditLink);
