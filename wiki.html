@@ -699,6 +699,32 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
   }
 }
 
+
+/* Public directory readability: preserve the navy-and-gold skin with strong contrast. */
+.wiki-redesign #wiki-directory,
+.wiki-redesign #wiki-directory #articles-heading,
+.wiki-redesign #wiki-directory .wiki-section-title,
+.wiki-redesign #wiki-directory .wiki-search label,
+.wiki-redesign #wiki-directory .wiki-directory-shortcuts,
+.wiki-redesign #wiki-directory .wiki-directory-shortcuts strong {
+  color: #f4f1e8 !important;
+}
+.wiki-redesign #wiki-directory #wiki-article-count,
+.wiki-redesign #wiki-directory #wiki-search-status {
+  color: #c9c5d5 !important;
+}
+.wiki-redesign #wiki-directory .article-card h3 a {
+  color: #f2c94c !important;
+}
+.wiki-redesign #wiki-directory .article-description,
+.wiki-redesign #wiki-directory .article-updated {
+  color: #e4e1eb !important;
+}
+.wiki-redesign #wiki-directory #wiki-category-filter {
+  color: #202122 !important;
+  background: #fff !important;
+}
+
 </style>
   <script>document.documentElement.classList.add("wiki-access-pending");</script>
 
@@ -1154,7 +1180,7 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261116-public-directory-fix1"></script>
+  <script type="module" src="wiki-public.js?v=20261116-directory-default-all-fix2"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
