@@ -85,7 +85,7 @@ function renderInfobox(lines, titleToSlug, refs) {
       : renderInline(value, titleToSlug, refs);
     return '<tr><th scope="row">' + renderInline(key, titleToSlug, refs) + '</th><td>' + cell + '</td></tr>';
   }).join("");
-  const captionField = fields.find(field => /^(name|title)$/i.test(field.key));
+  const captionField = fields.find(field => /^(name|title)$/i.test(field.key) && field.value.trim() !== "");
   const caption = captionField ? renderInline(captionField.value, titleToSlug, refs) : renderInline(kind, titleToSlug, refs);
   return '<table class="infobox"><caption>' + caption + '</caption><tbody>' + rows + '</tbody></table>';
 }
