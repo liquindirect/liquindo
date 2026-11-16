@@ -1171,6 +1171,8 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
         const list = document.querySelector("#wiki-directory .articles-list");
         ranked.forEach(({card, matches}) => {
           card.hidden = !matches;
+          // Explicitly set display too, so article-card layout CSS cannot override hidden filtering.
+          card.style.display = matches ? "" : "none";
           if (matches) visibleCount++;
           list.append(card);
         });
