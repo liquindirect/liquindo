@@ -1076,7 +1076,8 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
           const categories = (card.dataset.categories || "").split("|").filter(Boolean);
           const searchable = (card.textContent + " " + (card.dataset.searchContent || "")).toLocaleLowerCase();
           const isNewestSort = category === "newly-edited";
-          const matches = (!query || searchable.includes(query)) && (!category || isNewestSort || categories.includes(category));
+          const isAlphabeticalSort = category === "alphabetical";
+          const matches = (!query || searchable.includes(query)) && (!category || isNewestSort || isAlphabeticalSort || categories.includes(category));
           const rank = !query ? 0 : title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : 3;
           const updatedAt = Date.parse(card.dataset.updatedAt || "") || 0;
           return { card, index, matches, rank, updatedAt };
@@ -1148,7 +1149,7 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261116-newly-edited1"></script>
+  <script type="module" src="wiki-public.js?v=20261116-directory-refresh2"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
