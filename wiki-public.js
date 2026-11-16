@@ -48,7 +48,9 @@ async function loadApprovedArticles() {
   const visibleArticles = (data || []).filter(article => !deletedSlugs.has(article.slug));
   window.wikiTitleSlugs = Object.fromEntries(visibleArticles.map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
   for (const articleData of visibleArticles) {
-    let article = document.getElementById(articleData.slug);
+    let article = [...document.querySelectorAll("[data-wiki-article]")].find(
+      candidate => candidate.id === articleData.slug
+    ) || null;
     let articleHeaderTemplate = null;
     if (!article && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
       const list = document.querySelector("#wiki-directory .articles-list");
