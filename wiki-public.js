@@ -55,6 +55,11 @@ async function loadApprovedArticles() {
       description.className = "article-description";
       description.textContent = articleData.description || "LiquinWiki article.";
       card.append(cardHeading, description);
+      const updated = document.createElement("time");
+      updated.className = "article-updated";
+      updated.dateTime = articleData.updated_at || "";
+      updated.textContent = articleData.updated_at ? "Last edited " + new Date(articleData.updated_at).toLocaleDateString() : "";
+      card.append(updated);
       card.dataset.searchContent = new DOMParser().parseFromString(safeContentForSearch(articleData.content), "text/html").body.textContent || "";
       card.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
       card.dataset.updatedAt = articleData.updated_at || "";
@@ -100,6 +105,10 @@ async function loadApprovedArticles() {
       }
       const cardDescription = cardForArticle.querySelector(".article-description");
       if (cardDescription) cardDescription.textContent = articleData.description || "LiquinWiki article.";
+      let updatedLabel = cardForArticle.querySelector(".article-updated");
+      if (!updatedLabel) { updatedLabel = document.createElement("time"); updatedLabel.className = "article-updated"; cardForArticle.append(updatedLabel); }
+      updatedLabel.dateTime = articleData.updated_at || "";
+      updatedLabel.textContent = articleData.updated_at ? "Last edited " + new Date(articleData.updated_at).toLocaleDateString() : "";
       cardForArticle.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
       cardForArticle.dataset.updatedAt = articleData.updated_at || "";
       cardForArticle.dataset.categories = categoryNames.map(name => slugifyWikiTitle(name)).join("|");
