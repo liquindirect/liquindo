@@ -15,7 +15,7 @@ function renderStoredContent(content) {
 function safeContentForSearch(content) { return renderStoredContent(content); }
 function normalizeArticleTags(names) {
   const seen = new Set();
-  return (names || []).map(name => String(name || "").trim().replace(/\\s+/g, " "))
+  return (names || []).map(name => String(name || "").trim().replace(/\s+/g, " "))
     .filter(name => {
       const key = slugifyWikiTitle(name);
       if (!name || seen.has(key)) return false;
