@@ -45,6 +45,8 @@ function updateArticleMode() {
   if (!slug) {
     setVisible(editorWorkspace, false);
     setVisible(newArticleFields, false);
+    setVisible(deleteArticleButton, false);
+    if (deleteArticleButton) deleteArticleButton.disabled = true;
     $("#load-article").classList.add("editor-hidden");
     submitButton.disabled = true;
     markupEditor.disabled = true;
