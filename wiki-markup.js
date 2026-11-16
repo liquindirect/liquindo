@@ -72,13 +72,13 @@ function renderInfobox(lines, titleToSlug, refs) {
   let current = null;
   for (const line of lines.slice(1)) {
     if (/^\s*\}\}\s*$/.test(line)) break;
-    const field = line.match(/^\s*\|\s*([^=]+?)\s*=\s*(.*)$/);
+    const field = line.match(/^\s*\|\s*([^|=]+?)\s*(?:\|\s*(.*)|=\s*(.*))$/);
     if (field) {
-      current = { key: field[1].trim(), value: field[2].trim() };
+      current = { key: field[1].trim(), value: (field[2] ?? field[3] ?? "").trim() };
       fields.push(current);
     } else if (current && line.trim()) current.value += " " + line.trim();
   }
-  const rows = fields.map(({ key, value }) => {
+  const rows = fields.filter(({ value }) => value.trim() !== "").map(({ key, value }) => {
     const rendered = /^\s*(https?:\/\/\S+\.(?:png|jpe?g|gif|webp|svg))(?:\s*\|\s*(.*))?$/i.exec(value);
     const cell = rendered
       ? '<img src="' + escapeHtml(rendered[1]) + '" alt="' + escapeHtml(rendered[2] || kind) + '" loading="lazy">'
@@ -327,7 +327,7 @@ export function htmlToWikiMarkup(html) {
         const title = node.querySelector("caption")?.textContent?.trim() || "Information";
         const fields = rows.map(row => {
           const cells = [...row.children];
-          return cells.length >= 2 ? "| " + cells[0].textContent.trim() + " = " + cells.slice(1).map(cell => cell.textContent.trim()).join(" ") : "";
+          return cells.length >= 2 ? "| " + cells[0].textContent.trim() + " | " + cells.slice(1).map(cell => cell.textContent.trim()).join(" ") : "";
         }).filter(Boolean);
         return "{{Infobox " + title + "\n" + fields.join("\n") + "\n}}\n\n";
       }
