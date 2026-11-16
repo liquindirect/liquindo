@@ -13,6 +13,16 @@ function renderStoredContent(content) {
   return DOMPurify.sanitize(source, sanitizeOptions);
 }
 function safeContentForSearch(content) { return renderStoredContent(content); }
+function normalizeArticleTags(names) {
+  const seen = new Set();
+  return (names || []).map(name => String(name || "").trim().replace(/\\s+/g, " "))
+    .filter(name => {
+      const key = name.toLocaleLowerCase();
+      if (!name || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
@@ -118,14 +128,7 @@ async function loadApprovedArticles() {
         updated.dateTime = articleData.updated_at || "";
         updated.textContent = articleData.updated_at ? "Last edited " + new Date(articleData.updated_at).toLocaleDateString() : "";
       }
-      if (articleData.slug === "liquindian-directorate" ||
-          String(articleData.title || "").trim().toLocaleLowerCase() === "liquindian directorate") {
-        directoryCard.dataset.categories = [...new Set([
-          ...(directoryCard.dataset.categories || "").split("|").filter(Boolean),
-          "recommended"
-        ])].join("|");
-      }
-    }
+hardcoded recommended card    }
 
     if (!article || !article.hasAttribute("data-wiki-article")) continue;
     const header = article.querySelector(".article-header");
@@ -139,7 +142,7 @@ async function loadApprovedArticles() {
     if (existingTitle) existingTitle.textContent = articleData.title || existingTitle.textContent;
     const safeContent = renderStoredContent(articleData.content);
     const parsedContent = new DOMParser().parseFromString(safeContent, "text/html");
-    const categoryNames = [...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent.trim()).filter(Boolean);
+    const categoryNames = normalizeArticleTags([...parsedContent.querySelectorAll(".wiki-categories a")].map(link => link.textContent));
     const cardForArticle = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (cardForArticle) {
       const cardLink = cardForArticle.querySelector("h3 a");
@@ -182,7 +185,6 @@ async function loadApprovedArticles() {
     // Show assigned directory categories as visible tags on the article itself.
     const articleCategories = [...new Set([
       ...categoryNames,
-      ...(articleData.slug === "liquindian-directorate" ? ["Recommended"] : [])
     ])];
     let categoryTags = articleHeader.querySelector(".wiki-article-category-tags");
     if (!categoryTags) {
@@ -214,7 +216,6 @@ async function loadApprovedArticles() {
       cardTags.replaceChildren();
       const cardCategoryNames = [...new Set([
         ...categoryNames,
-        ...(articleData.slug === "liquindian-directorate" ? ["Recommended"] : [])
       ])];
       for (const categoryName of cardCategoryNames) {
         const tag = document.createElement("span");
@@ -222,15 +223,8 @@ async function loadApprovedArticles() {
         tag.textContent = categoryName;
         cardTags.append(tag);
       }
-      const directoryCategories = [
-        ...(currentCard.dataset.categories || "").split("|").filter(Boolean),
-        "quality-" + statusValue
-      ];
-      const articleTitleKey = String(articleData.title || "").trim().toLocaleLowerCase();
-      if (articleTitleKey === "liquindian directorate" || articleData.slug === "liquindian-directorate") {
-        directoryCategories.push("recommended");
-      }
-      currentCard.dataset.categories = [...new Set(directoryCategories)].join("|");
+      currentCard.dataset.categories = categoryNames.map(name => slugifyWikiTitle(name)).join("|");
+      currentCard.dataset.articleStatus = statusValue;
     }
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
@@ -240,31 +234,12 @@ async function loadApprovedArticles() {
   const searchStatus = document.getElementById("wiki-search-status");
   const categoryFilter = document.getElementById("wiki-category-filter");
   if (categoryFilter) {
-    const categories = [...new Set(Object.values(window.wikiCategoryIndex || {}).flat())].sort((a, b) => a.localeCompare(b));
+    const categories = normalizeArticleTags(Object.values(window.wikiCategoryIndex || {}).flat()).sort((a, b) => a.localeCompare(b));
     for (const name of categories) {
       if ([...categoryFilter.options].some(option => option.textContent === name)) continue;
       const option = document.createElement("option");
       option.value = slugifyWikiTitle(name);
       option.textContent = name;
-      categoryFilter.append(option);
-    }
-    const qualityOptions = [
-      ["quality-complete", "Complete"],
-      ["quality-needs_work", "Needs work"],
-      ["quality-incomplete", "Incomplete"]
-    ];
-    for (const [value, label] of qualityOptions) {
-      if ([...categoryFilter.options].some(option => option.value === value)) continue;
-      const option = document.createElement("option");
-      option.value = value;
-      option.textContent = label;
-      categoryFilter.append(option);
-    }
-    const recommendedOption = [...categoryFilter.options].find(option => option.value === "recommended");
-    if (!recommendedOption) {
-      const option = document.createElement("option");
-      option.value = "recommended";
-      option.textContent = "Recommended";
       categoryFilter.append(option);
     }
     const requestedCategory = new URLSearchParams(window.location.search).get("category");
