@@ -140,10 +140,15 @@ async function loadApprovedArticles() {
       if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; currentCard.append(badge); }
       badge.dataset.status = statusValue;
       badge.textContent = labelText;
-      currentCard.dataset.categories = [...new Set([
+      const directoryCategories = [
         ...(currentCard.dataset.categories || "").split("|").filter(Boolean),
         "quality-" + statusValue
-      ])].join("|");
+      ];
+      const articleTitleKey = String(articleData.title || "").trim().toLocaleLowerCase();
+      if (articleTitleKey === "liquindian directorate" || articleData.slug === "liquindian-directorate") {
+        directoryCategories.push("recommended");
+      }
+      currentCard.dataset.categories = [...new Set(directoryCategories)].join("|");
     }
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
