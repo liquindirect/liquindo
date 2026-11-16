@@ -155,7 +155,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
   for (let i = 0; i < lines.length; i++) {
     const rawLine = lines[i];
     const line = rawLine.trim();
-    const category = line.match(/^\[\[Category:([^\]]+)\]\]$/i);
+    const category = line.match(/^\[\[(?:Tag|Category):([^\]]+)\]\]$/i);
     if (category) {
       const name = category[1].trim();
       if (name && !categories.includes(name)) categories.push(name);
@@ -269,7 +269,7 @@ export function renderWikiMarkup(source, titleToSlug = {}) {
   }
 
   if (categories.length) {
-    output.push('<div class="wiki-categories" aria-label="Article categories"><strong>Categories:</strong> ' +
+    output.push('<div class="wiki-categories" aria-label="Article tags"><strong>Tags:</strong> ' +
       categories.map(name => '<a href="wiki.html?category=' + encodeURIComponent(slugifyWikiTitle(name)) + '">' + escapeHtml(name) + '</a>').join(" · ") +
       "</div>");
   }
@@ -292,7 +292,7 @@ export function htmlToWikiMarkup(html) {
     const tag = node.tagName.toLowerCase();
     if (node.classList.contains("wiki-references")) return "";
     if (node.classList.contains("wiki-categories")) {
-      return [...node.querySelectorAll("a")].map(link => "[[Category:" + link.textContent.trim() + "]]").join("\n") + "\n";
+      return [...node.querySelectorAll("a")].map(link => "[[Tag:" + link.textContent.trim() + "]]").join("\n") + "\n";
     }
     if (node.matches("sup.reference")) {
       const id = node.querySelector("a[href^='#cite_note-']")?.getAttribute("href")?.slice("#cite_note-".length);
