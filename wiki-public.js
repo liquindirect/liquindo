@@ -83,6 +83,50 @@ async function loadApprovedArticles() {
       article.append(header);
       view.append(article);
     }
+
+    // Ensure a published article has a directory card even when its article
+    // body was already present in the static page markup.
+    const directoryList = document.querySelector("#wiki-directory .articles-list");
+    if (directoryList && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
+      let directoryCard = [...directoryList.querySelectorAll(".article-card")].find(card =>
+        card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug
+      );
+      if (!directoryCard) {
+        directoryCard = document.createElement("article");
+        directoryCard.className = "article-card";
+        const heading = document.createElement("h3");
+        const link = document.createElement("a");
+        link.href = "wiki.html#" + articleData.slug;
+        link.textContent = articleData.title || articleData.slug;
+        heading.append(link);
+        const description = document.createElement("p");
+        description.className = "article-description";
+        description.textContent = articleData.description || "LiquinWiki article.";
+        const updated = document.createElement("time");
+        updated.className = "article-updated";
+        directoryCard.append(heading, description, updated);
+        directoryList.append(directoryCard);
+      }
+      directoryCard.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
+      directoryCard.dataset.updatedAt = articleData.updated_at || "";
+      directoryCard.dataset.searchContent = new DOMParser()
+        .parseFromString(safeContentForSearch(articleData.content), "text/html").body.textContent || "";
+      const description = directoryCard.querySelector(".article-description");
+      if (description) description.textContent = articleData.description || "LiquinWiki article.";
+      const updated = directoryCard.querySelector(".article-updated");
+      if (updated) {
+        updated.dateTime = articleData.updated_at || "";
+        updated.textContent = articleData.updated_at ? "Last edited " + new Date(articleData.updated_at).toLocaleDateString() : "";
+      }
+      if (articleData.slug === "liquindian-directorate" ||
+          String(articleData.title || "").trim().toLocaleLowerCase() === "liquindian directorate") {
+        directoryCard.dataset.categories = [...new Set([
+          ...(directoryCard.dataset.categories || "").split("|").filter(Boolean),
+          "recommended"
+        ])].join("|");
+      }
+    }
+
     if (!article || !article.hasAttribute("data-wiki-article")) continue;
     const header = article.querySelector(".article-header");
     if (header && !header.querySelector(".article-title")) {
