@@ -382,10 +382,6 @@ form.addEventListener("submit", async event => {
     }
     if (mode === "login") {
       const requestedPage = new URLSearchParams(window.location.search).get("next");
-      if (requestedPage === "gallery.html") {
-        window.location.replace("gallery.html");
-        return;
-      }
     }
   } catch (error) {
     setMessage(authErrorMessage(error), true);
