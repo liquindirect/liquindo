@@ -1206,6 +1206,21 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
 
 
+    // Handle directory article links directly, including dynamically loaded Supabase cards.
+    // Do not depend solely on the browser's hashchange event to render the selected article.
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest("#wiki-directory .article-card a[href^='#']");
+      if (!link) return;
+      const slug = decodeURIComponent(link.getAttribute("href").slice(1));
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return;
+      event.preventDefault();
+      if (window.location.hash !== "#" + slug) {
+        history.pushState(null, "", "#" + slug);
+      }
+      if (typeof window.updateWikiPage === "function") window.updateWikiPage();
+      if (typeof window.updateCurrentArticleEditLink === "function") window.updateCurrentArticleEditLink();
+    });
+
     // Fix clicking a link to the article already being viewed
 
     document.addEventListener(
@@ -1235,7 +1250,7 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261116-directorate-nav1"></script>
+  <script type="module" src="wiki-public.js?v=20261116-directorate-nav2"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
