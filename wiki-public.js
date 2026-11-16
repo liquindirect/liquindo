@@ -49,7 +49,7 @@ async function loadApprovedArticles() {
   window.wikiTitleSlugs = Object.fromEntries(visibleArticles.map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
   for (const articleData of visibleArticles) {
     let article = document.getElementById(articleData.slug);
-    let createdDynamically = false;
+    let articleHeaderTemplate = null;
     if (!article && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
       const list = document.querySelector("#wiki-directory .articles-list");
       const view = document.getElementById("wiki-article-view");
@@ -80,9 +80,9 @@ async function loadApprovedArticles() {
       article.className = "wiki-article";
       article.setAttribute("data-wiki-article", "");
       article.hidden = true;
-      createdDynamically = true;
       const header = document.createElement("header");
       header.className = "article-header";
+      articleHeaderTemplate = header;
       const label = document.createElement("p");
       label.className = "section-label";
       label.textContent = "Liquinwiki";
@@ -167,7 +167,7 @@ async function loadApprovedArticles() {
     }
     window.wikiCategoryIndex = window.wikiCategoryIndex || {};
     window.wikiCategoryIndex[articleData.slug] = categoryNames;
-    article.innerHTML = header && !/class=["\']article-header["\']/.test(safeContent) ? header.outerHTML + safeContent : safeContent;
+    article.innerHTML = articleHeaderTemplate && !/class=["\']article-header["\']/.test(safeContent) ? articleHeaderTemplate.outerHTML + safeContent : safeContent;
     const statusLabels = { complete: "Complete", needs_work: "Needs work", incomplete: "Incomplete" };
     const statusValue = statusLabels[articleData.article_status] ? articleData.article_status : "incomplete";
     const labelText = statusLabels[statusValue];
