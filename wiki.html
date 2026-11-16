@@ -883,8 +883,12 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
       <div class="wiki-search" role="search" style="margin:1rem 0">
         <label for="wiki-article-search" style="display:block;margin-bottom:.4rem">Search articles</label>
         <input id="wiki-article-search" type="search" placeholder="Search article titles, descriptions and content…" autocomplete="off" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.75rem;border:1px solid var(--border,#bbb);border-radius:8px;font:inherit" />
-        <label for="wiki-category-filter" style="display:block;margin:.75rem 0 .35rem">Browse by category</label>
-        <select id="wiki-category-filter" aria-label="Filter articles by category" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.65rem;border:1px solid var(--border,#bbb);border-radius:6px;font:inherit;background:#fff"><option value="">All categories</option><option value="recommended">Recommended</option><option value="newly-edited">Newly edited</option><option value="alphabetical">A–Z</option></select>
+        <label for="wiki-category-filter" style="display:block;margin:.75rem 0 .35rem">Browse by tag</label>
+        <select id="wiki-category-filter" aria-label="Filter articles by tag" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.65rem;border:1px solid var(--border,#bbb);border-radius:6px;font:inherit;background:#fff"><option value="">All tags</option></select>
+        <label for="wiki-sort-filter" style="display:block;margin:.75rem 0 .35rem">Sort articles</label>
+        <select id="wiki-sort-filter" aria-label="Sort articles" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.65rem;border:1px solid var(--border,#bbb);border-radius:6px;font:inherit;background:#fff"><option value="default">Default order</option><option value="newest">Newly edited</option><option value="alphabetical">A–Z</option></select>
+        <label for="wiki-status-filter" style="display:block;margin:.75rem 0 .35rem">Article status</label>
+        <select id="wiki-status-filter" aria-label="Filter by article status" style="box-sizing:border-box;width:100%;max-width:36rem;padding:.65rem;border:1px solid var(--border,#bbb);border-radius:6px;font:inherit;background:#fff"><option value="">All statuses</option><option value="complete">Complete</option><option value="needs_work">Needs work</option><option value="incomplete">Incomplete</option></select>
         <p id="wiki-article-count" aria-live="polite">Loading article count…</p>
         <p id="wiki-search-status" class="article-description" role="status" aria-live="polite">Showing all articles.</p>
       </div>
@@ -1141,9 +1145,13 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
       if (!searchInput || !searchStatus) return;
 
       const categoryFilter = document.getElementById("wiki-category-filter");
+      const sortFilter = document.getElementById("wiki-sort-filter");
+      const statusFilter = document.getElementById("wiki-status-filter");
       function filterArticleCards() {
         const query = searchInput.value.trim().toLocaleLowerCase();
         const category = categoryFilter ? categoryFilter.value : "";
+        const sort = sortFilter ? sortFilter.value : "default";
+        const status = statusFilter ? statusFilter.value : "";
         let visibleCount = 0;
         const cards = [...document.querySelectorAll("#wiki-directory .article-card")];
         const ranked = cards.map((card, index) => {
@@ -1151,16 +1159,14 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
           const title = (card.dataset.title || card.querySelector("h3")?.textContent || "").toLocaleLowerCase();
           const categories = (card.dataset.categories || "").split("|").filter(Boolean);
           const searchable = (card.textContent + " " + (card.dataset.searchContent || "")).toLocaleLowerCase();
-          const isNewestSort = category === "newly-edited";
-          const isAlphabeticalSort = category === "alphabetical";
-          const matches = (!query || searchable.includes(query)) && (!category || isNewestSort || isAlphabeticalSort || categories.includes(category));
+          const matches = (!query || searchable.includes(query)) && (!category || categories.includes(category)) && (!status || card.dataset.articleStatus === status);
           const rank = !query ? 0 : title === query ? 0 : title.startsWith(query) ? 1 : title.includes(query) ? 2 : 3;
           const updatedAt = Date.parse(card.dataset.updatedAt || "") || 0;
           return { card, index, matches, rank, updatedAt };
         });
         ranked.sort((a, b) => Number(b.matches) - Number(a.matches)
-          || (category === "newly-edited" ? b.updatedAt - a.updatedAt : 0)
-          || (category === "alphabetical" ? a.card.querySelector("h3")?.textContent.localeCompare(b.card.querySelector("h3")?.textContent || "", undefined, { sensitivity: "base" }) || 0 : 0)
+          || (sort === "newest" ? b.updatedAt - a.updatedAt : 0)
+          || (sort === "alphabetical" ? a.card.querySelector("h3")?.textContent.localeCompare(b.card.querySelector("h3")?.textContent || "", undefined, { sensitivity: "base" }) || 0 : 0)
           || a.rank - b.rank
           || Number(a.card.dataset.directoryOrder) - Number(b.card.dataset.directoryOrder));
         const list = document.querySelector("#wiki-directory .articles-list");
@@ -1171,9 +1177,9 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
         });
         const count = document.getElementById("wiki-article-count");
         if (count) count.textContent = cards.length + " articles in LiquinWiki";
-        if (query || category) {
-          const label = categoryFilter?.selectedOptions[0]?.textContent || "category";
-          searchStatus.textContent = visibleCount + " article" + (visibleCount === 1 ? "" : "s") + " found" + (category ? " in " + label : "") + ".";
+        if (query || category || status) {
+          const label = categoryFilter?.selectedOptions[0]?.textContent || "tag";
+          searchStatus.textContent = visibleCount + " article" + (visibleCount === 1 ? "" : "s") + " found" + (category ? " tagged " + label : "") + (status ? " with status " + statusFilter.selectedOptions[0].textContent : "") + ".";
         } else {
           searchStatus.textContent = "Showing all " + cards.length + " articles.";
         }
@@ -1182,6 +1188,8 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
       window.filterWikiDirectory = filterArticleCards;
       searchInput.addEventListener("input", filterArticleCards);
       if (categoryFilter) categoryFilter.addEventListener("change", filterArticleCards);
+      if (sortFilter) sortFilter.addEventListener("change", filterArticleCards);
+      if (statusFilter) statusFilter.addEventListener("change", filterArticleCards);
       filterArticleCards();
     });
 
@@ -1225,7 +1233,7 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261116-unified-tags1"></script>
+  <script type="module" src="wiki-public.js?v=20261116-unified-tags2"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
