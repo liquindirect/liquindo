@@ -129,6 +129,10 @@ async function loadApprovedArticles() {
       if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; currentCard.append(badge); }
       badge.dataset.status = statusValue;
       badge.textContent = labelText;
+      currentCard.dataset.categories = [...new Set([
+        ...(currentCard.dataset.categories || "").split("|").filter(Boolean),
+        "quality-" + statusValue
+      ])].join("|");
     }
     if (window.location.hash === "#" + articleData.slug) {
       document.title = (articleData.title || articleData.slug) + " - Liquinwiki";
@@ -144,6 +148,18 @@ async function loadApprovedArticles() {
       const option = document.createElement("option");
       option.value = slugifyWikiTitle(name);
       option.textContent = name;
+      categoryFilter.append(option);
+    }
+    const qualityOptions = [
+      ["quality-complete", "Complete"],
+      ["quality-needs_work", "Needs work"],
+      ["quality-incomplete", "Incomplete"]
+    ];
+    for (const [value, label] of qualityOptions) {
+      if ([...categoryFilter.options].some(option => option.value === value)) continue;
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
       categoryFilter.append(option);
     }
     const recommendedOption = [...categoryFilter.options].find(option => option.value === "recommended");
