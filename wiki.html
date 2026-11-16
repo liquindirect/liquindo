@@ -754,6 +754,28 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
   color:#f2c94c;
 }
 
+
+/* Keep every directory entry visually consistent, including the Directorate. */
+.wiki-redesign #wiki-directory .article-card {
+  box-sizing:border-box;
+  min-height:8.5rem;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.wiki-redesign #wiki-directory .article-card h3 {
+  width:100%;
+  min-height:1.6em;
+  margin:.1rem 0 .45rem;
+}
+.wiki-redesign #wiki-directory .article-card .article-description {
+  margin:.2rem 0 .55rem;
+}
+.wiki-redesign #wiki-directory .article-card .wiki-completion-tag,
+.wiki-redesign #wiki-directory .article-card .wiki-card-category-tags {
+  margin-top:auto;
+}
+
 </style>
   <script>document.documentElement.classList.add("wiki-access-pending");</script>
 
