@@ -26,8 +26,18 @@ async function loadApprovedArticles() {
   if (typeof window.updateWikiPage === "function") window.updateWikiPage();
     return;
   }
-  window.wikiTitleSlugs = Object.fromEntries((data || []).map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
-  for (const articleData of data || []) {
+  const { data: deletedRows, error: deletedError } = await supabase.from("wiki_deleted_articles").select("slug");
+  if (deletedError) console.warn("LiquinWiki: deleted article list could not be loaded.", deletedError.message);
+  const deletedSlugs = new Set((deletedRows || []).map(row => row.slug));
+  for (const slug of deletedSlugs) {
+    document.getElementById(slug)?.remove();
+    document.querySelectorAll("#wiki-directory .article-card a").forEach(link => {
+      if (link.getAttribute("href") === "wiki.html#" + slug) link.closest(".article-card")?.remove();
+    });
+  }
+  const visibleArticles = (data || []).filter(article => !deletedSlugs.has(article.slug));
+  window.wikiTitleSlugs = Object.fromEntries(visibleArticles.map(article => [String(article.title || article.slug).trim().toLocaleLowerCase(), article.slug]));
+  for (const articleData of visibleArticles) {
     let article = document.getElementById(articleData.slug);
     let createdDynamically = false;
     if (!article && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(articleData.slug)) {
