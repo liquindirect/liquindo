@@ -178,12 +178,50 @@ async function loadApprovedArticles() {
     if (!articleBadge) { articleBadge = document.createElement("span"); articleBadge.className = "wiki-completion-tag"; articleHeader.append(articleBadge); }
     articleBadge.dataset.status = statusValue;
     articleBadge.textContent = labelText;
+
+    // Show assigned directory categories as visible tags on the article itself.
+    const articleCategories = [...new Set([
+      ...categoryNames,
+      ...(articleData.slug === "liquindian-directorate" ? ["Recommended"] : [])
+    ])];
+    let categoryTags = articleHeader.querySelector(".wiki-article-category-tags");
+    if (!categoryTags) {
+      categoryTags = document.createElement("div");
+      categoryTags.className = "wiki-article-category-tags";
+      categoryTags.setAttribute("aria-label", "Article categories");
+      articleHeader.append(categoryTags);
+    }
+    categoryTags.replaceChildren();
+    for (const categoryName of articleCategories) {
+      const tag = document.createElement("a");
+      tag.className = "wiki-category-tag";
+      tag.href = "wiki.html?category=" + encodeURIComponent(slugifyWikiTitle(categoryName));
+      tag.textContent = categoryName;
+      categoryTags.append(tag);
+    }
     const currentCard = [...document.querySelectorAll("#wiki-directory .article-card")].find(card => card.querySelector("a")?.getAttribute("href") === "wiki.html#" + articleData.slug);
     if (currentCard) {
       let badge = currentCard.querySelector(".wiki-completion-tag");
       if (!badge) { badge = document.createElement("span"); badge.className = "wiki-completion-tag"; currentCard.append(badge); }
       badge.dataset.status = statusValue;
       badge.textContent = labelText;
+      let cardTags = currentCard.querySelector(".wiki-card-category-tags");
+      if (!cardTags) {
+        cardTags = document.createElement("div");
+        cardTags.className = "wiki-card-category-tags";
+        currentCard.append(cardTags);
+      }
+      cardTags.replaceChildren();
+      const cardCategoryNames = [...new Set([
+        ...categoryNames,
+        ...(articleData.slug === "liquindian-directorate" ? ["Recommended"] : [])
+      ])];
+      for (const categoryName of cardCategoryNames) {
+        const tag = document.createElement("span");
+        tag.className = "wiki-category-tag";
+        tag.textContent = categoryName;
+        cardTags.append(tag);
+      }
       const directoryCategories = [
         ...(currentCard.dataset.categories || "").split("|").filter(Boolean),
         "quality-" + statusValue
