@@ -754,6 +754,25 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
   color:#f2c94c;
 }
 
+/* Recommended uses the same compact label treatment as article-quality tags. */
+.wiki-redesign .wiki-category-tag[data-category="recommended"] {
+  display:inline-flex;
+  align-items:center;
+  margin:.35rem .5rem .35rem 0;
+  padding:.2rem .55rem;
+  border:1px solid #a2a9b1;
+  border-radius:3px;
+  background:#f8f9fa;
+  color:#202122;
+  font:600 .78rem/1.35 Arial,Helvetica,sans-serif;
+  letter-spacing:.01em;
+  text-decoration:none;
+}
+.wiki-redesign .wiki-category-tag[data-category="recommended"]:hover {
+  background:#eaf7ef;
+  text-decoration:underline;
+}
+
 
 /* Keep every directory entry visually consistent, including the Directorate. */
 .wiki-redesign #wiki-directory .article-card {
@@ -1246,7 +1265,7 @@ body.wiki-redesign #wiki-article-view li { overflow-wrap: anywhere; }
     );
   </script>
 
-  <script type="module" src="wiki-public.js?v=20261116-recommended-default1"></script>
+  <script type="module" src="wiki-public.js?v=20261116-recommended-style1"></script>
   <script type="module" src="site-account.js"></script>
 
 <script>
