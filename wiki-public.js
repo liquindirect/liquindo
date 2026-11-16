@@ -146,8 +146,18 @@ async function loadApprovedArticles() {
       option.textContent = name;
       categoryFilter.append(option);
     }
+    const recommendedOption = [...categoryFilter.options].find(option => option.value === "recommended");
+    if (!recommendedOption) {
+      const option = document.createElement("option");
+      option.value = "recommended";
+      option.textContent = "Recommended";
+      categoryFilter.append(option);
+    }
     const requestedCategory = new URLSearchParams(window.location.search).get("category");
-    if (requestedCategory && [...categoryFilter.options].some(option => option.value === requestedCategory.toLocaleLowerCase())) categoryFilter.value = requestedCategory.toLocaleLowerCase();
+    const defaultCategory = requestedCategory ? requestedCategory.toLocaleLowerCase() : "recommended";
+    if ([...categoryFilter.options].some(option => option.value === defaultCategory)) {
+      categoryFilter.value = defaultCategory;
+    }
     categoryFilter.dispatchEvent(new Event("change"));
   }
   if (searchStatus && !categoryFilter) searchStatus.textContent = "Showing all " + document.querySelectorAll("#wiki-directory .article-card").length + " articles.";
