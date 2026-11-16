@@ -230,7 +230,7 @@ async function loadApprovedArticles() {
       categoryFilter.append(option);
     }
     const requestedCategory = new URLSearchParams(window.location.search).get("category");
-    const defaultCategory = requestedCategory ? requestedCategory.toLocaleLowerCase() : "recommended";
+    const defaultCategory = requestedCategory ? requestedCategory.toLocaleLowerCase() : "";
     if ([...categoryFilter.options].some(option => option.value === defaultCategory)) {
       categoryFilter.value = defaultCategory;
     }
