@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Recent published changes to LiquinWiki articles.">
+  <meta name="theme-color" content="#0b1730">
+  <title>Recent changes - LiquinWiki</title>
+  <link rel="stylesheet" href="style.css?v=20261024-wiki-yellow-links-v7">
+  <link rel="stylesheet" href="wiki-markup-standard.css?v=20261101-lms1">
+  <link rel="icon" href="/liquindo/app-icon.svg" type="image/svg+xml">
+  <style>
+    body.wiki-redesign{background:#0b1730;color:#fff}
+    .recent-shell{width:min(calc(100% - 2rem),1000px);margin:2rem auto 4rem}
+    .recent-header{border-bottom:1px solid #72809a;padding-bottom:1rem;margin-bottom:1.25rem}
+    .recent-header h1{font:400 clamp(2rem,5vw,2.7rem)/1.2 Georgia,"Times New Roman",serif;margin:.3rem 0}
+    .recent-header p,.recent-note{color:#c4ccda}
+    .recent-toolbar{display:flex;gap:.8rem;flex-wrap:wrap;margin:1rem 0}
+    .recent-toolbar a{color:#ffcc00;text-decoration:none}
+    .recent-toolbar a:hover{text-decoration:underline}
+    #recent-status{padding:.8rem 0;color:#d5dbe5}
+    .recent-list{display:grid;gap:.75rem}
+    .recent-item{padding:1rem 0;border-bottom:1px solid #40506a}
+    .recent-item h2{font:600 1.15rem/1.4 Arial,Helvetica,sans-serif;margin:0 0 .35rem}
+    .recent-item h2 a{color:#ffcc00;text-decoration:none}
+    .recent-item h2 a:hover{text-decoration:underline}
+    .recent-meta{color:#c4ccda;font-size:.92rem;line-height:1.6}
+    .recent-new{display:inline-block;margin-left:.45rem;padding:.1rem .4rem;border:1px solid #b89b4a;color:#ffdc75;font-size:.75rem}
+    #recent-access-gate{max-width:48rem;margin:2rem auto;padding:1.25rem}
+    #recent-access-gate a{color:#ffcc00}
+    @media(max-width:640px){.recent-shell{width:calc(100% - 1.25rem)}.recent-item{padding:.85rem 0}}
+  </style>
+</head>
+<body class="wiki-redesign">
+  <header class="page-header">
+    <nav class="topbar" aria-label="Liquindo navigation">
+      <a class="brand" href="index.html#home">Liquindo</a>
+      <div class="nav-links"><a href="wiki.html">LiquinWiki</a></div>
+    </nav>
+  </header>
+  <section id="recent-access-gate" role="status" aria-live="polite">
+    <h2>Checking membership…</h2>
+    <p>Recent changes are available to signed-in Liquindo members.</p>
+  </section>
+  <main class="recent-shell" id="recent-main" hidden>
+    <div class="recent-header">
+      <p class="section-label">LiquinWiki</p>
+      <h1>Recent changes</h1>
+      <p>Latest published article revisions, with the newest changes first.</p>
+    </div>
+    <nav class="recent-toolbar" aria-label="Wiki navigation">
+      <a href="wiki.html">← Back to article directory</a>
+      <a href="wiki-editor.html">Edit / revision history</a>
+    </nav>
+    <p id="recent-status" role="status" aria-live="polite">Loading recent changes…</p>
+    <div class="recent-list" id="recent-list"></div>
+  </main>
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+    const gate = document.getElementById("recent-access-gate");
+    const main = document.getElementById("recent-main");
+    const status = document.getElementById("recent-status");
+    const list = document.getElementById("recent-list");
+    const formatDate = value => {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? "Date unavailable" : new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium", timeStyle: "short"
+      }).format(date);
+    };
+    function showGate(title, message, link) {
+      gate.replaceChildren();
+      const heading = document.createElement("h2");
+      heading.textContent = title;
+      const paragraph = document.createElement("p");
+      paragraph.textContent = message;
+      gate.append(heading, paragraph);
+      if (link) {
+        const anchor = document.createElement("a");
+        anchor.href = "login.html?next=wiki-recent-changes.html";
+        anchor.textContent = "Log in";
+        gate.append(anchor);
+      }
+    }
+    async function loadRecentChanges() {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session?.user) {
+          showGate("Members only", "Sign in to your Liquindo member account to view recent changes.", true);
+          return;
+        }
+        const { data: profile, error: profileError } = await supabase.from("profiles")
+          .select("role").eq("id", session.user.id).maybeSingle();
+        if (profileError) throw profileError;
+        if (!profile || !["member", "admin"].includes(profile.role)) {
+          showGate("Members only", "Your account does not currently have Liquindo member access.");
+          return;
+        }
+        gate.hidden = true;
+        main.hidden = false;
+        const { data: revisions, error } = await supabase.from("wiki_revisions")
+          .select("id, slug, title, edited_by, edited_at, is_new_article")
+          .eq("status", "approved")
+          .order("edited_at", { ascending: false })
+          .limit(100);
+        if (error) throw error;
+        const rows = revisions || [];
+        if (!rows.length) {
+          status.textContent = "No published revisions have been recorded yet.";
+          return;
+        }
+        const ids = [...new Set(rows.map(row => row.edited_by).filter(Boolean))];
+        const { data: profiles, error: namesError } = ids.length
+          ? await supabase.from("profiles").select("id, display_name").in("id", ids)
+          : { data: [], error: null };
+        if (namesError) console.warn("LiquinWiki editor names could not be loaded.", namesError.message);
+        const names = Object.fromEntries((profiles || []).map(item => [item.id, item.display_name || "Member"]));
+        const fragment = document.createDocumentFragment();
+        for (const revision of rows) {
+          const article = document.createElement("article");
+          article.className = "recent-item";
+          const heading = document.createElement("h2");
+          const link = document.createElement("a");
+          link.href = "wiki.html#" + encodeURIComponent(revision.slug || "");
+          link.textContent = revision.title || revision.slug || "Untitled article";
+          heading.append(link);
+          if (revision.is_new_article) {
+            const tag = document.createElement("span");
+            tag.className = "recent-new";
+            tag.textContent = "New article";
+            heading.append(tag);
+          }
+          const meta = document.createElement("p");
+          meta.className = "recent-meta";
+          meta.textContent = formatDate(revision.edited_at) + " · " + (names[revision.edited_by] || "Member");
+          article.append(heading, meta);
+          fragment.append(article);
+        }
+        list.replaceChildren(fragment);
+        status.textContent = "Showing the latest " + rows.length + " published changes.";
+      } catch (error) {
+        console.error("LiquinWiki recent changes could not be loaded.", error);
+        status.textContent = error?.message || "Recent changes could not be loaded. Please try again later.";
+      }
+    }
+    loadRecentChanges();
+  </script>
+</body>
+</html>
