@@ -9,7 +9,6 @@
   ];
   const extraLinks = [
     ["Hierarchy", "hierarchy.html"],
-    ["Gallery", "gallery.html"],
     ["Account", "login.html"],
     ["Privacy", "privacy.html"]
   ];
@@ -47,7 +46,7 @@
           <p class="contents-group-label">COMMUNITY &amp; KNOWLEDGE</p>
           <a href="members.html"><span>05</span><span data-i18n="nav.members">Members</span></a>
           <a href="wiki.html"><span>06</span><span data-i18n="auth.wiki">LiquinWiki</span></a>
-          <a href="gallery.html"><span>07</span><span data-i18n="nav.gallery">Gallery</span></a>
+          <span class="contents-disabled" aria-disabled="true"><span>07</span><span>Gallery · Temporarily unavailable</span></span>
           <p class="contents-group-label">TOOLS &amp; RESOURCES</p>
           <span class="contents-disabled" aria-disabled="true"><span>08</span><span>Liquindo Web App · PWA install</span></span>
           <a href="index.html#finance"><span>09</span><span data-i18n="nav.finance">Finance</span></a>
