@@ -239,7 +239,7 @@ async function loadApprovedArticles() {
   const searchStatus = document.getElementById("wiki-search-status");
   const categoryFilter = document.getElementById("wiki-category-filter");
   if (categoryFilter) {
-    const categories = normalizeArticleTags(Object.values(window.wikiCategoryIndex || {}).flat()).sort((a, b) => a.localeCompare(b));
+    const categories = normalizeArticleTags([...Object.values(window.wikiCategoryIndex || {}).flat(), "Recommended"]).sort((a, b) => a.localeCompare(b));
     for (const name of categories) {
       if ([...categoryFilter.options].some(option => option.textContent === name)) continue;
       const option = document.createElement("option");
