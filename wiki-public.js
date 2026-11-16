@@ -16,7 +16,7 @@ function safeContentForSearch(content) { return renderStoredContent(content); }
 
 async function loadApprovedArticles() {
   const { data, error } = await supabase.from("wiki_pages")
-    .select("slug, title, description, content, article_status");
+    .select("slug, title, description, content, article_status, updated_at");
   if (error) {
     console.error("LiquinWiki: could not load approved article revisions.", error.message);
     const status = document.getElementById("wiki-search-status");
@@ -57,6 +57,7 @@ async function loadApprovedArticles() {
       card.append(cardHeading, description);
       card.dataset.searchContent = new DOMParser().parseFromString(safeContentForSearch(articleData.content), "text/html").body.textContent || "";
       card.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
+      card.dataset.updatedAt = articleData.updated_at || "";
       list.append(card);
 
       article = document.createElement("article");
@@ -100,6 +101,7 @@ async function loadApprovedArticles() {
       const cardDescription = cardForArticle.querySelector(".article-description");
       if (cardDescription) cardDescription.textContent = articleData.description || "LiquinWiki article.";
       cardForArticle.dataset.title = (articleData.title || articleData.slug).toLocaleLowerCase();
+      cardForArticle.dataset.updatedAt = articleData.updated_at || "";
       cardForArticle.dataset.categories = categoryNames.map(name => slugifyWikiTitle(name)).join("|");
       cardForArticle.dataset.searchContent = parsedContent.body.textContent || "";
     }
