@@ -17,7 +17,7 @@ function normalizeArticleTags(names) {
   const seen = new Set();
   return (names || []).map(name => String(name || "").trim().replace(/\\s+/g, " "))
     .filter(name => {
-      const key = name.toLocaleLowerCase();
+      const key = slugifyWikiTitle(name);
       if (!name || seen.has(key)) return false;
       seen.add(key);
       return true;
@@ -218,8 +218,9 @@ hardcoded recommended card    }
         ...categoryNames,
       ])];
       for (const categoryName of cardCategoryNames) {
-        const tag = document.createElement("span");
+        const tag = document.createElement("a");
         tag.className = "wiki-category-tag";
+        tag.href = "wiki.html?category=" + encodeURIComponent(slugifyWikiTitle(categoryName));
         tag.textContent = categoryName;
         cardTags.append(tag);
       }
