@@ -4,6 +4,7 @@ import { htmlToWikiMarkup, renderWikiMarkup, validateWikiMarkup } from "./wiki-m
 
 const articles = {
   "liquindo": "Liquindo",
+  "liquindian-directorate": "Liquindian Directorate",
   "liquin-plan": "Liquin's Plan",
   "lnf": "Liquindo Nationalist Front",
   "integralist-front": "Liquindian Integralist Front",
