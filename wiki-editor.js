@@ -54,6 +54,10 @@ function updateArticleMode() {
   setVisible(editorWorkspace, true);
   const creating = isCreatingArticle();
   setVisible(newArticleFields, creating);
+  if (deleteArticleButton) {
+    setVisible(deleteArticleButton, isWikiAdmin && !creating);
+    deleteArticleButton.disabled = !isWikiAdmin || creating;
+  }
   $("#load-article").classList.toggle("editor-hidden", creating);
   if (creating) {
     activeSlug = null;
@@ -113,6 +117,8 @@ function setWikiMarkupMode(enabled) {
 }
 const status = $("#editor-status");
 const submitButton = $("#submit-revision");
+const deleteArticleButton = $("#delete-article");
+let deletedArticleSlugs = new Set();
 const pendingPanel = $("#review-panel");
 const permissionPanel = $("#permission-panel");
 const articleStatusForm = $("#article-status-form");
@@ -821,6 +827,49 @@ articleStatusForm?.addEventListener("submit", async (event) => {
 });
 
 $("#load-article").addEventListener("click", loadArticle);
+
+deleteArticleButton?.addEventListener("click", async () => {
+  if (!isWikiAdmin || !user || isCreatingArticle()) return;
+  const slug = articleSelect.value;
+  const title = articles[slug] || slug;
+  if (!slug || !window.confirm(
+    "PERMANENTLY DELETE THIS ARTICLE?\\n\\n" + title +
+    "\\n\\nThis removes the published article and all of its revision history. " +
+    "The article will disappear from LiquinWiki and cannot be restored from its revision history."
+  )) return;
+
+  deleteArticleButton.disabled = true;
+  submitButton.disabled = true;
+  showMessage("Deleting article and its revision history…");
+  try {
+    const { error } = await supabase.rpc("delete_liquinwiki_article", { p_slug: slug });
+    if (error) throw error;
+
+    deletedArticleSlugs.add(slug);
+    const selectedOption = articleSelect.querySelector(`option[value="${CSS.escape(slug)}"]`);
+    selectedOption?.remove();
+    const statusOption = articleStatusSlug?.querySelector(`option[value="${CSS.escape(slug)}"]`);
+    statusOption?.remove();
+    const historyOption = $("#history-article-filter")?.querySelector(`option[value="${CSS.escape(slug)}"]`);
+    historyOption?.remove();
+
+    articleSelect.value = "";
+    activeSlug = null;
+    loadedArticleContent = null;
+    setVisible(editorWorkspace, false);
+    setVisible(newArticleFields, false);
+    markupEditor.value = "";
+    canvas.replaceChildren();
+    submitButton.disabled = true;
+    showMessage(title + " and its revision history have been permanently deleted.");
+    await renderRevisions();
+  } catch (error) {
+    showMessage(error.message || "Could not delete this article.", true);
+  } finally {
+    deleteArticleButton.disabled = false;
+    updateArticleMode();
+  }
+});
 newArticleTitle.addEventListener("input", () => {
   if (!newArticleSlug.dataset.edited) newArticleSlug.value = slugifyArticleTitle(newArticleTitle.value);
   const heading = canvas.querySelector(".section-title");
@@ -885,7 +934,7 @@ submitButton.addEventListener("click", async () => {
     showMessage("Enter a title and a URL slug using lowercase letters, numbers, and single hyphens.", true);
     return;
   }
-  if (creating && (Object.prototype.hasOwnProperty.call(articles, slug) || [...articleSelect.options].some(option => option.value === slug))) {
+  if (creating && (deletedArticleSlugs.has(slug) || Object.prototype.hasOwnProperty.call(articles, slug) || [...articleSelect.options].some(option => option.value === slug))) {
     showMessage("That slug is reserved for an existing article. Choose another.", true);
     return;
   }
@@ -971,10 +1020,25 @@ async function initialize() {
   }
   setAppState("ready");
   setVisible(permissionPanel, isWikiAdmin && adminToolsMode);
+  const { data: deletedRows, error: deletedError } = await withTimeout(
+    supabase.from("wiki_deleted_articles").select("slug"), "Deleted article list"
+  );
+  if (deletedError) throw deletedError;
+  deletedArticleSlugs = new Set((deletedRows || []).map(row => row.slug));
+  for (const option of [...articleSelect.options]) {
+    if (deletedArticleSlugs.has(option.value)) option.remove();
+  }
+  for (const option of [...(articleStatusSlug?.options || [])]) {
+    if (deletedArticleSlugs.has(option.value)) option.remove();
+  }
+  for (const option of [...($("#history-article-filter")?.options || [])]) {
+    if (deletedArticleSlugs.has(option.value)) option.remove();
+  }
+
   const { data: existingPages, error: pagesError } = await withTimeout(supabase.from("wiki_pages").select("slug, title, article_status"), "Wiki article list");
   if (pagesError) throw pagesError;
   for (const page of existingPages || []) {
-    if (!page.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
+    if (!page.slug || deletedArticleSlugs.has(page.slug) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(page.slug)) continue;
     articles[page.slug] = page.title || page.slug;
     if (articleStatusSlug && ![...articleStatusSlug.options].some(option => option.value === page.slug)) {
       const statusOption = document.createElement("option");
