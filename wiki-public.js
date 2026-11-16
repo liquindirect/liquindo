@@ -128,7 +128,7 @@ async function loadApprovedArticles() {
         updated.dateTime = articleData.updated_at || "";
         updated.textContent = articleData.updated_at ? "Last edited " + new Date(articleData.updated_at).toLocaleDateString() : "";
       }
-hardcoded recommended card    }
+}
 
     if (!article || !article.hasAttribute("data-wiki-article")) continue;
     const header = article.querySelector(".article-header");
