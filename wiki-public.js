@@ -203,6 +203,7 @@ async function loadApprovedArticles() {
     for (const categoryName of articleCategories) {
       const tag = document.createElement("a");
       tag.className = "wiki-category-tag";
+      tag.dataset.category = slugifyWikiTitle(categoryName);
       tag.href = "wiki.html?category=" + encodeURIComponent(slugifyWikiTitle(categoryName));
       tag.textContent = categoryName;
       categoryTags.append(tag);
@@ -226,6 +227,7 @@ async function loadApprovedArticles() {
       for (const categoryName of cardCategoryNames) {
         const tag = document.createElement("a");
         tag.className = "wiki-category-tag";
+      tag.dataset.category = slugifyWikiTitle(categoryName);
         tag.href = "wiki.html?category=" + encodeURIComponent(slugifyWikiTitle(categoryName));
         tag.textContent = categoryName;
         cardTags.append(tag);
