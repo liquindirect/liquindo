@@ -156,7 +156,7 @@ async function refreshCurrentPermissions() {
   const permissions = new Set((permissionRows || []).map(row => row.permission));
   const trusted = permissions.has("liquinwiki_trusted_editor");
   const next = {
-    admin: profile?.role === "admin",
+    admin: profile?.role === "admin" || permissions.has("liquinwiki_admin"),
     trusted,
     edit: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor"),
     create: profile?.role === "admin" || trusted || permissions.has("liquinwiki_editor")
@@ -1067,13 +1067,10 @@ async function initialize() {
   const requestedSlug = params.get("article");
   if (requestedSlug && [...articleSelect.options].some((option) => option.value === requestedSlug)) {
     articleSelect.value = requestedSlug;
-    await withTimeout(loadArticle(), "Wiki article loading");
-    setVisible(editorWorkspace, true);
-    $("#load-article").classList.remove("editor-hidden");
   } else {
     articleSelect.value = "";
-    setVisible(editorWorkspace, false);
   }
+  updateArticleMode();
   setWikiMarkupMode(true);
   submitButton.disabled = !canEditExistingArticles;
   markupEditor.disabled = !canEditExistingArticles;
