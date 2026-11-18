@@ -5008,27 +5008,3 @@ body.homepage-redesign .contents-menu .contents-panel [hidden] { display: none !
     padding: 72px 18px 24px;
   }
 }
-
-
-/* LiquinWiki: the Recommended article tag is always white with navy text. */
-body.wiki-redesign #wiki-article-view .wiki-article-category-tags .wiki-category-tag[data-category="recommended"],
-body.wiki-redesign #wiki-directory .wiki-card-category-tags .wiki-category-tag[data-category="recommended"],
-body.wiki-redesign #wiki-article-view .wiki-article-category-tags .wiki-category-tag[data-category="recommended"]:link,
-body.wiki-redesign #wiki-article-view .wiki-article-category-tags .wiki-category-tag[data-category="recommended"]:visited,
-body.wiki-redesign #wiki-directory .wiki-card-category-tags .wiki-category-tag[data-category="recommended"]:link,
-body.wiki-redesign #wiki-directory .wiki-card-category-tags .wiki-category-tag[data-category="recommended"]:visited {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  color: #101c30 !important;
-  border: 1px solid #101c30 !important;
-  text-decoration: none !important;
-}
-body.wiki-redesign #wiki-article-view .wiki-article-category-tags .wiki-category-tag[data-category="recommended"]:hover,
-body.wiki-redesign #wiki-article-view .wiki-article-category-tags .wiki-category-tag[data-category="recommended"]:focus-visible,
-body.wiki-redesign #wiki-directory .wiki-card-category-tags .wiki-category-tag[data-category="recommended"]:hover,
-body.wiki-redesign #wiki-directory .wiki-card-category-tags .wiki-category-tag[data-category="recommended"]:focus-visible {
-  background: #f2f4f7 !important;
-  background-color: #f2f4f7 !important;
-  color: #101c30 !important;
-  border-color: #101c30 !important;
-}
