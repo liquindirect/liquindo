@@ -8,27 +8,126 @@
 <title>Supreme Liquindian Covenant · Liquindo</title>
 <link rel="stylesheet" href="style.css?v=20261024-home-contents-sidebar-v2">
 <style>
-.covenant-wrap{max-width:1000px;margin:0 auto;padding:42px 22px 80px;color:var(--text,#172033)}
-.covenant-top{margin-bottom:32px}.covenant-top .eyebrow{color:#b88700;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.75rem}
-.covenant-top h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.08;margin:.4rem 0 1rem}
-.covenant-intro{max-width:760px;line-height:1.75}
-.covenant-status{border-left:3px solid #bd900e;padding:12px 16px;margin:24px 0;background:rgba(189,144,14,.08);line-height:1.65}
-.covenant-toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:24px 0 42px}
-.covenant-toc a{display:block;padding:12px 14px;border:1px solid rgba(189,144,14,.28);border-radius:8px;text-decoration:none;color:inherit;background:rgba(255,255,255,.025)}
-.covenant-toc a:hover{border-color:#bd900e}
-.covenant-chapter{margin:42px 0 18px;padding-top:20px;border-top:1px solid rgba(189,144,14,.35)}
-.covenant-chapter h2{font-size:1.55rem;color:var(--heading,#14213b)}
-.covenant-article{padding:17px 0;border-bottom:1px solid rgba(120,130,150,.2);scroll-margin-top:24px}
-.covenant-article h3{font-size:1.08rem;margin:0 0 9px;color:var(--heading,#14213b)}
-.covenant-article p,.covenant-article li{line-height:1.72}
-.covenant-article ol{padding-left:1.5rem}
-.covenant-muted{color:#747b89;font-style:italic}
-.covenant-back{display:inline-block;margin:0 0 22px;color:#b88700}
-@media(prefers-color-scheme:dark){.covenant-article h3,.covenant-chapter h2{color:#f0e8d5}.covenant-wrap{color:#e6e8ed}}
+body.covenant-page {
+  background: #000032;
+  color: #ffffff;
+}
+body.covenant-page .site-header,
+body.covenant-page .topbar {
+  background: #000032;
+  color: #ffffff;
+}
+body.covenant-page .site-header {
+  border-bottom: 1px solid rgba(253,190,0,.3);
+}
+body.covenant-page .covenant-wrap {
+  width: min(1120px, calc(100% - 40px));
+  max-width: none;
+  margin: 0 auto;
+  padding: clamp(2.8rem, 6vw, 4.5rem) 0 5rem;
+  color: #ffffff;
+}
+body.covenant-page .covenant-top .eyebrow {
+  color: #fdbe00;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+body.covenant-page .covenant-top h1 {
+  color: #fffaf0;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  line-height: 1.1;
+}
+body.covenant-page .covenant-intro,
+body.covenant-page .covenant-wrap > p {
+  color: #d5dce8;
+  line-height: 1.75;
+}
+body.covenant-page .covenant-status {
+  border-left: 3px solid #fdbe00;
+  background: rgba(255,255,255,.055);
+  color: #e5eaf2;
+}
+body.covenant-page .covenant-wrap > h2 {
+  color: #fffaf0;
+}
+body.covenant-page .covenant-toc a {
+  border: 1px solid rgba(253,190,0,.32);
+  border-radius: 3px;
+  background: rgba(255,255,255,.035);
+  color: #fdbe00;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+body.covenant-page .covenant-toc a span {
+  display: block;
+  margin-top: .2rem;
+  color: #d5dce8;
+  font-size: .84rem;
+}
+body.covenant-page .covenant-toc a:hover,
+body.covenant-page .covenant-toc a:focus-visible {
+  border-color: #fdbe00;
+  background: rgba(253,190,0,.1);
+  color: #fff1b8;
+}
+body.covenant-page .covenant-chapter {
+  margin: 3rem 0 1rem;
+  padding-top: 1.35rem;
+  border-top: 1px solid rgba(253,190,0,.38);
+}
+body.covenant-page .covenant-chapter h2 {
+  color: #fdbe00;
+  font-size: clamp(1.45rem, 3vw, 1.8rem);
+}
+body.covenant-page .covenant-article {
+  padding: 1.15rem 0;
+  border-bottom: 1px solid rgba(213,220,232,.16);
+  scroll-margin-top: 24px;
+}
+body.covenant-page .covenant-article h3 {
+  color: #fffaf0;
+  font-size: 1.08rem;
+}
+body.covenant-page .covenant-article p,
+body.covenant-page .covenant-article li {
+  color: #e5eaf2;
+  line-height: 1.75;
+}
+body.covenant-page .covenant-article ol {
+  padding-left: 1.5rem;
+}
+body.covenant-page .covenant-muted {
+  color: #c5ced7;
+}
+body.covenant-page a,
+body.covenant-page .covenant-back {
+  color: #fdbe00;
+}
+body.covenant-page a:hover,
+body.covenant-page a:focus-visible {
+  color: #fff1b8;
+}
+body.covenant-page footer {
+  margin-top: 3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(253,190,0,.3);
+  color: #d5dce3;
+}
+@media (max-width: 600px) {
+  body.covenant-page .covenant-wrap {
+    width: calc(100% - 28px);
+    padding-top: 2.2rem;
+  }
+  body.covenant-page .covenant-toc {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.covenant-page * { scroll-behavior: auto; transition: none !important; }
+}
 </style>
 </head>
-<body>
-<header class="site-header">
+<body class="covenant-page">
+<header class="page-header">
 <nav class="topbar" aria-label="Main navigation">
 <a class="brand" href="index.html">Liquindo</a>
 <div class="nav-links"><a href="index.html">Home</a><a href="hierarchy.html">Hierarchy</a><a href="wiki.html">LiquinWiki</a></div>
@@ -41,7 +140,7 @@
 <h1>Supreme Liquindian Covenant</h1>
 <p class="covenant-intro">The Supreme Liquindian Covenant establishes the constitutional foundations, institutions, offices and governing principles of Liquindo. It is intended to serve as the supreme law of the state.</p>
 </header>
-<div class="covenant-status"><strong>Working constitutional text.</strong> Articles 1–22 contain wording approved or recovered during the constitutional drafting process. Other outstanding provisions remain under review; proposed or reconstructed wording is not treated as approved. This page is being revised article by article; incomplete sections are not presented as final law.</div>
+<div class="covenant-status"><strong>Working constitutional text.</strong> This page contains the current 180-article drafting framework of the Supreme Liquindian Covenant. Its provisions remain subject to review and any further amendments formally approved under the Covenant.</div>
 <h2>Contents</h2>
 <nav class="covenant-toc" aria-label="Covenant contents">
 <a href="#chapter-i">Chapter I — Fundamental Principles <span>Articles 1–20</span></a>
